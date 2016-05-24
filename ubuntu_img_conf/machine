@@ -1,0 +1,18 @@
+$ lsb_release -s -d
+Ubuntu 14.10
+
+
+jho1-dl.datadomain.com
+	Fedora4
+
+jho3-dl.datadomain.com
+	Ubuntu 14.10
+	docker
+
+jho4-dl.datadomain.com
+	Ubuntu 14.10
+
+	ddnet-tools.datadomain.com
+
+jho5-dl.datadomain.com
+	docker repository

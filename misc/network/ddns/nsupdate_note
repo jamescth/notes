@@ -1,0 +1,33 @@
+# nsupdate
+> server 192.168.100.1
+> key rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+> zone cherry.local
+> update add 90.100.168.192.in-addr.arpa 600 IN PTR ipv6_ddr1.cherry.local
+> send
+> update add ipv6_ddr1.cherry.local 600 IN A 192.168.100.90
+> send
+
+# nsupdate
+> server 192.168.100.1
+> key rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+> zone 100.168.192.in-addr.arpa
+> update add 100.100.168.192.in-addr.arpa 600 IN PTR ipv6_ddr2.cherry.local
+> send
+
+# delete a RRset
+> server 192.168.100.1
+> key rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+> zone 100.168.192.in-addr.arpa
+> update delete 201.100.168.192.in-addr.arpa IN PTR ipv6_ddr1.100.168.192.in-addr.arpa 
+> send
+
+host ipv6_ddr1.cherry.local
+host 192.168.100.90
+
+if get SERVFAIL, need to change permission @ /etc/bind
+$ ll -d bind
+drwxr-sr-x 2 root bind 4096 Jun  5 17:01 bind/
+
+// use aa-complain to change mode
+sudo aa-complain /usr/sbin/named
+

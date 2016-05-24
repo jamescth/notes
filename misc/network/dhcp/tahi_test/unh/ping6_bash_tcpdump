@@ -1,0 +1,169 @@
+start
+10:25:15
+
+ping6
+10:25:41
+
+down
+10:26:15
+
+up
+10:26:35
+
+ping6
+10:27:38
+
+# tcpdump -i eth0b -vv
+tcpdump: WARNING: eth0b: no IPv4 address assigned
+tcpdump: listening on eth0b, link-type EN10MB (Ethernet), capture size 96 bytes
+^[[A10:24:46.015453 fe80::200:ff:fe00:a6a6 > ff02::1: icmp6: router advertisement(chlim=0, MO pref=medium, router_ltime=3000, reachable_time=0, retrans_time=0)(src lladdr: 00:00:00:00:a6:a6)[ndp opt] (len 56, hlim 255)
+10:24:46.016310 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:47.016268 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:48.016274 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:51.016231 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:51.067849 3ffe:501:ffff:100:200:ff:fe00:a1a1 > 3ffe:501:ffff:100:28c:faff:fe05:74d0: [icmp6 sum ok] icmp6: echo request seq 0 (len 16, hlim 64)
+10:24:52.016185 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:53.016175 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:56.016101 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:57.016120 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:24:58.016090 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:01.016035 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:02.016049 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:03.015977 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:06.015933 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:07.015929 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:08.015898 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:11.015841 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:12.015822 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:13.015818 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+
+*****************************************
+start
+*****************************************
+10:25:15.227085 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 solicit (xid=dfd773 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:25:15.327388 fe80::200:ff:fe00:a1a1.dhcpv6-client > fe80::28c:faff:fe05:74d0.dhcpv6-client: dhcp6 advertise (xid=dfd773 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 112, hlim 64)
+10:25:16.015788 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:16.287949 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 request (xid=55140d (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 116, hlim 64)
+10:25:16.383573 fe80::200:ff:fe00:a1a1.dhcpv6-server > fe80::28c:faff:fe05:74d0.dhcpv6-client: dhcp6 reply (xid=55140d (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 120, hlim 64)
+10:25:16.435701 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 56)
+10:25:17.015777 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:17.317768 :: > ff02::1:ff00:6666: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::6666 (len 24, hlim 255)
+10:25:18.015713 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:18.745721 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 56)
+10:25:19.053680 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 76)
+10:25:20.020700 :: > ff02::1:ff00:abcd: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::abcd (len 24, hlim 255)
+10:25:21.015670 3ffe:501:ffff:100::6666 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:21.928638 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 76)
+10:25:22.015646 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:23.015639 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:24.016638 3ffe:501:ffff:100::abcd > ff02::1:ff00:6666: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::6666(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:25.016601 3ffe:501:ffff:100::abcd > ff02::1:ff00:6666: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::6666(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:26.015598 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:26.016581 3ffe:501:ffff:100::abcd > ff02::1:ff00:6666: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::6666(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:27.015575 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:27.929581 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)[icmp6 sum ok] icmp6: type-#143 [hlim 1] (len 36)
+10:25:28.015536 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:31.015483 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:32.015473 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:33.015455 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:36.015378 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:25:36.436958 3ffe:501:ffff:100:200:ff:fe00:3f3e > 3ffe:501:ffff:100::abcd: [icmp6 sum ok] icmp6: neighbor adv: tgt is 3ffe:501:ffff:100:200:ff:fe00:3f3e(RSO)(tgt lladdr: 00:00:00:00:3f:3e) (len 32, hlim 255)
+*****************************************
+ping6
+*****************************************
+10:25:36.436970 3ffe:501:ffff:100::abcd.40100 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  19830+[|domain] (len 98, hlim 64)
+10:25:36.436974 3ffe:501:ffff:100::abcd.40101 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  600+[|domain] (len 42, hlim 64)
+10:25:40.351584 3ffe:501:ffff:100::abcd.40102 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  8844+[|domain] (len 49, hlim 64)
+10:25:41.014375 3ffe:501:ffff:100::abcd.40103 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  19830+[|domain] (len 98, hlim 64)
+10:25:41.121373 3ffe:501:ffff:100::abcd.40104 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  600+[|domain] (len 42, hlim 64)
+10:25:45.351308 3ffe:501:ffff:100::abcd.40105 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  8844+[|domain] (len 49, hlim 64)
+10:25:46.014973 3ffe:501:ffff:100::abcd.40106 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  16603+[|domain] (len 98, hlim 64)
+10:25:46.121284 3ffe:501:ffff:100::abcd.40107 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  23192+[|domain] (len 42, hlim 64)
+10:25:50.351239 3ffe:501:ffff:100::abcd.40108 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  60076+[|domain] (len 61, hlim 64)
+10:25:51.014201 3ffe:501:ffff:100::abcd.40109 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  16603+[|domain] (len 98, hlim 64)
+10:25:51.121159 3ffe:501:ffff:100::abcd.40110 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  23192+[|domain] (len 42, hlim 64)
+10:25:55.351125 3ffe:501:ffff:100::abcd.40111 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  60076+[|domain] (len 61, hlim 64)
+10:25:56.015014 3ffe:501:ffff:100::abcd.40112 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  26596+[|domain] (len 98, hlim 64)
+10:25:56.121091 3ffe:501:ffff:100::abcd.40113 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  23192+[|domain] (len 42, hlim 64)
+10:26:00.350968 fe80::28c:faff:fe05:74d0 > 3ffe:501:ffff:100:200:ff:fe00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:01.015009 3ffe:501:ffff:100::abcd.40114 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  26596+[|domain] (len 98, hlim 64)
+10:26:01.121014 3ffe:501:ffff:100::abcd.40115 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  23192+[|domain] (len 42, hlim 64)
+10:26:01.350955 fe80::28c:faff:fe05:74d0 > 3ffe:501:ffff:100:200:ff:fe00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:02.350942 fe80::28c:faff:fe05:74d0 > 3ffe:501:ffff:100:200:ff:fe00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:03.132745 3ffe:501:ffff:100::abcd.40116 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain: [udp sum ok]  21918+ A? emc.com. (25) (len 33, hlim 64)
+10:26:06.015969 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:06.521061 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 renew (xid=2f253d (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 116, hlim 64)
+10:26:07.015850 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:08.015829 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:11.015779 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:12.015751 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:13.015753 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+*****************************************
+down
+*****************************************
+10:26:15.576683 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)[icmp6 sum ok] icmp6: type-#143 [hlim 1] (len 36)
+10:26:17.238656 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)[icmp6 sum ok] icmp6: type-#143 [hlim 1] (len 36)
+*****************************************
+up
+*****************************************
+10:26:34.847574 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 confirm (xid=a6eeb7 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:26:35.868459 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 confirm (xid=a6eeb7 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:26:36.129637 fe80::200:ff:fe00:a6a6 > ff02::1: icmp6: router advertisement(chlim=0, M pref=medium, router_ltime=3000, reachable_time=0, retrans_time=0)(src lladdr: 00:00:00:00:a6:a6)[ndp opt] (len 56, hlim 255)
+10:26:37.929422 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 confirm (xid=a6eeb7 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:26:41.016370 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:42.016203 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:42.220329 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 confirm (xid=a6eeb7 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:26:43.016186 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:44.910195 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 56)
+10:26:45.050175 :: > ff02::1:ff00:6666: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::6666 (len 24, hlim 255)
+10:26:46.016098 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:47.016055 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:47.494108 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 76)
+10:26:48.016068 fe80::28c:faff:fe05:74d0 > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:48.467113 :: > ff02::1:ff00:abcd: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100::abcd (len 24, hlim 255)
+10:26:50.026476 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 rebind (xid=3ab0c4 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 126, hlim 64)
+10:26:50.385016 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)icmp6: type-#143 [hlim 1] (len 76)
+10:26:51.017061 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:51.456033 fe80::28c:faff:fe05:74d0 > ff02::16: HBH (rtalert: 0x0000) (padn)[icmp6 sum ok] icmp6: type-#143 [hlim 1] (len 36)
+10:26:52.017019 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:53.017027 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:56.016958 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:57.016967 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:26:58.016941 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:00.527083 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 rebind (xid=3ab0c4 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 98, hlim 64)
+10:27:01.016860 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:02.016870 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:03.016853 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:06.786758 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:07.786736 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:08.786738 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:11.786681 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:12.786660 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:13.786655 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:16.786581 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:17.786629 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:18.786564 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:21.786487 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:22.397594 fe80::28c:faff:fe05:74d0.dhcpv6-client > ff02::1:2.dhcpv6-server: dhcp6 rebind (xid=3ab0c4 (client ID hwaddr/time type 1 time 463818547 008cfa0574d0)[|dhcp6ext]) (len 98, hlim 64)
+10:27:22.786490 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:23.786450 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:26.786437 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:27.786422 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:28.786360 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:31.786344 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:32.786327 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:33.786284 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:34.901258 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:35.901259 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:36.901244 3ffe:501:ffff:100::abcd > ff02::1:ff00:3f3e: [icmp6 sum ok] icmp6: neighbor sol: who has 3ffe:501:ffff:100:200:ff:fe00:3f3e(src lladdr: 00:8c:fa:05:74:d0) (len 32, hlim 255)
+10:27:36.958657 3ffe:501:ffff:100:200:ff:fe00:3f3e > 3ffe:501:ffff:100::abcd: [icmp6 sum ok] icmp6: neighbor adv: tgt is 3ffe:501:ffff:100:200:ff:fe00:3f3e(RSO)(tgt lladdr: 00:00:00:00:3f:3e) (len 32, hlim 255)
+*****************************************
+ping6
+*****************************************
+10:27:36.958670 3ffe:501:ffff:100::abcd.40142 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  64526+[|domain] (len 49, hlim 64)
+10:27:36.958674 3ffe:501:ffff:100::abcd.40143 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  1321+[|domain] (len 42, hlim 64)
+10:27:39.900261 3ffe:501:ffff:100::abcd.40144 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  64526+[|domain] (len 49, hlim 64)
+10:27:41.785230 3ffe:501:ffff:100::abcd.40145 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  1321+[|domain] (len 42, hlim 64)
+10:27:44.900192 3ffe:501:ffff:100::abcd.40146 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  4395+[|domain] (len 61, hlim 64)
+10:27:49.900056 3ffe:501:ffff:100::abcd.40147 > 3ffe:501:ffff:100:200:ff:fe00:3f3e.domain:  4395+[|domain] (len 61, hlim 64)
+

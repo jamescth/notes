@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# for debug
+ set -x
+
+pid=""
+
+# make sure the module exists
+if [ ! -f ./ddump_mt.ko ]; then
+	echo "ddump_mt.ko not found!"
+	exit
+fi
+
+./dummy &
+
+pid=`pidof dummy`
+
+if [ "${pid}" == "" ]; then
+	echo dummy is not running
+	exit
+fi
+
+echo dummy pid is ${pid}
+
+insmod ddump_mt.ko target_pid=${pid}
+
+lsmod | grep ddump_mt
+
+#kill -9 ${pid}
+#rmmod ddump_mt

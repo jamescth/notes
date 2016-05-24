@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_probe_i_count/ddump_fs_probe.ko := /auto/home/lsbuild/desktop-317950/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/ddump_probe_i_count/ddump_fs_probe.ko /auto/home5/hoj9/testcase/ddump_probe_i_count/ddump_fs_probe.o /auto/home5/hoj9/testcase/ddump_probe_i_count/ddump_fs_probe.mod.o

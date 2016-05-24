@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/faultinjection/faultinjection.ko := /auto/home/lsbuild/desktop-358510/usr/bin/ld -r -m elf_x86_64 -T /p4/nk32_ddump_p1/platform/os/linux-3.2/scripts/module-common.lds   -o /auto/home5/hoj9/testcase/faultinjection/faultinjection.ko /auto/home5/hoj9/testcase/faultinjection/faultinjection.o /auto/home5/hoj9/testcase/faultinjection/faultinjection.mod.o

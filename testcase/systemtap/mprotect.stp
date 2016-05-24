@@ -1,0 +1,9 @@
+#tracing mprotect ops.
+probe kernel.function("do_mlock")
+{
+	printf("Process(%d)-ENTER [%s] - %s(sb)\n", 
+				pid(), execname(), probefunc());
+	printf("%s\n",  print_stack(backtrace()));
+	printf("Start :%lx - Len %ld\n", start, len);
+}
+

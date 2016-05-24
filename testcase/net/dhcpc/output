@@ -1,0 +1,200 @@
+eth5b     Link encap:Ethernet  HWaddr 00:1B:21:7F:B0:B9
+          inet addr:169.254.6.253  Bcast:169.254.255.255  Mask:255.255.0.0
+          inet6 addr: 2100:bad:cafe:f00d::deed:1002/64 Scope:Global
+          inet6 addr: fe80::21b:21ff:fe7f:b0b9/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:166458 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:7148 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:50889897 (48.5 MiB)  TX bytes:857814 (837.7 KiB)
+
+# ./dhcpcd -6 eth5b -d /tmp/dhcp
+dhcp6-static-patched  dhcpcd.conf           dhcpcd6-static
+dhcpcd-run-hooks      dhcpcd6
+-bash-3.00# ./dhcpcd -6 eth5b -d /tmp/dhcpcd-run-hooks
+James read_config()
+James read_config IPV6
+James if_machinearch()
+James add_options()
+James main control_open()
+James control_open()
+James make_sock()
+James calls socket()
+dhcpcd[7596]: control_open: Connection refused
+James main eloop_init()
+James eloop_init()
+James control_start()
+James make_sock()
+James calls socket()
+James eloop_event_add()
+dhcpcd[7596]: version 6.3.2 starting
+James if_openlinksocket()
+James _open_link_socket()
+James eloop_event_add()
+James if_init()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James ipv6_getstate()
+James dhcp6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James ipv6_getstate()
+James if_addrflags6()
+James ipv6_handleifa()
+James if_addrflags6()
+James ipv6_handleifa()
+James find_interface()
+James find_interface()
+dhcpcd[7596]: /tmp/dhcpcd-run-hooks: interface not found or invalid
+James init_state()
+James select_profile()
+James read_config()
+James read_config IPV6
+James if_machinearch()
+James add_options()
+James configure_interface1()
+James if_conf()
+James ipv6_init()
+dhcpcd[7596]: eth5b: executing `/libexec/dhcpcd-run-hooks' PREINIT
+dhcpcd[7596]: eth5b: executing `/libexec/dhcpcd-run-hooks' CARRIER
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James main sort_interfaces()
+James main add start_interface() to eloop
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James eloop_start()
+James start_interface()
+dhcpcd[7596]: DUID 00:01:00:01:1a:ec:57:5e:00:1b:21:7f:b0:b8
+dhcpcd[7596]: eth5b: IAID 21:7f:b0:b9
+James start_interface() DHCPCD_IPV6
+James dhcp6_find_delegates()
+James dhcp6_start()
+James dhcp6_open()
+James eloop_event_add()
+James dhcp6_find_delegates()
+James ipv6_findaddr()
+James dhcp6_start1()
+James dhcp6_startinit()
+James dhcp6_readlease()
+dhcpcd[7596]: eth5b: reading lease `/var/db/dhcpcd-eth5b.lease6'
+James dhcp6_validatelease()
+James dhcp6_findoption()
+James dhcp6_checkstatusok()
+James dhcp6_findoption()
+James dhcp6_findia()
+James dhcp6_findoption()
+James dhcp6_checkstatusok()
+James dhcp6_findoption()
+James dhcp6_findna()
+James dhcp6_findoption()
+James dhcp6_findaddr()
+James ipv6_makeprefix()
+James dhcp6_findoption()
+James dhcp6_findoption()
+James dhcp6_findoption()
+James dhcp6_startconfirm()
+dhcpcd[7596]: eth5b: confirming prior DHCPv6 lease
+James dhcp6_makemessage()
+James dhcp6_makevendor()
+James if_machinearch()
+James dhcp6_newxid()
+James dhcp6_makevendor()
+James if_machinearch()
+James dhcp6_sendmessage()
+James dhcp6_get_op()
+dhcpcd[7596]: eth5b: delaying CONFIRM6 (xid 0x178e1b), next in 0.9 seconds
+James eloop_q_timeout_add_tv()
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James dhcp6_sendmessage()
+James dhcp6_get_op()
+dhcpcd[7596]: eth5b: broadcasting CONFIRM6 (xid 0x178e1b), next in 1.1 seconds
+James dhcp6_updateelapsed()
+James dhcp6_findoption()
+James eloop_q_timeout_add_tv()
+James dhcp6_handledata()
+James dhcp6_findoption()
+James dhcp6_findoption()
+James dhcp6_findoption()
+James dhcp6_get_op()
+James DHCP6_REPLY state 6
+James dhcp6_checkstatusok()
+James dhcp6_findoption()
+dhcpcd[7596]: eth5b: REPLY6 received from fe80::20c:29ff:febe:6156
+James eloop_q_timeout_delete()
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James eloop_q_timeout_add_sec()
+James eloop_q_timeout_add_tv()
+James ipv6_addaddrs()
+James ipv6_addaddr()
+dhcpcd[7596]: eth5b: adding address 2100:bad:cafe:f00d::deed:1000/128
+James ipv6_findaddr()
+James if_address6()
+James add_attr_l()
+James add_attr_l()
+James add_attr_l()
+James send_netlink()
+James _open_link_socket()
+James send_netlink sendmsg()
+James get_netlink()
+James err_netlink()
+James ret -1 from send_netlink()
+dhcpcd[7596]: if_addaddress6: Numerical result out of range
+dhcpcd[7596]: eth5b: renew in 1800 seconds, rebind in 2880 seconds
+James ipv6_buildroutes()
+James ipv6_build_ra_routes()
+James ipv6_build_dhcp_routes()
+James make_prefix()
+James ipv6_build_dhcp_routes()
+James ipv6_build_ra_routes()
+James dhcp6_writelease()
+dhcpcd[7596]: eth5b: writing lease `/var/db/dhcpcd-eth5b.lease6'
+James ipv6_findaddr()
+dhcpcd[7596]: eth5b: waiting for DHCPv6 DAD to complete
+James get_netlink()
+James link_netlink()
+James link_route()
+James get_netlink()
+James link_netlink()
+James link_route()
+dhcpcd[7596]: timed out
+James daemonise()
+James eloop_q_timeout_delete()
+dhcpcd[7596]: forking to background
+dhcpcd[7596]: forked to background, child pid 7642
+James eloop_exit()
+James ipv6_free()
+James ipv6_free_ll_callbacks()
+James dhcp6_freedrop()
+James eloop_q_timeout_delete()
+James ipv6_freedrop_addrs()
+James eloop_q_timeout_delete()
+James eloop_event_delete()
+James eloop_event_delete()
+James if_rarestore()
+James eloop_free()
+

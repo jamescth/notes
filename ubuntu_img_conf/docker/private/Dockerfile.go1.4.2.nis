@@ -1,0 +1,10 @@
+#docker build -t go-nis:1.4.2 -f Dockerfile.go1.4.2.nis .
+
+FROM go-vim:1.4.2
+
+MAINTAINER James Ho
+
+# set the runtime env
+RUN groupadd -g 112747 hoj9
+RUN useradd -m -u 112747 -g 112747 hoj9
+

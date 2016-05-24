@@ -1,0 +1,12 @@
+opcontrol --deinit
+opcontrol --vmlinux=/vmlinux-ddr420732 --separate=lib,kernel
+opcontrol --reset
+opcontrol --setup --event=CYCLES:1000
+opcontrol --start
+netperf -6 -6 -H 2001::202
+#opcontrol --dump
+opcontrol --stop
+opreport --symbols --image-path /lib/modules/2.6.23-ddr420732/kernel > v6_result
+opcontrol --shutdown
+ # opannotate --source oooutput_dir=/tmp/annotated
+

@@ -1,0 +1,33 @@
+Mar  9 16:54:12 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2906) sysadmin: command "filesys destroy"
+Mar  9 16:54:12 artemis07 ddsh: NOTICE: MSG-DDSH-00007: Invalid non-interactive command "filesys destroy".
+Mar  9 16:54:31 artemis07 ddsh: NOTICE: MSG-DDSH-00013: (tty=pts/3, session=2937) sysadmin: Started CLI
+Mar  9 16:54:36 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2937) sysadmin: command "filesys destroy"
+Mar  9 16:54:41 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=2959) root: command "reg set dynamic.procmon.smbd.state.admin 1"
+Mar  9 16:54:41 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=2960) root: command "reg set dynamic.procmon.nmbd.state.admin 1"
+Mar  9 16:54:42 artemis07 ddr_procmon: NOTICE: MSG-PMON-00002: Disabling /usr/sbin/smbd. 
+Mar  9 16:54:42 artemis07 ddr_procmon: NOTICE: MSG-PMON-00002: Disabling /usr/sbin/nmbd. 
+Mar  9 16:54:44 artemis07 ddr_stated: change state: state=4, status_text=[filesys disable]. 
+Mar  9 16:54:44 artemis07 ddfs[423]: NOTICE: MSG-DDR-00003: Shutting down ddfs 
+Mar  9 16:54:48 artemis07 ddfs[423]: NOTICE: MSG-SCRUB-00003: The scrub cycle on volume vol2 (partition vol2) completed 
+Mar  9 16:55:01 artemis07 ddfs[423]: NOTICE: MSG-DDR-00004: ddfs shut down 
+Mar  9 16:55:06 artemis07 fs_tool: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3785) root: command "reg show nokey protocol.cifs.share.backup.raw.useddcl"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3788) root: command "reg show nokey protocol.cifs.enabled"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3789) root: command "reg set dynamic.procmon.smbd.state.admin 0"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3790) root: command "reg show dynamic.procmon.smbd.state.admin"
+Mar  9 16:55:45 artemis07 smb: Current state: dynamic.procmon.smbd.state.admin = 0
+Mar  9 16:55:45 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3792) root: command "reg set dynamic.procmon.nmbd.state.admin 0"
+Mar  9 16:55:45 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3793) root: command "reg show dynamic.procmon.nmbd.state.admin"
+Mar  9 16:55:45 artemis07 smb: Current state: dynamic.procmon.nmbd.state.admin = 0
+Mar  9 16:55:46 artemis07 ddr_procmon: NOTICE: MSG-PMON-00001: Enabling /usr/sbin/smbd. 
+Mar  9 16:55:46 artemis07 ddr_procmon: NOTICE: MSG-PMON-00001: Enabling /usr/sbin/nmbd. 
+Mar  9 17:01:37 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2937) sysadmin: command "exit"
+Mar  9 17:01:46 artemis07 ddsh: NOTICE: MSG-DDSH-00013: (tty=pts/3, session=4979) sysadmin: Started CLI
+Mar  9 17:01:50 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "filesys create"
+Mar  9 17:02:00 artemis07 check_emulation: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 17:09:00 artemis07 newddfs: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 17:10:44 artemis07 sshd[8687]: Accepted keyboard-interactive/pam for sysadmin from 137.69.76.103 port 39752 ssh2
+Mar  9 17:20:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "system show date"
+Mar  9 17:26:31 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "exit"
+Mar  9 17:27:26 artemis07 sshd[11334]: Accepted keyboard-interactive/pam for sysadmin from 137.69.76.103 port 44876 ssh2
+Mar  9 17:28:56 artemis07 sshd[11581]: Accepted keyboard-interactive/pam for sysadmin from 137.69.76.103 port 44877 ssh2

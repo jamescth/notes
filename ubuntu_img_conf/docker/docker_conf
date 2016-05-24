@@ -1,0 +1,222 @@
+# install the latest docker
+
+# 1. http://www.ubuntuupdates.org/ppa/docker
+# Download the repository key with:
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+# Setup the repository:
+sudo sh -c "echo deb https://get.docker.io/ubuntu docker main \
+> /etc/apt/sources.list.d/docker.list"
+sudo apt-get update
+sudo apt-get -y install lxc-docker
+
+# 2. http://ask.xmodulo.com/upgrade-docker-ubuntu.html
+sudo add-apt-repository ppa:docker-maint/testing
+sudo apt-get update
+sudo apt-get -y install docker.io 
+
+# copy docker image from one host to another
+# http://stackoverflow.com/questions/23935141/how-to-copy-docker-images-from-one-host-to-another-without-via-repository
+
+# save vs. export
+# export - saves a container's running or paused instance to a file
+# save   - saves a non-running image to a file
+
+# sudo docker save -o <path/name.tar> <docker name/id>
+# sudo docker load -i <path/name.tar>
+# docker save <tag> | gzip > /tmp/<name>.tar.gz
+# gzcat <name>.tar.gz | docker load
+
+# docker export {container id} > {tar}
+# cat {tar} | docker import - some-name:latest
+
+# Get into the container's root file system from host
+docker inspect -f '{{.Id}}' james_nis
+cd /var/lib/docker/aufs/mnt/$(docker inspect -f '{{.Id}}' james_nis)
+
+###########################################################################
+# http://www.liquidweb.com/kb/how-to-install-docker-on-ubuntu-14-04-lts/
+# https://docs.docker.com/installation/ubuntulinux/
+
+# ensuring the list of available packages is up to date
+sudo apt-get update
+
+# get the latest docker package
+wget -qO- https://get.docker.com/ | sh
+
+# upgrade docker
+wget -N https://get.docker.com/ | sh
+
+# Step 1: Installation of Docker
+sudo apt-get -y install docker.io
+
+# add the docker repository key to the local keychain
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+# sudo sh -c "echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
+# sudo apt-get update
+# sudo apt-get -y install lxc-docker
+
+
+# Link and fix paths
+# sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+# sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+
+# configure Docker to start when the server boots
+# sudo update-rc.d docker.io defaults
+
+# Step 2: Download a Docker Container
+# sudo docker pull ubuntu
+
+# Step 3: Run a Docker container
+# -i attaches stdin and stdout, -t allocates a tty
+# sudo docker run -i -t ubuntu /bin/bash
+
+# To search debian container
+# sudo docker search debian
+
+################################
+# Trouble shooting
+
+# sudo service docker restart
+
+################################
+### ch 2
+
+# docker ps -a
+# docker run busybox
+# docker run -itd busybox
+# docker attach <cid>
+
+# cid = $(docker run -itd busybox)
+# echo $cid
+################################
+### volume
+
+# simple 
+# docker run -it -v /john1 busybox
+# cd john1; touch file1
+# ctrl-p-q # keep in running
+
+# docker restart <cid>
+# docker exec <cid> ls /john1
+
+# docker inspect <cid>
+# docker history <cid>
+
+# acess host files
+# docker run -it -v /home/john3:/john3 myimage
+# read only
+# docker run -it -v /home/john3:/john3:ro myimage
+
+# docker run -it -v ~/.bash_history:/.bash_history myimage
+
+# docker kill $(docker ps -q)
+# docker rm $(docker ps -aq)
+
+# containers share volume
+# docker run -it --name john1 -v /john1 myimage
+# docker run -it --name john2 --volume-from john1 myimage
+
+# back up of containers
+# docker run --rm --volumes-from john1 -v $(pwd):/backup busybox tar xvf /backup/john2.tar /john2
+
+################################
+### ch 4
+# docker 1.6
+# wget -q0- https://test.docker.com/ | sh
+
+# docker search ubuntu
+# greater than 10 stars
+# docker search -s 10 ubuntu
+
+# docker images
+# docker pull ubuntu
+# docker pull ubuntu:14.04
+# docker pull ubuntu:trusty
+# all the same images, but different tag names
+
+# docker run -itd ubuntu
+# docker ps
+# docker images
+# docker history <cid>
+# docker run -itd ubuntu /bin/sh
+# docker run -itd ubuntu uname -a
+# docker ps -a
+# docker log <cid>
+
+# docker run -itd ubuntu sleep 10 && watch docker ps
+
+# docker kill $(docker ps -q) && docker rm $(docker ps -aq)
+
+# docker run -itd --name job1 ubuntu /bin/sh -c "while true; do echo Docker Rocks; sleep 1; done"
+# docker logs -h
+# docker logs -ft job1
+# kill the last one
+# docker kill $(docker ps -lq)
+ 
+# docker run -itd --name job2 ubuntu /bin/sh -c "while true; do echo Docker Rocks; sleep 1; done"
+# docker stats job2
+# watch docker top job2 -ef
+# docker exec -itd job2 sleep 20
+
+# docker inspect job2
+# docker inspect --format '{{.Name}} {{.State.Running}}' job2
+
+# docker run -itd --name job4 --label=NodeNumber=3 --label=NodeType=cluster ubuntu
+# docker inspect job4 > jmw.out
+# docker inspect --format '{{.Name}} {{.Config.Labels.NodeType}}' job4
+
+# cid=$(docker run -itd --ulimit nofile=1024:1024 ubuntu)
+# docker attach $cid
+# ulimit -a
+
+# cid=$(docker run -itd --ulimit nofile=1024:1024 --ulmit core=102400 --ulimit nproc=1000 --ulimit nice=100 --ulimit memlock=8196 --ulimit fsize=8192 --ulimit rss=4096 --ulimit cpu=4 --ulimit locks=1000 --ulimit sigpending=100 --ulimit msgqueue=1000 --ulimit rtprio=100 ubuntu)
+
+################################
+### ch 5 basic networking
+
+# eth1: 10.254.101.22/24
+# docker0: 172.17.42.1/16
+# brctl show docker0
+
+# docker exec -it <cid> /bin/sh
+# ip a
+# eth0 172.17.0.6/16
+# traceroute docker.com
+#  172.17.42.1 0.003ms
+#  10.0.2.2    0.002ms
+# Ctrl-p-q
+# brctl show docker0
+
+# sudo iptables -t nat -L -n
+#   Chain POSTROUTING (policy ACCEPT)
+#   target     prot opt source              destination
+#   MASQUERADE  all  -- 172.17.0.0/16        0.0.0.0/0
+# 
+#   Chain DOCKER (2 references)
+#   target     prot opt source destination
+
+# docker history httpd
+#    EXPOSE map [80/tcp:{}]
+# docker run -itd -P httpd 
+# docker ps
+#     0.0.0.0:32770->80/tcp
+# docker run -itd -P httpd
+#     0.0.0.0:32771->80/tcp
+# docker run -itd -p 8080:80 httpd
+#     0.0.0.0:8080->80/tcp
+# sudo iptables -t nat -L -n
+#   Chain POSTROUTING (policy ACCEPT)
+#   target     prot opt source              destination
+#   MASQUERADE  all  -- 172.17.0.0/16        0.0.0.0/0
+#   MASQUERADE  tcp  -- 172.17.0.7           172.17.0.7       tcp dpt:80
+#   MASQUERADE  tcp  -- 172.17.0.8           172.17.0.8       tcp dpt:80
+#   MASQUERADE  tcp  -- 172.17.0.9           172.17.0.9       tcp dpt:80
+#
+#   Chain DOCKER (2 references)
+#   target     prot opt source           destination
+#   DNAT       tcp  --  0.0.0.0/0        0.0.0.0/0         tcp dpt:32770 to 172.17.0.7:80
+#   DNAT       tcp  --  0.0.0.0/0        0.0.0.0/0         tcp dpt:32771 to 172.17.0.8:80
+#   DNAT       tcp  --  0.0.0.0/0        0.0.0.0/0         tcp dpt:8080 to 172.17.0.9:80
+

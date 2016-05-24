@@ -1,0 +1,46 @@
+
+use -o to set to display all shell options:
+
+[hoj9@jho1-dl p3]$ set -o
+allexport       off
+braceexpand     on
+emacs           on
+errexit         off
+errtrace        off
+functrace       off
+hashall         on
+histexpand      on
+history         on
+ignoreeof       off
+interactive-comments    on
+keyword         off
+monitor         on
+noclobber       off
+noexec          off
+noglob          off
+nolog           off
+notify          off
+nounset         off
+onecmd          off
+physical        off
+pipefail        off
+posix           off
+privileged      off
+verbose         off
+vi              off
+xtrace          off
+
+
+[hoj9@jho1-dl p3]$ set -o | grep noclobber
+noclobber       on
+
+[hoj9@jho1-dl p3]$ touch test
+[hoj9@jho1-dl p3]$ date > test
+bash: test: cannot overwrite existing file
+
+[hoj9@jho1-dl p3]$ set +o noclobber
+[hoj9@jho1-dl p3]$ set -o | grep noclobber
+noclobber       off
+
+[hoj9@jho1-dl p3]$ date > test
+

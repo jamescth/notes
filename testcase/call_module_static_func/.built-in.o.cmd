@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/call_module_static_func/built-in.o :=  rm -f /auto/home5/hoj9/testcase/call_module_static_func/built-in.o; /auto/home/lsbuild/desktop-321714/usr/bin/ar rcs /auto/home5/hoj9/testcase/call_module_static_func/built-in.o

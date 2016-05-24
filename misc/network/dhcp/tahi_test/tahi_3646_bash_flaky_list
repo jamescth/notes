@@ -1,0 +1,116 @@
+https://bugzilla.redhat.com/show_bug.cgi?id=1101149
+dhclient-script -6 ignores name-servers/domain-search in stateless DHCPv6 mode (-S)
+# tcpdump -i eth0b -vv
+# ping6 -c 1 -s 2 -I eth0b dhcpv6.test.example.com
+
+
+========== TEST 1 ==========
+./DHCPv6_CltInit.seq -pkt /dev/null -log 1.html -ti "Initialization"
+OK
+========== TEST 2 ==========
+./C_RFC3646_3_DnsSvrOpt.seq -pkt ./C_RFC3646_3_DnsSvrOpt.def -log 2.html -ti "Part A &#58; Option request Option Format(DNS Recursive Name Server option)"
+OK
+========== TEST 3 ==========
+./C_RFC3646_4_DnsSchLstOpt.seq -pkt ./C_RFC3646_4_DnsSchLstOpt.def -log 3.html -ti "Part B &#58; Option request Option Format(Domain Search List option)"
+OK
+========== TEST 4 ==========
+./C_RFC3646_3_DnsSvrOpt_Sol.seq -pkt ./C_RFC3646_3_DnsSvrOpt_Sol.def -log 4.html -ti "Part A &#58; Solicit message format with Option request Option Format(DNS Recursive Name Server option)"
+OK
+========== TEST 5 ==========
+./C_RFC3646_3_DnsSchLstOpt_Sol.seq -pkt ./C_RFC3646_3_DnsSchLstOpt_Sol.def -log 5.html -ti "Part B &#58; Solicit message format with Option request Option Format(Domain Search List option)"
+OK
+========== TEST 6 ==========
+./C_RFC3646_3_DnsSvrOpt_Req.seq -pkt ./C_RFC3646_3_DnsSvrOpt_Req.def -log 6.html -ti "Part A &#58; Request message format with Option request Option Format(DNS Recursive Name Server option)"
+OK flaky
+========== TEST 7 ==========
+./C_RFC3646_3_DnsSchLstOpt_Req.seq -pkt ./C_RFC3646_3_DnsSchLstOpt_Req.def -log 7.html -ti "Part B &#58; Request message format with Option request Option Format(Domain Search List option)"
+OK flaky
+========== TEST 8 ==========
+./C_RFC3646_5_InvCnfDnsSvrOpt.seq -pkt ./C_RFC3646_5_InvCnfDnsSvrOpt.def -log 8.html -ti "Part A &#58; Confirm message format with Option request Option Format(DNS Recursive Name Server option)"
+OK
+========== TEST 9 ==========
+./C_RFC3646_5_InvCnfDnsSchLstOpt.seq -pkt ./C_RFC3646_5_InvCnfDnsSchLstOpt.def -log 9.html -ti "Part B &#58; Confirm message format with Option request Option Format(Domain Search List option)"
+OK
+========== TEST 10 ==========
+./C_RFC3646_5_DnsSvrOpt_After_Confirm.seq -pkt ./C_RFC3646_5_DnsSvrOpt_After_Confirm.def -log 10.html -ti "Part C &#58; Option Request Option status after confirm message without any reply (DNS Recursive Name Server option)"
+OK ping6
+net set dns 3ffe:501:ffff:100:200:ff:fe00:3f3e
+net ping dhcpv6.test.example.com ipversion ipv6 count 1 interface eth0b packet-size 2
+========== TEST 11 ==========
+./C_RFC3646_5_DnsSchLstOpt_After_Confirm.seq -pkt ./C_RFC3646_5_DnsSchLstOpt_After_Confirm.def -log 11.html -ti "Part D &#58; Option Request Option status after confirm message without any reply (Domain Search List option)"
+OK ping6 flaky
+ping enter, tahi
+tahi ping
+
+========== TEST 12 ==========
+./C_RFC3646_3_DnsSvrOpt_Ren.seq -pkt ./C_RFC3646_3_DnsSvrOpt_Ren.def -log 12.html -ti "Part A &#58; Renew message format with Option request Option Format(DNS Recursive Name Server option)"
+OK
+========== TEST 13 ==========
+./C_RFC3646_3_DnsSchLstOpt_Ren.seq -pkt ./C_RFC3646_3_DnsSchLstOpt_Ren.def -log 13.html -ti "Part B &#58; Renew message format with Option request Option Format(Domain Search List option)"
+OK
+========== TEST 14 ==========
+./C_RFC3646_3_DnsSvrOpt_Reb.seq -pkt ./C_RFC3646_3_DnsSvrOpt_Reb.def -log 14.html -ti "Part A &#58; Rebind message format with Option request Option Format(DNS Recursive Name Server option)"
+OK flaky
+
+========== TEST 15 ==========
+./C_RFC3646_3_DnsSchLstOpt_Reb.seq -pkt ./C_RFC3646_3_DnsSchLstOpt_Reb.def -log 15.html -ti "Part B &#58; Rebind message format with Option request Option Format(Domain Search List option)"
+OK flaky
+
+========== TEST 16 ==========
+./C_RFC3646_5_InvRelDnsSvrOpt.seq -pkt ./C_RFC3646_5_InvRelDnsSvrOpt.def -log 16.html -ti "Part A &#58; Release message format with Option request Option Format(DNS Recursive Name Server option)"
+OK flaky
+
+========== TEST 17 ==========
+./C_RFC3646_5_InvRelDnsSchLstOpt.seq -pkt ./C_RFC3646_5_InvRelDnsSchLstOpt.def -log 17.html -ti "Part B &#58; Release message format with Option request Option Format(Domain Search List option)"
+OK
+========== TEST 18 ==========
+./C_RFC3646_5_InvDecDnsSvrOpt.seq -pkt ./C_RFC3646_5_InvDecDnsSvrOpt.def -log 18.html -ti "Part A &#58; Decline message format with Option request Option Format(DNS Recursive Name Server option)"
+OK flaky
+
+========== TEST 19 ==========
+./C_RFC3646_5_InvDecDnsSchLstOpt.seq -pkt ./C_RFC3646_5_InvDecDnsSchLstOpt.def -log 19.html -ti "Part B &#58; Decline message format with Option request Option Format(Domain Search List option)"
+OK
+========== TEST 20 ==========
+./C_RFC3646_3_DnsSvrOpt_rep.seq -pkt ./C_RFC3646_3_DnsSvrOpt_rep.def -log 20.html -ti "Part A &#58; Using DNS Recursive Name Server option"
+OK ping6
+ping, tahi
+========== TEST 21 ==========
+./C_RFC3646_4_DnsSchLstOpt_rep.seq -pkt ./C_RFC3646_4_DnsSchLstOpt_rep.def -log 21.html -ti "Part A &#58; Using Domain Search List option"
+OK ping6 dhcpv6 flaky
+
+========== TEST 22 ==========
+./C_RFC3646_3_Update_DnsSvrOpt_rep.seq -pkt ./C_RFC3646_3_Update_DnsSvrOpt_rep.def -log 22.html -ti "Part C &#58; DNS Recursive Name Server option updated by the server"
+OK ping6 flaky
+
+========== TEST 23 ==========
+./C_RFC3646_4_Update_DnsSchLstOpt_rep.seq -pkt ./C_RFC3646_4_Update_DnsSchLstOpt_rep.def -log 23.html -ti "Part D &#58; Domain Search List option updated by the server"
+OK ping6 flaky
+
+========== TEST 24 ==========
+./C_RFC3646_3_Reconnect_DnsSvrOpt_rep.seq -pkt ./C_RFC3646_3_Reconnect_DnsSvrOpt_rep.def -log 24.html -ti "Part E &#58; DNS Recursive Name Server option updated by the server"
+OK ping6 flaky
+ping tahi
+ping tahi
+========== TEST 25 ==========
+./C_RFC3646_4_Reconnect_DnsSchLstOpt_rep.seq -pkt ./C_RFC3646_4_Reconnect_DnsSchLstOpt_rep.def -log 25.html -ti "Part F &#58; Domain Search List option updated by the server"
+OK ping6 flaky
+
+========== TEST 26 ==========
+./C_RFC3646_DUID_LLTFormat.seq -pkt ./C_RFC3646_DUID_LLTFormat.def -log 26.html -ti "Part A &#58; DUID_LLT Format"
+OK
+========== TEST 27 ==========
+./C_RFC3646_DUID_LLTPersit.seq -pkt ./C_RFC3646_DUID_LLTPersit.def -log 27.html -ti "Part B &#58; DUID_LLT Consistency"
+==== NUT Initialization OK ====
+ok <= avoid double counting
+========== TEST 28 ==========
+./C_RFC3646_DUID_ENFormat.seq -pkt ./C_RFC3646_DUID_ENFormat.def -log 28.html -ti "Part C &#58; DUID_EN Format"
+Not yet supported
+========== TEST 29 ==========
+./C_RFC3646_DUID_ENPersit.seq -pkt ./C_RFC3646_DUID_ENPersit.def -log 29.html -ti "Part D &#58; DUID_EN Consistency"
+Not yet supported
+========== TEST 30 ==========
+./C_RFC3646_DUID_LLFormat.seq -pkt ./C_RFC3646_DUID_LLFormat.def -log 30.html -ti "Part E &#58; DUID_LL Format"
+Not yet supported
+========== TEST 31 ==========
+./C_RFC3646_DUID_LLPersit.seq -pkt ./C_RFC3646_DUID_LLPersit.def -log 31.html -ti "Part F &#58; DUID_LL Consistency"
+Not yet supported

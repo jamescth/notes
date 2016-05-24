@@ -1,0 +1,3972 @@
+/auto/home5/hoj9/dhcp-4.2.6/omapip/support.c
+-  * Copyright (c) 2012,2014 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2009,2012,2014 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 2009-2010 by Internet Systems Consortium, Inc. ("ISC")
+/auto/home5/hoj9/dhcp-4.2.6/omapip/isclib.c
+-  * Copyright(c) 2009-2010,2013 by Internet Systems Consortium, Inc.("ISC")
++  * Copyright(c) 2009-2010,2013-2014 by Internet Systems Consortium, Inc.("ISC")
++ #if defined (NSUPDATE)
++ 
++ /* This routine will open up the /etc/resolv.conf file and
++  * send any nameservers it finds to the DNS client code.
++  * It may be moved to be part of the dns client code instead
++  * of being in the DHCP code
++  */
++ isc_result_t 
++ dhcp_dns_client_setservers(void)
++ {
++ 	isc_result_t result;
++ 	irs_resconf_t *resconf = NULL;
++ 	isc_sockaddrlist_t *nameservers;
++ 	isc_sockaddr_t *sa;
++ 
++ 	result = irs_resconf_load(dhcp_gbl_ctx.mctx, _PATH_RESOLV_CONF,
++ 				  &resconf);
++ 	if (result != ISC_R_SUCCESS && result != ISC_R_FILENOTFOUND) {
++ 		log_error("irs_resconf_load failed: %d.", result);
++ 		return (result);
++ 	}
++ 
++ 	nameservers = irs_resconf_getnameservers(resconf);
++ 
++ 	/* Initialize port numbers */
++ 	for (sa = ISC_LIST_HEAD(*nameservers);
++ 	     sa != NULL;
++ 	     sa = ISC_LIST_NEXT(sa, link)) {
++ 		switch (sa->type.sa.sa_family) {
++ 		case AF_INET:
++ 			sa->type.sin.sin_port = htons(NS_DEFAULTPORT);
++ 			break;
++ 		case AF_INET6:
++ 			sa->type.sin6.sin6_port = htons(NS_DEFAULTPORT);
++ 			break;
++ 		default:
++ 			break;
++ 		}
++ 	}
++ 
++ 	result = dns_client_setservers(dhcp_gbl_ctx.dnsclient,
++ 				       dns_rdataclass_in,
++ 				       NULL, nameservers);
++ 	if (result != ISC_R_SUCCESS) {
++ 		log_error("dns_client_setservers failed: %d.",
++ 			  result);
++ 	}
++ 	return (result);
++ }
++ #endif
++ 
+- dhcp_context_create(void) {
++ dhcp_context_create(int flags,
++ 		    struct in_addr  *local4,
++ 		    struct in6_addr *local6) {
++ 	if ((flags & DHCP_CONTEXT_PRE_DB) != 0) {
+- 	/*
++ 		/*
+- 	 * Set up the error messages, this isn't the right place
++ 		 * Set up the error messages, this isn't the right place
+- 	 * for this call but it is convienent for now.
++ 		 * for this call but it is convienent for now.
+- 	 */
++ 		 */
+- 	result = dhcp_result_register();
++ 		result = dhcp_result_register();
+- 	if (result != ISC_R_SUCCESS) {
++ 		if (result != ISC_R_SUCCESS) {
+- 		log_fatal("register_table() %s: %u", "failed", result);
++ 			log_fatal("register_table() %s: %u", "failed", result);
+- 	}
++ 		}
+- 	memset(&dhcp_gbl_ctx, 0, sizeof (dhcp_gbl_ctx));
++ 		memset(&dhcp_gbl_ctx, 0, sizeof (dhcp_gbl_ctx));
+- 	isc_lib_register();
++ 		isc_lib_register();
+- 	/* get the current time for use as the random seed */
++ 		/* get the current time for use as the random seed */
+- 	gettimeofday(&cur_tv, (struct timezone *)0);
++ 		gettimeofday(&cur_tv, (struct timezone *)0);
+- 	isc_random_seed(cur_tv.tv_sec);
++ 		isc_random_seed(cur_tv.tv_sec);
++ 
++ 		/* we need to create the memory context before
++ 		 * the lib inits in case we aren't doing NSUPDATE
++ 		 * in which case dst needs a memory context
++ 		 */
++ 		result = isc_mem_create(0, 0, &dhcp_gbl_ctx.mctx);
++ 		if (result != ISC_R_SUCCESS)
++ 			goto cleanup;
++ 
+- 	result = dns_lib_init();
++ 		result = dns_lib_init();
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
++ #else
++ 		/* The dst library is inited as part of dns_lib_init, we don't
++ 		 * need it if NSUPDATE is enabled */
++ 		result = dst_lib_init(dhcp_gbl_ctx.mctx, NULL, 0);
++ 		if (result != ISC_R_SUCCESS)
++ 			goto cleanup;
++ 
+- 	result = isc_mem_create(0, 0, &dhcp_gbl_ctx.mctx);
++ 		result = isc_appctx_create(dhcp_gbl_ctx.mctx,
++ 					   &dhcp_gbl_ctx.actx);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
+- 	result = isc_appctx_create(dhcp_gbl_ctx.mctx, &dhcp_gbl_ctx.actx);
+- 	if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
+- 
+- 	result = isc_app_ctxstart(dhcp_gbl_ctx.actx);
++ 		result = isc_app_ctxstart(dhcp_gbl_ctx.actx);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		return (result);
++ 			return (result);
+- 	dhcp_gbl_ctx.actx_started = ISC_TRUE;
++ 		dhcp_gbl_ctx.actx_started = ISC_TRUE;
+- 	result = isc_taskmgr_createinctx(dhcp_gbl_ctx.mctx,
++ 		result = isc_taskmgr_createinctx(dhcp_gbl_ctx.mctx,
+- 					 dhcp_gbl_ctx.actx,
++ 						 dhcp_gbl_ctx.actx,
+- 					 1, 0,
++ 						 1, 0,
+- 					 &dhcp_gbl_ctx.taskmgr);
++ 						 &dhcp_gbl_ctx.taskmgr);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
+- 	result = isc_socketmgr_createinctx(dhcp_gbl_ctx.mctx,
++ 		result = isc_socketmgr_createinctx(dhcp_gbl_ctx.mctx,
+- 					   dhcp_gbl_ctx.actx,
++ 						   dhcp_gbl_ctx.actx,
+- 					   &dhcp_gbl_ctx.socketmgr);
++ 						   &dhcp_gbl_ctx.socketmgr);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
+- 	result = isc_timermgr_createinctx(dhcp_gbl_ctx.mctx,
++ 		result = isc_timermgr_createinctx(dhcp_gbl_ctx.mctx,
+- 					  dhcp_gbl_ctx.actx,
++ 						  dhcp_gbl_ctx.actx,
+- 					  &dhcp_gbl_ctx.timermgr);
++ 						  &dhcp_gbl_ctx.timermgr);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
+- 	result = isc_task_create(dhcp_gbl_ctx.taskmgr, 0, &dhcp_gbl_ctx.task);
++ 		result = isc_task_create(dhcp_gbl_ctx.taskmgr, 0, &dhcp_gbl_ctx.task);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
++ 	}
++ 	if ((flags & DHCP_CONTEXT_POST_DB) != 0) {
++ 		isc_sockaddr_t localaddr4, *localaddr4_ptr = NULL;
++ 		isc_sockaddr_t localaddr6, *localaddr6_ptr = NULL;
++ 		if (local4 != NULL) {
++ 			isc_sockaddr_fromin(&localaddr4, local4, 0);
++ 			localaddr4_ptr = &localaddr4;
++ 		}
++ 		if (local6 != NULL) {
++ 			isc_sockaddr_fromin6(&localaddr6, local6, 0);
++ 			localaddr6_ptr = &localaddr6;
++ 		}
++ 
+- 	result = dns_client_createx(dhcp_gbl_ctx.mctx,
++ 		result = dns_client_createx2(dhcp_gbl_ctx.mctx,
+- 				    dhcp_gbl_ctx.actx,
++ 					     dhcp_gbl_ctx.actx,
+- 				    dhcp_gbl_ctx.taskmgr,
++ 					     dhcp_gbl_ctx.taskmgr,
+- 				    dhcp_gbl_ctx.socketmgr,
++ 					     dhcp_gbl_ctx.socketmgr,
+- 				    dhcp_gbl_ctx.timermgr,
++ 					     dhcp_gbl_ctx.timermgr,
+- 				    0,
++ 					     0,
+- 				    &dhcp_gbl_ctx.dnsclient);
++ 					     &dhcp_gbl_ctx.dnsclient,
++ 					     localaddr4_ptr,
++ 					     localaddr6_ptr);
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS)
+- 		goto cleanup;
++ 			goto cleanup;
+- #else
+- 	/* The dst library is inited as part of dns_lib_init, we don't
+- 	 * need it if NSUPDATE is enabled */
+- 	result = dst_lib_init(dhcp_gbl_ctx.mctx, NULL, 0);
++ 
++ 		/*
++ 		 * If we can't set up the servers we may not be able to
++ 		 * do DDNS but we should continue to try and perform
++ 		 * our basic functions and let the user sort it out.
++ 		 */
++ 		result = dhcp_dns_client_setservers();
+- 	if (result != ISC_R_SUCCESS)
++ 		if (result != ISC_R_SUCCESS) {
+- 		goto cleanup;
+- 
++ 			log_error("Unable to set resolver from resolv.conf; "
++ 				  "startup continuing but DDNS support "
++ 				  "may be affected");
++ 		}
++ 	}
++ 
+/auto/home5/hoj9/dhcp-4.2.6/omapip/auth.c
+-  * Copyright (c) 2009-2010,2014 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 2004,2007 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2007,2009,2014 by Internet Systems Consortium, Inc. ("ISC")
+/auto/home5/hoj9/dhcp-4.2.6/omapip/buffer.c
++ 
++ isc_result_t omapi_connection_put_named_uint32 (omapi_object_t *c,
++ 						const char *name,
++ 						u_int32_t value)
++ {
++ 	isc_result_t status;
++ 
++ 	status = omapi_connection_put_name(c, name);
++ 	if (status != ISC_R_SUCCESS)
++ 		return (status);
++ 
++ 	status = omapi_connection_put_uint32(c, sizeof(u_int32_t));
++ 	if (status != ISC_R_SUCCESS)
++ 		return (status);
++ 
++ 	status = omapi_connection_put_uint32(c, value);
++ 	return (status);
++ }
++ 
+/auto/home5/hoj9/dhcp-4.2.6/omapip/test.c
+- 	status = dhcp_context_create();
++ 	status = dhcp_context_create(DHCP_CONTEXT_PRE_DB | DHCP_CONTEXT_POST_DB,
++ 				     NULL, NULL);
+/auto/home5/hoj9/dhcp-4.2.6/omapip/inet_addr.c
+- 
+- #if defined(LIBC_SCCS) && !defined(lint)
+- #if 0
+- static char sccsid[] = "@(#)inet_addr.c	8.1 (Berkeley) 6/17/93";
+- #else
+- static char rcsid[] = "$NetBSD: inet_addr.c,v 1.6 1996/02/02 15:22:23 mrg Exp $";
+- #endif
+- #endif /* LIBC_SCCS and not lint */
+/auto/home5/hoj9/dhcp-4.2.6/omapip/errwarn.c
+-  * Copyright (c) 2004,2007,2009,2014 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2009,2014 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2007 by Internet Systems Consortium, Inc. ("ISC")
+- int log_priority;
+-   syslog (log_priority | LOG_ERR, "%s", mbuf);
++   syslog (LOG_ERR, "%s", mbuf);
+- #if !defined (NOMINUM)
++   log_error ("If you think you have received this message due to a bug rather");
++   log_error ("than a configuration issue please read the section on submitting");
++   log_error ("bugs on either our web page at www.isc.org or in the README file");
++   log_error ("before submitting a bug.  These pages explain the proper");
++   log_error ("process and the information we find helpful for debugging..");
+-   log_error ("If you did not get this software from ftp.isc.org, please");
+-   log_error ("get the latest from ftp.isc.org and install that before");
+-   log_error ("requesting help.");
+-   log_error ("%s", "");
+-   log_error ("If you did get this software from ftp.isc.org and have not");
+-   log_error ("yet read the README, please read it before requesting help.");
+-   log_error ("If you intend to request help from the dhcp-bugs at isc.org");
+-   log_error ("mailing list, please read the section on the README about");
+-   log_error ("submitting bug reports and requests for help.");
+-   log_error ("%s", "");
+-   log_error ("Please do not under any circumstances send requests for");
+-   log_error ("help directly to the authors of this software - please");
+-   log_error ("send them to the appropriate mailing list as described in");
+-   log_error ("the README file.");
+- #endif
++ 
+-   syslog (log_priority | LOG_ERR, "%s", mbuf);
++   syslog (LOG_ERR, "%s", mbuf);
+-   syslog (log_priority | LOG_INFO, "%s", mbuf);
++   syslog (LOG_INFO, "%s", mbuf);
+-   syslog (log_priority | LOG_DEBUG, "%s", mbuf);
++   syslog (LOG_DEBUG, "%s", mbuf);
+/auto/home5/hoj9/dhcp-4.2.6/relay/dhcrelay.c
++ 
++ /*
++  * A pointer to a subscriber id to add to the message we forward.
++  * This is primarily for testing purposes as we only have one id
++  * for the entire relay and don't determine one per client which
++  * would be more useful.
++  */
++ char *dhcrelay_sub_id = NULL;
+- "                     [-pf <pid-file>] [--no-pid]\n"\
++ "                     [-pf <pid-file>] [--no-pid]\n" \
++ "                     [-s <subscriber-id>]\n" \
+- "                [-pf <pid-file>] [--no-pid]\n"\
++ "                [-pf <pid-file>] [--no-pid]\n" \
+- 	openlog("dhcrelay", LOG_NDELAY, LOG_DAEMON);
++ 	openlog("dhcrelay", DHCP_LOG_OPTIONS, LOG_DAEMON);
+- 	status = dhcp_context_create();
++ 	status = dhcp_context_create(DHCP_CONTEXT_PRE_DB | DHCP_CONTEXT_POST_DB,
++ 				     NULL, NULL);
++ 		} else if (!strcmp(argv[i], "-s")) {
++ 			if (local_family_set && (local_family == AF_INET)) {
++ 				usage();
++ 			}
++ 			local_family_set = 1;
++ 			local_family = AF_INET6;
++ 			if (++i == argc)
++ 				usage();
++ 			dhcrelay_sub_id = argv[i];
++ #if defined(ENABLE_GENTLE_SHUTDOWN)
++ 	/* no signal handlers until we deal with the side effects */
++ #endif
+- 		log_info("Discarding packet with invalid hlen.");
++ 		log_info("Discarding packet with invalid hlen, received on "
++ 			 "%s interface.", ip->name);
+- 
+-  		return;
++ 		return;
+-  	}
++ 	}
+- 			log_fatal("Can't find link address for interface '%s'.",
+- 				  dp->ifp->name);
++ 			log_fatal("Interface %s does not have global IPv6 "
++ 				  "address assigned.", dp->ifp->name);
++ 	D6O_SUBSCRIBER_ID,
++ 	/* Add a subscriber-id if desired. */
++ 	/* This is for testing rather than general use */
++ 	if (dhcrelay_sub_id != NULL) {
++ 		if (!save_option_buffer(&dhcpv6_universe, opts, NULL,
++ 					(unsigned char *) dhcrelay_sub_id,
++ 					strlen(dhcrelay_sub_id),
++ 					D6O_SUBSCRIBER_ID, 0)) {
++ 			log_error("Can't save subsriber-id.");
++ 			option_state_dereference(&opts, MDL);
++ 			return;
++ 		}
++ 	}
++ 		
++ 
++ 
++ 	if (no_pid_file == ISC_FALSE)
++ 		(void) unlink(path_dhcrelay_pid);
++ 
+/auto/home5/hoj9/dhcp-4.2.6/dst/prandom.c
+- #ifndef LINT
+- static const char rcsid[] = "$Header: /tmp/cvstest/DHCP/dst/prandom.c,v 1.8.6.2 2012/03/09 11:28:11 tomasz Exp $";
+- #endif
+-  * Portions Copyright (c) 2012,2013 by Internet Systems Consortium, Inc. ("ISC")
++  * Portions Copyright (c) 2012-2014 by Internet Systems Consortium, Inc. ("ISC")
++ 		/* no good return code but at least don't step on things */
++ 		if (tp == NULL) {
++ 			return (0);
++ 		}
+/auto/home5/hoj9/dhcp-4.2.6/dst/hmac_link.c
+- #ifndef LINT
+- static const char rcsid[] = "$Header: /tmp/cvstest/DHCP/dst/hmac_link.c,v 1.5.6.1 2009/11/20 01:49:01 sar Exp $";
+- #endif
+-  * Portions Copyright (c) 2012 by Internet Systems Consortium, Inc. ("ISC")
++  * Portions Copyright (c) 2012,2014 by Internet Systems Consortium, Inc. ("ISC")
++ 	if (tmp == NULL)
++ 		return (-5);
++ 
++ 	if (buff == NULL)
++ 		return (-1);
+/auto/home5/hoj9/dhcp-4.2.6/dst/base64.c
+-  * Copyright (c) 2004,2009 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2009,2014 by Internet Systems Consortium, Inc. ("ISC")
+- 
+- #if !defined(LINT) && !defined(CODECENTER)
+- static const char rcsid[] = "$Id: base64.c,v 1.5.6.1 2009/11/20 01:49:01 sar Exp $";
+- #endif /* not lint */
+/auto/home5/hoj9/dhcp-4.2.6/dst/dst_api.c
+- #ifndef LINT
+- static const char rcsid[] = "$Header: /tmp/cvstest/DHCP/dst/dst_api.c,v 1.9.6.1 2012/04/11 15:43:55 sar Exp $";
+- #endif
+- 
+-  * Portions Copyright (c) 2012-2013 by Internet Systems Consortium, Inc. ("ISC")
++  * Portions Copyright (c) 2012-2014 by Internet Systems Consortium, Inc. ("ISC")
++ 			if (dp == NULL) {
++ 				EREPORT(("malloc() failed for dp\n"));
++ 				return;
++ 			}
++ 	if (new_key->dk_key_name == NULL) {
++ 		EREPORT(("Unable to duplicate name for key"));
++ 		free(new_key);
++ 		return (NULL);
++ 	}
++ 	if (pk_key->dk_key_name == NULL) {
++ 		EREPORT(("Unable to duplicate name for key"));
++ 		goto fail;
++ 	}
++ 		/* 
++ 		 * We can't used SAFE_FREE* here as we do not know the size
++ 		 * of the structure, so no way to zero it.
++ 		 */
+- 		SAFE_FREE(f_key->dk_KEY_struct);
++ 		free(f_key->dk_KEY_struct);
++ 		f_key->dk_KEY_struct = NULL;
++ 		if (bp == NULL) {
++ 			EREPORT(("malloc() failed for buff in function dst_random\n"));
++ 			return (0);
++ 		}
+/auto/home5/hoj9/dhcp-4.2.6/dst/dst_support.c
+- static const char rcsid[] = "$Header: /tmp/cvstest/DHCP/dst/dst_support.c,v 1.6.6.1 2009/11/20 01:49:01 sar Exp $";
+- 
+- 
+-  * Portions Copyright (c) 2012 by Internet Systems Consortium, Inc. ("ISC")
++  * Portions Copyright (c) 2012,2014 by Internet Systems Consortium, Inc. ("ISC")
+/auto/home5/hoj9/dhcp-4.2.6/includes/tree.h
+- #if defined (NSUPDATE_OLD)
+- 		ns_updrec *dns;
+- #endif
+- 	expr_gethostname
++ 	expr_gethostname,
++ 	expr_v6relay
++ 		struct {
++ 			struct expression *relay;
++ 			struct expression *roption;
++ 		} v6relay;
+/auto/home5/hoj9/dhcp-4.2.6/includes/t_api.h
+- /* $Id: t_api.h,v 1.3.8.1 2009/11/20 01:49:01 sar Exp $ */
++ /* $Id: t_api.h,v 1.4 2009/11/24 02:06:56 sar Exp $ */
+/auto/home5/hoj9/dhcp-4.2.6/includes/dhcp6.h
++  * Copyright (c) 2013 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 2006-2010 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2006-2009 by Internet Systems Consortium, Inc. ("ISC")
++ #define MAX_V6RELAY_HOPS 32
+/auto/home5/hoj9/dhcp-4.2.6/includes/dhcpd.h
++ 
++ /*! \file includes/dhcpd.h */
++ /*
++  * A block for the on statements so we can share the structure
++  * between v4 and v6
++  */
++ struct on_star {
++ 	struct executable_statement *on_expiry;
++ 	struct executable_statement *on_commit;
++ 	struct executable_statement *on_release;
++ };
++ 
++ 	/* insert the structure directly */
++ 	struct on_star on_star;
+- 	struct executable_statement *on_expiry;
+- 	struct executable_statement *on_commit;
+- 	struct executable_statement *on_release;
++ #define DDNS_UPDATE_STYLE_STANDARD	3
++ #define SV_CACHE_THRESHOLD		78
++ #define SV_DONT_USE_FSYNC		79
++ #define SV_DDNS_LOCAL_ADDRESS4		80
++ #define SV_DDNS_LOCAL_ADDRESS6		81
++ #define SV_IGNORE_CLIENT_UIDS		82
++ #define SV_LOG_THRESHOLD_LOW		83
++ #define SV_LOG_THRESHOLD_HIGH		84
++ #if !defined (DEFAULT_CACHE_THRESHOLD)
++ # define DEFAULT_CACHE_THRESHOLD 25
+- #if defined(LDAP_CONFIGURATION)
+- # define SV_LDAP_SERVER			60
+- # define SV_LDAP_PORT			61
+- # define SV_LDAP_USERNAME		62
+- # define SV_LDAP_PASSWORD		63
+- # define SV_LDAP_BASE_DN		64
+- # define SV_LDAP_METHOD			65
+- # define SV_LDAP_DEBUG_FILE		66
+- # define SV_LDAP_DHCP_SERVER_CN		67
+- # define SV_LDAP_REFERRALS		68
+- #if defined (LDAP_USE_SSL)
+- # define SV_LDAP_SSL			69
+- # define SV_LDAP_TLS_REQCERT		70
+- # define SV_LDAP_TLS_CA_FILE		71
+- # define SV_LDAP_TLS_CA_DIR		72
+- # define SV_LDAP_TLS_CERT		73
+- # define SV_LDAP_TLS_KEY		74
+- # define SV_LDAP_TLS_CRLCHECK		75
+- # define SV_LDAP_TLS_CIPHERS		76
+- # define SV_LDAP_TLS_RANDFILE		77
+- #endif
++ 	/* For v6 the host-identifer option can specify which relay
++ 	   to use when trying to look up an option.  We store the
++ 	   value here. */
++ 	int relays;
++ 	int logged;		/* already logged a message */
++ 	int low_threshold;	/* low threshold to restart logging */
++ 	struct ipv6_pond *ipv6_pond;
+- 	struct ipv6_pool **ipv6_pools;		/* NULL-terminated array */
+- 	int last_ipv6_pool;			/* offset of last IPv6 pool
+- 						   used to issue a lease */
++ 	struct iaddr next_srv_addr;	/* Address of the next server to use */
++ #define DNS_ZONE_ACTIVE  0
++ #define DNS_ZONE_INACTIVE 1
++ 	u_int16_t flags;
++ #ifdef USE_LOG_PID
++ /* include the pid in the syslog messages */
++ #define DHCP_LOG_OPTIONS LOG_NDELAY | LOG_PID
++ #else
++ #define DHCP_LOG_OPTIONS LOG_NDELAY
++ #endif
++ 	/* space for the on * executable statements */
++ 	struct on_star on_star;
++ 
++ /*!
++  *
++  * \brief ipv6_pool structure
++  *
++  * This structure is part of a range of addresses or prefixes.
++  * A range6 or prefix6 statement will map to one or more of these
++  * with each pool being a simple block of the form xxxx/yyy and
++  * all the pools adding up to comprise the entire range.  When
++  * choosing an address or prefix the code will walk through the
++  * pools until it finds one that is available.
++  *
++  * The naming for this structure is unfortunate as there is also
++  * a v4 pool structure and the two are not equivalent.  The v4
++  * pool matches the ipv6_pond structure.  I considered changing the
++  * name of this structure but concluded that doing so would be worse
++  * than leaving it as is.  Changing it adds some risk and makes for
++  * larger differences between the 4.1 & 4.2 code and the 4.3 code.
++  *
++  */
++ 	struct ipv6_pond *ipv6_pond;		/* pond for this pool */
++ };
++ 
++ /*!
++  *
++  * \brief ipv6_pond structure
++  *
++  * This structure is the ipv6 version of the v4 pool structure.
++  * It contains the address and prefix information via the pointers
++  * to the ipv6_pools and the allowability of this pool for a given
++  * client via the permit lists and the valid TIMEs.
++  *
++  */
++ 
++ struct ipv6_pond {
++ 	int refcnt;
++ 	struct ipv6_pond *next;
++ 	struct group *group;
++ 	struct shared_network *shared_network; /* backpointer to the enclosing
++ 						  shared network */
++ 	struct permit *permit_list;	/* allow clients from this list */
++ 	struct permit *prohibit_list;	/* deny clients from this list */
++ 	TIME valid_from;		/* deny pool use before this date */
++ 	TIME valid_until;		/* deny pool use after this date */
++ 
++ 	struct ipv6_pool **ipv6_pools;	/* NULL-terminated array */
++ 	int last_ipv6_pool;		/* offset of last IPv6 pool
++ 					   used to issue a lease */
++ 	int num_total;			/* Total number of elements in the pond */
++ 	int num_active;			/* Number of elements in the pond in use */
++ 	int logged;			/* already logged a message */
++ 	int low_threshold;		/* low threshold to restart logging */
++ 
++ 	dns_rdataclass_t dhcid_class;
++ 	char *lease_tag;
++ int get_option_int (int *, struct universe *,
++ 		    struct packet *, struct lease *, struct client_state *,
++ 		    struct option_state *, struct option_state *,
++ 		    struct option_state *, struct binding_scope **, unsigned,
++ 		    const char *, int);
++ extern int dont_use_fsync;
+- void parse_address_range6(struct parse *cfile, struct group *group);
++ void parse_address_range6(struct parse *cfile, struct group *group,
++ 			  struct ipv6_pond *);
+- void parse_prefix6(struct parse *cfile, struct group *group);
++ void parse_prefix6(struct parse *cfile, struct group *group,
++ 			  struct ipv6_pond *);
++ void parse_pool6_statement (struct parse *, struct group *, int);
+- #if defined (NSUPDATE)
+- extern struct __res_state resolver_state;
+- extern int resolver_inited;
+- #endif
+- 
+- #if defined (NSUPDATE_OLD)
+- int evaluate_dns_expression (ns_updrec **, struct packet *,
+- 			     struct lease *,
+- 			     struct client_state *,
+- 			     struct option_state *,
+- 			     struct option_state *,
+- 			     struct binding_scope **,
+- 			     struct expression *);
+- #endif
+- 			      struct expression *, const char *, int);
++ 			      struct expression *,
++ 			      const char *, int);
++ extern const char *path_dhclient_duid;
++ void form_duid(struct data_string *duid, const char *file, int line);
+- void form_duid(struct data_string *duid, const char *file, int line);
++ void read_client_duid (void);
+- #if defined (NSUPDATE)
+- isc_result_t find_tsig_key (ns_tsig_key **, const char *, struct dns_zone *);
+- void tkey_free (ns_tsig_key **);
+- #endif
++ isc_result_t find_tsig_key (ns_tsig_key **, const char *, struct dns_zone *);
++ void tkey_free (ns_tsig_key **);
+- //void cache_found_zone (ns_class, char *, struct in_addr *, int);
+- int get_dhcid (struct data_string *, int, const u_int8_t *, unsigned);
++ int get_dhcid (dhcp_ddns_cb_t *, int, const u_int8_t *, unsigned);
++ 
++ dhcp_ddns_cb_t *ddns_cb_alloc(const char *file, int line);
++ void ddns_cb_free (dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
++ void ddns_cb_forget_zone (dhcp_ddns_cb_t *ddns_cb);
++ isc_result_t
++ ddns_modify_fwd(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
++ isc_result_t
++ ddns_modify_ptr(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
++ void
++ ddns_cancel(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
+- 			struct executable_statement *);
++ 			struct executable_statement *,
++ 			struct on_star *);
+- 				  struct group *, struct group *);
++ 				  struct group *, struct group *,
++ 				  struct on_star *);
+- 
+- /* nsupdate.c */
+- char *ddns_rev_name (struct lease *, struct lease_state *, struct packet *);
+- char *ddns_fwd_name (struct lease *, struct lease_state *, struct packet *);
+- int nsupdateA (const char *, const unsigned char *, u_int32_t, int);
+- int nsupdatePTR (const char *, const unsigned char *, u_int32_t, int);
+- void nsupdate (struct lease *, struct lease_state *, struct packet *, int);
+- int updateA (const struct data_string *, const struct data_string *,
+- 	     unsigned int, struct lease *);
+- int updatePTR (const struct data_string *, const struct data_string *,
+- 	       unsigned int, struct lease *);
+- int deleteA (const struct data_string *, const struct data_string *,
+- 	     struct lease *);
+- int deletePTR (const struct data_string *, const struct data_string *,
+- 	       struct lease *);
++ isc_result_t ipv6_pond_allocate(struct ipv6_pond **pond,
++ 				const char *file, int line);
++ isc_result_t ipv6_pond_reference(struct ipv6_pond **pond,
++ 				 struct ipv6_pond *src,
++ 				 const char *file, int line);
++ isc_result_t ipv6_pond_dereference(struct ipv6_pond **pond,
++ 				   const char *file, int line);
+- dhcp_ddns_cb_t *ddns_cb_alloc(const char *file, int line);
+- void ddns_cb_free (dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
+- void ddns_cb_forget_zone (dhcp_ddns_cb_t *ddns_cb);
+- 
+- //void *key_from_zone(struct dns_zone *zone);
+- 
+- isc_result_t
+- ddns_modify_fwd(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
+- 
+- isc_result_t
+- ddns_modify_ptr(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
+- 
+- void
+- ddns_cancel(dhcp_ddns_cb_t *ddns_cb, const char *file, int line);
+- 
++ 
++ /* Find the percentage of count.  We need to try two different
++  * ways to avoid rounding mistakes.
++  */
++ #define FIND_PERCENT(count, percent)	\
++ 	((count) > (INT_MAX / 100) ?	\
++ 	 ((count) / 100) * (percent) : ((count) * (percent)) / 100)
++ 
++ 	
+/auto/home5/hoj9/dhcp-4.2.6/includes/config.h
+- #define PACKAGE_STRING "DHCP 4.2.6"
++ #define PACKAGE_STRING "DHCP 4.3.1"
+- #define PACKAGE_VERSION "4.2.6"
++ #define PACKAGE_VERSION "4.3.1"
++ 
++ /* Define to include PIDs in syslog messages. */
++ /* #undef USE_LOG_PID */
+- #define VERSION "4.2.6"
++ #define VERSION "4.3.1"
+/auto/home5/hoj9/dhcp-4.2.6/includes/cdefs.h
++  * Copyright (c) 1995 RadioMail Corporation.  All rights reserved.
+-  * Copyright (c) 2012 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2011,2012 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 2004,2009,2011 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2009 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 1995 RadioMail Corporation.  All rights reserved.
+/auto/home5/hoj9/dhcp-4.2.6/includes/site.h
++ /* Define this if you want to debug the host part of the inform processing */
++ /* #define DEBUG_INFORM_HOST */
++ 
++ 
++ /* Define this if you want to enable the DHCP server attempting to
++    find a nameserver to use for DDNS updates. */
++ #define DNS_ZONE_LOOKUP
+- /* In RFC3315 section 17.2.2 stated that if the server was not going
+-    to be able to assign any addresses to any IAs in a subsequent Request
+-    from a client that the server should not include any IAs.  This
+-    requirement was removed in an errata from August 2010.  Define the
+-    following if you want the pre-errata version.  
+-    You should only enable this option if you have clients that
+-    require the original functionality. */
+- 
+- /* #define RFC3315_PRE_ERRATA_2010_08 */
+- 
+- /* #define SERVER_ID_FOR_NAK */
++ #define SERVER_ID_FOR_NAK
+- /* In the v6 server code log the addresses as they are assigned
+-    to make it easier for an admin to see what has beend done.
+-    This default to off to avoid changes to what is currently
+-    logged. */
++ /* Include code to do a slow transition of DDNS records
++    from the interim to the standard version, or backwards.
++    The normal code will handle removing an old style record
++    when the name on a lease is being changed.  This adds code
++    to handle the case where the name isn't being changed but
++    the old record should be removed to allow a new record to
++    be added.  This is the slow transition as leases are only
++    updated as a client touches them.  A fast transition would
++    entail updating all the records at once, probably at start
++    up. */
++ #define DDNS_UPDATE_SLOW_TRANSITION
+- /* #define LOG_V6_ADDRESSES */
++ /* Define the default prefix length passed from the client to
++    the script when modifying an IPv6 IA_NA or IA_TA address.
++    The two most useful values are 128 which is what the current
++    specifications call for or 64 which is what has been used in
++    the past.  For most OSes 128 will indicate that the address
++    is a host address and doesn't include any on-link information.
++    64 indicates that the first 64 bits are the subnet or on-link
++    prefix. */
++ #define DHCLIENT_DEFAULT_PREFIX_LEN 64
++ /* Enable the gentle shutdown signal handling.  Currently this
++    means that on SIGINT or SIGTERM a client will release its
++    address and a server in a failover pair will go through
++    partner down.  Both of which can be undesireable in some
++    situations.  We plan to revisit this feature and may
++    make non-backwards compatible changes including the
++    removal of this define.  Use at your own risk.  */
++ /* #define ENABLE_GENTLE_SHUTDOWN */
++ 
++ /* Include definitions for various options.  In general these
++    should be left as is, but if you have already defined one
++    of these and prefer your definition you can comment the 
++    RFC define out to avoid conflicts */
++ #define RFC2937_OPTIONS
++ #define RFC4776_OPTIONS
++ #define RFC4833_OPTIONS
++ #define RFC4994_OPTIONS
++ #define RFC5192_OPTIONS
++ #define RFC5223_OPTIONS
++ #define RFC5417_OPTIONS
++ #define RFC5460_OPTIONS
++ #define RFC5969_OPTIONS
++ #define RFC5970_OPTIONS
++ #define RFC5986_OPTIONS
++ #define RFC6011_OPTIONS
++ #define RFC6334_OPTIONS
++ #define RFC6440_OPTIONS
++ #define RFC6731_OPTIONS
++ #define RFC6939_OPTIONS
++ #define RFC6977_OPTIONS
++ #define RFC7083_OPTIONS
++ 
+/auto/home5/hoj9/dhcp-4.2.6/includes/osdep.h
++ #  elif defined(HAVE_LPF)
++ #    define USE_LPF_HWADDR
++ #  elif defined(HAVE_BPF)
++ #    define USE_BPF_HWADDR
+/auto/home5/hoj9/dhcp-4.2.6/includes/dhctoken.h
++ /*
++  * The following tokens have been deprecated and aren't in use anymore.
++  * They have been left in place to avoid disturbing the code.
++  * DNS_UPDATE, DNS_DELETE, NS_UPDATE, UPDATED_DNS_RR
++  */
+- 	TOKEN_INFINIBAND = 668
++ 	TOKEN_INFINIBAND = 668,
++ 	POOL6 = 669,
++ 	V6RELAY = 670,
++ 	V6RELOPT = 671
+/auto/home5/hoj9/dhcp-4.2.6/includes/arpa/nameser.h
+-  *	$Id: nameser.h,v 1.6.24.1 2009/11/20 01:49:01 sar Exp $
++  *	$Id: nameser.h,v 1.7 2009/11/24 02:06:56 sar Exp $
+/auto/home5/hoj9/dhcp-4.2.6/includes/omapip/result.h
+- #define ISC_R_MULTIPLE		DHCP_R_MULTIPLE		
++ #define ISC_R_MULTIPLE		DHCP_R_MULTIPLE
+/auto/home5/hoj9/dhcp-4.2.6/includes/omapip/omapip.h
+- 
++ isc_result_t omapi_connection_put_named_uint32 (omapi_object_t *,
++ 						const char *,
++ 						u_int32_t);
+/auto/home5/hoj9/dhcp-4.2.6/includes/omapip/isclib.h
++ #include <irs/resconf.h>
++ 
+- isc_result_t dhcp_context_create(void);
++ #define DHCP_CONTEXT_PRE_DB  1
++ #define DHCP_CONTEXT_POST_DB 2
++ isc_result_t dhcp_context_create(int              flags,
++ 				 struct in_addr  *local4,
++ 				 struct in6_addr *local6);
+/auto/home5/hoj9/dhcp-4.2.6/includes/omapip/omapip_p.h
+- extern int log_priority;
+/auto/home5/hoj9/dhcp-4.2.6/dhcpctl/cltest.c
++ 
++ #include "config.h"
+/auto/home5/hoj9/dhcp-4.2.6/dhcpctl/dhcpctl.h
+- /* $Id: dhcpctl.h,v 1.17.24.1 2009/11/20 01:49:01 sar Exp $
++ /* $Id: dhcpctl.h,v 1.18 2009/11/24 02:06:56 sar Exp $
+/auto/home5/hoj9/dhcp-4.2.6/dhcpctl/dhcpctl.c
+- 	status = dhcp_context_create();
++ 	status = dhcp_context_create(DHCP_CONTEXT_PRE_DB | DHCP_CONTEXT_POST_DB,
++ 				     NULL, NULL);
+/auto/home5/hoj9/dhcp-4.2.6/dhcpctl/omshell.c
+- 	openlog ("omshell", LOG_NDELAY, DHCPD_LOG_FACILITY);
++ 	openlog ("omshell", DHCP_LOG_OPTIONS, DHCPD_LOG_FACILITY);
+/auto/home5/hoj9/dhcp-4.2.6/client/dhclient.c
++ const char *path_dhclient_duid = NULL;
++ int duid_v4 = 0;
++ int std_dhcid = 0;
+- static const char copyright[] =
+- "Copyright 2004-2014 Internet Systems Consortium.";
++ static const char copyright[] = "Copyright 2004-2014 Internet Systems Consortium.";
+- static const char url [] = 
+- "For info, please visit https://www.isc.org/software/dhcp/";
++ static const char url [] = "For info, please visit https://www.isc.org/software/dhcp/";
++ #ifndef UNIT_TEST
+- 	openlog("dhclient", LOG_NDELAY, LOG_DAEMON);
++ 	openlog("dhclient", DHCP_LOG_OPTIONS, LOG_DAEMON);
+- 	status = dhcp_context_create();
++ 	status = dhcp_context_create(DHCP_CONTEXT_PRE_DB | DHCP_CONTEXT_POST_DB,
++ 				     NULL, NULL);
++ 		} else if (!strcmp(argv[i], "-df")) {
++ 			if (++i == argc)
++ 				usage();
++ 			path_dhclient_duid = argv[i];
++ #endif /* DHCPv6 */
++ 			duid_v4 = 1;
+- 			if (local_family_set && (local_family == AF_INET)) {
+- 				usage();
+- 			}
+- 			local_family_set = 1;
+- 			local_family = AF_INET6;
+- #endif /* DHCPv6 */
++ 		} else if (!strcmp(argv[i], "-i")) {
++ 			/* enable DUID support for DHCPv4 clients */
++ 			duid_v4 = 1;
++ 		} else if (!strcmp(argv[i], "-I")) {
++ 			/* enable standard DHCID support for DDNS updates */
++ 			std_dhcid = 1;
+- 			log_info("isc-dhclient-%s", PACKAGE_VERSION);
++ 			const char vstring[] = "isc-dhclient-";
++ 			IGNORE_RET(write(STDERR_FILENO, vstring,
++ 					 strlen(vstring)));
++ 			IGNORE_RET(write(STDERR_FILENO,
++ 					 PACKAGE_VERSION,
++ 					 strlen(PACKAGE_VERSION)));
++ 			IGNORE_RET(write(STDERR_FILENO, "\n", 1));
++ 		const char *old_path = path_dhclient_db;
+- 		char *path = dmalloc(PATH_MAX, MDL);
+- 		if (path == NULL)
+- 			log_fatal("No memory for filename\n");
+- 		path_dhclient_db = realpath(path_dhclient_db, path);
++ 		path_dhclient_db = realpath(path_dhclient_db, NULL);
+- 			log_fatal("%s: %s", path, strerror(errno));
++ 			log_fatal("Failed to get realpath for %s: %s", old_path, strerror(errno));
++ 		const char *old_path = path_dhclient_script;
+- 		char *path = dmalloc(PATH_MAX, MDL);
+- 		if (path == NULL)
+- 			log_fatal("No memory for filename\n");
+- 		path_dhclient_script = realpath(path_dhclient_script, path);
++ 		path_dhclient_script = realpath(path_dhclient_script, NULL);
+- 			log_fatal("%s: %s", path, strerror(errno));
++ 			log_fatal("Failed to get realpath for %s: %s", old_path, strerror(errno));
+- 			if (e != 0 && e != EOF) {
++ 			if (e != 0 && e != EOF && oldpid) {
+- 				if (oldpid && (kill(oldpid, SIGTERM) == 0)) {
++ 				if (kill(oldpid, SIGTERM) == 0) {
++ 					log_info("Killed old client process");
++ 					(void) unlink(path_dhclient_pid);
++ 				} else if (errno == ESRCH) {
++ 					log_info("Removed stale PID file");
++ 					(void) unlink(path_dhclient_pid);
++ 	/* If desired parse the secondary lease database for a DUID */
++ 	if ((default_duid.len == 0) && (path_dhclient_duid != NULL)) {
++ 		read_client_duid();
++ 	}
++ 
++ 
++ 	/*
++ 	 * Establish a default DUID.  We always do so for v6 and
++ 	 * do so if desired for v4 via the -D or -i options
++ 	 */
++ 	if ((local_family == AF_INET6) ||
++ 	    ((local_family == AF_INET) && (duid_v4 == 1))) {
++ 		if (default_duid.len == 0) {
++ 			if (default_duid.buffer != NULL)
++ 				data_string_forget(&default_duid, MDL);
++ 
++ 			form_duid(&default_duid, MDL);
++ 			write_duid(&default_duid);
++ 		}
++ 	}
++ 
+- 		/* Establish a default DUID.  This may be moved to the
+- 		 * DHCPv4 area later.
+- 		 */
+- 		if (default_duid.len == 0) {
+- 			if (default_duid.buffer != NULL)
+- 				data_string_forget(&default_duid, MDL);
+- 
+- 			form_duid(&default_duid, MDL);
+- 			write_duid(&default_duid);
+- 		}
+- 
++ #if defined(ENABLE_GENTLE_SHUTDOWN)
++ 	/* no signal handlers until we deal with the side effects */
++ #endif
++ #endif /* !UNIT_TEST */
+- 		  "[-4|-6] [-SNTP1dvrx] [-nw] [-p <port>] [-D LL|LLT]\n"
++ 		  "[-4|-6] [-SNTPI1dvrxi] [-nw] [-p <port>] [-D LL|LLT] \n"
+- 		  "[-1dvrx] [-nw] [-p <port>]\n"
++ 		  "[-I1dvrxi] [-nw] [-p <port>] [-D LL|LLT] \n"
+- 		  "                [-s server-addr] [-cf config-file] "
++ 		  "                [-s server-addr] [-cf config-file]\n"
+- 		  "[-lf lease-file]\n"
++ 		  "                [-df duid-file] [-lf lease-file]\n"
++ 
++ 	/* If desired parse the secondary lease database for a DUID */
++ 	if ((default_duid.len == 0) && (path_dhclient_duid != NULL)) {
++ 		read_client_duid();
++ 	}
+- 	client -> new -> medium = client -> medium;
++ 	client->new->medium = client->medium;
+- 	script_init (client, (client -> state == S_REQUESTING
++ 	script_init(client, (client->state == S_REQUESTING ? "BOUND" :
+- 			  ? "BOUND"
+- 			  : (client -> state == S_RENEWING
++ 			     (client->state == S_RENEWING ? "RENEW" : 
+- 			     ? "RENEW"
+- 			     : (client -> state == S_REBOOTING
++ 			      (client->state == S_REBOOTING ? "REBOOT" :
+- 				? "REBOOT" : "REBIND"))),
++ 			       "REBIND"))),
+- 		     client -> new -> medium);
++ 		    client->new->medium);
+- 	if (client -> active && client -> state != S_REBOOTING)
++ 	if (client->active && client->state != S_REBOOTING)
+- 		script_write_params (client, "old_", client -> active);
++ 		script_write_params(client, "old_", client->active);
+- 	script_write_params (client, "new_", client -> new);
++ 	script_write_params (client, "new_", client->new);
+- 	if (client -> alias)
++ 	if (client->alias)
+- 		script_write_params (client, "alias_", client -> alias);
++ 		script_write_params(client, "alias_", client->alias);
+- 	if (script_go (client)) {
++ 	if (script_go(client)) {
+- 		make_decline (client, client -> new);
++ 		make_decline(client, client->new);
+- 		send_decline (client);
++ 		send_decline(client);
+- 		destroy_client_lease (client -> new);
++ 		destroy_client_lease(client->new);
+- 		client -> new = (struct client_lease *)0;
++ 		client->new = NULL;
++ 		if (onetry) {
++ 			if (!quiet)
++ 				log_info("Unable to obtain a lease on first "
++ 					 "try (declined).  Exiting.");
++ 			exit(2);
++ 		} else {
+- 		client -> state = S_DECLINED;
++ 			client -> state = S_DECLINED;
+- 		state_init (client);
++ 			state_init(client);
+- 		return;
++ 			return;
++ 		}
+- 		write_client_lease(client, client->new, 0, 0);
++ 		write_client_lease(client, client->new, 0, 1);
+- 	if (client -> active)
++ 	if (client->active)
+- 		destroy_client_lease (client -> active);
++ 		destroy_client_lease(client->active);
+- 	client -> active = client -> new;
++ 	client->active = client->new;
+- 	client -> new = (struct client_lease *)0;
++ 	client->new = NULL;
+- 	log_info ("bound to %s -- renewal in %ld seconds.",
++ 	log_info("bound to %s -- renewal in %ld seconds.",
+- 	      piaddr (client -> active -> address),
++ 	      piaddr(client->active->address),
+- 	      (long)(client -> active -> renewal - cur_time));
++ 	      (long)(client->active->renewal - cur_time));
+- 	client -> state = S_BOUND;
++ 	client->state = S_BOUND;
+- 	reinitialize_interfaces ();
++ 	reinitialize_interfaces();
+- 	go_daemon ();
++ 	go_daemon();
+- 		log_error ("packet_to_lease: no memory to record lease.\n");
++ 		log_error("packet_to_lease: no memory to record lease.\n");
+- 		return (struct client_lease *)0;
++ 		return NULL;
+- 	memset (lease, 0, sizeof *lease);
++ 	memset(lease, 0, sizeof(*lease));
+- 	option_state_reference (&lease -> options, packet -> options, MDL);
++ 	option_state_reference(&lease->options, packet->options, MDL);
+- 	lease -> address.len = sizeof (packet -> raw -> yiaddr);
++ 	lease->address.len = sizeof(packet->raw->yiaddr);
+- 	memcpy (lease -> address.iabuf, &packet -> raw -> yiaddr,
++ 	memcpy(lease->address.iabuf, &packet->raw->yiaddr,
+- 		lease -> address.len);
++ 	       lease->address.len);
++ 	lease->next_srv_addr.len = sizeof(packet->raw->siaddr);
++ 	memcpy(lease->next_srv_addr.iabuf, &packet->raw->siaddr,
++ 	       lease->next_srv_addr.len);
++ 	
+- 	memset (&data, 0, sizeof data);
++ 	memset(&data, 0, sizeof(data));
++ 	execute_statements_in_scope(NULL, (struct packet *)packet, NULL,
+- 	execute_statements_in_scope ((struct binding_value **)0,
+- 				     (struct packet *)packet,
+- 				     (struct lease *)0, client,
+- 				     lease -> options, lease -> options,
++ 				    client, lease->options, lease->options,
+- 				     &global_scope,
+- 				     client -> config -> on_receipt,
++ 				    &global_scope, client->config->on_receipt,
+- 				     (struct group *)0);
++ 				    NULL, NULL);
+- 	struct buffer *bp = (struct buffer *)0;
++ 	struct buffer *bp = NULL;
+- 		option_state_dereference (op, MDL);
++ 		option_state_dereference(op, MDL);
+- 	option_state_allocate (op, MDL);
++ 	option_state_allocate(op, MDL);
+- 		save_option (&dhcp_universe, *op, sid);
++ 		save_option(&dhcp_universe, *op, sid);
+- 	oc = (struct option_cache *)0;
++ 	oc = NULL;
+- 		client -> requested_address = *rip;
++ 		client->requested_address = *rip;
+- 			save_option (&dhcp_universe, *op, oc);
++ 			save_option(&dhcp_universe, *op, oc);
+- 			option_cache_dereference (&oc, MDL);
++ 			option_cache_dereference(&oc, MDL);
+- 		client -> requested_address.len = 0;
++ 		client->requested_address.len = 0;
+- 		log_error ("can't make message type.");
++ 		log_error("can't make message type.");
+- 		save_option (&dhcp_universe, *op, oc);
++ 		save_option(&dhcp_universe, *op, oc);
+- 		option_cache_dereference (&oc, MDL);
++ 		option_cache_dereference(&oc, MDL);
+- 		if (!buffer_allocate (&bp, len, MDL))
++ 		if (!buffer_allocate(&bp, len, MDL))
+- 			log_error ("can't make parameter list buffer.");
++ 			log_error("can't make parameter list buffer.");
+- 						      option, MDL)))
++ 						      option, MDL))) {
++ 				if (bp != NULL)
++ 					buffer_dereference(&bp, MDL);
+- 			else {
++ 			} else {
+- 				save_option (&dhcp_universe, *op, oc);
++ 				save_option(&dhcp_universe, *op, oc);
+- 				option_cache_dereference (&oc, MDL);
++ 				option_cache_dereference(&oc, MDL);
++ 	/*
++ 	 * If requested (duid_v4 == 1) add an RFC4361 compliant client-identifier
++ 	 * This can be overridden by including a client id in the configuration
++ 	 * file.
++ 	 */
++  	if (duid_v4 == 1) {
++ 		struct data_string client_identifier;
++ 		int hw_idx, hw_len;
++ 
++ 		memset(&client_identifier, 0, sizeof(client_identifier));
++ 		client_identifier.len = 1 + 4 + default_duid.len;
++ 		if (!buffer_allocate(&client_identifier.buffer,
++ 				     client_identifier.len, MDL))
++ 			log_fatal("no memory for default DUID!");
++ 		client_identifier.data = client_identifier.buffer->data;
++ 
++ 		i = DHO_DHCP_CLIENT_IDENTIFIER;
++ 
++ 		/* Client-identifier type : 1 byte */
++ 		*client_identifier.buffer->data = 255;
++ 		
++ 		/* IAID : 4 bytes
++ 		 * we use the low 4 bytes from the interface address
++ 		 */
++ 		if (client->interface->hw_address.hlen > 4) {
++ 			hw_idx = client->interface->hw_address.hlen - 4;
++ 			hw_len = 4;
++ 		} else {
++ 			hw_idx = 0;
++ 			hw_len = client->interface->hw_address.hlen;
++ 		}
++ 		memcpy(&client_identifier.buffer->data + 5 - hw_len,
++ 		       client->interface->hw_address.hbuf + hw_idx,
++ 		       hw_len);
++ 	
++ 		/* Add the default duid */
++ 		memcpy(&client_identifier.buffer->data+(1+4),
++ 		       default_duid.data, default_duid.len);
++ 
++ 		/* And save the option */
++ 		if (!(option_code_hash_lookup(&option, dhcp_universe.code_hash,
++ 					      &i, 0, MDL) &&
++ 		      make_const_option_cache(&oc, NULL,
++ 					      (u_int8_t *)client_identifier.data,
++ 					      client_identifier.len,
++ 					      option, MDL)))
++ 			log_error ("can't make requested client id cache..");
++ 		else {
++ 			save_option (&dhcp_universe, *op, oc);
++ 			option_cache_dereference (&oc, MDL);
++ 		}
++ 		option_dereference(&option, MDL);
++ 	}
++ 
+- 	if (client -> config -> on_transmission)
++ 	if (client->config->on_transmission)
++ 		execute_statements_in_scope(NULL, NULL, NULL, client,
++ 					    (lease ? lease->options : NULL),
+- 		execute_statements_in_scope
+- 			((struct binding_value **)0,
+- 			 (struct packet *)0, (struct lease *)0, client,
+- 			 (lease ? lease -> options : (struct option_state *)0),
+- 			 *op, &global_scope,
++ 					    *op, &global_scope,
+- 			 client -> config -> on_transmission,
++ 					    client->config->on_transmission,
+- 			 (struct group *)0);
++ 					    NULL, NULL);
++ /*
++  * The "best" default DUID, since we cannot predict any information
++  * about the system (such as whether or not the hardware addresses are
++  * integrated into the motherboard or similar), is the "LLT", link local
++  * plus time, DUID. For real stateless "LL" is better.
++  *
++  * Once generated, this duid is stored into the state database, and
++  * retained across restarts.
++  *
++  * For the time being, there is probably a different state database for
++  * every daemon, so this winds up being a per-interface identifier...which
++  * is not how it is intended.  Upcoming rearchitecting the client should
++  * address this "one daemon model."
++  */
++ void
++ form_duid(struct data_string *duid, const char *file, int line)
++ {
++ 	struct interface_info *ip;
++ 	int len;
++ 	char *str;
++ 
++ 	/* For now, just use the first interface on the list. */
++ 	ip = interfaces;
++ 
++ 	if (ip == NULL)
++ 		log_fatal("Impossible condition at %s:%d.", MDL);
++ 
++ 	if ((ip->hw_address.hlen == 0) ||
++ 	    (ip->hw_address.hlen > sizeof(ip->hw_address.hbuf)))
++ 		log_fatal("Impossible hardware address length at %s:%d.", MDL);
++ 
++ 	if (duid_type == 0)
++ 		duid_type = stateless ? DUID_LL : DUID_LLT;
++ 
++ 	/*
++ 	 * 2 bytes for the 'duid type' field.
++ 	 * 2 bytes for the 'htype' field.
++ 	 * (DUID_LLT) 4 bytes for the 'current time'.
++ 	 * enough bytes for the hardware address (note that hw_address has
++ 	 * the 'htype' on byte zero).
++ 	 */
++ 	len = 4 + (ip->hw_address.hlen - 1);
++ 	if (duid_type == DUID_LLT)
++ 		len += 4;
++ 	if (!buffer_allocate(&duid->buffer, len, MDL))
++ 		log_fatal("no memory for default DUID!");
++ 	duid->data = duid->buffer->data;
++ 	duid->len = len;
++ 
++ 	/* Basic Link Local Address type of DUID. */
++ 	if (duid_type == DUID_LLT) {
++ 		putUShort(duid->buffer->data, DUID_LLT);
++ 		putUShort(duid->buffer->data + 2, ip->hw_address.hbuf[0]);
++ 		putULong(duid->buffer->data + 4, cur_time - DUID_TIME_EPOCH);
++ 		memcpy(duid->buffer->data + 8, ip->hw_address.hbuf + 1,
++ 		       ip->hw_address.hlen - 1);
++ 	} else {
++ 		putUShort(duid->buffer->data, DUID_LL);
++ 		putUShort(duid->buffer->data + 2, ip->hw_address.hbuf[0]);
++ 		memcpy(duid->buffer->data + 4, ip->hw_address.hbuf + 1,
++ 		       ip->hw_address.hlen - 1);
++ 	}
++ 
++ 	str = quotify_buf(duid->data, duid->len, MDL);
++ 	if (str == NULL)
++ 		log_info("Created duid.");
++ 	else {
++ 		log_info("Created duid %s.", str);
++ 		dfree(str, MDL);
++ 	}
++ }
++ 
++ 
++ 	/* If we've set the next server address in the lease structure
++ 	   put it into an environment variable for the script */
++ 	if (lease->next_srv_addr.len != 0) {
++ 		client_envadd(client, prefix, "next_server", "%s",
++ 			      piaddr(lease->next_srv_addr));
++ 	}
++ 	/* get rid of the pid if we can */
++ 	if (no_pid_file == ISC_FALSE)
++ 		(void) unlink(path_dhclient_pid);
++ 	int ddns_v4_type;
+- 	/* If this is a DHCPv6 client update, make a dhcid string out of
+- 	 * the DUID.  If this is a DHCPv4 client update, choose either
+- 	 * the client identifier, if there is one, or the interface's
+- 	 * MAC address.
++ 	/*
++ 	 * Construct the DHCID value for use in the DDNS update process
++ 	 * We have the newer standard version and the older interim version
++ 	 * chosen by the '-I' option.  The interim version is left as is
++ 	 * for backwards compatibility.  The standard version is based on
++ 	 * RFC 4701 section 3.3
++ 
++ 
++ 	if (std_dhcid == 1) {
++ 		/* standard style */
++ 		ddns_cb->dhcid_class = dns_rdatatype_dhcid;
++ 		ddns_v4_type = 1;
++ 	} else {
++ 		/* interim style */
++ 		ddns_cb->dhcid_class = dns_rdatatype_txt;
++ 		/* for backwards compatibility */
++ 		ddns_v4_type = DHO_DHCP_CLIENT_IDENTIFIER;
++ 	}
+- 		if (((oc =
+- 		      lookup_option(&dhcpv6_universe, client->sent_options,
++ 		/* V6 request, get the client identifier, then
++ 		 * construct the dhcid for either standard 
++ 		 * or interim */
++ 		if (((oc = lookup_option(&dhcpv6_universe,
++ 					 client->sent_options,
+- 				    D6O_CLIENTID)) != NULL) &&
++ 					 D6O_CLIENTID)) != NULL) &&
+- 		    evaluate_option_cache(&client_identifier, NULL, NULL,
++ 		    evaluate_option_cache(&client_identifier, NULL,
++ 					  NULL, client,
+- 					  client, client->sent_options, NULL,
++ 					  client->sent_options, NULL,
+- 			/* RFC4701 defines type '2' as being for the DUID
+- 			 * field.  We aren't using RFC4701 DHCID RR's yet,
+- 			 * but this is as good a value as any.
+- 			 */
+- 			result = get_dhcid(&ddns_cb->dhcid, 2,
++ 			result = get_dhcid(ddns_cb, 2,
+- 		if (((oc =
+- 		      lookup_option(&dhcp_universe, client->sent_options,
++ 		/*
++ 		 * V4 request, use the client id if there is one or the
++ 		 * mac address if there isn't.  If we have a client id
++ 		 * we check to see if it is an embedded DUID.
++ 		 */
++ 		if (((oc = lookup_option(&dhcp_universe,
++ 					 client->sent_options,
+- 				    DHO_DHCP_CLIENT_IDENTIFIER)) != NULL) &&
++ 					 DHO_DHCP_CLIENT_IDENTIFIER)) != NULL) &&
+- 		    evaluate_option_cache(&client_identifier, NULL, NULL,
++ 		    evaluate_option_cache(&client_identifier, NULL,
++ 					  NULL, client,
+- 					  client, client->sent_options, NULL,
++ 					  client->sent_options, NULL,
++ 			if ((std_dhcid == 1) && (duid_v4 == 1) &&
++ 			    (client_identifier.data[0] == 255)) {
++ 				/*
++ 				 * This appears to be an embedded DUID,
++ 				 * extract it and treat it as such
++ 				 */
++ 				if (client_identifier.len <= 5)
++ 					log_fatal("Impossible condition at %s:%d.",
++ 						  MDL);
+- 			result = get_dhcid(&ddns_cb->dhcid,
++ 				result = get_dhcid(ddns_cb, 2,
+- 					   DHO_DHCP_CLIENT_IDENTIFIER,
++ 						   client_identifier.data + 5,
++ 						   client_identifier.len - 5);
++ 			} else {
++ 				result = get_dhcid(ddns_cb, ddns_v4_type,
+- 					   client_identifier.data,
++ 						   client_identifier.data,
+- 					   client_identifier.len);
++ 						   client_identifier.len);
++ 			}
+- 			result = get_dhcid(&ddns_cb->dhcid, 0,
++ 			result = get_dhcid(ddns_cb, 0,
++ 
+- 		if (mockup_relay && giaddr.s_addr != htonl (INADDR_LOOPBACK)) {
++ 		if (mockup_relay && giaddr.s_addr != htonl(INADDR_LOOPBACK)) {
+- 			ent = getservbyname ("dhcpc", "udp");
++ 			ent = getservbyname("dhcpc", "udp");
+- 			if (!ent)
++ 			if (ent == NULL)
++ 				ent = getservbyname("bootpc", "udp");
++ 			if (ent == NULL)
+- 				local_port = htons (68);
++ 				local_port = htons(68);
+- 				local_port = ent -> s_port;
++ 				local_port = ent->s_port;
+- 	if (mockup_relay && giaddr.s_addr != htonl (INADDR_LOOPBACK)) {
++ 	if (mockup_relay && giaddr.s_addr != htonl(INADDR_LOOPBACK)) {
+- 		remote_port = htons (ntohs (local_port) - 1);   /* XXX */
++ 		remote_port = htons(ntohs(local_port) - 1);   /* XXX */
++ 
+/auto/home5/hoj9/dhcp-4.2.6/client/dhc6.c
+-  * Copyright (c) 2012 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2012-2014 by Internet Systems Consortium, Inc. ("ISC")
+-  * The "best" default DUID, since we cannot predict any information
+-  * about the system (such as whether or not the hardware addresses are
+-  * integrated into the motherboard or similar), is the "LLT", link local
+-  * plus time, DUID. For real stateless "LL" is better.
+-  *
+-  * Once generated, this duid is stored into the state database, and
+-  * retained across restarts.
+-  *
+-  * For the time being, there is probably a different state database for
+-  * every daemon, so this winds up being a per-interface identifier...which
+-  * is not how it is intended.  Upcoming rearchitecting the client should
+-  * address this "one daemon model."
+-  */
+- void
+- form_duid(struct data_string *duid, const char *file, int line)
+- {
+- 	struct interface_info *ip;
+- 	int len;
+- 
+- 	/* For now, just use the first interface on the list. */
+- 	ip = interfaces;
+- 
+- 	if (ip == NULL)
+- 		log_fatal("Impossible condition at %s:%d.", MDL);
+- 
+- 	if ((ip->hw_address.hlen == 0) ||
+- 	    (ip->hw_address.hlen > sizeof(ip->hw_address.hbuf)))
+- 		log_fatal("Impossible hardware address length at %s:%d.", MDL);
+- 
+- 	if (duid_type == 0)
+- 		duid_type = stateless ? DUID_LL : DUID_LLT;
+- 
+- 	/*
+- 	 * 2 bytes for the 'duid type' field.
+- 	 * 2 bytes for the 'htype' field.
+- 	 * (DUID_LLT) 4 bytes for the 'current time'.
+- 	 * enough bytes for the hardware address (note that hw_address has
+- 	 * the 'htype' on byte zero).
+- 	 */
+- 	len = 4 + (ip->hw_address.hlen - 1);
+- 	if (duid_type == DUID_LLT)
+- 		len += 4;
+- 	if (!buffer_allocate(&duid->buffer, len, MDL))
+- 		log_fatal("no memory for default DUID!");
+- 	duid->data = duid->buffer->data;
+- 	duid->len = len;
+- 
+- 	/* Basic Link Local Address type of DUID. */
+- 	if (duid_type == DUID_LLT) {
+- 		putUShort(duid->buffer->data, DUID_LLT);
+- 		putUShort(duid->buffer->data + 2, ip->hw_address.hbuf[0]);
+- 		putULong(duid->buffer->data + 4, cur_time - DUID_TIME_EPOCH);
+- 		memcpy(duid->buffer->data + 8, ip->hw_address.hbuf + 1,
+- 		       ip->hw_address.hlen - 1);
+- 	} else {
+- 		putUShort(duid->buffer->data, DUID_LL);
+- 		putUShort(duid->buffer->data + 2, ip->hw_address.hbuf[0]);
+- 		memcpy(duid->buffer->data + 4, ip->hw_address.hbuf + 1,
+- 		       ip->hw_address.hlen - 1);
+- 	}
+- }
+- 
+- /*
+- 	struct timeval elapsed;
++ 	struct timeval elapsed, elapsed_plus_rt;
++ 	/*
++ 	 * Save what the time will be after the current RT to determine
++ 	 * what the delta to MRD will be.
++ 	 */
++ 	elapsed_plus_rt.tv_sec = elapsed.tv_sec;
++ 	elapsed_plus_rt.tv_usec = elapsed.tv_usec;
+- 		 * wake at RT + cur = start + MRD
++ 		 * The desired RT is the time that will be remaining in MRD
++ 		 * when the current timeout finishes.  We then have 
++ 		 * desired RT = MRD - (elapsed time + previous RT); or
++ 		 * desired RT = MRD - elapsed_plut_rt;
++ 		client->RT = client->MRD - elapsed_plus_rt.tv_sec;
+- 		client->RT = client->MRD +
+- 			(client->start_time.tv_sec - cur_tv.tv_sec);
+- 		client->RT = client->RT * 100 +
++ 		client->RT = (client->RT * 100) -
+- 			(client->start_time.tv_usec - cur_tv.tv_usec) / 10000;
++ 			(elapsed_plus_rt.tv_usec / 10000);
++ 		if (client->RT < 0)
++ 			client->RT = 0;
+- 	if ((client->MRD != 0) && (elapsed.tv_sec > client->MRD)) {
++ 	if ((client->MRD != 0) && (elapsed.tv_sec >= client->MRD)) {
+- 			/* Current practice is that all subnets are /64's, but
+- 			 * some suspect this may not be permanent.
+- 			 */
+- 				      "%d", 64);
++ 				      "%d", DHCLIENT_DEFAULT_PREFIX_LEN);
+- 					    NULL);
++ 					    NULL, NULL);
+/auto/home5/hoj9/dhcp-4.2.6/client/clparse.c
++ 
++ /* lease-file :== client-lease-statements END_OF_FILE
++    client-lease-statements :== <nil>
++ 		     | client-lease-statements LEASE client-lease-statement
++  * This routine looks through a lease file and only tries to parse
++  * the duid statements.
++  */
++ 
++ void read_client_duid ()
++ {
++ 	int file;
++ 	isc_result_t status;
++ 	struct parse *cfile;
++ 	const char *val;
++ 	int token;
++ 
++ 	/* Open the lease file.   If we can't open it, just return -
++ 	   we can safely trust the server to remember our state. */
++ 	if ((file = open (path_dhclient_duid, O_RDONLY)) < 0)
++ 		return;
++ 
++ 	cfile = NULL;
++ 	status = new_parse(&cfile, file, NULL, 0, path_dhclient_duid, 0);
++ 	if (status != ISC_R_SUCCESS || cfile == NULL)
++ 		return;
++ 
++ 	while ((token = next_token(&val, NULL, cfile)) != END_OF_FILE) {
++ 		/*
++ 		 * All we care about is DUIDs - if we get anything else
++ 		 * just toss it and continue looking for DUIDs until we
++ 		 * run out of file.  
++ 		 */
++ 		if (token == DEFAULT_DUID) {
++ 			parse_client_default_duid(cfile);
++ 		}
++ 	}
++ 
++ 	end_parse(&cfile);
++ }
+/auto/home5/hoj9/dhcp-4.2.6/common/discover.c
++ 
++ /* length of line we can read from the IF file, 256 is too small in some cases */
++ #define IF_LINE_LENGTH 1024
+- 	char buf[256];
++ 	char buf[IF_LINE_LENGTH];
+- 	char buf[256];
++ 	char buf[IF_LINE_LENGTH];
+- 	char buf[256];
++ 	char buf[IF_LINE_LENGTH];
+/auto/home5/hoj9/dhcp-4.2.6/common/conflex.c
+- 		if (!strcasecmp (atom + 1, "ns-update"))
+- 			return DNS_UPDATE;
+- 		if (!strcasecmp (atom + 1, "ns-delete"))
+- 			return DNS_DELETE;
++ 		if (!strcasecmp (atom + 1, "o-forward-updates"))
++ 			return DO_FORWARD_UPDATE;
++ 		/* do-forward-update is included for historical reasons */
+-                 if (!strcasecmp (atom + 1, "nitial-delay"))
++ 		if (!strcasecmp (atom + 1, "nitial-delay"))
+-                         return INITIAL_DELAY;
++ 			return INITIAL_DELAY;
+- 		if (!strcasecmp (atom + 1, "s-update"))
+- 			return NS_UPDATE;
++ 		if (!strcasecmp (atom + 1, "ool6"))
++ 			return POOL6;
+- 		if (!strcasecmp (atom + 1, "pdated-dns-rr"))
+- 			return UPDATED_DNS_RR;
++ 		if (!strcasecmp (atom + 1, "6relay"))
++ 			return V6RELAY;
++ 		if (!strcasecmp (atom + 1, "6relopt"))
++ 			return V6RELOPT;
+/auto/home5/hoj9/dhcp-4.2.6/common/lpf.c
+- #include <sys/ioctl.h>
++ #endif
++ 
++ #if defined (USE_LPF_RECEIVE) || defined (USE_LPF_HWADDR)
++ #include <sys/ioctl.h>
++ #endif
++ #if defined (USE_LPF_SEND) || defined (USE_LPF_RECEIVE)
++ #endif
++ #if defined (USE_LPF_RECEIVE) || defined (USE_LPF_HWADDR)
+/auto/home5/hoj9/dhcp-4.2.6/common/tree.c
+-  * Copyright (c) 2011-2013 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2011-2014 by Internet Systems Consortium, Inc. ("ISC")
+- 			   binding -> value -> value.fundef -> statements));
++ 			   binding->value->value.fundef->statements, NULL));
+- #if defined (NSUPDATE_OLD)
+- 	} else if (is_dns_expression (expr)) {
+- 		if (!binding_value_allocate (&bv, MDL))
+- 			return 0;
+- 		bv -> type = binding_dns;
+- 		status = (evaluate_dns_expression
+- 			  (&bv -> value.dns, packet, lease, client_state,
+- 			   in_options, cfg_options, scope, expr));
+- #endif
+- 	      case binding_dns:
+- #if defined (NSUPDATE_OLD)
+- 		if (bv -> value.dns) {
+- 			if (bv -> value.dns -> r_data) {
+- 				dfree (bv -> value.dns -> r_data_ephem, MDL);
+- 				bv -> value.dns -> r_data = (unsigned char *)0;
+- 				bv -> value.dns -> r_data_ephem =
+- 					(unsigned char *)0;
+- 			}
+- 			minires_freeupdrec (bv -> value.dns);
+- 		}
+- 		break;
+- #endif
+- 
+- #if defined (NSUPDATE_OLD)
+- int evaluate_dns_expression (result, packet, lease, client_state, in_options,
+- 			     cfg_options, scope, expr)
+- 	ns_updrec **result;
+- 	struct packet *packet;
+- 	struct lease *lease;
+- 	struct client_state *client_state;
+- 	struct option_state *in_options;
+- 	struct option_state *cfg_options;
+- 	struct binding_scope **scope;
+- 	struct expression *expr;
+- {
+- 	unsigned long ttl = 0;
+- 	char *tname;
+- 	struct data_string name, data;
+- 	int r0, r1, r2;
+- 
+- 	if (!result || *result) {
+- 		log_error ("evaluate_dns_expression called with non-null %s",
+- 			   "result pointer");
+- #if defined (POINTER_DEBUG)
+- 		abort ();
+- #else
+- 		return 0;
+- #endif
+- 	}
+- 		
+- 	switch (expr -> op) {
+- #if defined (NSUPDATE)
+- 	      case expr_ns_add:
+- 		r0 = evaluate_numeric_expression (&ttl, packet, lease,
+- 						  client_state,
+- 						  in_options, cfg_options,
+- 						  scope,
+- 						  expr -> data.ns_add.ttl);
+- 		goto nsfinish;
+- 
+- 	      case expr_ns_exists:
+- 		ttl = 1;
+- 
+- 	      case expr_ns_delete:
+- 	      case expr_ns_not_exists:
+- 		r0 = 1;
+- 	      nsfinish:
+- 		memset (&name, 0, sizeof name);
+- 		r1 = evaluate_data_expression (&name, packet, lease,
+- 					       client_state,
+- 					       in_options, cfg_options, scope,
+- 					       expr -> data.ns_add.rrname,
+- 					       MDL);
+- 		if (r1) {
+- 			/* The result of the evaluation may or may not
+- 			   be NUL-terminated, but we need it
+- 			   terminated for sure, so we have to allocate
+- 			   a buffer and terminate it. */
+- 			tname = dmalloc (name.len + 1, MDL);
+- 			if (!tname) {
+- 				r2 = 0;
+- 				r1 = 0;
+- 				data_string_forget (&name, MDL);
+- 			} else {
+- 				memcpy (tname, name.data, name.len);
+- 				tname [name.len] = 0;
+- 				memset (&data, 0, sizeof data);
+- 				r2 = evaluate_data_expression
+- 					(&data, packet, lease, client_state,
+- 					 in_options, cfg_options, scope,
+- 					 expr -> data.ns_add.rrdata, MDL);
+- 			}
+- 		} else {
+- 			r2 = 0;
+- 			tname = NULL;
+- 		}
+- 		if (r0 && r1 && (r2 || expr -> op != expr_ns_add)) {
+- 		    *result = minires_mkupdrec (((expr -> op == expr_ns_add ||
+- 						  expr -> op == expr_ns_delete)
+- 						 ? S_UPDATE : S_PREREQ),
+- 						tname,
+- 						expr -> data.ns_add.rrclass,
+- 						expr -> data.ns_add.rrtype,
+- 						ttl);
+- 		    if (!*result) {
+- 			  ngood:
+- 			    if (r2) {
+- 				data_string_forget (&data, MDL);
+- 				r2 = 0;
+- 			    }
+- 		    } else {
+- 			if (data.len) {
+- 				/* As a special case, if we get exactly
+- 				   four bytes of data, it's an IP address
+- 				   represented as a 32-bit quantity, which
+- 				   is actually what we *should* be getting
+- 				   here.   Because res_mkupdrec is currently
+- 				   broken and expects a dotted quad, convert
+- 				   it.   This should be fixed when the new
+- 				   resolver is merged. */
+- 				if (data.len == 4) {
+- 				    (*result) -> r_data_ephem =
+- 					    dmalloc (16, MDL);
+- 				    if (!(*result) -> r_data_ephem)
+- 					goto dpngood;
+- 				    (*result) -> r_data =
+- 					    (*result) -> r_data_ephem;
+- 				    /*%Audit% 16 bytes max. %2004.06.17,Safe%*/
+- 				    sprintf ((char *)(*result) -> r_data_ephem,
+- 					     "%u.%u.%u.%u",
+- 					     data.data [0] & 0xff,
+- 					     data.data [1] & 0xff,
+- 					     data.data [2] & 0xff,
+- 					     data.data [3] & 0xff);
+- 				    (*result) -> r_size = 
+- 					    strlen ((const char *)
+- 						    (*result) -> r_data);
+- 				} else {
+- 				    (*result) -> r_size = data.len;
+- 				    (*result) -> r_data_ephem =
+- 					    dmalloc (data.len, MDL);
+- 				    if (!(*result) -> r_data_ephem) {
+- 				      dpngood: /* double plus ungood. */
+- 					minires_freeupdrec (*result);
+- 					*result = 0;
+- 					goto ngood;
+- 				    }
+- 				    (*result) -> r_data =
+- 					    (*result) -> r_data_ephem;
+- 				    memcpy ((*result) -> r_data_ephem,
+- 					    data.data, data.len);
+- 				}
+- 			} else {
+- 				(*result) -> r_data = 0;
+- 				(*result) -> r_size = 0;
+- 			}
+- 			switch (expr -> op) {
+- 			      case expr_ns_add:
+- 				(*result) -> r_opcode = ADD;
+- 				break;
+- 			      case expr_ns_delete:
+- 				(*result) -> r_opcode = DELETE;
+- 				break;
+- 			      case expr_ns_exists:
+- 				(*result) -> r_opcode = YXRRSET;
+- 				break;
+- 			      case expr_ns_not_exists:
+- 				(*result) -> r_opcode = NXRRSET;
+- 				break;
+- 
+- 				/* Can't happen, but satisfy gcc. */
+- 			      default:
+- 				break;
+- 			}
+- 		    }
+- 		}
+- 		if (r1) {
+- 			data_string_forget (&name, MDL);
+- 			dfree (tname, MDL);
+- 		}
+- 		if (r2)
+- 			data_string_forget (&data, MDL);
+- 		/* One flaw in the thinking here: an IP address and an
+- 		   ASCII string both look like data expressions, but
+- 		   for A records, we want an ASCII string, not a
+- 		   binary IP address.  Do I need to turn binary IP
+- 		   addresses into a separate type?  */
+- 		return (r0 && r1 &&
+- 			(r2 || expr -> op != expr_ns_add) && *result);
+- 
+- #else
+- 	      case expr_ns_add:
+- 	      case expr_ns_delete:
+- 	      case expr_ns_exists:
+- 	      case expr_ns_not_exists:
+- 		return 0;
+- #endif
+- 	      case expr_funcall:
+- 		log_error ("%s: dns values for functions not supported.",
+- 			   expr -> data.funcall.name);
+- 		break;
+- 
+- 	      case expr_variable_reference:
+- 		log_error ("%s: dns values for variables not supported.",
+- 			   expr -> data.variable);
+- 		break;
+- 
+- 	      case expr_check:
+- 	      case expr_equal:
+- 	      case expr_not_equal:
+- 	      case expr_regex_match:
+- 	      case expr_iregex_match:
+- 	      case expr_and:
+- 	      case expr_or:
+- 	      case expr_not:
+- 	      case expr_match:
+- 	      case expr_static:
+- 	      case expr_known:
+- 	      case expr_exists:
+- 	      case expr_variable_exists:
+- 		log_error ("Boolean opcode in evaluate_dns_expression: %d",
+- 		      expr -> op);
+- 		return 0;
+- 
+- 	      case expr_none:
+- 	      case expr_substring:
+- 	      case expr_suffix:
+- 	      case expr_lcase:
+- 	      case expr_ucase:
+- 	      case expr_option:
+- 	      case expr_hardware:
+- 	      case expr_const_data:
+- 	      case expr_packet:
+- 	      case expr_concat:
+- 	      case expr_encapsulate:
+- 	      case expr_host_lookup:
+- 	      case expr_encode_int8:
+- 	      case expr_encode_int16:
+- 	      case expr_encode_int32:
+- 	      case expr_binary_to_ascii:
+- 	      case expr_reverse:
+- 	      case expr_filename:
+- 	      case expr_sname:
+- 	      case expr_pick_first_value:
+- 	      case expr_host_decl_name:
+- 	      case expr_config_option:
+- 	      case expr_leased_address:
+- 	      case expr_null:
+- 	      case expr_gethostname:
+- 		log_error ("Data opcode in evaluate_dns_expression: %d",
+- 		      expr -> op);
+- 		return 0;
+- 
+- 	      case expr_extract_int8:
+- 	      case expr_extract_int16:
+- 	      case expr_extract_int32:
+- 	      case expr_const_int:
+- 	      case expr_lease_time:
+- 	      case expr_dns_transaction:
+- 	      case expr_add:
+- 	      case expr_subtract:
+- 	      case expr_multiply:
+- 	      case expr_divide:
+- 	      case expr_remainder:
+- 	      case expr_binary_and:
+- 	      case expr_binary_or:
+- 	      case expr_binary_xor:
+- 	      case expr_client_state:
+- 		log_error ("Numeric opcode in evaluate_dns_expression: %d",
+- 		      expr -> op);
+- 		return 0;
+- 
+- 	      case expr_function:
+- 		log_error ("Function opcode in evaluate_dns_expression: %d",
+- 		      expr -> op);
+- 		return 0;
+- 
+- 	      case expr_arg:
+- 		break;
+- 	}
+- 
+- 	log_error ("Bogus opcode in evaluate_dns_expression: %d",
+- 		   expr -> op);
+- 	return 0;
+- }
+- #endif /* defined (NSUPDATE_OLD) */
++ 
+- #if defined (NSUPDATE_OLD)
+- 			  case binding_dns:
+- #if defined (NSUPDATE)
+- 			    /* XXX This should be a comparison for equal
+- 			       XXX values, not for identity. */
+- 			    if (bv -> value.dns == obv -> value.dns)
+- 				*result = expr -> op == expr_equal;
+- 			    else
+- 				*result = expr -> op == expr_not_equal;
+- #else
+- 				*result = expr -> op == expr_not_equal;
+- #endif
+- 			    break;
+- #endif /* NSUPDATE_OLD */
++ 	      case expr_v6relay:
++ 	struct packet *relay_packet;
++ 	struct option_state *relay_options;
++ 
++ 
+- 		 if (s0)
++ 		if (s0)
++ 
+- 			memset (result, 0, sizeof *result);
++ 			memset(result, 0, sizeof(*result));
+- 			result -> data =
+- 				client_state -> interface -> hw_address.hbuf;
++ 			result->data = client_state->interface->hw_address.hbuf;
+- 			result -> len =
+- 				client_state -> interface -> hw_address.hlen;
++ 			result->len = client_state->interface->hw_address.hlen;
+- 			log_debug ("data: hardware = %s",
++ 			log_debug("data: hardware = %s",
++ 				  print_hex_1(result->len, result->data, 60));
+- 				   print_hex_1 (result -> len,
+- 						result -> data, 60));
+- 			return 1;
++ 			return (1);
+- 		   so only in the case where we are examining a packet can
++ 		   so only in the case where we are examining a packet or have
++ 		   a lease with a hardware address can we return anything. */
++ 
++ 		if (packet != NULL && packet->raw != NULL) {
+- 		   we return anything. */
+- 		if (!packet || !packet -> raw) {
+- 			log_error ("data: hardware: raw packet not available");
+- 			return 0;
+- 		}
+- 		if (packet -> raw -> hlen > sizeof packet -> raw -> chaddr) {
++ 			if (packet->raw->hlen > sizeof(packet->raw->chaddr)) {
+- 			log_error ("data: hardware: invalid hlen (%d)\n",
++ 				log_error("data: hardware: invalid hlen (%d)\n",
+- 				   packet -> raw -> hlen);
++ 					  packet->raw->hlen);
+- 			return 0;
++ 				return (0);
+- 		}
++ 			}
+- 		result -> len = packet -> raw -> hlen + 1;
++ 			result->len = packet->raw->hlen + 1;
+- 		if (buffer_allocate (&result -> buffer, result -> len,
++ 			if (buffer_allocate(&result->buffer, result->len, MDL)){
+- 				     file, line)) {
+- 			result -> data = &result -> buffer -> data [0];
++ 				result->data = &result->buffer->data[0];
+- 			result -> buffer -> data [0] = packet -> raw -> htype;
++ 				result->buffer->data[0] = packet->raw->htype;
+- 			memcpy (&result -> buffer -> data [1],
++ 				memcpy(&result->buffer->data[1],
++ 				       packet->raw->chaddr, packet->raw->hlen);
+- 				packet -> raw -> chaddr,
+- 				packet -> raw -> hlen);
+- 			result -> terminated = 0;
++ 				result->terminated = 0;
++ 			} else {
++ 				log_error("data: hardware: "
++ 					  "no memory for buffer.");
++ 				return (0);
++ 			}
++ 		} else if (lease != NULL) {
++ 			result->len = lease->hardware_addr.hlen;
++ 			if (buffer_allocate(&result->buffer, result->len, MDL)){
++ 				result->data = &result->buffer->data[0];
++ 				memcpy(result->buffer->data,
++ 				       lease->hardware_addr.hbuf, result->len);
++ 				result->terminated = 0;
++ 			} else {
++ 				log_error("data: hardware: "
++ 					  "no memory for buffer.");
++ 				return (0);
++ 			}
+- 			log_error ("data: hardware: no memory for buffer.");
++ 			log_error("data: hardware: no raw packet or lease "
++ 				  "is available");
+- 			return 0;
++ 			return (0);
++ 
+- 		log_debug ("data: hardware = %s",
++ 		log_debug("data: hardware = %s",
+- 		      print_hex_1 (result -> len, result -> data, 60));
++ 			  print_hex_1(result->len, result->data, 60));
+- 		return 1;
++ 		return (1);
++ 		/* Find an option within a v6relay context
++ 		 *
++ 		 * The numeric expression in relay indicates which relay
++ 		 * to try and use as the context.  The relays are numbered
++ 		 * 1 to 32 with 1 being the one closest to the client and
++ 		 * 32 closest to the server.  A value of greater than 33
++ 		 * indicates using the one closest to the server whatever
++ 		 * the count.  A value of 0 indicates not using the relay
++ 		 * options, this is included for completeness and consistency
++ 		 * with the host-identier code.
++ 		 *
++ 		 * The data expression in roption is evaluated in that
++ 		 * context and the result returned.
++ 		 */
++ 	      case expr_v6relay:
++ 		len = 0;
++ 		s1 = 0;
++ 		memset (&data, 0, sizeof data);
++ 
++ 		/* Evaluate the relay count */
++ 		s0 = evaluate_numeric_expression(&len, packet, lease,
++ 						 client_state,
++ 						 in_options, cfg_options,
++ 						 scope,
++ 						 expr->data.v6relay.relay);
++ 
++ 		/* no number or an obviously invalid number */
++ 		if ((s0 == 0) ||
++ 		    ((len > 0) && 
++ 		     ((packet == NULL) ||
++ 		      (packet->dhcpv6_container_packet == NULL)))) {
++ #if defined (DEBUG_EXPRESSIONS)
++ 			log_debug("data: v6relay(%d) = NULL", len);
++ #endif
++ 			return (0);
++ 		}
++ 
++ 		/* Find the correct packet for the requested relay */
++ 		i = len;
++ 		relay_packet = packet;
++ 		relay_options = in_options;
++ 		while ((i != 0) && 
++ 		       (relay_packet->dhcpv6_container_packet != NULL)) {
++ 			relay_packet = relay_packet->dhcpv6_container_packet;
++ 			relay_options = relay_packet->options;
++ 			i--;
++ 		}
++ 		/* We wanted a specific relay but were unable to find it */
++ 		if ((len <= MAX_V6RELAY_HOPS) && (i != 0)) {
++ #if defined (DEBUG_EXPRESSIONS)
++ 			log_debug("data: v6relay(%d) = NULL", len);
++ #endif
++ 			return (0);
++ 		}
++ 
++ 		s1 = evaluate_data_expression(&data, relay_packet, lease,
++ 					      client_state, relay_options,
++ 					      cfg_options, scope,
++ 					      expr->data.v6relay.roption,
++ 					      MDL);
++ 
++ 		if (s1) {
++ 			data_string_copy(result, &data, file, line);
++ 			data_string_forget(&data, MDL);
++ 		}
++ 
++ #if defined (DEBUG_EXPRESSIONS)
++ 		log_debug("data: v6relay(%d) = %s", len, 
++ 			  s1 ? print_hex_3(result->len, result->data, 30)
++ 			  : "NULL");
++ #endif
++ 		return (s1);
++ 
+- 		log_error ("dns update opcode in evaluate_data_expression: %d",
++ 		log_error ("dns opcode in evaluate_boolean_expression: %d",
+- #if defined (NSUPDATE_OLD)
+- 	ns_updrec *nut;
+- 	ns_updque uq;
+- 	struct expression *cur, *next;
+- #endif
++ 	      case expr_v6relay:
+- 	      case expr_dns_transaction:
+- #if !defined (NSUPDATE_OLD)
+- 		return 0;
+- #else
+- 		if (!resolver_inited) {
+- 			minires_ninit (&resolver_state);
+- 			resolver_inited = 1;
+- 			resolver_state.retrans = 1;
+- 			resolver_state.retry = 1;
+- 		}
+- 		ISC_LIST_INIT (uq);
+- 		cur = expr;
+- 		do {
+- 		    next = cur -> data.dns_transaction.cdr;
+- 		    nut = 0;
+- 		    status = (evaluate_dns_expression
+- 			      (&nut, packet,
+- 			       lease, client_state, in_options, cfg_options,
+- 			       scope, cur -> data.dns_transaction.car));
+- 		    if (!status)
+- 			    goto dns_bad;
+- 		    ISC_LIST_APPEND (uq, nut, r_link);
+- 		    cur = next;
+- 		} while (next);
+- 
+- 		/* Do the update and record the error code, if there was
+- 		   an error; otherwise set it to NOERROR. */
+- 		*result = minires_nupdate (&resolver_state,
+- 					   ISC_LIST_HEAD (uq));
+- 		status = 1;
+- 
+- 		print_dns_status ((int)*result, &uq);
+- 
+- 	      dns_bad:
+- 		while (!ISC_LIST_EMPTY (uq)) {
+- 			ns_updrec *tmp = ISC_LIST_HEAD (uq);
+- 			ISC_LIST_UNLINK (uq, tmp, r_link);
+- 			if (tmp -> r_data_ephem) {
+- 				dfree (tmp -> r_data_ephem, MDL);
+- 				tmp -> r_data = (unsigned char *)0;
+- 				tmp -> r_data_ephem = (unsigned char *)0;
+- 			}
+- 			minires_freeupdrec (tmp);
+- 		}
+- 		return status;
+- #endif /* NSUPDATE_OLD */
+- 
+- 
+- 	      case expr_ns_add:
+- 	      case expr_ns_delete:
+- 	      case expr_ns_exists:
+- 	      case expr_ns_not_exists:
+- 		log_error ("dns opcode in evaluate_numeric_expression: %d",
+- 		      expr -> op);
+- 		return 0;
+- 	      case expr_dns_transaction:
+- 		if (expr -> data.dns_transaction.car)
+- 		    expression_dereference (&expr -> data.dns_transaction.car,
+- 					    file, line);
+- 		if (expr -> data.dns_transaction.cdr)
+- 		    expression_dereference (&expr -> data.dns_transaction.cdr,
+- 					    file, line);
+- 		break;
+- 
+- 	      case expr_ns_add:
+- 		if (expr -> data.ns_add.rrname)
+- 		    expression_dereference (&expr -> data.ns_add.rrname,
+- 					    file, line);
+- 		if (expr -> data.ns_add.rrdata)
+- 		    expression_dereference (&expr -> data.ns_add.rrdata,
+- 					    file, line);
+- 		if (expr -> data.ns_add.ttl)
+- 		    expression_dereference (&expr -> data.ns_add.ttl,
+- 					    file, line);
+- 		break;
+- 
+- 	      case expr_ns_delete:
+- 	      case expr_ns_exists:
+- 	      case expr_ns_not_exists:
+- 		if (expr -> data.ns_delete.rrname)
+- 		    expression_dereference (&expr -> data.ns_delete.rrname,
+- 					    file, line);
+- 		if (expr -> data.ns_delete.rrdata)
+- 		    expression_dereference (&expr -> data.ns_delete.rrdata,
+- 					    file, line);
+- 		break;
+- 
++ 		break;
++ 
++ 	      case expr_v6relay:
++ 		if (expr->data.v6relay.relay)
++ 			expression_dereference(&expr->data.v6relay.relay,
++ 					       file, line);
++ 
++ 		if (expr->data.v6relay.roption)
++ 			expression_dereference(&expr->data.v6relay.roption,
++ 					       file, line);
+- }
+- 
+- int is_dns_expression (expr)
+- 	struct expression *expr;
+- {
+-       return (expr -> op == expr_ns_add ||
+- 	      expr -> op == expr_ns_delete ||
+- 	      expr -> op == expr_ns_exists ||
+- 	      expr -> op == expr_ns_not_exists);
+- 		expr->op == expr_gethostname);
++ 		expr->op == expr_gethostname ||
++ 	        expr->op == expr_v6relay);
+- 		expr -> op == expr_dns_transaction ||
+- 	return (expr -> op == expr_ns_add ||
+- 		expr -> op == expr_ns_delete ||
+- 		expr -> op == expr_ns_exists ||
+- 		expr -> op == expr_ns_not_exists ||
+- 		expr -> op == expr_substring ||
++ 	return (expr -> op == expr_substring ||
+- 		expr -> op == expr_dns_transaction);
++ 		expr -> op == expr_v6relay);
++ 	      case expr_v6relay:
+- 	if (is_dns_expression (expr))
+- 		return context_dns;
++ 	      case expr_v6relay:
+- 	      case expr_dns_transaction:
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  "ns-update");
+- 		col = token_print_indent (file, col, indent, " ", "",
+- 					  "(");
+- 		scol = 0;
+- 		for (e = expr;
+- 		     e && e -> op == expr_dns_transaction;
+- 		     e = e -> data.dns_transaction.cdr) {
+- 			if (!scol) {
+- 				scol = col;
+- 				firstp = 1;
+- 			} else
+- 				firstp = 0;
+- 			col = write_expression (file,
+- 						e -> data.dns_transaction.car,
+- 						col, scol, firstp);
+- 			if (e -> data.dns_transaction.cdr)
+- 				col = token_print_indent (file, col, scol,
+- 							  "", " ", ",");
+- 		}
+- 		if (e)
+- 			col = write_expression (file, e, col, scol, 0);
+- 		col = token_print_indent (file, col, indent, "", "", ")");
+- 		break;
+- 
+- 	      case expr_ns_add:
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  "update");
+- 		col = token_print_indent (file, col, indent, " ", "",
+- 					  "(");
+- 		scol = col;
+- 		sprintf (obuf, "%d", expr -> data.ns_add.rrclass);
+- 		col = token_print_indent (file, col, scol, "", "", obuf);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		sprintf (obuf, "%d", expr -> data.ns_add.rrtype);
+- 		col = token_print_indent (file, col, scol, "", "", obuf);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		col = write_expression (file, expr -> data.ns_add.rrname,
+- 					col, scol, 0);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		col = write_expression (file, expr -> data.ns_add.rrdata,
+- 					col, scol, 0);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		col = write_expression (file, expr -> data.ns_add.ttl,
+- 					col, scol, 0);
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  ")");
+- 		break;
+- 
+- 	      case expr_ns_delete:
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  "delete");
+- 		col = token_print_indent (file, col, indent, " ", "",
+- 					  "(");
+- 	      finish_ns_small:
+- 		scol = col;
+- 		sprintf (obuf, "%d", expr -> data.ns_add.rrclass);
+- 		col = token_print_indent (file, col, scol, "", "", obuf);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		sprintf (obuf, "%d", expr -> data.ns_add.rrtype);
+- 		col = token_print_indent (file, col, scol, "", "", obuf);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		col = write_expression (file, expr -> data.ns_add.rrname,
+- 					col, scol, 0);
+- 		col = token_print_indent (file, col, scol, "", " ",
+- 					  ",");
+- 		col = write_expression (file, expr -> data.ns_add.rrdata,
+- 					col, scol, 0);
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  ")");
+- 		break;
+- 
+- 	      case expr_ns_exists:
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  "exists");
+- 		col = token_print_indent (file, col, indent, " ", "",
+- 					  "(");
+- 		goto finish_ns_small;
+- 
+- 	      case expr_ns_not_exists:
+- 		col = token_print_indent (file, col, indent, "", "",
+- 					  "not exists");
+- 		col = token_print_indent (file, col, indent, " ", "",
+- 					  "(");
+- 		goto finish_ns_small;
+- 
++ 		col = token_print_indent(file, col, indent, "", "", ")");
++ 		break;
++ 
++ 	      case expr_v6relay:
++ 		col = token_print_indent(file, col, indent, "", "",
++ 					 "v6relay");
++ 		col = token_print_indent(file, col, indent, " ", "", "(");
++ 		scol = col;
++ 		col = write_expression(file, expr->data.v6relay.relay,
++ 				       col, scol, 1);
++ 		col = token_print_indent (file, col, scol, "", " ", ",");
++ 		col = write_expression(file, expr->data.v6relay.roption,
++ 				       col, scol, 0);
++ 	      case expr_v6relay:
++ 		clhs = data_subexpression_length (&llhs,
++ 						  expr -> data.v6relay.relay);
++ 		crhs = data_subexpression_length (&lrhs,
++ 						  expr -> data.v6relay.roption);
++ 		if (crhs == 0 || clhs == 0)
++ 			return 0;
++ 		*rv = llhs + lrhs;
++ 		return 1;
++ 		break;
++ 
+- 	      case expr_dns_transaction:
+- 	      case expr_ns_add:
+- 	      case expr_ns_delete:
+- 	      case expr_ns_exists:
+- 	      case expr_ns_not_exists:
+- 	      case context_dns:
+- 		if (is_dns_expression (expr)) {
+- 			return 1;
+- 		}
+- 		return 0;
+- 
+/auto/home5/hoj9/dhcp-4.2.6/common/ns_name.c
+-  * Copyright (c) 2004,2009 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2009,2014 by Internet Systems Consortium, Inc. ("ISC")
+- 
+- #ifndef lint
+- static const char rcsid[] = "$Id: ns_name.c,v 1.2 2009/10/28 04:12:29 sar Exp $";
+- #endif
+/auto/home5/hoj9/dhcp-4.2.6/common/parse.c
+- 		    skip_token(&val, (unsigned *)0, cfile);
++ 		    skip_token(&val, NULL, cfile);
+- 		    token = peek_token (&val, (unsigned *)0, cfile);
++ 		    token = peek_token(&val, NULL, cfile);
+- 			    skip_token(&val, (unsigned *)0, cfile);
++ 			    skip_token(&val, NULL, cfile);
+- 			    key_name = (char *)0;
++ 			    key_name = NULL;
+- 			    key_name = parse_host_name (cfile);
++ 			    key_name = parse_host_name(cfile);
+- 				    parse_warn (cfile, "expecting key name.");
++ 				    parse_warn(cfile, "expecting key name.");
+- 				    skip_to_semi (cfile);
++ 				    skip_to_semi(cfile);
+- 				    return 0;
++ 				    return (0);
++ 		    if (zone->key) {
++ 			    log_fatal("Multiple key definitions for zone %s.",
++ 				      zone->name);
++ 		    }
+- 		    if (omapi_auth_key_lookup_name (&zone -> key, val) !=
++ 		    if (omapi_auth_key_lookup_name(&zone->key, val) !=
+- 			    parse_warn (cfile, "unknown key %s", val);
++ 			    parse_warn(cfile, "unknown key %s", val);
+- 			    dfree (key_name, MDL);
++ 			    dfree(key_name, MDL);
+- 		    if (!parse_semi (cfile))
++ 		    if (!parse_semi(cfile))
+- 			    return 0;
++ 			    return (0);
+- 	token = next_token (&val, (unsigned *)0, cfile);
++ 	token = next_token(&val, NULL, cfile);
+- 		parse_warn (cfile, "expecting right brace.");
++ 		parse_warn(cfile, "expecting right brace.");
+- 		return 0;
++ 		return (0);
+- 	return 1;
++ 	return (1);
++  *		       V6RELAY LPAREN numeric-expression COMMA
++  *				      data-expression RPAREN |
+- #if defined (NSUPDATE_OLD)
+- /*
+-  * dns-expression :==
+-  *	UPDATE LPAREN ns-class COMMA ns-type COMMA data-expression COMMA
+-  *				data-expression COMMA numeric-expression RPAREN
+-  *	DELETE LPAREN ns-class COMMA ns-type COMMA data-expression COMMA
+-  *				data-expression RPAREN
+-  *	EXISTS LPAREN ns-class COMMA ns-type COMMA data-expression COMMA
+-  *				data-expression RPAREN
+-  *	NOT EXISTS LPAREN ns-class COMMA ns-type COMMA data-expression COMMA
+-  *				data-expression RPAREN
+-  * ns-class :== IN | CHAOS | HS | NUMBER
+-  * ns-type :== A | PTR | MX | TXT | NUMBER
+-  */
+- int parse_dns_expression (expr, cfile, lose)
+- 	struct expression **expr;
+- 	struct parse *cfile;
+- 	int *lose;
+- {
+- 	/* Parse an expression... */
+- 	if (!parse_expression (expr, cfile, lose, context_dns,
+- 			       (struct expression **)0, expr_none))
+- 		return 0;
+- 
+- 	if (!is_dns_expression (*expr) &&
+- 	    (*expr) -> op != expr_variable_reference &&
+- 	    (*expr) -> op != expr_funcall) {
+- 		expression_dereference (expr, MDL);
+- 		parse_warn (cfile, "Expecting a dns update subexpression.");
+- 		*lose = 1;
+- 		return 0;
+- 	}
+- 	return 1;
+- }
+- #endif /* NSUPDATE_OLD */
+- #if defined (NSUPDATE_OLD)
+- 	enum expr_op opcode;
+- 	const char *s;
+- 	unsigned long u;
+- #endif 
+- 		skip_token(&val, (unsigned *)0, cfile);
++ 		skip_token(&val, NULL, cfile);
+- #if defined(NSUPDATE_OLD)
+- 		if (context == context_dns) {
+- 			token = peek_token (&val, (unsigned *)0, cfile);
+- 			goto not_exists;
+- 		}
+- #endif
+- 		(*expr) -> op = expr_not;
++ 		(*expr)->op = expr_not;
+- 		if (!parse_non_binary (&(*expr) -> data.not,
++ 		if (!parse_non_binary (&(*expr)->data.not,
+- 			return 0;
++ 			return (0);
+- #if defined(NSUPDATE_OLD)
+- 		if (context == context_dns)
+- 			goto ns_exists;
+- #endif
+- 		skip_token(&val, (unsigned *)0, cfile);
++ 		skip_token(&val, NULL, cfile);
+- 		(*expr) -> op = expr_exists;
++ 		(*expr)->op = expr_exists;
+- 			return 0;
++ 			return (0);
+- #if defined(NSUPDATE_OLD)
+- 		/* dns-update and dns-delete are present for historical
+- 		   purposes, but are deprecated in favor of ns-update
+- 		   in combination with update, delete, exists and not
+- 		   exists. */
+- 	      case DNS_UPDATE:
+- 	      case DNS_DELETE:
+- #if !defined (NSUPDATE)
+- 		parse_warn (cfile,
+- 			    "Please rebuild dhcpd with --with-nsupdate.");
+- #endif
+- 		skip_token(&val, (unsigned *)0, cfile);
+- 		if (token == DNS_UPDATE)
+- 			opcode = expr_ns_add;
+- 		else
+- 			opcode = expr_ns_delete;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != LPAREN)
+- 			goto nolparen;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != STRING) {
+- 			parse_warn (cfile,
+- 				    "parse_expression: expecting string.");
+- 		      badnsupdate:
+- 			skip_to_semi (cfile);
+- 			*lose = 1;
+- 			return 0;
+- 		}
+- 			
+- 		if (!strcasecmp (val, "a"))
+- 			u = T_A;
+- 		else if (!strcasecmp (val, "aaaa"))
+- 			u = T_AAAA;
+- 		else if (!strcasecmp (val, "ptr"))
+- 			u = T_PTR;
+- 		else if (!strcasecmp (val, "mx"))
+- 			u = T_MX;
+- 		else if (!strcasecmp (val, "cname"))
+- 			u = T_CNAME;
+- 		else if (!strcasecmp (val, "TXT"))
+- 			u = T_TXT;
+- 		else {
+- 			parse_warn (cfile, "unexpected rrtype: %s", val);
+- 			goto badnsupdate;
+- 		}
+- 
+- 		s = (opcode == expr_ns_add
+- 		     ? "old-dns-update"
+- 		     : "old-dns-delete");
+- 		cptr = dmalloc (strlen (s) + 1, MDL);
+- 		if (!cptr)
+- 			log_fatal ("can't allocate name for %s", s);
+- 		strcpy (cptr, s);
+- 		if (!expression_allocate (expr, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*expr) -> op = expr_funcall;
+- 		(*expr) -> data.funcall.name = cptr;
+- 
+- 		/* Fake up a function call. */
+- 		ep = &(*expr) -> data.funcall.arglist;
+- 		if (!expression_allocate (ep, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*ep) -> op = expr_arg;
+- 		if (!make_const_int (&(*ep) -> data.arg.val, u))
+- 			log_fatal ("can't allocate rrtype value.");
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != COMMA)
+- 			goto nocomma;
+- 		ep = &((*ep) -> data.arg.next);
+- 		if (!expression_allocate (ep, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*ep) -> op = expr_arg;
+- 		if (!(parse_data_expression (&(*ep) -> data.arg.val,
+- 					     cfile, lose)))
+- 			goto nodata;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != COMMA)
+- 			goto nocomma;
+- 
+- 		ep = &((*ep) -> data.arg.next);
+- 		if (!expression_allocate (ep, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*ep) -> op = expr_arg;
+- 		if (!(parse_data_expression (&(*ep) -> data.arg.val,
+- 					     cfile, lose)))
+- 			goto nodata;
+- 
+- 		if (opcode == expr_ns_add) {
+- 			token = next_token (&val, (unsigned *)0, cfile);
+- 			if (token != COMMA)
+- 				goto nocomma;
+- 			
+- 			ep = &((*ep) -> data.arg.next);
+- 			if (!expression_allocate (ep, MDL))
+- 				log_fatal ("can't allocate expression");
+- 			(*ep) -> op = expr_arg;
+- 			if (!(parse_numeric_expression (&(*ep) -> data.arg.val,
+- 							cfile, lose))) {
+- 				parse_warn (cfile,
+- 					    "expecting numeric expression.");
+- 				goto badnsupdate;
+- 			}
+- 		}
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != RPAREN)
+- 			goto norparen;
+- 		break;
+- 
+- 	      case NS_UPDATE:
+- #if !defined (NSUPDATE)
+- 		parse_warn (cfile,
+- 			    "Please rebuild dhcpd with --with-nsupdate.");
+- #endif
+- 		skip_token(&val, (unsigned *)0, cfile);
+- 		if (!expression_allocate (expr, MDL))
+- 			log_fatal ("can't allocate expression");
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != LPAREN)
+- 			goto nolparen;
+- 
+- 		nexp = *expr;
+- 		do {
+- 			nexp -> op = expr_dns_transaction;
+- 			if (!(parse_dns_expression
+- 			      (&nexp -> data.dns_transaction.car,
+- 			       cfile, lose)))
+- 			{
+- 				if (!*lose)
+- 					parse_warn
+- 						(cfile,
+- 						 "expecting dns expression.");
+- 				expression_dereference (expr, MDL);
+- 				*lose = 1;
+- 				return 0;
+- 			}
+- 
+- 			token = next_token (&val, (unsigned *)0, cfile);
+- 			
+- 			if (token == COMMA) {
+- 				if (!(expression_allocate
+- 				      (&nexp -> data.dns_transaction.cdr,
+- 				       MDL)))
+- 					log_fatal
+- 						("can't allocate expression");
+- 				nexp = nexp -> data.dns_transaction.cdr;
+- 			}
+- 		} while (token == COMMA);
+- 
+- 		if (token != RPAREN)
+- 			goto norparen;
+- 		break;
+- 
+- 		/* NOT EXISTS is special cased above... */
+- 	      not_exists:
+- 		token = peek_token (&val, (unsigned *)0, cfile);
+- 		if (token != EXISTS) {
+- 			parse_warn (cfile, "expecting DNS prerequisite.");
+- 			*lose = 1;
+- 			return 0;
+- 		}
+- 		opcode = expr_ns_not_exists;
+- 		goto nsupdatecode;
+- 	      case TOKEN_ADD:
+- 		opcode = expr_ns_add;
+- 		goto nsupdatecode;
+- 	      case TOKEN_DELETE:
+- 		opcode = expr_ns_delete;
+- 		goto nsupdatecode;
+- 	      ns_exists:
+- 		opcode = expr_ns_exists;
+- 	      nsupdatecode:
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 
+- #if !defined (NSUPDATE)
+- 		parse_warn (cfile,
+- 			    "Please rebuild dhcpd with --with-nsupdate.");
+- #endif
+- 		if (!expression_allocate (expr, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*expr) -> op = opcode;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != LPAREN)
+- 			goto nolparen;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (!is_identifier (token) && token != NUMBER) {
+- 			parse_warn (cfile, "expecting identifier or number.");
+- 		      badnsop:
+- 			expression_dereference (expr, MDL);
+- 			skip_to_semi (cfile);
+- 			*lose = 1;
+- 			return 0;
+- 		}
+- 			
+- 		if (token == NUMBER)
+- 			(*expr) -> data.ns_add.rrclass = atoi (val);
+- 		else if (!strcasecmp (val, "in"))
+- 			(*expr) -> data.ns_add.rrclass = C_IN;
+- 		else if (!strcasecmp (val, "chaos"))
+- 			(*expr) -> data.ns_add.rrclass = C_CHAOS;
+- 		else if (!strcasecmp (val, "hs"))
+- 			(*expr) -> data.ns_add.rrclass = C_HS;
+- 		else {
+- 			parse_warn (cfile, "unexpected rrclass: %s", val);
+- 			goto badnsop;
+- 		}
+- 		
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != COMMA)
+- 			goto nocomma;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (!is_identifier (token) && token != NUMBER) {
+- 			parse_warn (cfile, "expecting identifier or number.");
+- 			goto badnsop;
+- 		}
+- 			
+- 		if (token == NUMBER)
+- 			(*expr) -> data.ns_add.rrtype = atoi (val);
+- 		else if (!strcasecmp (val, "a"))
+- 			(*expr) -> data.ns_add.rrtype = T_A;
+- 		else if (!strcasecmp (val, "aaaa"))
+- 			(*expr) -> data.ns_add.rrtype = T_AAAA;
+- 		else if (!strcasecmp (val, "ptr"))
+- 			(*expr) -> data.ns_add.rrtype = T_PTR;
+- 		else if (!strcasecmp (val, "mx"))
+- 			(*expr) -> data.ns_add.rrtype = T_MX;
+- 		else if (!strcasecmp (val, "cname"))
+- 			(*expr) -> data.ns_add.rrtype = T_CNAME;
+- 		else if (!strcasecmp (val, "TXT"))
+- 			(*expr) -> data.ns_add.rrtype = T_TXT;
+- 		else {
+- 			parse_warn (cfile, "unexpected rrtype: %s", val);
+- 			goto badnsop;
+- 		}
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != COMMA)
+- 			goto nocomma;
+- 
+- 		if (!(parse_data_expression
+- 		      (&(*expr) -> data.ns_add.rrname, cfile, lose)))
+- 			goto nodata;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != COMMA)
+- 			goto nocomma;
+- 
+- 		if (!(parse_data_expression
+- 		      (&(*expr) -> data.ns_add.rrdata, cfile, lose)))
+- 			goto nodata;
+- 
+- 		if (opcode == expr_ns_add) {
+- 			token = next_token (&val, (unsigned *)0, cfile);
+- 			if (token != COMMA)
+- 				goto nocomma;
+- 			
+- 			if (!(parse_numeric_expression
+- 			      (&(*expr) -> data.ns_add.ttl, cfile,
+- 			       lose))) {
+- 			    if (!*lose)
+- 				parse_warn (cfile,
+- 					    "expecting numeric expression.");
+- 			    goto badnsupdate;
+- 			}
+- 		}
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != RPAREN)
+- 			goto norparen;
+- 		break;
+- #endif /* NSUPDATE_OLD */
+- #if defined(NSUPDATE_OLD)
+- 	      case UPDATED_DNS_RR:
+- 		skip_token(&val, (unsigned *)0, cfile);
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != LPAREN)
+- 			goto nolparen;
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != STRING) {
+- 			parse_warn (cfile, "expecting string.");
+- 		      bad_rrtype:
+- 			*lose = 1;
+- 			return 0;
+- 		}
+- 		if (!strcasecmp (val, "a"))
+- 			s = "ddns-fwd-name";
+- 		else if (!strcasecmp (val, "ptr"))
+- 			s = "ddns-rev-name";
+- 		else {
+- 			parse_warn (cfile, "invalid DNS rrtype: %s", val);
+- 			goto bad_rrtype;
+- 		}
+- 
+- 		token = next_token (&val, (unsigned *)0, cfile);
+- 		if (token != RPAREN)
+- 			goto norparen;
+- 
+- 		if (!expression_allocate (expr, MDL))
+- 			log_fatal ("can't allocate expression");
+- 		(*expr) -> op = expr_variable_reference;
+- 		(*expr) -> data.variable =
+- 			dmalloc (strlen (s) + 1, MDL);
+- 		if (!(*expr) -> data.variable)
+- 			log_fatal ("can't allocate variable name.");
+- 		strcpy ((*expr) -> data.variable, s);
+- 		break;
+- #endif /* NSUPDATE_OLD */
++ 		if (token != RPAREN)
++ 			goto norparen;
++ 		break;
++ 
++ 	      case V6RELAY:
++ 		skip_token(&val, NULL, cfile);
++ 		if (!expression_allocate (expr, MDL))
++ 			log_fatal ("can't allocate expression");
++ 		(*expr)->op = expr_v6relay;
++ 
++ 		token = next_token (&val, NULL, cfile);
++ 		if (token != LPAREN)
++ 			goto nolparen;
++ 
++ 		if (!parse_numeric_expression (&(*expr)->data.v6relay.relay,
++ 						cfile, lose))
++ 			goto nodata;
++ 
++ 		token = next_token (&val, NULL, cfile);
++ 		if (token != COMMA)
++ 			goto nocomma;
++ 
++ 		if (!parse_data_expression (&(*expr)->data.v6relay.roption,
++ 					    cfile, lose))
++ 			goto nodata;
++ 
++ 		token = next_token (&val, NULL, cfile);
++ 
+- 	syslog (log_priority | LOG_ERR, "%s", mbuf);
++ 	syslog (LOG_ERR, "%s", mbuf);
+- 	syslog (log_priority | LOG_ERR, "%s", cfile -> token_line);
++ 	syslog (LOG_ERR, "%s", cfile -> token_line);
+- 		syslog (log_priority | LOG_ERR, "%s^", lexbuf);
++ 		syslog (LOG_ERR, "%s^", lexbuf);
+/auto/home5/hoj9/dhcp-4.2.6/common/dispatch.c
+- 	if (when == NULL) {
+- 		return;
+- 	}
+- 
+- 	/* isc_time_nowplusinterval() is not safe with 64-bit time_t and will
+- 	 * return an error for sufficiently large intervals.  We have to limit
+- 	 * the interval to INT_MAX or less to ensure the interval doesn't
+- 	 * overflow 32 bits, since the returned isc_time_t fields are
+- 	 * 32-bit unsigned ints.
+- 	 *
+- 	 * HACK: The 9 is a magic number of seconds, since some time may have
+- 	 * gone by since the last call to gettimeofday() and the one in
+- 	 * isc_time_nowplusinterval().
+- 	 */
+- 	if (sec > TIME_MAX)
+- 		sec = TIME_MAX - 9;
+- 
+- 	isc_interval_set(&interval, sec, usec * 1000);
++ 	isc_interval_set(&interval, sec & DHCP_SEC_MAX, usec * 1000);
+/auto/home5/hoj9/dhcp-4.2.6/common/bpf.c
++  * Copyright (c) 2009,2012-2014 by Internet Systems Consortium, Inc. ("ISC")
+-  * Copyright (c) 2004,2007,2009,2014 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2004,2007 by Internet Systems Consortium, Inc. ("ISC")
+- #  include <net/if_types.h>
+- #ifdef USE_BPF_RECEIVE
++ #if defined(USE_BPF_SEND) || defined(USE_BPF_RECEIVE) || defined(USE_BPF_HWADDR)
++ #include <net/if_types.h>
++ #endif
++ #if defined(USE_BPF_RECEIVE) || defined(USE_BPF_HWADDR)
++ #if defined (IFT_L2VLAN)
++ 		case IFT_L2VLAN:
++ #endif
+/auto/home5/hoj9/dhcp-4.2.6/common/execute.c
+- 			in_options, out_options, scope, statements)
++ 			in_options, out_options, scope, statements,
++ 			on_star)
++ 	struct on_star *on_star;
+- 	r = (struct executable_statement *)0;
+- 	next = (struct executable_statement *)0;
+- 	e = (struct executable_statement *)0;
++ 	r = NULL;
++ 	next = NULL;
++ 	e = NULL;
+- 		if (r -> next)
++ 		if (r->next)
+- 			executable_statement_reference (&next, r -> next, MDL);
++ 			executable_statement_reference (&next, r->next, MDL);
+- 		switch (r -> op) {
++ 		switch (r->op) {
+- 						     r -> data.statements);
++ 						     r->data.statements,
++ 						     on_star);
+- 			if (lease) {
++ 			/*
++ 			 * if we haven't been passed an on_star block but
++ 			 * do have a lease, use the one from the lease
++ 			 * This handles the previous v4 calls.
++ 			 */
++ 			if ((on_star == NULL) && (lease != NULL))
++ 			    on_star = &lease->on_star;
++ 
++ 			if (on_star != NULL) {
+- 			    if (r -> data.on.evtypes & ON_EXPIRY) {
++ 			    if (r->data.on.evtypes & ON_EXPIRY) {
+- 				if (lease -> on_expiry)
++ 				if (on_star->on_expiry)
+- 						(&lease -> on_expiry, MDL);
++ 						(&on_star->on_expiry, MDL);
+- 				if (r -> data.on.statements)
++ 				if (r->data.on.statements)
+- 						(&lease -> on_expiry,
++ 						(&on_star->on_expiry,
+- 						 r -> data.on.statements, MDL);
++ 						 r->data.on.statements, MDL);
+- 			    if (r -> data.on.evtypes & ON_RELEASE) {
++ 			    if (r->data.on.evtypes & ON_RELEASE) {
+- 				if (lease -> on_release)
++ 				if (on_star->on_release)
+- 						(&lease -> on_release, MDL);
++ 						(&on_star->on_release, MDL);
+- 				if (r -> data.on.statements)
++ 				if (r->data.on.statements)
+- 						(&lease -> on_release,
++ 						(&on_star->on_release,
+- 						 r -> data.on.statements, MDL);
++ 						 r->data.on.statements, MDL);
+- 			    if (r -> data.on.evtypes & ON_COMMIT) {
++ 			    if (r->data.on.evtypes & ON_COMMIT) {
+- 				if (lease -> on_commit)
++ 				if (on_star->on_commit)
+- 						(&lease -> on_commit, MDL);
++ 						(&on_star->on_commit, MDL);
+- 				if (r -> data.on.statements)
++ 				if (r->data.on.statements)
+- 						(&lease -> on_commit,
++ 						(&on_star->on_commit,
+- 						 r -> data.on.statements, MDL);
++ 						 r->data.on.statements, MDL);
+- 				   r -> data.s_switch.expr,
++ 				   r->data.s_switch.expr,
+- 				   r -> data.s_switch.statements));
++ 				   r->data.s_switch.statements));
+- 				       in_options, out_options, scope, e))) {
++ 				       in_options, out_options, scope, e,
++ 				       on_star))) {
+- 				   out_options, scope, r -> data.ie.expr));
++ 				   out_options, scope, r->data.ie.expr));
+- 			     rc ? r -> data.ie.tc : r -> data.ie.fc))
++ 			     rc ? r->data.ie.tc : r->data.ie.fc,
++ 			     on_star))
+- 				((struct binding_value **)0,
+- 				 packet, lease, client_state, in_options,
++ 				(NULL, packet, lease, client_state, in_options,
+- 				 out_options, scope, r -> data.eval, MDL);
++ 				 out_options, scope, r->data.eval, MDL);
+- 			log_debug ("exec: add %s", (r -> data.add -> name
++ 			log_debug ("exec: add %s", (r->data.add->name
+- 					       ? r -> data.add -> name
++ 					       ? r->data.add->name
+- 			classify (packet, r -> data.add);
++ 			classify (packet, r->data.add);
+- 			      (r -> op == supersede_option_statement
++ 			      (r->op == supersede_option_statement
+- 			      r -> data.option -> option -> universe -> name,
++ 			      r->data.option->option->universe->name,
+- 			      r -> data.option -> option -> name);
++ 			      r->data.option->option->name);
+- 			      r -> data.option -> option -> universe -> name,
++ 			      r->data.option->option->universe->name,
+- 			      r -> data.option -> option -> name);
++ 			      r->data.option->option->name);
+- 			      r -> data.option -> option -> universe -> name,
++ 			      r->data.option->option->universe->name,
+- 			      r -> data.option -> option -> name);
++ 			      r->data.option->option->name);
+- 			      r -> data.option -> option -> universe -> name,
++ 			      r->data.option->option->universe->name,
+- 			      r -> data.option -> option -> name);
++ 			      r->data.option->option->name);
+- 			set_option (r -> data.option -> option -> universe,
++ 			set_option (r->data.option->option->universe,
+- 				    out_options, r -> data.option, r -> op);
++ 				    out_options, r->data.option, r->op);
+- 			binding = find_binding (*scope, r -> data.unset);
++ 			binding = find_binding (*scope, r->data.unset);
+- 				if (binding -> value)
++ 				if (binding->value)
+- 						(&binding -> value, MDL);
++ 						(&binding->value, MDL);
+- 			log_debug ("exec: unset %s: %s", r -> data.unset,
++ 			log_debug ("exec: unset %s: %s", r->data.unset,
+- 				      (result, packet, lease,
++ 				      (result, packet, lease, client_state,
+- 				       client_state,
+- 				       &ns, e->data.let.statements);
++ 				       &ns, e->data.let.statements, on_star);
+- 				   out_options, scope, r -> data.log.expr,
++ 				   out_options, scope, r->data.log.expr, MDL));
+- 				   MDL));
+- 				switch (r -> data.log.priority) {
++ 				switch (r->data.log.priority) {
+- 				  scope, group, limiting_group)
++ 				  scope, group, limiting_group, on_star)
++ 	struct on_star *on_star;
+- 					     group -> next, limiting_group);
++ 					     group->next, limiting_group,
++ 					     on_star);
+- 			    out_options, scope, group -> statements);
++ 			    out_options, scope, group->statements, on_star);
+- 					scope, s -> data.c_case, MDL));
++ 					scope, s->data.c_case, MDL));
+- 						(ep, s -> next, MDL);
++ 						(ep, s->next, MDL);
+- 		    for (s = stmt; s; s = s -> next) {
++ 		    for (s = stmt; s; s = s->next) {
+- 					scope, s -> data.c_case));
++ 					scope, s->data.c_case));
+- 						(ep, s -> next, MDL);
++ 						(ep, s->next, MDL);
+- 	for (s = stmt; s; s = s -> next)
++ 	for (s = stmt; s; s = s->next)
+- 		if (s -> op == default_statement)
++ 		if (s->op == default_statement)
+- 		executable_statement_reference (ep, s -> next, MDL);
++ 		executable_statement_reference (ep, s->next, MDL);
+- 	for (foo = stmt; foo; foo = foo -> next) {
++ 	for (foo = stmt; foo; foo = foo->next) {
+- 	    switch (foo -> op) {
++ 	    switch (foo->op) {
+- 		if (executable_statement_foreach (foo -> data.ie.tc,
++ 		if (executable_statement_foreach (foo->data.ie.tc,
+- 		if (executable_statement_foreach (foo -> data.ie.fc,
++ 		if (executable_statement_foreach (foo->data.ie.fc,
+- 		     (foo -> data.statements, callback, vp, condp)))
++ 		     (foo->data.statements, callback, vp, condp)))
+- 		     (foo -> data.on.statements, callback, vp, 1)))
++ 		     (foo->data.on.statements, callback, vp, 1)))
+- 		     (foo -> data.s_switch.statements, callback, vp, 1)))
++ 		     (foo->data.s_switch.statements, callback, vp, 1)))
+- 		     (foo -> data.let.statements, callback, vp, 0)))
++ 		     (foo->data.let.statements, callback, vp, 0)))
+/auto/home5/hoj9/dhcp-4.2.6/common/dns.c
++ /*! \file common/dns.c
++  */
+- 
++ #include <isc/sha2.h>
++ #if defined (DNS_ZONE_LOOKUP)
++ /*
++  * The structure used to find a nameserver if there wasn't a zone entry.
++  * Currently we assume we won't have many of these outstanding at any
++  * time so we go with a simple linked list.
++  * In use find_zone_start() will fill in the oname with the name
++  * requested by the DDNS code.  zname will point to it and be
++  * advanced as labels are removed.  If the DNS client code returns
++  * a set of name servers eventp and rdataset will be set.  Then
++  * the code will walk through the nameservers in namelist and
++  * find addresses that are stored in addrs and addrs6.
++  */
++ 
++ typedef struct dhcp_ddns_ns {
++ 	struct dhcp_ddns_ns *next;      
++ 	struct data_string oname;     /* the original name for DDNS */
++ 	char *zname;                  /* a pointer into the original name for
++ 					 the zone we are checking */
++ 	dns_clientresevent_t *eventp; /* pointer to the event that provided the
++ 					 namelist, we can't free the eventp
++ 					 until we free the namelist */
++ 	dns_name_t *ns_name;          /* current name server we are examining */
++ 	dns_rdataset_t *rdataset; 
++ 	dns_rdatatype_t rdtype;       /* type of address we want */
++ 
++ 	struct in_addr addrs[DHCP_MAXNS];   /* space for v4 addresses */
++ 	struct in6_addr addrs6[DHCP_MAXNS]; /* space for v6 addresses */
++ 	int num_addrs;
++ 	int num_addrs6;
++ 	int ttl;
++ 
++ 	void *transaction;             /* transaction id for DNS calls */
++ } dhcp_ddns_ns_t;
++ 
++ /*
++  * The list of DDNS names for which we are attempting to find a name server.
++  * This list is used for finding the name server, it doesn't include the
++  * information necessary to do the DDNS request after finding a name server.
++  * The code attempts to minimize duplicate requests by examining the list
++  * to see if we are already trying to find a substring of the new request.
++  * For example imagine the first request is "a.b.c.d.e." and the server has
++  * already discarded the first two lables and is trying "c.d.e.".  If the
++  * next request is for "x.y.c.d.e." the code assumes the in progress
++  * request is sufficient and doesn't add a new request for the second name.
++  * If the next request was for "x.y.z.d.e." the code doesn't assume they
++  * will use the same nameserver and starts a second request.
++  * This strategy will not eliminate all duplicates but is simple and
++  * should be sufficient.
++  */
++ dhcp_ddns_ns_t *dns_outstanding_ns = NULL;
++ 
++ /*
++  * Routines to manipulate the list of outstanding searches
++  *
++  * add_to_ns_queue() - adds the given control block to the queue
++  *
++  * remove_from_ns_queue() - removes the given control block from
++  * the queue
++  *
++  * find_in_ns_queue() compares the name from the given control
++  * block with the control blocks in the queue.  It returns
++  * success if a matching entry is found.  In order to match
++  * the entry already on the queue must be shorter than the
++  * incoming name must match the ending substring of the name.
++  */
++ 
++ void
++ add_to_ns_queue(dhcp_ddns_ns_t *ns_cb)
++ {
++ 	ns_cb->next = dns_outstanding_ns;
++ 	dns_outstanding_ns = ns_cb;
++ }
++ 
++ 
++ void
++ remove_from_ns_queue(dhcp_ddns_ns_t *ns_cb)
++ {
++ 	dhcp_ddns_ns_t **foo;
++ 
++ 	foo = &dns_outstanding_ns;
++ 	while (*foo) {
++ 		if (*foo == ns_cb) {
++ 			*foo = ns_cb->next;
++ 			break;
++ 		}
++ 		foo = &((*foo)->next);
++ 	}
++ 	ns_cb->next = NULL;
++ }
++ 
++ isc_result_t
++ find_in_ns_queue(dhcp_ddns_ns_t *ns_cb)
++ {
++ 	dhcp_ddns_ns_t *temp_cb;
++ 	int in_len, temp_len;
++ 
++ 	in_len = strlen(ns_cb->zname);
++ 
++ 	for(temp_cb = dns_outstanding_ns;
++ 	    temp_cb != NULL;
++ 	    temp_cb = temp_cb->next) {
++ 		temp_len = strlen(temp_cb->zname);
++ 		if (temp_len > in_len)
++ 			continue;
++ 		if (strcmp(temp_cb->zname,
++ 			   ns_cb->zname + (in_len - temp_len)) == 0)
++ 			return(ISC_R_SUCCESS);
++ 	}
++ 	return(ISC_R_NOTFOUND);
++ }
++ 
++ void cache_found_zone (dhcp_ddns_ns_t *);
++ #endif
++ 
+- void ddns_interlude(isc_task_t  *, isc_event_t *);
++ void ddns_interlude(isc_task_t *, isc_event_t *);
+- 
++ #define zone_resolve dns_client_startresolve
++ 
++ isc_result_t remove_dns_zone (struct dns_zone *zone)
++ {
++ 	struct dns_zone *tz = NULL;
++ 
++ 	if (dns_zone_hash) {
++ 		dns_zone_hash_lookup(&tz, dns_zone_hash, zone->name, 0, MDL);
++ 		if (tz != NULL) {
++ 			dns_zone_hash_delete(dns_zone_hash, tz->name, 0, MDL);
++ 			dns_zone_dereference(&tz, MDL);
++ 		}
++ 	}
++ 
++ 	return (ISC_R_SUCCESS);
++ }
++ 
++ 	else if ((*zone)->timeout && (*zone)->timeout < cur_time) {
++ 		dns_zone_hash_delete(dns_zone_hash, (*zone)->name, 0, MDL);
++ 		dns_zone_dereference(zone, MDL);
++ 		status = ISC_R_NOTFOUND;
+- 	else
++ 	} else 
++ #if defined (DNS_ZONE_LOOKUP)
++ 
++ /* Helper function to copy the address from an rdataset to 
++  * the nameserver control block.  Mostly to avoid really long
++  * lines in the nested for loops
++  */
++ void
++ zone_addr_to_ns(dhcp_ddns_ns_t *ns_cb,
++ 		dns_rdataset_t *rdataset)
++ {
++ 	dns_rdata_t rdata;
++ 	dns_rdata_in_a_t a;
++ 	dns_rdata_in_aaaa_t aaaa;
++ 	
++ 	dns_rdata_init(&rdata);
++ 	dns_rdataset_current(rdataset, &rdata);
++ 	switch (rdataset->type) {
++ 	case dns_rdatatype_a:
++ 		(void) dns_rdata_tostruct(&rdata, &a, NULL);
++ 		memcpy(&ns_cb->addrs[ns_cb->num_addrs], &a.in_addr, 4);
++ 		ns_cb->num_addrs++;
++ 		dns_rdata_freestruct(&a);
++ 		break;
++ 	case dns_rdatatype_aaaa:
++ 		(void) dns_rdata_tostruct(&rdata, &aaaa, NULL);
++ 		memcpy(&ns_cb->addrs6[ns_cb->num_addrs6], &aaaa.in6_addr, 16);
++ 		ns_cb->num_addrs6++;
++ 		dns_rdata_freestruct(&aaaa);
++ 		break;
++ 	default:
++ 		break;
++ 	}
++ 
++ 	if ((ns_cb->ttl == 0) || (ns_cb->ttl > rdataset->ttl))
++ 		ns_cb->ttl = rdataset->ttl;
++ }
++ 
++ /*
++  * The following three routines co-operate to find the addresses of
++  * the nameservers to use for a zone if we don't have a zone statement.
++  * We strongly suggest the use of a zone statement to avoid problmes
++  * and to allow for the use of TSIG and therefore better security, but
++  * include this functionality for those that don't want such statements.
++  *
++  * find_zone_start(ddns_cb, direction)
++  * This is the first of the routines, it is called from the rest of
++  * the ddns code when we have received a request for DDNS for a name
++  * and don't have a zone entry that would cover that name.  The name
++  * is in the ddns_cb as specified by the direction (forward or reverse).
++  * The start function pulls the name out and constructs the name server
++  * block then starts the process by calling the DNS client code.
++  *
++  * find_zone_ns(taskp, eventp)
++  * This is the second step of the process.  The DNS client code will
++  * call this when it has gotten a response or timed out.  If the response
++  * doesn't have a list of nameservers we remove another label from the
++  * zone name and try again.  If the response does include a list of
++  * nameservers we start walking through the list attempting to get
++  * addresses for the nameservers.
++  *
++  * find_zone_addrs(taskp, eventp)
++  * This is the third step of the process.  In find_zone_ns we got
++  * a list of nameserves and started walking through them.  This continues
++  * the walk and if we get back any addresses it adds them to our list.
++  * When we get enough addresses or run out of nameservers we construct
++  * a zone entry and insert it into the zone hash for the rest of the
++  * DDNS code to use.
++  */
++ void
++ find_zone_addrs(isc_task_t *taskp,
++ 		isc_event_t *eventp)
++ {
++ 	dns_clientresevent_t *ddns_event = (dns_clientresevent_t *)eventp;
++ 	dhcp_ddns_ns_t *ns_cb = (dhcp_ddns_ns_t *)eventp->ev_arg;
++ 	dns_name_t *ns_name = NULL;
++ 	dns_rdataset_t *rdataset;
++ 	isc_result_t result;
++ 	dns_name_t *name;
++ 	dns_rdata_t rdata = DNS_RDATA_INIT;
++ 	dns_rdata_ns_t ns;
++ 	
++ 
++ 	/* the transaction is done, get rid of the tag */
++ 	dns_client_destroyrestrans(&ns_cb->transaction);
++ 
++ 	/* If we succeeded we try and extract the addresses, if we can
++ 	 * and we have enough we are done.  If we didn't succeed or
++ 	 * we don't have enough addresses afterwards we drop through
++ 	 * and try the next item on the list.
++ 	 */
++ 	if (ddns_event->result == ISC_R_SUCCESS) {
++ 
++ 		for (name = ISC_LIST_HEAD(ddns_event->answerlist);
++ 		     name != NULL;
++ 		     name = ISC_LIST_NEXT(name, link)) {
++ 
++ 			for (rdataset = ISC_LIST_HEAD(name->list);
++ 			     rdataset != NULL;
++ 			     rdataset = ISC_LIST_NEXT(rdataset, link)) {
++ 
++ 				for (result = dns_rdataset_first(rdataset);
++ 				     result == ISC_R_SUCCESS;
++ 				     result = dns_rdataset_next(rdataset)) {
++ 
++ 					/* add address to cb */
++ 					zone_addr_to_ns(ns_cb, rdataset);
++ 
++ 					/* We are done if we have
++ 					 * enough addresses
++ 					 */
++ 					if (ns_cb->num_addrs +
++ 					    ns_cb->num_addrs6 >= DHCP_MAXNS)
++ 						goto done;
++ 				}
++ 			}
++ 		}
++ 	}
++ 
++ 	/* We need more addresses.
++ 	 * We restart the loop we were in before.
++ 	 */
++ 
++ 	for (ns_name = ns_cb->ns_name;
++ 	     ns_name != NULL;
++ 	     ns_name = ISC_LIST_NEXT(ns_name, link)) {
++ 
++ 		if (ns_name == ns_cb->ns_name) {
++ 			/* first time through, use saved state */
++ 			rdataset = ns_cb->rdataset;
++ 		} else {
++ 			rdataset = ISC_LIST_HEAD(ns_name->list);
++ 		}
++ 
++ 		for (;
++ 		     rdataset != NULL;
++ 		     rdataset = ISC_LIST_NEXT(rdataset, link)) {
++ 			
++ 			if (rdataset->type != dns_rdatatype_ns)
++ 				continue;
++ 			dns_rdata_init(&rdata);
++ 
++ 			if (rdataset == ns_cb->rdataset) {
++ 				/* first time through use the saved state */
++ 				if (ns_cb->rdtype == dns_rdatatype_a) {
++ 					ns_cb->rdtype = dns_rdatatype_aaaa;
++ 				} else {
++ 					ns_cb->rdtype = dns_rdatatype_a;
++ 					if (dns_rdataset_next(rdataset) !=
++ 					    ISC_R_SUCCESS)
++ 						continue;
++ 				}
++ 			} else {
++ 				if ((!dns_rdataset_isassociated(rdataset)) ||
++ 				    (dns_rdataset_first(rdataset) != 
++ 				     ISC_R_SUCCESS))
++ 					continue;
++ 			}				
++ 
++ 			dns_rdataset_current(rdataset, &rdata);
++ 			if (dns_rdata_tostruct(&rdata, &ns, NULL) !=
++ 			    ISC_R_SUCCESS)
++ 				continue;
++ 
++ 			/* Save our current state */
++ 			ns_cb->ns_name = ns_name;
++ 			ns_cb->rdataset = rdataset;
++ 
++ 			/* And call out to DNS */
++ 			result = zone_resolve(dhcp_gbl_ctx.dnsclient, &ns.name,
++ 					      dns_rdataclass_in,
++ 					      ns_cb->rdtype,
++ 					      DNS_CLIENTRESOPT_NODNSSEC,
++ 					      dhcp_gbl_ctx.task,
++ 					      find_zone_addrs,
++ 					      (void *)ns_cb,
++ 					      &ns_cb->transaction);
++ 
++ 			/* do we need to clean this? */
++ 			dns_rdata_freestruct(&ns);
++ 
++ 			if (result == ISC_R_SUCCESS)
++ 				/* we have started the next step, cleanup
++ 				 * the structures associated with this call
++ 				 * but leave the cb for the next round
++ 				 */
++ 				goto cleanup;
++ 
++ 			log_error("find_zone_ns: unable to continue "
++ 				  "resolve: %s %s",
++ 				  ns_cb->zname,
++ 				  isc_result_totext(result));
++ 
++ 			/* The call to start a resolve transaction failed,
++ 			 * should we try to continue with any other names?
++ 			 * For now let's not, but let's use whatever we
++ 			 * may already have.
++ 			 */
++ 			goto done;
++ 		}
++ 	}
++ 
++  done:
++ 	/* we've either gotten our max number of addresses or
++ 	 * run out of nameservers to try.  Convert the cb into
++ 	 * a zone and insert it into the zone hash.  Then
++ 	 * we need to clean up the saved state.
++ 	 */
++ 	if ((ns_cb->num_addrs != 0) ||
++ 	    (ns_cb->num_addrs6 != 0))
++ 		cache_found_zone(ns_cb);
++ 
++ 	dns_client_freeresanswer(dhcp_gbl_ctx.dnsclient,
++ 				 &ns_cb->eventp->answerlist);
++ 	isc_event_free((isc_event_t **)&ns_cb->eventp);
++ 
++ 	remove_from_ns_queue(ns_cb);
++ 	data_string_forget(&ns_cb->oname, MDL);
++ 	dfree(ns_cb, MDL);
++ 
++  cleanup:
++ 	/* cleanup any of the new state information */
++ 
++ 	dns_client_freeresanswer(dhcp_gbl_ctx.dnsclient,
++ 				 &ddns_event->answerlist);
++ 	isc_event_free(&eventp);
++ 
++ 	return;
++ 	 
++ }
++ 
++ /*
++  * Routine to continue the process of finding a nameserver via the DNS
++  * This is routine is called when we are still trying to get a list
++  * of nameservers to process.
++  */
++  
++ void
++ find_zone_ns(isc_task_t *taskp,
++ 	     isc_event_t *eventp)
++ {
++ 	dns_clientresevent_t *ddns_event = (dns_clientresevent_t *)eventp;
++ 	dhcp_ddns_ns_t *ns_cb = (dhcp_ddns_ns_t *)eventp->ev_arg;
++ 	dns_fixedname_t zname0;
++ 	dns_name_t *zname = NULL, *ns_name = NULL;
++ 	dns_rdataset_t *rdataset;
++ 	isc_result_t result;
++ 	dns_rdata_t rdata = DNS_RDATA_INIT;
++ 	dns_rdata_ns_t ns;
++ 
++ 	/* the transaction is done, get rid of the tag */
++ 	dns_client_destroyrestrans(&ns_cb->transaction);
++ 
++ 	if (ddns_event->result != ISC_R_SUCCESS) {
++ 		/* We didn't find any nameservers, try again */
++ 
++ 		/* Remove a label and continue */
++ 		ns_cb->zname = strchr(ns_cb->zname, '.');
++ 		if ((ns_cb->zname == NULL) ||
++ 		    (ns_cb->zname[1] == 0)) {
++ 			/* No more labels, all done */
++ 			goto cleanup;
++ 		}
++ 		ns_cb->zname++;
++ 
++ 		/* Create a DNS version of the zone name and call the
++ 		 * resolver code */
++ 		if (((result = dhcp_isc_name((unsigned char *)ns_cb->zname,
++ 					     &zname0, &zname))
++ 		     != ISC_R_SUCCESS) ||
++ 		    ((result = zone_resolve(dhcp_gbl_ctx.dnsclient,
++ 					    zname, dns_rdataclass_in,
++ 					    dns_rdatatype_ns,
++ 					    DNS_CLIENTRESOPT_NODNSSEC,
++ 					    dhcp_gbl_ctx.task,
++ 					    find_zone_ns,
++ 					    (void *)ns_cb,
++ 					    &ns_cb->transaction))
++ 		     != ISC_R_SUCCESS)) {
++ 			log_error("find_zone_ns: Unable to build "
++ 				  "name or start resolve: %s %s",
++ 				  ns_cb->zname,
++ 				  isc_result_totext(result));
++ 			goto cleanup;
++ 		}
++ 		
++ 		/* we have successfully started the next iteration
++ 		 * of this step, clean up from the call and continue */
++                 dns_client_freeresanswer(dhcp_gbl_ctx.dnsclient,
++                                          &ddns_event->answerlist);
++ 		isc_event_free(&eventp);
++ 		return;
++ 	}
++ 
++ 	/* We did get a set of nameservers, save the information and
++ 	 * start trying to get addresses
++ 	 */
++ 	ns_cb->eventp = ddns_event;
++ 	for (ns_name = ISC_LIST_HEAD(ddns_event->answerlist);
++ 	     ns_name != NULL;
++ 	     ns_name = ISC_LIST_NEXT(ns_name, link)) {
++ 
++ 		for (rdataset = ISC_LIST_HEAD(ns_name->list);
++ 		     rdataset != NULL;
++ 		     rdataset = ISC_LIST_NEXT(rdataset, link)) {
++ 
++ 			if (rdataset->type != dns_rdatatype_ns)
++ 				continue;
++ 
++ 			if ((!dns_rdataset_isassociated(rdataset)) ||
++ 			    (dns_rdataset_first(rdataset) != 
++ 			     ISC_R_SUCCESS))
++ 				continue;
++ 
++ 			dns_rdataset_current(rdataset, &rdata);
++ 			if (dns_rdata_tostruct(&rdata, &ns, NULL) !=
++ 			    ISC_R_SUCCESS)
++ 				continue;
++ 
++ 			/* Save our current state */
++ 			ns_cb->ns_name = ns_name;
++ 			ns_cb->rdataset = rdataset;
++ 
++ 			/* And call out to DNS */
++ 			result = zone_resolve(dhcp_gbl_ctx.dnsclient, &ns.name,
++ 					      dns_rdataclass_in,
++ 					      ns_cb->rdtype,
++ 					      DNS_CLIENTRESOPT_NODNSSEC,
++ 					      dhcp_gbl_ctx.task,
++ 					      find_zone_addrs,
++ 					      (void *)ns_cb,
++ 					      &ns_cb->transaction);
++ 
++ 			/* do we need to clean this? */
++ 			dns_rdata_freestruct(&ns);
++ 
++ 			if (result == ISC_R_SUCCESS)
++ 				/* We have successfully started the next step
++ 				 * we don't cleanup the eventp block as we are
++ 				 * still using it.
++ 				 */
++ 				return;
++ 
++ 			log_error("find_zone_ns: unable to continue "
++ 				  "resolve: %s %s",
++ 				  ns_cb->zname,
++ 				  isc_result_totext(result));
++ 
++ 			/* The call to start a resolve transaction failed,
++ 			 * should we try to continue with any other names?
++ 			 * For now let's not
++ 			 */
++ 			goto cleanup;
++ 		}
++ 	}
++ 
++  cleanup:
++ 	/* When we add a queue to manage the DDNS
++ 	 * requests we will need to remove any that
++ 	 * were waiting for this resolution */
++ 
++ 	dns_client_freeresanswer(dhcp_gbl_ctx.dnsclient,
++ 				 &ddns_event->answerlist);
++ 	isc_event_free(&eventp);
++ 
++ 	remove_from_ns_queue(ns_cb);
++ 
++ 	data_string_forget(&ns_cb->oname, MDL);
++ 	dfree(ns_cb, MDL);
++ 	return;
++ 	
++ }
++ 
++ /*
++  * Start the process of finding nameservers via the DNS because
++  * we don't have a zone entry already.
++  * We construct a control block and fill in the DDNS name.  As
++  * the process continues we shall move the zname pointer to
++  * indicate which labels we are still using.  The rest of
++  * the control block will be filled in as we continue processing.
++  */
++ isc_result_t
++ find_zone_start(dhcp_ddns_cb_t *ddns_cb, int direction) 
++ {
++ 	isc_result_t status = ISC_R_NOTFOUND;
++ 	dhcp_ddns_ns_t *ns_cb;
++ 	dns_fixedname_t zname0;
++ 	dns_name_t *zname = NULL;
++ 
++ 	/*
++ 	 * We don't validate np as that was already done in find_cached_zone()
++ 	 */
++ 
++ 	/* Allocate the control block for this request */
++ 	ns_cb = dmalloc(sizeof(*ns_cb), MDL);
++ 	if (ns_cb == NULL) {
++ 		log_error("find_zone_start: unable to allocate cb");
++ 		return(ISC_R_FAILURE);
++ 	}
++ 	ns_cb->rdtype = dns_rdatatype_a;
++ 
++ 	/* Copy the data string so the NS lookup is independent of the DDNS */
++ 	if (direction == FIND_FORWARD) {
++ 		data_string_copy(&ns_cb->oname,  &ddns_cb->fwd_name, MDL);
++ 	} else {
++ 		data_string_copy(&ns_cb->oname,  &ddns_cb->rev_name, MDL);
++ 	}
++ 	ns_cb->zname = (char *)ns_cb->oname.data;
++ 
++ 	/*
++ 	 * Check the dns_outstanding_ns queue to see if we are
++ 	 * already processing something that would cover this name
++ 	 */
++ 	if (find_in_ns_queue(ns_cb) == ISC_R_SUCCESS) {
++ 		data_string_forget(&ns_cb->oname, MDL);
++ 		dfree(ns_cb, MDL);
++ 		return (ISC_R_SUCCESS);
++ 	}
++ 
++ 	/* Create a DNS version of the zone name and call the
++ 	 * resolver code */
++ 	if (((status = dhcp_isc_name((unsigned char *)ns_cb->zname,
++ 				     &zname0, &zname))
++ 	     != ISC_R_SUCCESS) ||
++ 	    ((status = zone_resolve(dhcp_gbl_ctx.dnsclient,
++ 				    zname, dns_rdataclass_in,
++ 				    dns_rdatatype_ns,
++ 				    DNS_CLIENTRESOPT_NODNSSEC,
++ 				    dhcp_gbl_ctx.task,
++ 				    find_zone_ns,
++ 				    (void *)ns_cb,
++ 				    &ns_cb->transaction))
++ 	     != ISC_R_SUCCESS)) {
++ 		log_error("find_zone_start: Unable to build "
++ 			  "name or start resolve: %s %s",
++ 			  ns_cb->zname,
++ 			  isc_result_totext(status));
++ 
++ 		/* We failed to start the process, clean up */
++ 		data_string_forget(&ns_cb->oname, MDL);
++ 		dfree(ns_cb, MDL);
++ 	} else {
++ 		/* We started the process, attach the control block
++ 		 * to the queue */
++ 		add_to_ns_queue(ns_cb);
++ 	}
++ 
++ 	return (status);
++ }
++ #endif
++ 
+- 	/* Make sure the zone is valid. */
+- 	if (zone->timeout && zone->timeout < cur_time) {
++ 	/* Make sure the zone is valid, we've already gotten
++ 	 * rid of expired dynamic zones.  Check to see if
++ 	 * we repudiated this zone.  If so give up.
++ 	 */
++ 	if ((zone->flags & DNS_ZONE_INACTIVE) != 0) {
+- 		return (ISC_R_CANCELED);
++ 		return (ISC_R_FAILURE);
+- 	/* XXX Currently we're not differentiating between a cached
+- 	   XXX zone and a zone that's been repudiated, which means
+- 	   XXX that if we reap cached zones, we blow away repudiated
+- 	   XXX zones.   This isn't a big problem since we're not yet
+- 	   XXX caching zones... :'} */
+- 
+- 	(*zone) -> timeout = cur_time - 1;
++ 	(*zone)->flags |= DNS_ZONE_INACTIVE;
+- 	dns_zone_dereference (zone, MDL);
++ 	dns_zone_dereference(zone, MDL);
++ }
++ 
++ #if defined (DNS_ZONE_LOOKUP)
++ void cache_found_zone(dhcp_ddns_ns_t *ns_cb)
++ {
++ 	struct dns_zone *zone = NULL;
++ 	int len, remove_zone = 0;
++ 
++ 	/* See if there's already such a zone. */
++ 	if (dns_zone_lookup(&zone, ns_cb->zname) == ISC_R_SUCCESS) {
++ 		/* If it's not a dynamic zone, leave it alone. */
++ 		if (zone->timeout == 0)
++ 			return;
++ 
++ 		/* Remove any old addresses in case they've changed */
++ 		if (zone->primary)
++ 			option_cache_dereference(&zone->primary, MDL);
++ 		if (zone->primary6)
++ 			option_cache_dereference(&zone->primary6, MDL);
++ 
++ 		/* Set the flag to remove the zone from the hash if
++ 		   we have problems */
++ 		remove_zone = 1;
++ 	} else if (dns_zone_allocate(&zone, MDL) == 0) {
++ 		return;
++ 	} else {
++ 		/* We've just allocated the zone, now we need
++ 		 * to allocate space for the name and addresses
++ 		 */
++ 
++ 		/* allocate space for the name */
++ 		len = strlen(ns_cb->zname);
++ 		zone->name = dmalloc(len + 2, MDL);
++ 		if (zone->name == NULL) {
++ 			goto cleanup;
++ 		}
++ 
++ 		/* Copy the name and add a trailing '.' if necessary */
++ 		strcpy(zone->name, ns_cb->zname);
++ 		if (zone->name[len-1] != '.') {
++ 			zone->name[len] = '.';
++ 			zone->name[len+1] = 0;
++ 		}
+- }
++ 	}
++ 	zone->timeout = cur_time + ns_cb->ttl;
+- /* Have to use TXT records for now. */
+- #define T_DHCID T_TXT
+- int get_dhcid (struct data_string *id,
+- 	       int type, const u_int8_t *data, unsigned len)
++ 	if (ns_cb->num_addrs != 0) {
++ 		len = ns_cb->num_addrs * sizeof(struct in_addr);
++ 		if ((!option_cache_allocate(&zone->primary, MDL)) ||
++ 		    (!buffer_allocate(&zone->primary->data.buffer,
++ 				      len, MDL))) {
++ 			if (remove_zone == 1)
++ 				remove_dns_zone(zone);
++ 			goto cleanup;
++ 		}
++ 		memcpy(zone->primary->data.buffer->data, ns_cb->addrs, len);
++ 		zone->primary->data.data = 
++ 			&zone->primary->data.buffer->data[0];
++ 		zone->primary->data.len = len;
++ 	}
++ 	if (ns_cb->num_addrs6 != 0) {
++ 		len = ns_cb->num_addrs6 * sizeof(struct in6_addr);
++ 		if ((!option_cache_allocate(&zone->primary6, MDL)) ||
++ 		    (!buffer_allocate(&zone->primary6->data.buffer,
++ 				      len, MDL))) {
++ 			if (remove_zone == 1)
++ 				remove_dns_zone(zone);
++ 			goto cleanup;
++ 		}
++ 		memcpy(zone->primary6->data.buffer->data, ns_cb->addrs6, len);
++ 		zone->primary6->data.data = 
++ 			&zone->primary6->data.buffer->data[0];
++ 		zone->primary6->data.len = len;
++ 	}
++ 
++ 	enter_dns_zone(zone);
++ 
++  cleanup:
++ 	dns_zone_dereference(&zone, MDL);
++ 	return;
++ }
++ #endif
++ 
++ /*!
++  * \brief Create an id for a client
++  *
++  * This function is used to create an id for a client to use with DDNS
++  * This version of the function is for the standard style, RFC 4701
++  *
++  * This function takes information from the type and data fields and
++  * mangles it into a dhcid string which it places in ddns_cb.  It also
++  * sets a field in ddns_cb to specify the class that should be used
++  * when sending the dhcid, in this case it is a DHCID record so we use
++  * dns_rdatatype_dhcid
++  *
++  * The DHCID we construct is:
++  *  2 bytes - identifier type (see 4701 and IANA)
++  *  1 byte  - digest type, currently only SHA256 (1)
++  *  n bytes - digest, length depends on digest type, currently 32 for
++  *            SHA256
++  *
++  * What we base the digest on is up to the calling code for an id type of
++  * 0 - 1 octet htype followed by hlen octets of chaddr from v4 client request
++  * 1 - data octets from a dhcpv4 client's client identifier option
++  * 2 - the client DUID from a v4 or v6 client's client id option
++  * This identifier is concatenated with the fqdn and the result is digested.
++  */
++ int get_std_dhcid(dhcp_ddns_cb_t *ddns_cb,
++ 		  int type,
++ 		  const u_int8_t *identifier,
++ 		  unsigned id_len)
++ 	struct data_string *id = &ddns_cb->dhcid;
++ 	isc_sha256_t sha256;
++ 	unsigned char buf[ISC_SHA256_DIGESTLENGTH];
++ 	unsigned char fwd_buf[256];
++ 	unsigned fwd_buflen = 0;
++ 
++ 	/* Types can only be 0..(2^16)-1. */
++ 	if (type < 0 || type > 65535)
++ 		return (0);
++ 
++ 	/* We need to convert the fwd name to wire representation */
++ 	if (MRns_name_pton((char *)ddns_cb->fwd_name.data, fwd_buf, 256) == -1)
++ 		return (0);
++ 	while(fwd_buf[fwd_buflen] != 0) {
++ 		fwd_buflen += fwd_buf[fwd_buflen] + 1;
++ 	}
++ 	fwd_buflen++;
++ 
++ 	if (!buffer_allocate(&id->buffer,
++ 			     ISC_SHA256_DIGESTLENGTH + 2 + 1,
++ 			     MDL))
++ 		return (0);
++ 	id->data = id->buffer->data;
++ 
++ 	/* The two first bytes contain the type identifier. */
++ 	putUShort(id->buffer->data, (unsigned)type);
++ 
++ 	/* The next is the digest type, SHA-256 is 1 */
++ 	putUChar(id->buffer->data + 2, 1u);
++ 
++ 	/* Computing the digest */
++ 	isc_sha256_init(&sha256);
++ 	isc_sha256_update(&sha256, identifier, id_len);
++ 	isc_sha256_update(&sha256, fwd_buf, fwd_buflen);
++ 	isc_sha256_final(buf, &sha256);
++ 
++ 	memcpy(id->buffer->data + 3, &buf, ISC_SHA256_DIGESTLENGTH);
++ 
++ 	id->len = ISC_SHA256_DIGESTLENGTH + 2 + 1;
++ 
++ 	return (1);
++ }
++ 
++ /*!
++  *
++  * \brief Create an id for a client
++  *
++  * This function is used to create an id for a client to use with DDNS
++  * This version of the function is for the interim style.  It is retained
++  * to allow users to continue using the interim style but they should
++  * switch to the standard style (which uses get_std_dhcid) for better
++  * interoperability.  
++  *
++  * This function takes information from the type and data fields and
++  * mangles it into a dhcid string which it places in ddns_cb.  It also
++  * sets a field in ddns_cb to specify the class that should be used
++  * when sending the dhcid, in this case it is a txt record so we use
++  * dns_rdata_type_txt
++  *
++  * NOTE WELL: this function has issues with how it calculates the
++  * dhcid, they can't be changed now as that would break the records
++  * already in use.
++  */
++ 
++ int get_int_dhcid (dhcp_ddns_cb_t *ddns_cb,
++ 		   int type,
++ 		   const u_int8_t *data,
++ 		   unsigned len)
++ {
++ 	struct data_string *id = &ddns_cb->dhcid;
+- 		return 0;
++ 		return (0);
+- 	if (!buffer_allocate (&id -> buffer,
++ 	if (!buffer_allocate(&id -> buffer,
+- 			      (ISC_MD5_DIGESTLENGTH * 2) + 4, MDL))
++ 			     (ISC_MD5_DIGESTLENGTH * 2) + 4, MDL))
+- 		return 0;
++ 		return (0);
+- 	id -> data = id -> buffer -> data;
++ 	id->data = id->buffer->data;
+- 	 * DHCP clients and servers should use the following forms of client
+- 	 * identification, starting with the most preferable, and finishing
+- 	 * with the least preferable.  If the client does not send any of these
+- 	 * forms of identification, the DHCP/DDNS interaction is not defined by
+- 	 * this specification.  The most preferable form of identification is
+- 	 * the Globally Unique Identifier Option [TBD].  Next is the DHCP
+- 	 * Client Identifier option.  Last is the client's link-layer address,
+- 	 * as conveyed in its DHCPREQUEST message.  Implementors should note
+- 	 * that the link-layer address cannot be used if there are no
+- 	 * significant bytes in the chaddr field of the DHCP client's request,
+- 	 * because this does not constitute a unique identifier.
+- 	 *   -- "Interaction between DHCP and DNS"
+- 	 *      <draft-ietf-dhc-dhcp-dns-12.txt>
+- 	 *      M. Stapp, Y. Rekhter
+- 	 *
+- 	return 1;
++ 	return (1);
++ }
++ 
++ int get_dhcid(dhcp_ddns_cb_t *ddns_cb,
++ 	      int type,
++ 	      const u_int8_t *identifier,
++ 	      unsigned id_len)
++ {
++ 	if (ddns_cb->dhcid_class == dns_rdatatype_dhcid)
++ 		return get_std_dhcid(ddns_cb, type, identifier, id_len);
++ 	else 
++ 		return get_int_dhcid(ddns_cb, type, identifier, id_len);
+-  * Add a DHCID RR (currently txt)
++  * Add a DHCID RR
+-  * Add a DHCID RR (currently txt)
++  * Add a DHCID RR
+- 				  dataspace, 
++ 				  dataspace,
+- 	result = make_dns_dataset(dns_rdataclass_in, dns_rdatatype_txt,
++ 	result = make_dns_dataset(dns_rdataclass_in, ddns_cb->dhcid_class,
+- 	isc_result_t result;
++ 	isc_result_t result = ISC_R_SUCCESS;
+- 		result = make_dns_dataset(dns_rdataclass_in, dns_rdatatype_txt,
++ 		result = make_dns_dataset(dns_rdataclass_in, ddns_cb->dhcid_class,
+- 					  dns_rdatatype_txt,
++ 					  ddns_cb->dhcid_class,
+- 		result = make_dns_dataset(dns_rdataclass_in, dns_rdatatype_txt,
++ 		result = make_dns_dataset(dns_rdataclass_in, ddns_cb->dhcid_class,
+- 	isc_result_t result;
++ 	isc_result_t result = ISC_R_SUCCESS;
+- 	result = make_dns_dataset(dns_rdataclass_in, dns_rdatatype_txt,
++ 	result = make_dns_dataset(dns_rdataclass_in, ddns_cb->dhcid_class,
+- 	result = make_dns_dataset(dns_rdataclass_none, dns_rdatatype_txt,
++ 	result = make_dns_dataset(dns_rdataclass_none, ddns_cb->dhcid_class,
++ #if defined (DNS_ZONE_LOOKUP)
++ 		if (result == ISC_R_NOTFOUND) {
++ 			/*
++ 			 * We didn't find a cached zone, see if we can
++ 			 * can find a nameserver and create a zone.
++ 			 */
++ 			if (find_zone_start(ddns_cb, FIND_FORWARD)
++ 			    == ISC_R_SUCCESS) {
++ 				/*
++ 				 * We have started the process to find a zone
++ 				 * queue the ddns_cb for processing after we
++ 				 * create the zone
++ 				 */
++ 				/* sar - not yet implemented, currently we just
++ 				 * arrange for things to get cleaned up
++ 				 */
++ 				goto cleanup;
++ 			}
++ 		}
++ #endif
++ 		if (result != ISC_R_SUCCESS)
++ 			goto cleanup;
++ 
++ #if defined (DNS_ZONE_LOOKUP)
++ 	if (result == ISC_R_NOTFOUND) {
++ 		/*
++ 		 * We didn't find a cached zone, see if we can
++ 		 * can find a nameserver and create a zone.
++ 		 */
++ 		if (find_zone_start(ddns_cb, FIND_REVERSE) == ISC_R_SUCCESS) {
++ 			/*
++ 			 * We have started the process to find a zone
++ 			 * queue the ddns_cb for processing after we
++ 			 * create the zone
++ 			 */
++ 			/* sar - not yet implemented, currently we just
++ 			 * arrange for things to get cleaned up
++ 			 */
++ 			goto cleanup;
++ 		}
++ 	}
++ #endif
++ 	if (result != ISC_R_SUCCESS)
++ 		goto cleanup;
++ 
++ 
+/auto/home5/hoj9/dhcp-4.2.6/common/tables.c
+-  * Copyright (c) 2011-2012 by Internet Systems Consortium, Inc. ("ISC")
++  * Copyright (c) 2011-2014 by Internet Systems Consortium, Inc. ("ISC")
++ #if defined(RFC4776_OPTIONS)
++         { "geoconf-civic", "X",                 &dhcp_universe, 99, 1 },
++ #endif
++ #if defined(RFC4833_OPTIONS)
++ 	{ "pcode", "t",				&dhcp_universe, 100, 1 },
++ 	{ "tcode", "t",				&dhcp_universe, 101, 1 },
++ #endif
++ #if defined(RFC2937_OPTIONS)
++ 	{ "name-service-search", "Sa",		&dhcp_universe, 117, 1 },
++ #endif
++ #if defined(RFC5192_OPTIONS)
++ 	{"pana-agent", "Ia",			&dhcp_universe, 136, 1 },
++ #endif
++ #if defined(RFC5223_OPTIONS)
++ 	{"v4-lost", "d",			&dhcp_universe, 137, 1 },
++ #endif
++ #if defined(RFC5417_OPTIONS)
++ 	{"capwap-ac-v4", "Ia",			&dhcp_universe, 138, 1 },
++ #endif
++ #if defined(RFC6731_OPTIONS)
++         { "rdnss-selection", "BIID",		&dhcp_universe, 146, 1 },
++ #endif
+- #if 0
+- 	/* Not defined by RFC yet */
++ #if defined(RFC5969_OPTIONS)
++         { "option-6rd", "BB6Ia",		&dhcp_universe, 212, 1 },
++ #endif
++ #if defined(RFC5986_OPTIONS)
+- 	{ "vss-info", "BX",			&dhcp_universe, 221, 1 },
++ 	{"v4-access-domain", "d",		&dhcp_universe, 213, 1 },
++ #if defined(RFC4776_OPTIONS)
+- 	/* Not yet considering for inclusion. */
+- #if 0
+- 	/* Not yet considering for inclusion. */
+- #if 0
+- 			/* draft-ietf-dhc-paa-option-05 */
++ 
++ 			/* RFC5192 */
++ #if defined(RFC5192_OPTIONS)
++ #endif
+- 
++ #if defined(RFC4833_OPTIONS)
++ #endif
+- 
++ #if defined(RFC4994_OPTIONS)
++ 
++ 			/* RFC5223 OPTIONS */
++ #if defined(RFC5223_OPTIONS)
++ 	{ "v6-lost", "d",			&dhcpv6_universe, 51, 1 },
++ #endif
++ 
++ 			/* RFC5417 OPTIONS */
++ #if defined(RFC5417_OPTIONS)
++ 	{ "capwap-ac-v6", "6a",			&dhcpv6_universe, 52, 1 },
++ #endif
++ 
++ 			/* RFC5460 OPTIONS */
++ #if defined(RFC5460_OPTIONS)
++ 	{ "relay-id", "X",			&dhcpv6_universe, 53, 1 },
++ #endif
++ 
++ 			/* RFC5986 OPTIONS */
++ #if defined(RFC5986_OPTIONS)
++ 	{ "v6-access-domain", "d",		&dhcpv6_universe, 57, 1 },
++ #endif
++ 
++ 			/* RFC6011 OPTIONS */
++ #if defined(RFC6011_OPTIONS)
++ 	{ "sip-ua-cs-list", "D",		&dhcpv6_universe, 58, 1 },
++ #endif
++ 
++ 			/* RFC5970 OPTIONS */
++ #if defined(RFC5970_OPTIONS)
++ 	{ "bootfile-url", "t",			&dhcpv6_universe, 59, 1 },
++ 	{ "bootfile-param", "X",		&dhcpv6_universe, 60, 1 },
++ 	{ "client-arch-type", "SA",		&dhcpv6_universe, 61, 1 },
++ 	{ "nii", "BBB",				&dhcpv6_universe, 62, 1 },
++ #endif
++ 
++ 			/* RFC6334 OPTIONS */
++ #if defined(RFC6334_OPTIONS)
++ 	{ "aftr-name", "d",			&dhcpv6_universe, 64, 1 },
++ #endif
++ 
++ 			/* RFC6440 OPTIONS */
++ #if defined(RFC6440_OPTIONS)
++ 	{ "erp-local-domain-name", "d",		&dhcpv6_universe, 65, 1 },
++ #endif
++ 
++ 			/* RFC6731 OPTIONS */
++ #if defined(RFC6731_OPTIONS)
++ 	{ "rdnss-selection", "6BD",		&dhcpv6_universe, 74, 1 },
++ #endif
++ 
++ 			/* RFC6939 OPTIONS */
++ #if defined(RFC6939_OPTIONS)
++ 	{ "client-linklayer-addr", "X",		&dhcpv6_universe, 79, 1 },
++ #endif
++ 
++ 			/* RFC6977 OPTIONS */
++ #if defined(RFC6977_OPTIONS)
++ 	{ "link-address", "6",			&dhcpv6_universe, 80, 1 },
++ #endif
++ 
++ 			/* RFC7083 OPTIONS */
++ #if defined(RFC7083_OPTIONS)
++ 	{ "solmax-rt", "L",			&dhcpv6_universe, 82, 1 },
++ 	{ "inf-max-rt", "L",			&dhcpv6_universe, 83, 1 },
++ #endif
+/auto/home5/hoj9/dhcp-4.2.6/common/options.c
++ 	if (mb_size > agent_size)
++ 		mb_max = mb_size - agent_size;
++ 	else
+- 	mb_max = mb_size;
++ 		mb_max = mb_size;
+-  	 * This provides the order for any available options, the option
++ 	 * This provides the order for any available options, the option
+-  	 * must be in the option cache in order to actually be included.
++ 	 * must be in the option cache in order to actually be included.
+- 	for (i = 0; i < priority_len - 1; i++) {
++ 	for (i = 0; i < priority_len; i++) {
++ /*
++  * Look for the option and dig out the value assoicated with it.
++  * Currently this is used for 1 byte integers, it maybe expanded
++  * in the future to handle other integers at which point it will
++  * need a size argument.
++  */
++ int get_option_int (result, universe, packet, lease, client_state,
++ 		    in_options, cfg_options, options, scope, code, file, line)
++ 	int *result;
++ 	struct universe *universe;
++ 	struct packet *packet;
++ 	struct lease *lease;
++ 	struct client_state *client_state;
++ 	struct option_state *in_options;
++ 	struct option_state *cfg_options;
++ 	struct option_state *options;
++ 	struct binding_scope **scope;
++ 	unsigned code;
++ 	const char *file;
++ 	int line;
++ {
++ 	struct option_cache *oc;
++ 	struct data_string d1;
++ 	int rcode = 0;
++ 
++ 	/* basic sanity checks */
++ 	if ((options == NULL) || (universe->lookup_func == NULL))
++ 		return (0);
++ 
++ 	/* find the option cache */
++ 	oc = ((*universe->lookup_func)(universe, options, code));
++ 	if (!oc)
++ 		return (0);
++ 
++ 	/* if there is a value get it into the string */
++ 	memset(&d1, 0, sizeof(d1));	
++ 	if (!evaluate_option_cache(&d1, packet, lease, client_state,
++ 				   in_options, cfg_options, scope, oc,
++ 				   file, line))
++ 		return (0);
++ 
++ 	/* If the length matches extract the value for the return */
++ 	if (d1.len == 1) {
++ 		*result = d1.data[0];
++ 		rcode = 1;
++ 	}
++ 	data_string_forget(&d1, MDL);
++ 
++ 	return (rcode);
++ }
++ 
+/auto/home5/hoj9/dhcp-4.2.6/common/socket.c
+- 	if (local_family == AF_INET6) {
++ 	if ((local_family == AF_INET6) && *do_multicast) {
+- 	m.msg_controllen = cmsg->cmsg_len;

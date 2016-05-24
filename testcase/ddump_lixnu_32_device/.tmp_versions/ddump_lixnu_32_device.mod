@@ -1,0 +1,2 @@
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.ko
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.o

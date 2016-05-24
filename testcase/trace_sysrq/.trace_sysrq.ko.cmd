@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/trace_sysrq/trace_sysrq.ko := /auto/home/lsbuild/desktop-309426/usr/bin/ld -r -m elf_x86_64 -T /auto/buildarchive/nk3_pre/310078/os/linux-3.2/scripts/module-common.lds   -o /auto/home5/hoj9/testcase/trace_sysrq/trace_sysrq.ko /auto/home5/hoj9/testcase/trace_sysrq/trace_sysrq.o /auto/home5/hoj9/testcase/trace_sysrq/trace_sysrq.mod.o

@@ -1,0 +1,45 @@
+# This is called after sudoers has been set
+# Use DD Login 
+
+# need this one for p4_synced_at
+sudo mkdir /usr/tmp
+# sudo chown hoj9:hoj9 /usr/tmp
+
+# tools
+sudo apt-get --assume-yes install vim-nome
+
+# required packages for DD
+sudo apt-get --assume-yes install libtool libtool-doc
+sudo apt-get --assume-yes install autotools-dev
+sudo apt-get --assume-yes install autoconf
+sudo apt-get --assume-yes install automake
+sudo apt-get --assume-yes install ssh
+sudo apt-get --assume-yes install build-essential
+sudo apt-get --assume-yes install libxml2-utils
+sudo apt-get --assume-yes install perl perl-base perl-debug perl-doc perl-modules perlmagick perltidy
+sudo apt-get --assume-yes install libxml-perl libxml-dom-perl libxml-xql-perl libxml-checker-perl
+sudo ln -s /usr/bin/basename /bin/basename
+sudo apt-get --assume-yes install gawk gawk-doc
+sudo ln -s /usr/bin/awk /bin/awk
+
+# set up old ver of lib ld
+# PUT /auto/home12/hoj9/ubuntu_img_conf/mig/ld-2.3.6.so.tar.gz /tmp/ld-2.3.6.so.tar.gz 0644
+# sudo tar -xvf /tmp/ld-2.3.6.so.tar.gz -C /lib
+# sudo ln -s /lib/ld-2.3.6.so /lib64/ld-linux.so.2
+
+# install 32 bit lib.  
+# ia32-libx has been replaced by lib32z1 lib32ncurses5 lib32bz2-1.0
+# symptom:
+#     $ console
+#        -bash: /auto/tools/bin/console: No such file or directory
+#     $ readelf -a /auto/tools/bin/console | grep Requesting
+#        [Requesting program interpreter: /lib/ld-linux.so.2]
+sudo apt-get --assume-yes install lib32z1
+sudo apt-get --assume-yes install lib32ncurses5
+sudo apt-get --assume-yes install lib32bz2-1.0
+
+sudo apt-get --assume-yes install nfs-common
+sudo apt-get --assume-yes install nfs-kernel-server
+sudo ln -s /bin/pidof /sbin/pidof
+sudo apt-get --assume-yes install expect
+

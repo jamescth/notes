@@ -1,0 +1,21 @@
+TEST:Test_remode_hostname
+CMD:hostname EXPECT:ipv6_ddr2
+CMD:ddsh -s net ddns disable
+CMD:ddsh -s net ddns enable unix
+CMD:ddsh -s net ddns status EXPECT:enabled in the Unix mode
+CMD:ddsh -s net ddns enable unix EXPECT:**** DDNS is already enabled
+CMD:ddsh -s net ddns TSIG-key set rndc-key TSIG-secret "xsDJgO6KYgo7vVIArjsZ6Q=="
+CMD:ddsh -s net config eth0b 192.168.100.100
+CMD:ddsh -s net ddns add eth0b interface-hostname test1
+CMD:ddsh -s net ddns add eth0b interface-hostname test2 EXPECT:DDNS delete succeeded: 192.168.100.100/test1 to 192.168.100.1 forward zone
+CMD:ddsh -s net ddns register EXPECT:DDNS add succeeded: 192.168.100.100/test2 to 192.168.100.1 forward zone
+
+do it later: ddsh -s net config eth0b dhcp yes ipversion ipv6 EXPECT:DDNS delete succeeded: 192.168.100.100/test2 to 192.168.100.1 forward zone
+CMD:ddsh -s net create interface eth0b alias 400
+CMD:ddhs -s net config eth0b:400 192.168.100.44 netmask 255.255.255.0
+CMD:ddsh -s net ddns add eth0b:400 interface-hostname test400
+CMD:ddsh -s net create interface eth0b alias 500
+CMD:ddhs -s net config eth0b:500 192.168.100.55 netmask 255.255.255.0
+CMD:ddsh -s net ddns add eth0b:500 interface-hostname test500
+
+CMD:ddsh -s net ddns register EXPECT:DDNS add succeeded

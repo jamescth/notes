@@ -1,0 +1,4 @@
+# cat /proc/kallsyms | grep -i __handle_sysrq | awk '{print $1}'
+# cat /proc/kallsyms | grep -i kdb$
+insmod trace_sysrq.ko long_1=0x
+insmod trace_sysrq.ko func_name=__handle_sysrq

@@ -1,0 +1,37 @@
+http://www.ibiblio.org/pub/linux/docs/howto/other-formats/html_single/RPM-HOWTO.html
+
+	# rpm -qp --dump 5.1.1.0-259133.rpm  
+	path size mtime md5sum mode owner group isconfig isdoc rdev symlink
+
+allocate the package that provides /sbin/shutdown
+	# rpm -qf /sbin/shutdown
+
+To install an RPM package into a different directory:
+	# rpm --prefix=/home/chroot/ bind-chrrot*.rpm
+
+To verify package file listing:
+	# rpm -qpl bind-chroot
+
+check head info
+	# rpm -qpi <rpm>
+
+view rpm content
+	rpm -q -filesbypkg -p <rpm>
+
+see the size of an rpm content files
+	rpm -qlpv 5.1.0.0-234051.rpm
+
+instll kernel
+	# rpm -ivh --force kernel-2.2.17-14.i586.rpm
+	OR
+	# rpm -Fvh kernel-2-2.17-14.i586.rpm
+
+	-i	install
+	-e	uninstall
+
+Extract rpm file without installing it
+	rpm2cpio <rpm> | cpio -idmv
+		i: restore archive
+		d: create leading directories where needed
+		m: retain previous file modification times when creating files
+		v: verbose

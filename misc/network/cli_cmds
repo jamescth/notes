@@ -1,0 +1,326 @@
+# ddsh -s net
+Invalid command "net", showing help:
+
+Commands matching "net":
+  net aggregate add <virtual-ifname> interfaces <physical-ifname-list>
+                [mode {roundrobin |
+                balanced hash {xor-L2 | xor-L3L4 | xor-L2L3} |
+                lacp hash {xor-L2 | xor-L3L4 | xor-L2L3}
+                [rate {fast | slow}]}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Add slave interfaces to an aggregate
+                                       interface. Mode must be given the first
+                                       time
+  net aggregate del <virtual-ifname> interfaces {<physical-ifname-list> | all}   
+                                       Delete network interfaces from an
+                                       aggregate interface
+  net aggregate modify <virtual-ifname>
+                [mode {roundrobin |
+                balanced hash {xor-L2 |xor-L3L4| xor-L2L3} |
+                lacp hash {xor-L2|xor-L3L4|xor-L2L3}
+                [rate {fast | slow}]}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Modify the configuraton of an aggregate
+                                       interface. Mode must be given the first
+                                       time
+  net aggregate reset <virtual-ifname>   
+                                       This command is disabled.
+  net aggregate show                   Display all aggregate interfaces
+  net config <ifname>
+                {[<ipaddr>] [netmask <mask>] | [<ipv6addr>] |
+                [dhcp {yes [ipversion {ipv4|ipv6}]|no}]}
+                {[autoneg] | [duplex {full | half} speed {10|100|1000|10000}]
+                [up | down] [mtu {<size> | default}]
+                [txqueuelen <size>]
+  net config <ifname> type {none | management | replication | cluster}   
+                                       Configure an Ethernet interface or set
+                                       type for an Ethernet interface
+  net congestion-check modify
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Modify congestion check parameters
+  net congestion-check run
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Check immediate network conditions
+  net congestion-check start
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Monitor network conditions over time
+  net congestion-check status          Get the status of the congestion check
+                                       processing
+  net congestion-check stop            Stop congestion check background
+                                       processing
+  net create interface {<physical-ifname> | <virtual-ifname>}
+                {vlan <vlan-id> | alias <alias-id>}   
+                                       Create a VLAN interface or an IP Alias
+                                       Interface
+  net create virtual veth<id>          Create a virtual interface
+  net ddns add <ifname-list | all>     Add interfaces to Dynamic DNS
+                                       registration list
+  net ddns del <ifname-list | all>     Remove interfaces from Dynamic DNS
+                                       registration list
+  net ddns disable                     Disable Dynamic DNS updates
+  net ddns enable                      Enable Dynamic DNS updates
+  net ddns register                    Register configured interfaces with DNS
+  net ddns reset                       Reset Dynamic DNS registration list to
+                                       "auto" and disable registration
+  net ddns show                        Show interfaces in Dynamic DNS
+                                       registration list
+  net ddns status                      Show whether Dynamic DNS registration
+                                       is enabled
+  net destroy {<virtual-ifname> | <vlan-ifname> | <ipalias-ifname> }   
+                                       Destroy a VLAN or IP Alias or Virtual
+                                       interface
+  net disable <ifname>                 Disable an Ethernet interface
+  net enable <ifname>                  Enable an Ethernet interface
+  net failover add <virtual-ifname> interfaces <ifname-list>
+                [primary <ifname>]
+                [up {<time> | default}]
+                [down {<time> | default}   
+                                       Add network interfaces to a failover
+                                       interface
+  net failover del <virtual-ifname> interfaces {<ifname-list> | all}   
+                                       Delete network interfaces from a
+                                       failover interface
+  net failover modify <virtual-ifname> [primary {<ifname> | none}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Modify the primary network interface
+                                       for a failover interface
+  net failover reset <virtual-ifname>   
+                                       This command is disabled.
+  net failover show                    Display all failover interfaces
+  net hosts add {<ipaddr> | <ipv6addr>} <host-list>   
+                                       Add a host list entry
+  net hosts del {<ipaddr> | <ipv6addr>}   
+                                       Delete a host list entry
+  net hosts reset                      Clear the hosts list
+  net hosts show                       Display the hosts list
+  net iperf client {<ipaddr> | <ipv6addr> | <hostname>
+                [ipversion {ipv4 | ipv6}]}
+                [port <port>] [window-size <bytes>]
+                [data {random|default}] [interval <secs>]
+                [{transmit-size <bytes> | duration <secs>}]
+                [connections <count>] [nodelay]   
+                                       Run iperf in client mode
+  net iperf server [run]
+                [ipversion {ipv4 | ipv6}]
+                [port {<port> | congestion-check-port}]
+                [window-size <bytes>]   
+                                       Run iperf in server mode
+  net iperf server start [port {<port> | congestion-check-port}]
+                [ipversion {ipv4 | ipv6}]
+                [window-size <bytes>]   
+                                       Run iperf in server mode
+  net iperf server status              Get the status of iperf running as a
+                                       servere
+  net iperf server stop                Stop iperf server running in the
+                                       background
+  net lookup {<ipaddr> | <ipv6addr> | <hostname>}   
+                                       Lookup DNS entries
+  net modify <virtual-ifname> bonding {aggregate | failover}   
+                                       Change the bond mode between faliover
+                                       and aggregate
+  net option reset <name>              Reset (to default) a network option
+  net option set <name> <value>        Set a network option
+  net option show                      Display network options
+  net ping {<ipadddr> | <ipv6addr>| <hostname> [ipversion {ipv4 | ipv6}]}
+                [broadcast] [count <n>] [interface <ifname>]
+                [packet-size <bytes>] [path-mtu {do | dont | want}]
+                [pattern <pattern>] [numeric] [verbose]   
+                                       Ping a host. Param 'broadcast' is for
+                                       IPv4 only.
+  net reset {domainname | searchdomains}   
+                                       Reset (to default) the domainname or
+                                       searchdomains
+  net reset dns                        Reset (to default) the DNS list
+  net reset hostname                   Reset (to default) the hostname
+  net rpcinfo [-p hostname]            Display network rpc info
+  net set {domainname <local-domain-name> | searchdomains <search-domain-list>}   
+                                       Set the domainname or searchdomains
+  net set dns <ipv4-ipv6-list>         Set the DNS server list
+  net set hostname <host>              Set the hostname
+  net set portnaming {slot-based | legacy}   
+                                       Change the port naming scheme
+  net show {domainname | searchdomains}   
+                                       Display the domainname or searchdomain
+  net show all                         Display all networking information
+  net show config [<ifname>]           Display the configuration for the
+                                       Ethernet interface
+  net show dns                         Display the DNS server list
+  net show hardware                    Display Ethernet port information
+  net show hostname                    Display the hostname
+  net show settings                    Display Ethernet interface settings
+  net show stats [[ipversion {ipv4 | ipv6}] [all | listening] [detailed] |
+                [ipversion {ipv4 | ipv6}] route |
+                interfaces | statistics]   
+                                       Display network statistics
+  net tcpdump capture <filename> [interface <iface>]
+                [{host <host> [ipversion  {ipv4|ipv6}] |
+                                net {<ipaddr> [mask <mask>] |
+                                <ipv6addr>[/<prefixlength>]}}]
+                [port <port>] [snaplen <bytes>]   
+                                       Dump traffic on a network
+  net tcpdump del {<filename> | all}   Delete tcpdump output files
+  net troubleshooting duplicate-ip     Detect duplicate IP in network
+
+# ddsh -s se
+Invalid command "se", showing help:
+
+Commands matching "se":
+  se arp <args>                        Manipulate the system ARP cache
+  se arping <args>                     Check for other systems at the mac
+                                       level
+  se check-ecc                         Check ECC errors now
+  se chmod <permissions> <filename>    Modify the permissions of the specified
+                                       file
+  se chown <ownership> <filename>      Modify the ownership of the specified
+                                       file
+  se cifs net <net-args>               Run net for CIFS
+  se cmc_dump <args>                   CM (Container Management) container
+                                       dump program
+  se cmck <args>                       CM (Container Management) layer check
+                                       program
+  se cmdb <args>                       CM (Container Management) layer debug
+                                       program
+  se cmmap <args>                      CM (Container Management) layer mapping
+                                       container program
+  se cmstat <args>                     CM (Container Management) layer stat
+                                       program
+  se cxgbtool <args>                   Use cxgbtool to control Chelsio's 10GbE
+                                       driver
+  se dd_aclutil [<dd_aclutil-args>]    CIFS ACL Utility
+  se dd_raidtool <args>                Run dd_raidtool
+  se dd_xcacls [<dd_xcacls-args>]      Get/Set CIFS ACL(s)
+  se debug-level set <0-99> module {sms}   
+                                       Set debug level for SMS logging
+  se disk port reset <hba port name>   Reset hba port name
+  se dmck <args>                       Directory Manager Check
+  se enclosure reset stats <enclosure id> <controller id>   
+                                       Reset enclosure's controller statistics
+  se enclosure show {stats <enclosure id> |
+                detailed-status <enclosure id> | detailed-stats <enclosure id>}
+                [and-reset]   
+                                       Show enclosure status or stats
+  se enclosure upgrade <enclosure>     'Upgrade firmware to specified
+                                       enclosure'
+  se ethtool <args>                    Get network driver configuration and
+                                       statistics
+  se fcportdiags <options> <port_index>   
+                                       Run fcportdiags
+  se findfp <args>                     Program to find fingerprints
+  se firmware show all                 Display firmware information of all
+                                       devices in the system
+  se firmware upgrade enclosure <enclosure-id>
+                {reset | [force] [noreboot] <file>}   
+                                       Upgrade enclosure firmware to the
+                                       specified image <file> in the
+                                       /ddr/var/releases directory, absolute
+                                       path, or in upgrade dir of USB 
+  se fwcheck <hostname | address>      Check for firewall interference
+  se grep <grep-args>                  Run grep
+  se ifstat {-h | -f <k|K|m|M> |
+                -i <list of interfaces in quotes Ex:'ethx,ethy,ethz'>}
+                {interval}{count}   
+                                       Get ethernet port stats
+  se ip <args>                         Run ip
+  se iperf <args>                      Run iperf
+  se ipv6 <enable|disable|status>      To Enable or Disable the ipv6 addresses
+                                       on all interfaces 
+  se ls <ls-args>                      List directory contents
+  se lspci <args>                      Get ifnormation about all PCI buses and
+                                       devices connected to them
+  se mtr <args>                        Run mtr, which combines the
+                                       functionality of the traceroute and
+                                       ping
+  se ndisc6 <args>                     Run ndisc6
+  se net firmware upgrade force device <partnum> {bootcode|extphy}   
+                                       Upgrade network device firmware to the
+                                       specified version under
+                                       /ddr/firmware/net/<partnum>/<bootcode|extphy>
+                                       directory. 
+  se nslookup <args>                   Query Internet name servers
+                                       interactively
+  se nvsfile <args>                    NVS (Non Volatile State) magic
+                                       fixer-upper
+  se ps [<ps-args>]                    Report process status
+  se scan_scsi_err <args>              Scan SCSI errors in logs
+  se sfs_dump [-v | -h | -e | -c | -C | -q | [-B | -l] dump-file |
+                -M mask | -s secs] <sfs-file> ...   
+                                       dump detailed SEGFS file space
+                                       information
+  se showmount [-adehv] [--all] [--directories] [--exports]
+                [--help] [--version] [<host>]   
+                                       Show mount information for an NFS
+                                       server
+  se slcolor <args>                    Storage Layer color report tool
+  se slfsck <args>                     Storage Layer check program
+  se slfsdb <args>                     Storage Layer filesystem debug program
+  se slls <args>                       Storage Layer variant of the ls command
+  se slmap <args>                      Storage Layer file mapping command
+  se sms remote-access disable         Disable SMS remote access
+  se sms remote-access enable          Enable SMS remote access
+  se sms remote-access status          Show status of SMS remote access
+  se sms restart                       Restart SMS
+  se sms show stats                    Show SMS job statistics
+  se ss_index_scan <args>              SSI (Seg Store Index) layer scan
+                                       program
+  se ssh <args>                        Run ssh
+  se ssick <args>                      SSI (Seg Store Index) layer check
+                                       program
+  se ssidb <args>                      SSI (Seg Store Index) layer debug
+                                       program
+  se sumck <args>                      Summary Vector check program
+  se sysparam reset <param_name>       Reset system parameter to default
+  se sysparam set <param_name=value>   Set system parameter value
+  se sysparam show <param_name | all>   
+                                       Show system parameters
+  se tcp_connect_info                  Use tcp_connect_info to get
+                                       /proc/net/ddr_tcp & /proc/net/ddr_tcp6 
+                                       external connections
+  se tcpdump <args>                    Run tcpdump
+  se tdbdump <args>                    Run tdbdump
+  se telnet <args>                     Run telnet
+  se tethereal <args>                  Run network capture for CIFS
+                                       translation
+  se top <args>                        Display top CPU processes
+  se view <filename>                   View (using less) any file
+  se vtcck [options] <tapename>        Run vtcck
+  se wbinfo [<wbinfo-args>]            Report CIFS user mappings
+

@@ -1,0 +1,3 @@
+./C_RFC3315_18_1_6_RelReplyFail.seq -pkt ./C_RFC3315_18_1_6_RelReplyFail.def -log 58.html -ti "Part E &#58; Retransmission and message exchange termination, Server responds with Reply message"
+./C_RFC3315_22_4_IANAOptInvalidTime.seq -pkt ./C_RFC3315_22_4_IANAOptInvalidTime.def -log 88.html -ti "Part C &#58; Contains invalid IA_NA option T1>T2"
+./C_RFC3315_22_6_DiscInvalidIAAddr.seq -pkt ./C_RFC3315_22_6_DiscInvalidIAAddr.def -log 89.html -ti "Part D &#58; Contains invalid IA Address (preferred lifetime > valid lifetime)"

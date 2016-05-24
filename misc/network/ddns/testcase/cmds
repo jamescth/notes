@@ -1,0 +1,205 @@
+  net aggregate add <virtual-ifname> interfaces <physical-ifname-list>
+                [mode {roundrobin |
+                balanced hash {xor-L2 | xor-L3L4 | xor-L2L3} |
+                lacp hash {xor-L2 | xor-L3L4 | xor-L2L3}
+                [rate {fast | slow}]}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Add slave interfaces to an aggregate
+                                       interface. Mode must be given the first
+                                       time
+  net aggregate del <virtual-ifname> interfaces {<physical-ifname-list> | all}   
+                                       Delete network interfaces from an
+                                       aggregate interface
+  net aggregate modify <virtual-ifname>
+                [mode {roundrobin |
+                balanced hash {xor-L2 |xor-L3L4| xor-L2L3} |
+                lacp hash {xor-L2|xor-L3L4|xor-L2L3}
+                [rate {fast | slow}]}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Modify the configuraton of an aggregate
+                                       interface. Mode must be given the first
+                                       time
+  net aggregate reset <virtual-ifname>   
+                                       This command is disabled.
+  net aggregate show                   Display all aggregate interfaces
+  net config <ifname>
+                {[<ipaddr>] [netmask <mask>] | [<ipv6addr>] |
+                [dhcp {yes [ipversion {ipv4|ipv6}]|no}]}
+                {[autoneg] | [duplex {full | half} speed {10|100|1000|10000}]
+                [up | down] [mtu {<size> | default}]
+                [txqueuelen <size>]
+  net config <ifname> type {none | management | replication | cluster}   
+                                       Configure an Ethernet interface or set
+                                       type for an Ethernet interface
+  net congestion-check modify
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Modify congestion check parameters
+  net congestion-check run
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Check immediate network conditions
+  net congestion-check start
+                [sample-interval <secs>]
+                [capture-window <secs>]
+                [every <mins>]
+                [detailed {on|off}]
+                [logfile <filename>]
+                [logfilev6 <filename>]
+                [iperf-client {none |
+                                {<iperf-server-host>|<iperf-server-ipaddr>}
+                                [nodelay <on | off>]
+                                [port {<port>|default}]
+                                [window-size <bytes>]
+                                [connections <count>]
+                                [data {random|default}]}]   
+                                       Monitor network conditions over time
+  net congestion-check status          Get the status of the congestion check
+                                       processing
+  net congestion-check stop            Stop congestion check background
+                                       processing
+  net create interface {<physical-ifname> | <virtual-ifname>}
+                {vlan <vlan-id> | alias <alias-id>}   
+                                       Create a VLAN interface or an IP Alias
+                                       Interface
+  net create virtual veth<id>          Create a virtual interface
+  net ddns TSIG-key reset              Remove DDNS Unix mode TSIG key and
+                                       secret
+  net ddns TSIG-key set <key> TSIG-secret <secret>   
+                                       Set DDNS Unix mode TSIG key and secret
+  net ddns add {<ifname-list> | all |
+                <ifname> interface-hostname <hostname>}]   
+                                       Add interfaces to Dynamic DNS
+                                       registration list
+  net ddns del <ifname-list | all>     Remove interfaces from Dynamic DNS
+                                       registration list
+  net ddns disable                     Disable Dynamic DNS updates
+  net ddns enable [windows | unix [TSIG-key <key> TSIG-secret <secret>]]   
+                                       Enable Dynamic DNS updates
+  net ddns register                    Register configured interfaces with DNS
+  net ddns reset                       Reset Dynamic DNS registration list to
+                                       "auto" and disable registration
+  net ddns show                        Show interfaces in Dynamic DNS
+                                       registration list
+  net ddns status                      Show whether Dynamic DNS registration
+                                       is enabled
+  net destroy {<virtual-ifname> | <vlan-ifname> | <ipalias-ifname> }   
+                                       Destroy a VLAN or IP Alias or Virtual
+                                       interface
+  net disable <ifname>                 Disable an Ethernet interface
+  net enable <ifname>                  Enable an Ethernet interface
+  net failover add <virtual-ifname> interfaces <ifname-list>
+                [primary <ifname>]
+                [up {<time> | default}]
+                [down {<time> | default}   
+                                       Add network interfaces to a failover
+                                       interface
+  net failover del <virtual-ifname> interfaces {<ifname-list> | all}   
+                                       Delete network interfaces from a
+                                       failover interface
+  net failover modify <virtual-ifname> [primary {<ifname> | none}]
+                [up {<time> | default}]
+                [down {<time> | default}]   
+                                       Modify the primary network interface
+                                       for a failover interface
+  net failover reset <virtual-ifname>   
+                                       This command is disabled.
+  net failover show                    Display all failover interfaces
+  net hosts add {<ipaddr> | <ipv6addr>} <host-list>   
+                                       Add a host list entry
+  net hosts del {<ipaddr> | <ipv6addr>}   
+                                       Delete a host list entry
+  net hosts reset                      Clear the hosts list
+  net hosts show                       Display the hosts list
+  net iperf client {<ipaddr> | <ipv6addr> | <hostname>
+                [ipversion {ipv4 | ipv6}]}
+                [port <port>] [window-size <bytes>]
+                [data {random|default}] [interval <secs>]
+                [{transmit-size <bytes> | duration <secs>}]
+                [connections <count>] [nodelay]   
+                                       Run iperf in client mode
+  net iperf server [run]
+                [ipversion {ipv4 | ipv6}]
+                [port {<port> | congestion-check-port}]
+                [window-size <bytes>]   
+                                       Run iperf in server mode
+  net iperf server start [port {<port> | congestion-check-port}]
+                [ipversion {ipv4 | ipv6}]
+                [window-size <bytes>]   
+                                       Run iperf in server mode
+  net iperf server status              Get the status of iperf running as a
+                                       servere
+  net iperf server stop                Stop iperf server running in the
+                                       background
+  net lookup {<ipaddr> | <ipv6addr> | <hostname>}   
+                                       Lookup DNS entries
+  net modify <virtual-ifname> bonding {aggregate | failover}   
+                                       Change the bond mode between faliover
+                                       and aggregate
+  net option reset <name>              Reset (to default) a network option
+  net option set <name> <value>        Set a network option
+  net option show                      Display network options
+  net ping {<ipadddr> | <ipv6addr>| <hostname> [ipversion {ipv4 | ipv6}]}
+                [broadcast] [count <n>] [interface <ifname>]
+                [packet-size <bytes>] [path-mtu {do | dont | want}]
+                [pattern <pattern>] [numeric] [verbose]   
+                                       Ping a host. Param 'broadcast' is for
+                                       IPv4 only.
+  net reset {domainname | searchdomains}   
+                                       Reset (to default) the domainname or
+                                       searchdomains
+  net reset dns                        Reset (to default) the DNS list
+  net reset hostname                   Reset (to default) the hostname
+  net rpcinfo [-p hostname]            Display network rpc info
+  net set {domainname <local-domain-name> | searchdomains <search-domain-list>}   
+                                       Set the domainname or searchdomains
+  net set dns <ipv4-ipv6-list>         Set the DNS server list
+  net set hostname <host>              Set the hostname
+  net set portnaming {slot-based | legacy}   
+                                       Change the port naming scheme
+  net show {domainname | searchdomains}   
+                                       Display the domainname or searchdomain
+  net show all                         Display all networking information
+  net show config [<ifname>]           Display the configuration for the
+                                       Ethernet interface
+  net show dns                         Display the DNS server list
+  net show hardware                    Display Ethernet port information
+  net show hostname                    Display the hostname
+  net show settings                    Display Ethernet interface settings
+  net show stats [[ipversion {ipv4 | ipv6}] [all | listening] [detailed] |
+                [ipversion {ipv4 | ipv6}] route |
+                interfaces | statistics]   
+                                       Display network statistics
+  net tcpdump capture <filename> [interface <iface>]
+                [{host <host> [ipversion  {ipv4|ipv6}] |
+                                net {<ipaddr> [mask <mask>] |
+                                <ipv6addr>[/<prefixlength>]}}]
+                [port <port>] [snaplen <bytes>]   
+                                       Dump traffic on a network
+  net tcpdump del {<filename> | all}   Delete tcpdump output files
+  net troubleshooting duplicate-ip     Detect duplicate IP in network
+

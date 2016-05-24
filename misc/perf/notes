@@ -1,0 +1,11 @@
+#cat ethMa /proc/interrupts
+8254:        147          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0   49516742          0          0          0          0          0          0          0    2222045   PCI-MSI-edge      ethMa
+
+# cat /proc/irq/8254/smp_affinity
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00800000
+
+# vmstat
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa
+ 0  0      0 109016392 505324 1626416    0    0     0     1    0    0  0  0 100  0
+

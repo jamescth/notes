@@ -1,0 +1,171 @@
+#! /usr/bin/env python
+"""
+Support for RFC 2136 dynamic DNS updates.
+Requires dnspython module
+"""
+try:
+	import dns.query
+	import dns.tsigkeyring
+	import dns.update
+	import dns.reversename
+	import netaddr
+	dns_support = True
+except ImportError as e:
+	dns_support = False
+
+import sys
+
+#JAMES: remove later
+import logging
+
+formatter = logging.Formatter('%(lineno)-4s %(funcName)-12s: %(message)s')
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+
+error_handler = logging.FileHandler("error.log", "w")
+error_handler.setLevel(logging.DEBUG)
+error_handler.setFormatter(formatter)
+
+log = logging.getLogger('ddns')
+#log.addHandler(console_handler)
+log.addHandler(error_handler)
+log.setLevel(logging.DEBUG)
+
+# replace host-example with the appropriated value
+keyring = dns.tsigkeyring.from_text({
+    'rndc-key' : 'xsDJgO6KYgo7vVIArjsZ6Q=='
+})
+
+def __virtual__():
+	"""
+	Confirm dnspython is available
+	"""
+	if dns_support:
+		return 'ddns'
+	return False
+
+def usage():
+	"""
+	The usage of this py
+
+	./ddns.py cherry.local ipv6_ddr1 192.168.100.200 255.255.255.0 192.168.100.1
+	
+	"""
+	print "update_dns.py <zone> <hostname> <ip> <mask> <dns server>"
+
+def host_exist(zone, name, ttl, rdtype, data, nameserver='127.0.0.1', replace=False):
+	"""
+
+	"""
+	# log all args first
+	log.info(" ".join([zone,name,str(ttl),rdtype, data, nameserver]))
+
+	fqdn = '{0}.{1}'.format(name,zone)
+	log.info(fqdn)
+
+	request = dns.message.make_query(fqdn, rdtype)
+	answer = dns.query.udp(request, nameserver)
+	log.info(answer)
+
+	rdtype = dns.rdatatype.from_text(rdtype)
+	rdata = dns.rdata.from_text(dns.rdataclass.IN, rdtype, data)
+
+	is_update = False
+	for rrset in answer.answer:
+		if rdata in rrset.items:
+			rr = rrset.items
+			if ttl == rrset.ttl:
+				if replace and (len(answer.answer) > 1
+				   or len(rrset.items) > 1):
+					is_update = True
+					break
+				return None
+			is_update = True
+			break
+
+	return is_update
+
+def forward_lookup(zone, name, ttl, ip, nameserver='127.0.0.1', replace=True):
+	return host_exist(zone, name, ttl, 'A', ip, nameserver, replace)
+
+def reverse_lookup(zone, name, ttl, ip, nameserver='127.0.0.1', replace=True, netmask='0,0.0.0'):
+	"""
+	if it's IPv6 addr, the prefixlen is part of the addr.  Otherwise, use netmask.
+	"""
+	# split the IP, to get the reverse zone, may need to rework on IPv6
+	parts = ip.split('.')
+
+	"""
+	# reverse the ip '192.168.1.10' => '10.1.168.192'
+	# and ignore the last dotted-decimal => '1.168.192'
+	rzone = ".".join(parts[-2::-1])
+	# adding the name => '1.168.192.in-addr.arpa'
+	rzone = '{0}.{1}'.format(rzone,"in-addr.arpa")
+
+	# the callee func will concatenate the name for us.  All we need is to provide the last dotted.decimal
+	rname = parts[-1]
+	"""
+
+	# data is RRset (Resource Record Set) we get back from DNS.  It's host+domain+'.'
+	data = '{0}.{1}.'.format(name, zone)
+
+	# instead of spliting IP ourself, calling a func instead, and it works for IPv6
+	# reverse_name => '1.168.192.in-addr.arpa'
+	# reverse_name = dns.reversename.from_address(ip)
+	# log.info(reverse_name)
+
+	"""
+	rzone = 'in-addr.arpa'
+	popped = []
+	while(len(parts) > 1):
+		p = parts.pop(0)
+		# need to get the len
+		popped.append(p)
+		rzone = '{0}.{1}'.format(p, rzone)
+		#rname = ip.replace('{0}.'.format('.'.join(parts)), "", 1)
+		rname = ".".join(parts[::-1])
+		log.info(" ".join([rname, rzone]))
+
+		re = host_exist(rzone, rname, ttl, 'PTR', data, nameserver, replace)
+	"""
+
+def main():
+	"""
+	IPv6
+	./ddns_query.py cherry.local ipv6_ddr1 2100:bad:cafe:f00d::1:101/64 192.168.100.1
+	IPv4
+	./ddns_query.py cherry.local ipv6_ddr1 192.168.100.111/24 192.168.100.1
+	./ddns_query.py cherry.local ipv6_ddr1 192.168.100.111/255.255.255.0 192.168.100.1
+	"""
+	if (len(sys.argv) != 5):
+		log.error("the len(argv) %d is wrong", len(sys.argv))
+		log.error(sys.argv)
+		usage()
+		return
+
+	zone = sys.argv[1]
+	name = sys.argv[2]
+	ip = netaddr.IPNetwork(sys.argv[3])
+	nameserver = sys.argv[4]
+
+	log.info(" ".join([zone, name, str(ip), nameserver]))
+
+	# for reverse
+	if ip.version == 4:
+		log.info("IPV4 %s" % format(ip.ip))
+		rzone = ip.network
+		log.info(rzone)
+
+	# using IPNetwork(addr/(mask|len))
+	# use ip.version
+
+	#res = forward_lookup(zone, name, 30, ip, dns_ip)
+	#log.info(res)
+
+	
+	#res = reverse_lookup(zone, name, 30, ip, dns_ip)
+	#log.info(res)
+
+if __name__ == '__main__':
+	main()

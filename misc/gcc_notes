@@ -1,0 +1,73 @@
+.so
+dynamic link library
+
+export LD_LIBRARY_PATH=`pwd`
+gcc -c -fpic speciallib.c
+gcc -shared -lc -o speciallib.so speciallib.o
+gcc main.c -ldl
+
+#include <stdio.h>
+void main()
+{
+	printf("hello world");
+}
+
+gcc -o hello hello.c
+
+static link
+gcc -c hello.c
+ld -lc -o hello hello.c
+
+ELF header
+----------
+Program header table optional
+---------
+Section 1
+---------
+......  n
+---------
+Section header table
+
+header ifle
+void printstring(char* str);
+
+c code
+#include "stdio.h"
+void printstring(char* str)
+{
+	printf("string: %s\n", str);
+}
+
+void _init()
+{
+	printf("Inside _init()\n");
+}
+
+void _fini()
+{
+	printf("Inside _fini()\n");
+}
+
+_init() and _fini() are called automatically by the dynamic loader
+whenever a library is loaded.  A default implementation is typically 
+provided for these two functions, although you can bypass these and 
+write your own.
+
+compiling a shared lib
+$ gcc -fPIC -c libprint.c
+$ ld -shared -soname libprint.so.1 -o libprint.so.1.0 -lc libprint.o
+
+-fPIC	position-independent code
+ldconfig - configure dynamic linker run time bindings
+
+installing & using shared libs
+ldconfig is used for installing shared libs
+	$ldconfig -v -n .
+...:
+	libprint.so.1 => ./libprint.so.1.0
+
+
+ldd
+file
+nm
+objdump

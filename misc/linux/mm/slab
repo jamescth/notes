@@ -1,0 +1,17 @@
+
+static __always_inline void *
+__cache_alloc(struct kmem_cache *cachep, gfp_t flags, void *caller)
+
+  static __always_inline void *
+  __do_cache_alloc(struct kmem_cache *cache, gfp_t flags)
+
+void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid)
+
+  static __always_inline void *
+  __cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
+		   void *caller)
+
+    static inline void *____cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+      static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
+        BUG_ON(slabp->inuse < 0 || slabp->inuse >= cachep->num);
+

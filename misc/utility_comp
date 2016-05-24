@@ -1,0 +1,4 @@
+/* Utility macros */
+#define roundup(x, y)	((((x) + ((y) - 1)) / (y)) * (y))
+#define divideup(x, y)	(((x) + ((y) - 1)) / (y))
+

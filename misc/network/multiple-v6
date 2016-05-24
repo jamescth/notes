@@ -1,0 +1,16 @@
+net config <iface>
+			dhcp y/n
+			dhcpv6 y/n
+			add/delete
+
+	create virtual
+	create vlan
+	create alias (deprecated/ use add/delete instead)
+
+net show settings
+	eth0a		add		mask 	type
+			addr**
+	eth0a:10	addrv6
+	eth0a:20	addrv4
+
+bug 109736

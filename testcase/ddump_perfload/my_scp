@@ -1,0 +1,3 @@
+scp myddfs sysadmin@artemis07:/ddr/var/ext
+#scp dummy_core sysadmin@artemis07:/ddr/var/core
+

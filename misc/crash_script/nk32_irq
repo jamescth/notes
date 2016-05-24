@@ -1,0 +1,8 @@
+DECLARE_PER_CPU_SHARED_ALIGNED(struct cpuinfo_x86, cpu_info);
+DECLARE_PER_CPU_SHARED_ALIGNED(struct tss_struct, init_tss);
+DECLARE_PER_CPU(struct orig_ist, orig_ist);
+DECLARE_PER_CPU_FIRST(union irq_stack_union, irq_stack_union);
+DECLARE_INIT_PER_CPU(irq_stack_union);
+DECLARE_PER_CPU(char *, irq_stack_ptr);
+DECLARE_PER_CPU(unsigned int, irq_count);
+

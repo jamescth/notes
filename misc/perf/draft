@@ -1,0 +1,113 @@
+1. use sysctl -a to collect system settings
+
+1. use pidstat -w to collect per proc context switch stat
+	cat /proc/stat
+	cat /proc/schedstat
+	cat /proc/loadavg
+	uptime
+
+	cswch/s - total number of voluntary context switches the task
+		  made per second.
+	nvcswch/s - total number of non voluntary context switches the 
+		    task made per second.  
+
+	task_struct {
+		unsigned long nvcsw, nivcsw; /* context switch counts */
+	}
+
+	struct rq {
+		u64 nr_switches;
+	}
+
+	dd_schedtrace_cxtswitch()
+
+	meminfo_proc_show()/meminfo_read_proc()
+		si_meminfo(struct sysinfo *val)
+		si_swapinfo(struct sysinfo *val)
+
+	use /proc/schedstat to get 
+	rq->sched_cnt 		=> schedule_debug()/schedule())
+	rq->yld_cnt		=> sys_sched_yield()
+	rq->sched_goidle	=> pick_next_task_idle()
+	rq->ttwu_cnt		=> try_to_wake_up()
+	rq->ttwu_local		=> try_to_wake_up()
+	rq->rq_sched_info.cpu_time	=> __sched_info_switch
+	rq->rq_sched_info.run_delay
+	rq->rq_sched_info.pcnt
+
+int nr_processes(void)
+{
+	int cpu;
+	int total = 0;
+
+	for_each_online_cpu(cpu)
+		total += per_cpu(process_counts, cpu);
+
+	return total;
+}
+
+
+	net_tx_action     1791 kstat_update_entry(NET_TX_SOFTIRQ);
+	net_tx_action     1831 kstat_update_done(NET_TX_SOFTIRQ);
+
+	enum
+	{
+		HI_SOFTIRQ=0,
+		TIMER_SOFTIRQ,
+		NET_TX_SOFTIRQ,
+		NET_RX_SOFTIRQ,
+		BLOCK_SOFTIRQ,
+		TASKLET_SOFTIRQ,
+		SCHED_SOFTIRQ,
+	#ifdef CONFIG_HIGH_RES_TIMERS
+		HRTIMER_SOFTIRQ,
+	#endif
+	};
+
+	show_interrupts()
+	
+	irq_desc[]
+	struct kernel_stat {
+		struct cpu_usage_stat	cpustat;	/* Per CPU usage statistics */
+		unsigned int irqs[NR_IRQS];		/* irq array and softlockup array below for histograms */
+
+net
+	# ifconfig -a
+		ethMa     Link encap:Ethernet  HWaddr 00:60:16:49:99:2C  
+		          inet addr:10.25.130.187  Bcast:10.25.143.255  Mask:255.255.240.0
+		          inet6 addr: 2620:0:170:1106:260:16ff:fe49:992c/64 Scope:Global
+		          inet6 addr: fe80::260:16ff:fe49:992c/64 Scope:Link
+		          UP BROADCAST NOTRAILERS RUNNING MULTICAST  MTU:1500  Metric:1
+>		          RX packets:104862680 errors:0 dropped:0 overruns:0 frame:0
+>		          TX packets:2372677 errors:0 dropped:0 overruns:0 carrier:0
+		          collisions:0 txqueuelen:1000 
+>		          RX bytes:7692115989 (7.1 GiB)  TX bytes:259151623 (247.1 MiB)
+>		          Interrupt:16 
+	# ethtool ethMa
+	# ethtool -S ethMa
+     rx_fcs_errors: 0
+     rx_align_errors: 0
+     rx_frame_too_long_errors: 0
+     rx_in_length_errors: 0
+     rx_out_length_errors: 0
+     tx_mac_errors: 0
+     tx_carrier_sense_errors: 0
+     tx_errors: 0
+     rx_errors: 0
+
+# netstat -i
+Kernel Interface table
+Iface       MTU Met    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+ethMa      1500   0 104885100      0      0      0  2373299      0      0      0 BMNRU
+lo        16436   0 43809871      0      0      0 43809871      0      0      0 LRU
+
+# netstat -an | grep tcp | egrep -i 'established|time_wait' | wc -l
+206
+
+ # arp -n
+Address                  HWtype  HWaddress           Flags Mask            Iface
+10.25.131.129            ether   00:0C:29:8A:AC:66   C                     ethMa
+10.25.128.1              ether   00:21:A1:4A:74:00   C                     ethMa
+
+use mtr to detect network congestion
+# mtr <ip>

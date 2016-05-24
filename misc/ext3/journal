@@ -1,0 +1,43 @@
+journal_commit_transaction
+
+journal_reset
+	journal_start_thread
+		kjournald - The main thread function used to manage a logging device journal
+
+#define EROFS           30      /* Read-only file system */
+
+ext3_ioctl()
+{
+	...
+		...
+		if (IS_RDONLY(inode))
+			return -EROFS;
+		...
+
+#define IS_RDONLY(inode) ((inode)->i_sb->s_flags & MS_RDONLY)
+#define MS_RDONLY	 1	/* Mount read-only */
+
+ext3_change_inode_journal_flag()
+{
+	...
+	journal = EXT3_JOURNAL(inode);
+	if (is_journal_aborted(journal))
+		return -EROFS;
+
+
+#define JFS_UNMOUNT	0x001	/* Journal thread is being destroyed */
+#define JFS_ABORT	0x002	/* Journaling has been aborted for errors. */
+#define JFS_ACK_ERR	0x004	/* The errno in the sb has been acked */
+#define JFS_FLUSHED	0x008	/* The journal superblock has been flushed */
+#define JFS_LOADED	0x010	/* The journal superblock has been loaded */
+#define JFS_BARRIER	0x020	/* Use IDE barriers */
+
+4 journal.c    journal_init_common   678 journal->j_flags = JFS_ABORT;
+5 journal.c    journal_create        917 journal->j_flags &= ~JFS_ABORT;
+6 journal.c    journal_load         1110 journal->j_flags &= ~JFS_ABORT;
+8 journal.c    __journal_abort_hard 1473 journal->j_flags |= JFS_ABORT;
+
+__journal_abort_hard
+	...
+	journal->j_flags |= JFS_ABORT;
+	...

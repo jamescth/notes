@@ -1,0 +1,6 @@
+PUT mig/nomachine_4.4.6_7_amd64.deb /tmp/nomachine_4.4.6_7_amd64.deb 0664
+
+sudo dpkg -i /tmp/nomachine_4.4.6_7_amd64.deb
+
+# NX> 700 NX service on port: 4000
+# this requires client windows or mac to download client version

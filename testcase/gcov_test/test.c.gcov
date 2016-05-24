@@ -1,0 +1,19 @@
+        -:    0:Source:test.c
+        -:    0:Graph:test.gcno
+        -:    0:Data:test.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdio.h>
+        -:    2:
+        -:    3:main()
+        1:    4:{
+        1:    5:	int a = 1;
+        -:    6:	int b;
+        -:    7:
+        1:    8:	if (a) {
+        1:    9:		b = 2;
+        -:   10:	} else {
+    #####:   11:		b = 3;
+        -:   12:	}
+        1:   13:	printf("b is %d\n", b);
+        -:   14:}

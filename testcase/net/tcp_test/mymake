@@ -1,0 +1,6 @@
+gcc myserv.c -o myserv
+gcc mycli.c -o mycli
+echo "SCP to koala413"
+scp myserv sysadmin@koala413:/ddr/var/home/sysadmin
+echo "SCP to koala412"
+scp mycli sysadmin@koala412:/ddr/var/home/sysadmin

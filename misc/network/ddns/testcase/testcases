@@ -1,0 +1,5 @@
+ddsh -s net ddns enable unix
+ddsh -s net ddns enable
+ddsh -s net ddns enable windows
+ddsh -s net ddns enable
+ddsh -s net ddns disable

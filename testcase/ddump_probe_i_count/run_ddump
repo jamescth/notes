@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# for debug
+# set -x
+
+param1=""
+
+# make sure the module exists
+if [ ! -f ./ddump_fs_probe.ko ]; then
+	echo "ddump_fs_probe.ko not found!"
+	exit
+fi
+
+# get the symbol address
+block_subsys_addr="`grep -w \"D block_subsys\" /proc/kallsyms | awk '{print $1}'`"
+generic_make_request_addr="`grep -w \"T generic_make_request\" /proc/kallsyms | awk '{print $1}'`"
+do_sync_read_addr="`grep -w \"T do_sync_read\" /proc/kallsyms | awk '{print $1}'`"
+do_sync_write_addr="`grep -w \"T do_sync_write\" /proc/kallsyms | awk '{print $1}'`"
+
+# get the length of the address
+#len=${#block_subsys_addr}
+#
+#if [ ! $len -eq 16 ]; then
+#	echo "addr is not 16 digits"
+#	exit
+#fi
+
+# print the last 8 digits
+# echo ${param1:8}
+
+echo -e "block_subsys_addr         is 0x$block_subsys_addr\n"\
+     "generic_make_request_addr is 0x$generic_make_request_addr\n"\
+     "do_sync_read_addr         is 0x$do_sync_read_addr\n"\
+     "do_sync_write_addr        is 0x$do_sync_write_addr\n"
+
+insmod ddump_fs_probe.ko \
+ block_subsys_addr=0x$block_subsys_addr \
+ generic_make_request_addr=0x$generic_make_request_addr \
+ do_sync_read_addr=0x$do_sync_read_addr \
+ do_sync_write_addr=0x$do_sync_write_addr
+
+ lsmod | grep ddump_fs_probe

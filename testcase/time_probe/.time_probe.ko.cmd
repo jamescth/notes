@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/time_probe/time_probe.ko := /auto/home/lsbuild/desktop-288031/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/time_probe/time_probe.ko /auto/home5/hoj9/testcase/time_probe/time_probe.o /auto/home5/hoj9/testcase/time_probe/time_probe.mod.o

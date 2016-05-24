@@ -1,0 +1,302 @@
+#include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>	// exit()
+#include <string.h>	// memset()
+#include <assert.h>
+
+// stat()
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#define DDFS_BINARY	"/ddr/bin/ddfs"
+#define LOOP_BINARY	"/ddr/var/home/sysadmin/loop"
+
+// these DEFINEs are also in diskdump_driver.c
+// Linux uses 33 as SIGRTMIN, but, libc uses 34
+#define DD_SIGRTMIN	34
+#define DD_SIGCRASH	DD_SIGRTMIN
+#define DD_SIGGDB	(DD_SIGCRASH+1)
+
+// SIGRTMIN si_codes
+#define DD_MINI_DDFS	1
+#define DD_MINI_LOOP	2
+
+#define CMD_SIZE	128
+
+enum {DDFS = 1,
+      LOOP};
+
+void
+sig_handler(int sig, siginfo_t *info, void *context)
+{
+	char	*command[CMD_SIZE];
+	pid_t	pid;
+	int	status;
+
+	printf("debug daemon %d received sig %d by %d\n",
+		getpid(), sig, info->si_pid);
+
+	memset(command, '\0', sizeof(command));
+
+
+	if (sig == DD_SIGCRASH) {
+		// we use DD_SIGCRASH for live crash
+		printf("running live dump\n");
+		command[0] = strdup("/root/crash_daemon");
+		// command[0] =  strdup("crash");
+
+		if ((pid = fork()) < 0) {
+			perror("livedump fork failed\n");
+
+			return ;
+		} else if (pid == 0) {
+			execvp(command[0], command);
+			perror("livedump execv failed\n");
+			return;
+		}
+		//sleep(10);
+		//printf("livedump wait for status\n");
+		//wait(&status);	
+		printf("livedump finished\n");
+
+		return;
+#if 0
+	if (sig == DD_SIGCRASH) {
+		// we use DD_SIGCRASH for live crash
+		printf("running live dump\n");
+		command[0] = strdup("/usr/bin/crash");
+		command[1] = strdup("-i ");
+		command[2] = strdup("/root/crash_live_script");
+		//command[3] = strdup(" > ");
+		//command[4] = strdup("/ddr/var/core/tt");
+
+		printf("%s %s %s %s %s\n",
+			command[0],
+			command[1],
+			command[2],
+			command[3],
+			command[4]);
+
+		if ((pid = fork()) < 0) {
+			perror("livedump fork failed\n");
+
+			return ;
+		} else if (pid == 0) {
+			execvp(command[0], command);
+			perror("livedump execv failed\n");
+			return;
+		}
+		sleep(10);
+		printf("livedump wait for status\n");
+		wait(&status);	
+		printf("livedump finished\n");
+
+		return;
+#endif
+	} else if (sig == DD_SIGGDB) {
+		// we use DD_SIGGDB for mini dump
+		char		buf[128];
+
+		struct stat 	sts;
+		FILE		*fd;
+		int		ret;
+		char		ch;
+		int		i;
+
+		if (info->si_code == DD_MINI_DDFS) {
+			printf("running mini ddfs dump\n");
+
+			command[0] = strdup("/root/gdb_daemon");
+			command[1] = strdup("/ddr/bin/ddfs");
+			sprintf(buf, "%d\0", info->si_pid);
+			command[2] = strdup(buf);
+			command[3] = NULL;
+			printf("%s %s %s\n", command[0], command[1], command[2]);
+
+			if ((pid = fork()) < 0) {
+				perror("minidump fork failed\n");
+
+				// send SIGCONT to debugee
+				kill(info->si_pid, SIGCONT);
+
+				return ;
+			} else if (pid == 0) {
+				execvp(command[0], command);
+				perror("execv failed\n");
+				// send SIGCONT to debugee
+				kill(info->si_pid, SIGCONT);
+				return;
+			}
+
+			sleep(10);
+
+			memset(buf, '\0', sizeof(buf));
+
+			// check stat
+			sprintf(buf, "/proc/%d/stat", pid);
+
+			if (stat(buf, &sts)) {
+				printf("pid doens't exit\n");
+				// send sigcont
+				kill(info->si_pid, SIGCONT);
+				return;
+			}
+
+			if ((fd = fopen(buf, "r")) == NULL) {
+				printf("fopen failed\n");
+				// send sigcont
+				kill(info->si_pid, SIGCONT);
+				return;
+			}
+
+			for ( i = 0 ; i < 10 ; i++ ) {
+				memset(buf, '\0', sizeof(buf));
+				ret = fscanf(fd, "%d %s %c", &pid, buf, &ch);
+
+				printf("ret %d pid %d name %s status %c\n",
+					ret, pid, buf, ch);
+
+				// if gdb is sleeping, GREAT.
+				if (ch == 'Z') {
+					break;
+				}
+				sleep(2);
+				fseek(fd, 0, SEEK_SET);
+			}
+
+			if ( i < 10)
+				printf("gdb started\n");
+			else
+				printf("gdb failed\n");
+
+			// send SIGCONT to debugee
+			kill(info->si_pid, SIGCONT);
+			wait(&status);
+			return;
+
+		} else if (info->si_code == DD_MINI_LOOP) {
+			printf("running mini loop dump\n");
+
+			command[0] = strdup("/root/gdb_daemon");
+			command[1] = strdup("/ddr/var/home/sysadmin/loop");
+			sprintf(buf, "%d\0", info->si_pid);
+			command[2] = strdup(buf);
+			command[3] = NULL;
+			printf("%s %s %s\n", command[0], command[1], command[2]);
+
+			if ((pid = fork()) < 0) {
+				return ;
+			} else if (pid == 0) {
+				execvp(command[0], command);
+				perror("execv failed\n");
+				exit(1);
+			}
+
+			memset(buf, '\0', sizeof(buf));
+
+			// check stat
+			sprintf(buf, "/proc/%d/stat", pid);
+
+			if (stat(buf, &sts)) {
+				printf("pid doens't exit\n");
+				// send sigcont
+				return;
+			}
+
+			if ((fd = fopen(buf, "r")) == NULL) {
+				printf("fopen failed\n");
+				// send sigcont
+				return;
+			}
+
+			for ( i = 0 ; i < 10 ; i++ ) {
+				memset(buf, '\0', sizeof(buf));
+				ret = fscanf(fd, "%d %s %c", &pid, buf, &ch);
+
+				printf("ret %d pid %d name %s status %c\n",
+					ret, pid, buf, ch);
+
+				// if gdb is sleeping, GREAT.
+				if (ch == 'S') {
+					break;
+				}
+				sleep(2);
+				fseek(fd, 0, SEEK_SET);
+			}
+
+			if ( i < 10)
+				printf("gdb started\n");
+			else
+				printf("gdb failed\n");
+
+			// send SIGCONT to debugee
+			kill(info->si_pid, SIGCONT);
+
+		} else {
+			printf("unknown si_code\n");
+			return;
+		}
+
+		// wait
+
+		// sigcont 
+
+	} else {
+		printf("Unsupport sig %d\n", sig);
+	}
+
+failed:
+	kill(info->si_pid, SIGCONT);
+	return;
+
+}
+
+main()
+{
+	struct sigaction 	act, oldact;
+	sigset_t		mask;
+	int			i;
+
+	printf("pid is %d\n", getpid());
+
+	// assert SIGRTMIN is 34
+	// assert(SIGRTMIN == DD_SIGRTMIN);
+
+	// block a bunch of signals
+	sigaddset(&mask, SIGHUP);
+	//sigaddset(&mask, SIGINT);
+	sigaddset(&mask, SIGQUIT);
+	sigaddset(&mask, SIGABRT);
+	sigaddset(&mask, SIGPIPE);
+	sigaddset(&mask, SIGALRM);
+	sigaddset(&mask, SIGUSR1);
+	sigaddset(&mask, SIGUSR2);
+
+	for ( i = SIGRTMIN ; i < SIGRTMAX ; i++) {
+		if (i == DD_SIGCRASH || i == DD_SIGGDB)
+			continue;
+		sigaddset(&mask, i);
+	}
+
+	sigprocmask(SIG_BLOCK, &mask, NULL);
+
+	// set up sig hdlr
+	memset(&act, '\0', sizeof(act));
+	act.sa_sigaction = &sig_handler;
+	act.sa_flags = SA_SIGINFO;
+
+	if (sigaction(DD_SIGCRASH, &act, NULL) < 0) {
+		printf("DD_SIGCRASH sigaction failed\n");
+		exit(1);
+	}
+
+	if (sigaction(DD_SIGGDB, &act, NULL) < 0) {
+		printf("DD_SIGGDB sigaction failed\n");
+		exit(1);
+	}
+
+	while(1) {
+		pause();
+	}
+}

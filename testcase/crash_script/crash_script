@@ -1,0 +1,614 @@
+
+define ls_class
+	set $subsys_off_class = (long)(&((struct class*)0)->subsys)
+	set $kobj_off_kset = (long)(&((struct kset*)0)->kobj)
+	set $list_off_kset = (long)(&((struct kset*)0)->list)
+	set $entry_off_kobject = (long)(&((struct kobject*)0)->entry)
+
+	# global object 'class_subsys' has all registered 'class'
+	set $head = &(class_subsys.list)
+	set $cur = $head->next
+	while $cur != $head
+		set $class = (struct class*)(((long)$cur) - $entry_off_kobject - $kobj_off_kset - $subsys_off_class)
+		printf "%p: %s\n", $class, $class->name
+		set $cur = $cur->next
+	end
+end
+document ls_class
+  list registerd classes (struct class, /sys/class/*) in system
+end
+
+
+define ls_class_device
+	set $class = (struct class*)$arg0
+
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+	set $children_off_class = (long)(&((struct class*)0)->children)
+	set $devices_off_class = (long)(&((struct class*)0)->devices)
+	set $node_off_device = (long)(&((struct device*)0)->node)
+
+	printf "class_devices: (struct class_device)\n"
+	set $num = 0
+	set $head = &($class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $class_device = (struct class_device*)(((long)$cur) - $node_off_class_device)
+		printf "%p: %s [device=%p class_data=%p]\n", $class_device, $class_device->kobj.k_name, $class_device->dev, $class_device->class_data
+		set $cur = $cur->next
+		set $num = $num + 1
+	end
+	if $num == 0
+		printf " <no class_device>\n"
+	end
+
+	printf "devices: (struct device)\n"
+	set $num = 0
+	set $head = &($class->devices)
+	set $cur = $head->next
+	while $cur != $head
+		set $device = (struct device*)(((long)$cur) - $node_off_device)
+		printf "%p: %s\n", $device, $device->kobj.k_name
+		set $cur = $cur->next
+		set $num = $num + 1
+	end
+	if $num == 0
+		printf " <no device>\n"
+	end
+end
+document ls_class_device
+  list class_device's associated with a class. First argument is a pointer to
+  a class object. (/sys/class/<class>/*)
+end
+
+define ls_class_interface
+	set $class = (struct class*)$arg0
+
+	set $node_off_class_interface = (long)(&((struct class_interface*)0)->node)
+	set $head = &($class->interfaces)
+	set $cur = $head->next
+	while $cur != $head
+		set $class_interface = (struct class_interface*)(((long)$cur) - $node_off_class_interface)
+		printf "%p:\n", $class_interface
+		set $cur = $cur->next
+	end
+end
+document ls_class_interface
+  list class_interface's associated with a class. First argument is a pointer
+  to a class object 
+end
+
+define ls_device
+	set $entry_off_kobject = (long)(&((struct kobject*)0)->entry)
+	set $list_off_kset = (long)(&((struct kset*)0)->list)
+	set $kobj_off_device = (long)(&((struct device*)0)->kobj)
+
+	# all devices are link-listed in 'devices_subsys' (/sys/devices)
+	printf "devices: (struct device*)\n"
+	set $head = &(devices_subsys.list)
+	set $cur = $head->next
+	while $cur != $head
+		set $device = (struct device*)(((long)$cur) - $entry_off_kobject - $kobj_off_device)
+		printf "%p: %s\n", $device, $device->kobj.k_name
+		set $cur = $cur->next
+	end
+end
+document ls_device
+  list registered devices (device_register).
+end
+
+define device_path
+	set $device = (struct device*)$arg0
+
+	while $device != 0
+		printf "%s <-- ", $device->kobj.k_name
+		set $device = $device->parent
+	end
+
+	printf "/sys/devices\n"
+end
+document device_path
+ print *reversed* path to the device node. First argument is a pointer to
+ a struct device object
+end
+
+define ls_scsi_device
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+	set $sdev_classdev_off_scsi_device = (long)(&((struct scsi_device*)0)->sdev_classdev)
+
+	# global 'struct class' object sdev_class has all class_device object
+        # in its linked list; these class_devices are embedded in scsi_device
+	printf "scsi_device's: (struct scsi_device*)\n"
+	set $head = &(sdev_class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $scsi_device = (struct scsi_device*)(((long)$cur) - $node_off_class_device - $sdev_classdev_off_scsi_device)
+		printf "%p: %s type:%d\n", $scsi_device, $scsi_device->sdev_classdev.kobj.k_name, $scsi_device->type
+		set $cur = $cur->next
+	end
+end
+document ls_scsi_device
+  list all scsi devices (/sys/class/scsi_device/*)
+end
+
+define ls_scsi_generic
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+
+	# global 'struct class' object sg_sysfs_class has all class_device 
+	# object in its linked list; these class_devices's class_data field
+        # points to sg_device
+	printf "sg_device's: (struct sg_device*)\n"
+	set $head = &(sg_sysfs_class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $class_device = (struct class_device*)(((long)$cur) - $node_off_class_device)
+		set $sg_device = (struct sg_device*)$class_device->class_data
+		set $scsi_device = $sg_device->device
+		printf "%p: %s %s type:%d\n", $sg_device, $class_device->kobj.k_name, $scsi_device->sdev_classdev.kobj.k_name, $scsi_device->type
+		set $cur = $cur->next
+	end
+end
+document ls_scsi_generic
+ list all scsi generic device (/sys/class/scsi_generic/*)
+end
+
+define ls_scsi_disk
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+	set $cdev_off_scsi_disk = (long)(&((struct scsi_disk*)0)->cdev)
+
+	# global 'struct class' object sd_disk_class has all class_device object
+        # in its linked list; these class_devices are embedded in scsi_disk
+	printf "scsi_disk's: (struct scsi_disk*)\n"
+	set $head = &(sd_disk_class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $scsi_disk = (struct scsi_disk*)(((long)$cur) - $node_off_class_device - $cdev_off_scsi_disk)
+		set $gendisk = $scsi_disk->disk
+		printf "%p: %s %s\n", $scsi_disk, $gendisk->kobj.k_name, $scsi_disk->cdev.kobj.k_name
+		set $cur = $cur->next
+	end
+end
+document ls_scsi_disk
+  list all scsi disk's
+end
+
+define hlist
+    set $base = (struct hlist_head*)$arg0
+    set $size = (long)$arg1
+    set $offset = (long)$arg2
+
+    set $i = 0
+    while $i < $size
+        set $cur = (struct hlist_node*)($base[$i]->first)
+
+        while $cur
+            if $cur->pprev == 0
+                printf "corrupted hlist_node %p\n", $cur
+            end
+            printf "%p\n", ((long)$cur - $offset)
+            set $cur = $cur->next
+        end
+
+        set $i = $i + 1
+    end
+end
+document hlist
+    print all node in a hash table.
+    arg0   the base of the hash array
+    arg1   size of the hash array
+    arg2   offset of hlist_node from beginning of the containing struct
+end
+
+
+define ls_cdev
+        ### global object 'chrdevs[]' is an array to all character device types, one for each major. 
+	### this array is used to determine which major number is free to use.
+	printf "              maj mnr  minorct             name fops  cdev\n"
+	set $chrdevs_len = sizeof(chrdevs)/sizeof(void*)
+	set $idx = 0
+        while $idx < $chrdevs_len
+                set $cdevs = chrdevs[$idx]
+		while $cdevs != 0
+	                printf "chrdevs[%3d]: %3d %3d %8d %16s %p %p\n", $idx, $cdevs->major, \
+				$cdevs->baseminor, $cdevs->minorct, $cdevs->name, $cdevs->fops, $cdevs->cdev
+			set $cdevs = $cdevs->next
+                end
+		set $idx = $idx + 1
+        end
+
+
+	### global object (kobj_map* cdev_map) hold all cdev and corresponding kobjs.
+	printf "\n\n               maj mnr  minorct             name               fops               cdev\n"
+	set $idx = 0
+	while $idx < 255
+		set $probe = &cdev_map->probes[$idx]
+		while $probe != 0 && $probe->data != 0
+			set $cdev = (struct cdev*)$probe->data
+			printf "cdev_map[%3d]: %3d %3d %8d ", $idx, $cdev->dev >> 20, $cdev->dev%1048576, \
+				$cdev->count
+			if $cdev->kobj.k_name == 0
+				printf "          (null) "
+			else
+				printf "%16s ", $cdev->kobj.k_name
+			end
+			printf "%p %p\n", $cdev->ops, $cdev
+				
+			set $probe = $probe->next
+		end
+		set $idx = $idx + 1
+	end
+end
+document ls_cdev
+  list all char dev in chrdevs[] and cdev_map
+end
+
+
+define show_dd_ios
+    set $rq = (struct request_queue*)$arg0
+    set $dd_ios_qdata = (struct dd_ios_queue_data_s*)($rq->elevator->elevator_data)
+    set $dd_ios_root_node = &(((dd_sched_t*)($dd_ios_qdata->skid))->root)
+    printf "dd_ios_qdata: 0x%lx  root_sched_node: 0x%lx\n", $dd_ios_qdata, $dd_ios_root_node
+    printf "sched class:\n"
+    ptype dd_sched_class_t
+end
+
+
+define dump_dd_sched_node
+    set $node = (dd_sched_node_t*)$arg0
+    set $principal_id = $node->policy_info.principal_id
+    set $class = $node->policy_info.sched_class
+    printf "\n"
+    printf "principal %d(%s), sched_class %d, num_queued: %d  num_children: %d\n", $principal_id, dd_sched_resprin_names[$principal_id], $class, $node->num_queued, $node->num_children
+
+    if ($node->num_children > 0)
+        printf "\nchildren:\n"
+        set $head = &($node->children)
+        set $cur = $head->next
+        while ($cur != $head) && ($cur != 0)
+	    set $cur_node = (dd_sched_node_t*)$cur
+            set $cur_principal_id =  $cur_node->policy_info.principal_id
+            set $cur_class = $cur_node->policy_info.sched_class
+            printf "   0x%llx (sched_class %d, num_queued %d, num_children %d), principle %d(%s)\n", $cur_node, $cur_class, $cur_node->num_queued, $cur_node->num_children, $cur_principal_id, dd_sched_resprin_names[$cur_principal_id] 
+            set $cur = $cur->next
+        end
+    end
+
+    if ($class == 1)
+        printf "\nfifo (crq=dd_resource_request_t, drq=dd_ios_request_t, req=struct request):\n"
+        set $head = &($node->req_fifo)
+        set $cur = $head->next
+        while ($cur != $head) && ($cur != 0)
+            set $crq = (dd_resource_request_t*)$cur
+            set $drq = (dd_ios_request_t*)($dd_req->concrete_request)
+            set $req = $drq->kernreqp
+            printf "   crq: 0x%llx  drq: 0x%llx req: 0x%llx  io_start_time: %lu old: %dsec\n", $crq, $drq, $req, $req->start_time, (jiffies - $req->start_time)/1000
+            set $cur = $cur->next
+        end
+    end
+end
+document dump_dd_sched_node
+   dump $arg0 of type dd_sched_node_s
+end
+
+define ls_dd_array
+    set $i = 0
+    while $i < 50
+        set $devdata = g_raid_module.devdatas[$i]
+        if $devdata != 0
+            set $rgrp = $devdata->rgrp
+            if  $rgrp != 0
+                set $grp_name = $rgrp->grp_name
+                set $array = (struct dd_array_s*)$rgrp->array
+                set $array_name = $array->name
+
+                printf "dd_rgrp_s 0x%llx (%s) dd_array_s 0x%llx (%s) raid%d group:array %d:%d\n", $rgrp, $grp_name, $array, $array_name, $array->level->level_nr, $array->grp_nr, $array->array_nr
+
+                set $j = 0
+                while $j < $array->diskset.nr_disks_total
+                    set $diskinfo = &($array->diskset.disk_infos[$j])
+                    if $diskinfo->disk != 0
+                        set $block_device = (struct block_device*)($diskinfo->disk->private.private_data)
+                        set $gendisk = $block_device->bd_disk
+                        set $q = $gendisk->queue
+                        printf "\t disk (%s) state %d block_device 0x%llx gendisk 0x%llx request_queue 0x%llx\n", $diskinfo->disk->dev_name, $diskinfo->state, $block_device, $gendisk, $q
+                    end
+                    set $j = $j + 1
+                end
+            else
+                set $grptype = $devdata->grptype
+                if $grptype == 1 
+                    # meta group
+                    set $mgrp = $devdata->grp.mgrp
+                    printf "dd_mgrp_s 0x%llx (%s)\n", $mgrp, $mgrp->name
+                end
+                if $grptype == 2
+                    # disk group
+                    set $dgrp = $devdata->grp.dgrp
+                    printf "dd_dgrp_s 0x%llx (%s)\n", $dgrp, $dgrp->name
+                end
+            end
+        end
+        set $i = $i + 1
+    end
+end
+
+define dm_queue
+    set $q = (struct request_queue*)$arg0
+    set $md = (struct mapped_device*)$q->queuedata
+    printf "mapped_device 0x%llx  flags 0x%x pending %d deferred 0x%llx/0x%llx\n", $md, $md->flags, $md->pending.counter, $md->deferred->head, $md->deferred->tail
+end
+document dm_queue
+    examine a request_queue of a type dm
+end
+
+define deadline_queue
+    set $q = (struct request_queue*)$arg0
+    set $dd = (struct deadline_data*)$q->elevator->elevator_data
+    set $fifo_r_head = &($dd->fifo_list[0])
+    set $fifo_w_head = &($dd->fifo_list[1])
+    set $fifo_r_num = 0
+    set $fifo_w_num = 0
+    set $fifo_r_eldest = 0
+    set $fifo_w_eldest = 0
+    set $fifo_r_youngest = 0
+    set $fifo_w_youngest = 0
+    set $queuelist_off_request = (long)(&(((struct request*)0)->queuelist))
+
+    printf "read fifo:\n"
+    set $next = $fifo_r_head->next
+    while $next != $fifo_r_head
+        set $fifo_r_num = $fifo_r_num + 1
+        set $req = (struct request*)(((long)($next)) - $queuelist_off_request)
+        printf "req: 0x%lx  io_start_time: 0x%lx  old: %dsec\n", $req, $req->start_time, (jiffies - $req->start_time)/1000
+        set $next = $next->next
+    end
+
+    printf "\nwrite fifo:\n"
+    set $next = $fifo_w_head->next
+    while $next != $fifo_w_head
+        set $fifo_w_num = $fifo_w_num + 1
+        set $req = (struct request*)(((long)($next)) - $queuelist_off_request)
+        printf "req: 0x%lx  io_start_time: %d  old: %dsec\n", $req, $req->start_time, (jiffies - $req->start_time)/1000
+        set $next = $next->next
+    end
+end
+document deadline_queue
+    examine a request_queue of type deadline
+end
+
+define nv_show_device
+        set $dev = (octeon_device_t *)octeon_device[$arg0]
+
+        printf "Instr Q0 = %p Instr Q1 = %p\n", $dev->instr_queue[0], $dev->instr_queue[1]
+        printf "Resp Q0 = %p Resp Q1 = %p\n", $dev->rsp_queue[0], $dev->rsp_queue[1]
+        printf "MaxId = %lx Completed ID = %lx Polled ID = %lx\n", $dev->MaxID, $dev->CompletedID, $dev->LastPollID
+        printf "Instr Q0 ..\n"
+        set $q = (octeon_instr_queue_t *)$dev->instr_queue[0]
+        printf "    Max Count = %d Host write index = 0x%x Instr pending = 0x%x Base Address = %p\n", $q->max_count, $q->host_write_index, $q->instr_pending.counter, $q->base_addr
+        printf "Resp Q0 ..\n"
+        set $q = (octeon_rsp_queue_t *)$dev->rsp_queue[0]
+        printf "    Max Count = %d Host read index = 0x%x Base Address = %p\n", $q->max_count, $q->host_read_index, $q->base_addr
+        printf "Instr Q1 ..\n"
+        set $q = (octeon_instr_queue_t *)$dev->instr_queue[1]
+        printf "    Max Count = %d Host write index = 0x%x Instr pending = 0x%x Base Address = %p\n", $q->max_count, $q->host_write_index, $q->instr_pending.counter, $q->base_addr
+        printf "Resp Q1 ..\n"
+        set $q = (octeon_rsp_queue_t *)$dev->rsp_queue[1]
+        printf "    Max Count = %d Host read index = 0x%x Base Address = %p\n", $q->max_count, $q->host_read_index, $q->base_addr
+end
+document nv_show_device
+    display brief NVRAM info for specified card instance
+end
+
+
+define nv_show_device_all
+        set $dev = octeon_device[$arg0]
+        p/x *(octeon_device_t *)$dev
+end
+document nv_show_device_all
+    display detailed NVRAM info for specified card instance
+end
+
+define nv_show_queues
+        set $dev = (octeon_device_t *)octeon_device[$arg0]
+        set $q = (octeon_instr_queue_t *)$dev->instr_queue[0]
+        set $base = (struct dd_nv_iov_req *)$q->base_addr
+        set $i = 0
+	printf "\nInstruction queue 0 ....\n\n"
+        while $i != $q->max_count
+                set $entry = $base[$i]
+                set $len = $entry->total_len
+                set $len = ($len >> 24) | ((($len >> 16 ) & 0xff) << 8) | (($len & 0xff) << 24) | ((($len >> 8) & 0xff) << 16)
+                set $offset = $entry->offset
+                set $a = $offset & 0xffffffffULL
+                set $b = ($offset >> 32)
+                set $a = ($a >> 24) | ((($a >> 16 ) & 0xff) << 8) | (($a & 0xff) << 24) | ((($a >> 8) & 0xff) << 16)
+                set $b = ($b >> 24) | ((($b >> 16 ) & 0xff) << 8) | (($b & 0xff) << 24) | ((($b >> 8) & 0xff) << 16)
+                set $offset = $a << 32 | $b
+                set $addr = $entry->sl[0].address
+                set $a = $addr & 0xffffffffULL
+                set $b = ($addr >> 32)
+                set $a = ($a >> 24) | ((($a >> 16 ) & 0xff) << 8) | (($a & 0xff) << 24) | ((($a >> 8) & 0xff) << 16)
+                set $b = ($b >> 24) | ((($b >> 16 ) & 0xff) << 8) | (($b & 0xff) << 24) | ((($b >> 8) & 0xff) << 16)
+                set $addr = $a << 32 | $b
+
+		if ($entry->flags & 2)
+			if ($entry->flags & 4)
+                		printf "Entry %x: WRITE INTR Length = 0x%x Offset = 0x%lx Host Address = %p\n", $i, $len, $offset, $addr
+			else
+                		printf "Entry %x: WRITE Length = 0x%x Offset = 0x%lx Host Address = %p\n", $i, $len, $offset, $addr
+			end
+		else
+			if ($entry->flags & 4)
+                		printf "Entry %x: READ INTR Length = 0x%x Offset = 0x%lx Host Address = %p\n", $i, $len, $offset, $addr
+			else
+                		printf "Entry %x: READ Length = 0x%x Offset = 0x%lx Host Address = %p\n", $i, $len, $offset, $addr
+			end
+		end
+
+		set $i = $i + 1
+        end
+
+        set $q = (octeon_rsp_queue_t *)$dev->rsp_queue[0]
+        set $base = (struct dd_nv_io_rsp *)$q->base_addr
+	printf "\nResponse queue 0 ....\n\n"
+        set $i = 0
+        while $i != $q->max_count
+                set $entry = $base[$i]
+                set $len = $entry->len
+                set $len = ($len >> 24) | ((($len >> 16 ) & 0xff) << 8) | (($len & 0xff) << 24) | ((($len >> 8) & 0xff) << 16)
+                printf "Entry %d: Length = 0x%x Status = 0x%x Reason Code = 0x%x\n", $i, $len, $entry->status, $entry->reason_code
+		set $i = $i + 1
+        end
+
+        set $q = (octeon_instr_queue_t *)$dev->instr_queue[1]
+        set $base = (struct dd_nv_request *)$q->base_addr
+        set $i = 0
+	printf "\nInstruction queue 1 ....\n\n"
+        while $i != $q->max_count
+                set $entry = $base[$i]
+               	printf "Entry %x: Opcode = 0x%x\n", $i, $entry->opcode
+		set $i = $i + 1
+        end
+
+        set $q = (octeon_rsp_queue_t *)$dev->rsp_queue[1]
+        set $base = (struct dd_nv_rsp *)$q->base_addr
+	printf "\nResponse queue 1 ....\n\n"
+        set $i = 0
+        while $i != $q->max_count
+                set $entry = $base[$i]
+                printf "Entry %x: Opcode = 0x%x Status = 0x%x\n", $i, $entry->opcode, $entry->status
+		set $i = $i + 1
+        end
+end
+document nv_show_queues
+    display NVRAM queues for specified card instance
+end
+
+# Linux kernel 3.2 crash macros
+
+# list gendisk devices /sys/block/*
+define ls_block
+    if ($argc == 0)
+            printf "Please try 'ls_block all' for disk partition checking...\n"
+    end
+
+    #set $private_off_class = (long)(&((struct class*)0)->p)
+    #set $klist_off_private = (long)(&((struct subsys_private*)0)->klist_devices)
+    set $list_off_klist = (long)(&((struct klist*)0)->k_list)
+    set $knode_off_device = (long)(&((struct device*)0)->knode_class)
+    set $part_off_gend = (long)(&((struct gendisk*)0)->part0)
+    set $dev_off_part = (long)(&((struct hd_struct*)0)->__dev)
+    printf "list off %d knode off %d part off %d dev off %d\n", $list_off_klist, $knode_off_device, $part_off_gend, $dev_off_part
+
+    set $head = &(block_class.p.klist_devices.k_list)
+    set $cur = $head->next
+    while $cur != $head
+        # printf "%p\n", $cur
+        set $knode = (struct klist_node*)(((long)$cur) - $list_off_klist)
+        set $dev   = (struct device*)(((long)$knode) - $knode_off_device)
+        set $gendisk   = (struct gendisk*)(((long)$dev) - $part_off_gend - $dev_off_part)
+
+        set $gendisk_name = $gendisk.part0.__dev.kobj.name
+        set $request_queue = $gendisk->queue
+
+        set $elevator_name = 0
+        if ($request_queue != 0) && ($request_queue->elevator != 0)
+           set $elevator_name = $request_queue->elevator->elevator_type.elevator_name
+        end
+
+        if ($request_queue != 0)
+            set $in_queue_r = $request_queue->rq.count[0]
+            set $in_queue_w = $request_queue->rq.count[1]
+            set $in_flight_r = $request_queue->in_flight[0]
+            set $in_flight_w = $request_queue->in_flight[1]
+
+            if ($elevator_name != 0)
+                printf "%p: %s request_queue=%p sched=%s in_queue(r/w) %d/%d in_flight(r/w) %d/%d\n", \
+                    $gendisk, $gendisk_name, $request_queue, $elevator_name, \
+                    $in_queue_r, $in_queue_w, $in_flight_r, $in_flight_w
+            else
+                printf "%p: %s request_queue=%p sched=<none> in_queue(r/w) %d/%d in_flight(r/w) %d/%d\n", \
+                    $gendisk, $gendisk_name, $request_queue, \
+                    $in_queue_r, $in_queue_w, $in_flight_r, $in_flight_w
+            end
+        else
+            if ($argc > 0)
+               printf "%p: %s request_queue=<none>\n", $gendisk, $gendisk_name
+            end
+        end
+
+        set $cur = $cur->next
+    end
+end
+
+# list all scsi host devices /sys/class/scsi_host/*
+define ls_scsi_host
+    #set $private_off_class = (long)(&((struct class*)0)->p)
+    #set $knode_off_device = (long)(&((struct device*)0)->knode_class)
+    set $list_off_klist = (long)(&((struct klist*)0)->k_list)
+    set $knode_off_device = (long)(&((struct device*)0)->knode_class)
+    set $shdev_off_shost = (long)(&((struct Scsi_Host*)0)->shost_dev)
+
+    set $shost_class = &(shost_class)
+    set $head =  &(shost_class.p.klist_devices.k_list)
+    set $cur = $head->next
+    printf "device             Scsi_Host          scsi_host_template\n"
+    while $cur != $head
+	set $knode = (struct klist_node*)(((long)$cur) - $list_off_klist)
+	set $dev   = (struct device*)(((long)$knode) - $knode_off_device)
+	# struct device is @ Scsi_Host->shost_dev.  So we need to sub the offset
+	# see scsi_host_lookup() as example
+	set $shdev= (struct Scsi_Host*)(((long)$dev) - $shdev_off_shost)
+	printf "%p %p %p\n", $dev, $shdev, $shdev->hostt
+	set $cur = $cur->next
+    end
+end
+
+# list all block_devices in the global 'all_bdevs' list
+define ls_bdev
+    set $list_off_bdev = (long)(&((struct block_device*)0)->bd_list)
+    set $head = &(all_bdevs)
+    set $cur = $head->next
+
+    while $cur != $head
+	set $bdev = (struct block_device*)(((long)$cur) - $list_off_bdev)
+	set $majmin = $bdev->bd_dev
+	printf "bdev %p %3d.%3d bdev_t %d ", $bdev, ($majmin >> 20), ($majmin & ((1 << 20) - 1)), $bdev->bd_dev
+	if $bdev->bd_disk
+		printf "gen %p name %s", $bdev->bd_disk, $bdev->bd_disk->disk_name
+	end
+	printf "\n"
+	if $bdev->bd_disk && $bdev->bd_disk->part_tbl
+		set $idx = 0
+		set $part_tbl = (struct disk_part_tbl*)((long)$bdev->bd_disk->part_tbl)
+		set $len = $part_tbl->len
+		printf " part_tbl %p len %d\n", $part_tbl, $len
+		while $idx < $len
+			set $part = (struct hd_struct*)((long)$part_tbl->part[$idx])
+			printf " hd_struct %p name %s\n", $part, $part->__dev.kobj.name
+			set $idx = $idx + 1
+		end
+	end
+	set $cur = $cur->next
+    end
+end
+
+# need to run 'mod -S' before using this macro
+# list all dump devices
+define ls_dump_dev
+	set $head = &(disk_dump_devices)
+	set $cur = $head->next
+	printf "disk_dump_device   scsi_device        Scsi_Host          scsi_host_template MPT_ADAPTER/ioc\n" 
+	printf "scsi_cmnd          device             sense_buffer\n"
+	while $cur != $head
+		set $dd_dev = (struct disk_dump_device*)((long)$cur)
+		set $s_dev = (struct scsi_device*)((long)$dd_dev->device)
+		set $host = (struct Scsi_Host*)((long)$s_dev->host)
+		set $scmd = (struct scsi_cmnd*)((long)$dd_dev->cmd)
+		set $hostdata = (MPT_SCSI_HOST*)((long)$host->hostdata)
+
+		#printf "scsi dev %p host %p hostt %p\n", $s_dev, $host, $host->hostt
+		printf "%p %p %p %p %p\n", $cur, $s_dev, $host, $host->hostt, $hostdata->ioc
+		printf "%p %p %p\n", $scmd, $scmd->device, $scmd->sense_buffer
+		set $cur = $cur->next
+	end
+end

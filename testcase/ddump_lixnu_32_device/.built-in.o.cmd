@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_lixnu_32_device/built-in.o :=  rm -f /auto/home5/hoj9/testcase/ddump_lixnu_32_device/built-in.o; /auto/home/lsbuild/desktop-358510/usr/bin/ar rcs /auto/home5/hoj9/testcase/ddump_lixnu_32_device/built-in.o

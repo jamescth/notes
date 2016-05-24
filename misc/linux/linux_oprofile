@@ -1,0 +1,8 @@
+strace
+
+opcontrol --init
+opcontrol --start --vmlinux=/vmlinux
+opcontrol --stop
+opcontrol --flush
+opreport
+opreport -l /usr/local/bin/myprog

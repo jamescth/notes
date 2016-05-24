@@ -1,0 +1,84 @@
+initrd location in physical ram, related code (spread over arch/arm/kernel/init.c)
+
+start_kernel:
+	setup_arch:
+		paging_init:
+			bootmem_init:
+				check_initrd(...) ifdef CONFIG_BLK_DEV_INITRD
+				bootmem_reserve_initrd(...) ifdef CONFIG_BLK_DEV_INITRD
+					initrd_start = __phys_to_virt(phys_initrd_start)
+					initrd_end = initrd_start + phys_initrd_size
+
+populate_rootfs is a initcall execute by kernel_init
+
+static int __init kernel_init(void * unused)
+{
+	...
+	do_basic_setup();
+	...
+	prepare_namespace();
+}
+
+static void __init do_basic_setup(void)
+{
+	/* drivers will send hotplug events */
+	init_workqueues();
+	usermodehelper_init();
+	driver_init();
+	init_irq_proc();
+	do_initcalls();
+	/* the do_initcalls will eventually call a function:
+	   populate_rootfs(..) if CONFIG_BLK_DEV_RAM is defined,
+	   then probably the init rootfs is a initrd, or a initramfs
+	   if CONFIG_BLK_DEV_RAM is not defined then it only 
+	   accepts initramfs
+	 */
+}
+
+static void __init do_initcalls(void)
+{
+	initcall_t *call;
+	int count = preempt_count();
+
+	for (call = __initcall_start; call < __initcall_end; call++) {
+		...
+		defined in linux/init.h
+
+		#define __initcall(fn) device_initcall(fn)
+		#define module_init(x)	__initcall(x);
+
+ * module_init() will either be called during do_initcalls() (if
+ * builtin) or at module insertion time (if a module).  There can only
+ * be one per module.
+
+}
+
+prepare_namespace()
+{
+	...
+	if (initrd_load())
+		goto out;
+	...
+out:
+	sys_mount(".", "/", NULL, MS_MOVE, NULL);
+	sys_chroot(".");
+	security_sb_post_mountroot();
+}
+
+
+init_post(void)
+{
+	...
+	if (execute_command) {
+		run_init_process(execute_command);
+		printk(KERN_WARNING "Failed to execute %s.  Attempting "
+					"defaults...\n", execute_command);
+	}
+	run_init_process("/sbin/init");
+	run_init_process("/etc/init");
+	run_init_process("/bin/init");
+	run_init_process("/bin/sh");
+
+	panic("No init found.  Try passing init= option to kernel.");
+}
+

@@ -1,0 +1,210 @@
+crash> slab 0xffff81053d756000
+struct slab {
+  list = {
+    next = 0xffff81053d778000,
+    prev = 0xffff81085a72dd40
+  },
+  colouroff = 0x80,
+  s_mem = 0xffff81053d756080,
+  inuse = 0x3,
+  free = 0x0,
+  nodeid = 0x0
+}
+
+0xffff81053d756080
+0xffff81053d7566c0
+0xffff81053d756d00
+0xffff81053d757340
+0xffff81053d757980
+
+crash> source ~/testcase/crash_script/kstat.sh
+crash> ls_slab_sock 0xffff81053d756000 5 1600
+
+crash> ls_slab_sock 0xffff81053d756000 5 1600
+family state reuse protocol
+0xffff81053d756080 2 7 1 6
+0xffff81053d7566c0 2 1 1 6
+0xffff81053d756d00 2 1 1 6
+0xffff81053d757340 2 7 1 6
+0xffff81053d757980 2 10 1 6
+slabp 0xffff81053d756000 bufctl 0xffff81053d756030
+0xffff81053d756030 3
+0xffff81053d756034 2
+0xffff81053d756038 3
+0xffff81053d75603c ffffffff
+0xffff81053d756040 ffffffff
+
+
+crash> source ~/testcase/crash_script/kstat.sh
+crash>
+crash> ls_slab_sock 0xffff81057ae00000 5 1600
+
+struct slab {
+	struct list_head list;
+	unsigned long colouroff;
+	void *s_mem;		/* including colour offset */
+	unsigned int inuse;	/* num of objs active in slab */
+	kmem_bufctl_t free;
+	unsigned short nodeid;
+};
+SIZE: 0x30
+
+typedef unsigned int kmem_bufctl_t;
+#define BUFCTL_END	(((kmem_bufctl_t)(~0U))-0)
+#define BUFCTL_FREE	(((kmem_bufctl_t)(~0U))-1)
+#define	BUFCTL_ACTIVE	(((kmem_bufctl_t)(~0U))-2)
+#define	SLAB_LIMIT	(((kmem_bufctl_t)(~0U))-3)
+
+static inline kmem_bufctl_t *slab_bufctl(struct slab *slabp)
+{
+	return (kmem_bufctl_t *) (slabp + 1);
+}
+
+static inline void *index_to_obj(struct kmem_cache *cache, struct slab *slab,
+				 unsigned int idx)
+{
+	DD_BUG_ON_NOTALIGNED(slab->s_mem);
+	return slab->s_mem + cache->buffer_size * idx;
+}
+
+static void *slab_get_obj(struct kmem_cache *cachep, struct slab *slabp,
+				int nodeid)
+{
+	void *objp = index_to_obj(cachep, slabp, slabp->free);
+	kmem_bufctl_t next;
+
+	slabp->inuse++;
+	next = slab_bufctl(slabp)[slabp->free];
+#if DEBUG
+	slab_bufctl(slabp)[slabp->free] = BUFCTL_FREE;
+	WARN_ON(slabp->nodeid != nodeid);
+#endif
+	slabp->free = next;
+
+	return objp;
+}
+
+
+crash> struct -o sk_buff_head
+struct sk_buff_head {
+   [0] struct sk_buff *next;
+   [8] struct sk_buff *prev;
+  [16] __u32 qlen;
+  [20] spinlock_t lock;
+}
+SIZE: 32
+
+crash> struct -o sk_buff
+struct sk_buff {
+    [0] struct sk_buff *next;
+    [8] struct sk_buff *prev;
+   [16] struct sock *sk;
+   [24] ktime_t tstamp;
+   [32] struct net_device *dev;
+   [40] struct dst_entry *dst;
+   [48] struct sec_path *sp;
+   [56] char cb[48];
+  [104] unsigned int len;
+  [108] unsigned int data_len;
+  [112] __u16 mac_len;
+  [114] __u16 hdr_len;
+        union {
+            __wsum csum;
+            struct {...};
+        };
+  [120] __u32 priority;
+  [124] __u8 local_df : 1;
+  [124] __u8 cloned : 1;
+  [124] __u8 ip_summed : 2;
+  [124] __u8 nohdr : 1;
+  [124] __u8 nfctinfo : 3;
+  [125] __u8 pkt_type : 3;
+  [125] __u8 fclone : 2;
+  [125] __u8 ipvs_property : 1;
+  [125] __u8 nf_trace : 1;
+  [126] __be16 protocol;
+  [128] void (*destructor)(struct sk_buff *);
+  [136] int iif;
+  [140] __u16 queue_mapping;
+  [142] __u16 tc_index;
+  [144] __u16 tc_verd;
+  [148] __u32 mark;
+  [152] sk_buff_data_t transport_header;
+  [156] sk_buff_data_t network_header;
+  [160] sk_buff_data_t mac_header;
+  [164] sk_buff_data_t tail;
+  [168] sk_buff_data_t end;
+  [176] unsigned char *head;
+  [184] unsigned char *data;
+  [192] unsigned int truesize;
+  [196] atomic_t users;
+}
+SIZE: 200
+
+crash> sock 0xffff81000e183980
+struct sock {
+
+  sk_receive_queue = {
+    next = 0xffff8104b6a10ac0,
+    prev = 0xffff81005c46f280,
+    qlen = 2,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_write_queue = {
+    next = 0xffff81000e183a68,
+    prev = 0xffff81000e183a68,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_async_wait_queue = {
+    next = 0x0,
+    prev = 0x0,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 0
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_error_queue = {
+    next = 0xffff81000e183ad0,
+    prev = 0xffff81000e183ad0,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+
+  sk_backlog = {
+    head = 0x0,
+    tail = 0x0
+  },
+
+crash> source ~/testcase/crash_script/kstat.sh
+crash> ls_sk_buff_head 0xffff8104b6a10ac0 0xffff81000e183a48
+
+
+

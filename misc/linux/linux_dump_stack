@@ -1,0 +1,155 @@
+
+dump_stack()
+{
+	unsigned long dummy;
+	show_trace(NULL, NULL, &dummy);
+}
+
+void
+show_trace(struct task_struct *tsk, struct pt_regs *regs, unsigned long *stack)
+{
+	printk("\nCall Trace:\n");
+	dump_trace(tsk, regs, stack, &print_trace_ops, NULL);
+	printk("\n");
+}
+
+crash> _stext
+_stext = $4 =
+ {<text variable, no debug info>} 0xffffffff80209000 <run_init_process>
+
+int core_kernel_text(unsigned long addr)
+{
+	if (addr >= (unsigned long)_stext &&
+	    addr <= (unsigned long)_etext)
+		return 1;
+
+	if (addr >= (unsigned long)_sinittext &&
+	    addr <= (unsigned long)_einittext)
+		return 1;
+	return 0;
+}
+
+/* Is this a valid kernel address? */
+struct module *__module_text_address(unsigned long addr)
+{
+	struct module *mod;
+
+	list_for_each_entry(mod, &modules, list)
+		if (within(addr, mod->module_init, mod->init_text_size)
+		    || within(addr, mod->module_core, mod->core_text_size))
+			return mod;
+	return NULL;
+}
+
+int __kernel_text_address(unsigned long addr)
+{
+	if (core_kernel_text(addr))
+		return 1;
+	return __module_text_address(addr) != NULL;
+}
+
+static int print_trace_stack(void *data, char *name)
+{
+	printk(" <%s>\n", name);
+	return 0;
+}
+
+void dump_trace(struct task_struct *tsk, struct pt_regs *regs,
+		unsigned long *stack,
+		struct stacktrace_ops *ops, void *data)
+{
+	const unsigned cpu = get_cpu();
+	unsigned long *irqstack_end = (unsigned long*)cpu_pda(cpu)->irqstackptr;
+	unsigned used = 0;
+	struct thread_info *tinfo;
+
+	if (!tsk)
+		tsk = current;
+
+	if (!stack) {
+		unsigned long dummy;
+		stack = &dummy;
+		if (tsk && tsk != current)
+			stack = (unsigned long *)tsk->thread.rsp;
+	}
+
+	/*
+	 * Print function call entries within a stack. 'cond' is the
+	 * "end of stackframe" condition, that the 'stack++'
+	 * iteration will eventually trigger.
+	 */
+#define HANDLE_STACK(cond) \
+	do while (cond) { \
+		unsigned long addr = *stack++; \
+		/* Use unlocked access here because except for NMIs	\
+		   we should be already protected against module unloads */ \
+		if (__kernel_text_address(addr)) { \
+			/* \
+			 * If the address is either in the text segment of the \
+			 * kernel, or in the region which contains vmalloc'ed \
+			 * memory, it *may* be the address of a calling \
+			 * routine; if so, print it so that someone tracing \
+			 * down the cause of the crash will be able to figure \
+			 * out the call path that was taken. \
+			 */ \
+			ops->address(data, addr);   \
+		} \
+	} while (0)
+
+	/*
+	 * Print function call entries in all stacks, starting at the
+	 * current stack address. If the stacks consist of nested
+	 * exceptions
+	 */
+	for (;;) {
+		char *id;
+		unsigned long *estack_end;
+		estack_end = in_exception_stack(cpu, (unsigned long)stack,
+						&used, &id);
+
+		if (estack_end) {
+			if (ops->stack(data, id) < 0)
+				break;
+			HANDLE_STACK (stack < estack_end);
+			ops->stack(data, "<EOE>");
+			/*
+			 * We link to the next stack via the
+			 * second-to-last pointer (index -2 to end) in the
+			 * exception stack:
+			 */
+			stack = (unsigned long *) estack_end[-2];
+			continue;
+		}
+		if (irqstack_end) {
+			unsigned long *irqstack;
+			irqstack = irqstack_end -
+				(IRQSTACKSIZE - 64) / sizeof(*irqstack);
+
+			if (stack >= irqstack && stack < irqstack_end) {
+				if (ops->stack(data, "IRQ") < 0)
+					break;
+				HANDLE_STACK (stack < irqstack_end);
+				/*
+				 * We link to the next stack (which would be
+				 * the process stack normally) the last
+				 * pointer (index -1 to end) in the IRQ stack:
+				 */
+				stack = (unsigned long *) (irqstack_end[-1]);
+				irqstack_end = NULL;
+				ops->stack(data, "EOI");
+				continue;
+			}
+		}
+		break;
+	}
+
+	/*
+	 * This handles the process stack:
+	 */
+	tinfo = task_thread_info(tsk);
+	HANDLE_STACK (valid_stack_ptr(tinfo, stack));
+#undef HANDLE_STACK
+	put_cpu();
+}
+EXPORT_SYMBOL(dump_trace);
+

@@ -1,0 +1,27 @@
+if [ $# -ne 1 ]
+then
+	echo "usage: mkpf50 <path>"
+	exit 1
+fi
+
+OS=$1/platform/os
+echo "the path is $OS"
+
+APP=$1/app
+echo "the path is $APP"
+
+# we only need i386 architecture source code
+find $OS                                                                                          \
+    -path "$OS/linux-2.6.23/arch/*" ! -path "$OS/linux-2.6.23/arch/i386*" -prune -o               \
+    -path "$OS/linux-2.6.23/include/asm-*" ! -path "$OS/linux-2.6.23/include/asm-i386*" -prune -o \
+    -path "$OS/linux-2.6.23/tmp*" -prune -o                                                       \
+    -path "$OS/linux-2.6.23/Documentation*" -prune -o                                             \
+    -path "$OS/linux-2.6.23/scripts*" -prune -o                                                   \
+    -name "*.[chxsS]" -print > cscope.files
+
+find $APP                                                                \
+    -name "*.[chxsS]" -print >> cscope.files
+
+cscope -b -q -k
+
+cscope -d

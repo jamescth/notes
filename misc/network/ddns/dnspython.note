@@ -1,0 +1,32 @@
+========== DDR distro instruction ==========
+moving to ddr
+
+scp dnspython-1.11.1.zip sysadmin@<ddr>
+unzip dnspython-1.11.1.zip
+
+mv dnspython-1.11.1/dns /usr/lib/python2.6/site-packages
+
+same as netaddr-0.7.11
+
+========= dnspython notes ==========
+
+update.py
+
+    def _add_rr(self, name, ttl, rd, deleting=None, section=None):
+        """Add a single RR to the update section."""
+
+=>      if section is None:
+            section = self.authority
+        covers = rd.covers()
+        rrset = self.find_rrset(section, name, self.zone_rdclass, rd.rdtype,
+                                covers, deleting, True, True)
+        rrset.add(rd, ttl)
+
+    def _add(self, replace, section, name, *args):
+        ...
+                    self._add_rr(name, rds.ttl, rd, section=section)
+
+    def replace(self, name, *args):
+        ...
+        self._add(True, self.authority, name, *args)
+

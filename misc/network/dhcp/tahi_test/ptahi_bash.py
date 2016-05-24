@@ -1,0 +1,280 @@
+#!/usr/bin/env python
+"""
+This script is to automate TAHI tests for DDRs in bash mode.
+
+The idea is to RSH DDR & TAHI via pexpect (spawn a child & control it).
+
+There are a few seneraios we need to take care of in order to interact with TAHI:
+	1. TAHI will ask to DDR.  We have no action to do here.
+		reboot
+		lio_start
+		reboot> Reboot NUT.
+		reboot>     * Wait until NUT boot up completely.
+		reboot>         Ex.) Wait until catch up login prompt.
+		reboot> 
+		reboot> Press Enter key for continue. 
+		lio_stop
+
+	2. Before starting & ending of each test case, TAHI asks DDR to release IP & 
+	   terminate dhclient
+		lio_start
+		dhcp6c> then press enter key.
+		dhcp6c> If NUT has Global address, please remove it. 
+		1dhcp6c> Stop the DHCPv6 Client! 
+		1lio_stop
+
+	3. Part of the test, TAHI asks DDR to release the acquired IP & terminate.
+		dhcp6c> Please Release Address and information:
+		According to RFC3315, 
+		   A client sends a Release message to the server
+		   that assigned addresses to the client to 
+		   indicate that the client will no longer use one
+		   or more of the assigned addresses.
+		dhcp6c> In order to make client sent Release message. 
+		 then press enter key. 
+		lio_stop
+
+	4. Part of the test, TAHI asks DDR to terminate dhclient w/out releasing the acquired IP
+		lio_start
+		dhcp6c> Please down interface of  DHCPv6 Client:
+		 The Client will be required to send Confirm message when the intaface is upped.
+		 then press enter key. 
+		lio_stop
+
+	5. Part of the test, TAHI asks DDR to ping
+		lio_start
+		ping6> Press enter key, and excute the following commands within 5 seconds.
+		ping6> Do ``ping6  DataSize= 2, Send Count= 1, Interface= eth0b, Destination= dhcpv6.test.example.com''
+		lio_stop
+
+	6. part of the test, TAHI asks DDR to ping
+		lio_start
+		ping6> Press enter key, and excute the following commands within 5 seconds.
+		ping6> Do ``ping6  DataSize= 2, Send Count= 1, Interface= eth0b, Destination= dhcpv6''
+		lio_stop
+"""
+import pexpect
+import time
+
+# the following are the cmds for dhclient operations
+# cmd for dhclient termination & releasing the acquired IP
+dhc_rel = "./dhc431 -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b"
+# cmd for dhclient termination w/out releasing the acquired IP
+dhc_ter = "./dhc431 -6 -x -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b"
+# cmd for bringing up dhclient
+dhc_sol = "./dhc431 -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b"
+# cmd for bringing up dhclient
+dhc_info = "./dhc431 -6 -S -nw -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b"
+# the expected string after dhclient finishs its operation
+dhc_exp = "-bash-3.00#"
+# cmd for ping dhcpv6
+cmd_ping_host = "ping6 -c 1 -s 2 -I eth0b dhcpv6"
+# cmd for ping dhcpv6.test.example.com
+cmd_ping_domain = "ping6 -c 1 -s 2 -I eth0b dhcpv6.test.example.com"
+cmd_ping_return = "unknown host"
+
+end_3315 = "rfc3315 #"
+end_3646 = "rfc3646 #"
+end_3736 = "rfc3736 #"
+
+test_3315 = "cd ~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315"
+test_3646 = "cd ~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3646"
+test_3736 = "cd ~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3736"
+
+# tahi test file
+#tahi_test_file = "./py_tahi_3315_test_cases"
+#tahi_test_file = "./py_tahi_3646_test_cases"
+tahi_test_file = "./py_tahi_3736_test_cases"
+# output file
+tahi_output = "./xxx"
+
+def run_expect(tahi, ddr):
+        """
+        """
+	dhclient_up = False
+
+	while True:
+		index = tahi.expect_exact(['1lio_stop', 'lio_stop', end_3315, end_3646, end_3736], timeout=None)
+		print "index ", index
+
+		if index == 0:
+			"""
+			If we get 1lio_stop as part of the output, the test case is either just
+			started or already finished.  This is to release dhclient.
+			"""
+			if dhclient_up:
+				"""
+				if dhclient already up, release it
+				"""
+				print "done.  release dhc"
+				#print dhc_rel
+				time.sleep(3)
+				ddr.sendline(dhc_rel)
+				try:
+					ddr.expect_exact(dhc_exp, timeout=None)
+				except:
+					ddr.sendline("kill -9 `pidof dhc431`")
+				print ddr.before
+				dhclient_up = False
+				tahi.sendline('')
+			else:
+				"""
+				if dhclient is not up, just moving forward.
+				"""
+				tahi.sendline('')
+
+		if index == 1:
+			if -1 != tahi.before.find('DHCPv6 Client should send Solicit message'):
+				print 'dhclient send Solicit message'
+				time.sleep(1)
+				tahi.sendline('')
+				time.sleep(1)
+				# print dhc_sol
+				ddr.sendline(dhc_sol)
+				ddr.expect_exact(dhc_exp)
+				print ddr.before
+				dhclient_up = True
+
+			elif -1 != tahi.before.find('Please down interface of'):
+				print "down iface"
+				print dhc_ter
+				ddr.sendline(dhc_ter)
+				ddr.expect_exact(dhc_exp)
+				print ddr.before
+				dhclient_up = False
+				tahi.sendline('')
+
+			elif -1 != tahi.before.find('Please up interface of'):
+				print "up iface"
+				print dhc_sol
+				ddr.sendline(dhc_sol)
+				time.sleep(1)
+				tahi.sendline('')
+				ddr.expect_exact(dhc_exp)
+				print ddr.before
+				dhclient_up = True
+
+			elif -1 != tahi.before.find('In order to make client sent Release message'):
+				print "Release dhclient"
+				print dhc_rel
+				tahi.sendline('')
+				time.sleep(1)
+				ddr.sendline(dhc_rel)
+				ddr.expect_exact(dhc_exp, timeout=None)
+				print ddr.before
+				dhclient_up = False
+
+			elif -1 != tahi.before.find('Reboot NUT'):
+				tahi.sendline('')
+				
+			elif -1 != tahi.before.find('Destination= dhcpv6.test.example.com'):
+				"""
+				what to do???  pass for now
+				"""
+				print 'Destination= dhcpv6.test.example.com'
+				time.sleep(5)
+				tahi.sendline('')
+				time.sleep(4)
+				#time.sleep(6)
+				print cmd_ping_domain
+				ddr.sendline(cmd_ping_domain)
+				ddr.expect_exact(cmd_ping_return)
+
+			elif -1 != tahi.before.find("Destination= dhcpv6'"):
+				"""
+				do what???
+				"""
+				print "Destination= dhcpv6'"
+				time.sleep(5)
+				tahi.sendline('')
+				time.sleep(4)
+				#time.sleep(6)
+				print cmd_ping_host
+				ddr.sendline(cmd_ping_host)
+				ddr.expect_exact(cmd_ping_return)
+
+			elif -1 != tahi.before.find('DHCPv6 Client should send Information-request Message'):
+				print 'dhclient send Information-request message'
+				time.sleep(1)
+				tahi.sendline('')
+				time.sleep(1)
+				# print dhc_info
+				ddr.sendline(dhc_info)
+				ddr.expect_exact(dhc_exp)
+				print ddr.before
+
+			else:
+				raise Exception('"%s" does not match' % tahi.before)
+
+		if index == 2:
+			"""
+			once we get 'rfc3315 #', we finish all the test cases.
+			"""
+			return
+		if index == 3:
+			return
+		if index == 4:
+			return
+
+def main():
+	# start here
+	tahi_fout = open(tahi_output, 'w')
+
+	# Here is the TAHI configuration
+	tahi = pexpect.spawn ('ssh root@10.25.161.149')
+	tahi.expect_exact('Password')
+	tahi.sendline('v6eval')
+	tahi.expect_exact('root@ucsc13')
+	#tahi.sendline(test_3315)
+	#tahi.expect_exact(end_3315)
+	#tahi.sendline(test_3646)
+	#tahi.expect_exact(end_3646)
+	tahi.sendline(test_3736)
+	tahi.expect_exact(end_3736)
+	print(tahi.before)
+	tahi.logfile = tahi_fout
+
+	# Here is the DDR configuration
+	print "connecting ddr"
+	ddr = pexpect.spawn('ssh root@10.25.163.144')
+	ddr.expect_exact('Password:')
+	ddr.sendline('abc123')
+	ddr.expect_exact(dhc_exp)
+	print(ddr.before)
+	# change the directory
+	ddr.sendline('cd /ddr/var/home/sysadmin')
+	ddr.expect_exact(dhc_exp)
+	print(ddr.before)
+
+	test_num = 1
+
+	# open the test list file
+	with open(tahi_test_file, 'r') as tahi_tests:
+		# loop through all the tests
+		for test in tahi_tests.readlines():
+			# make sure dhclient6 is not running before the test start
+			ddr.sendline('ps -eaf | grep -e "dhclient-eth0b.pid"')
+			ddr.expect_exact(dhc_exp, timeout=None)
+			if -1 != ddr.before.find("dhclient6"):
+				#raise  Exception("dhclient6 is running")
+				ddr.sendline('kill -9 `pidof dhc431`')
+
+			"""
+			# we don't want to remove lease file, this can cause hang
+			try:
+				ddr.sendline('rm /var/db/dhclient6.leases')
+				ddr.expect_exact(dhc_exp)
+			except:
+				raise  Exception("lease file removing failed")
+			"""
+
+			print "========== TEST %d ==========" % test_num
+
+			# run test
+			tahi.sendline(test[:-1])
+			# call run_expect to interact with the test
+			run_expect(tahi, ddr)
+			test_num += 1
+
+if __name__ == '__main__':
+	main()

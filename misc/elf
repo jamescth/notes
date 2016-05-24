@@ -1,0 +1,22 @@
+A core file has no sections, relocations or other extraneous information
+in the file that may be required for loading an executable or library; it
+simply consists of a series of program headers describing LOAD segments.
+These segments are raw data dumps, created by the kernel, of the current
+memory allocations.
+
+The other component of the core dump is the NOTE sections which contain
+data necessary for debugging but not necessarily captured in straight 
+snapshot of the memory allocations. The eu-readelf program used in the 
+second part of the figure provides a more complete view of the data by 
+decoding it.
+
+The PRSTATUS note gives a range of interesting information about the
+process as it was running; for example we can see from cursig that the
+program received a signal 11, or segmentation fault, as we would expect.
+Along with process number information, it also includes a dump of all 
+the current registers.  Given the register values, the debugger can 
+reconstruct the stack state and hence provide a backtrace; combined
+with the symbol and debugging information from the original binary the 
+debugger can show exactly how you reached the current point of execution.
+
+

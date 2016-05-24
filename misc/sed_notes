@@ -1,0 +1,119 @@
+sed defaults to BRE:
+The default behavior of sed is to support Basic Regular Expressions (BRE). To use all
+features described on this note set the -r (linux) or -E (BSD) flag to use extended
+Regular Expressions (ERE)
+	# use ERE on Linux (GNU sed)
+	sed -r 'search expression' file
+	# use ERE on BSD
+	sed -E 'search expression' file
+
+in-situ editing:
+By default sed outputs to 'Standard Out'.  There are two mutually exclusive options
+to create modified files.  Redirect 'standard out' to a file or use in-situ editing
+w/ -i option.
+	# in-situ: saves the unmodified file to file.bak BEFORE modifying
+	sed -i .bak 'search expression' file
+
+	# redirection: file is UNCHANGED the modified file is file.bak
+	sed 'search expression' file > file.bak
+
+sed source:
+Sed will read from a file or 'standard in' and therefore may be used in piped sequences.
+	cat file | sed 'search expression' > file.mod
+	sed 'search expression' file > file.mod
+
+sed with substitution:
+sed's major use for most of us is in changing the contents of files using the substitution
+feature.
+	# substitution syntax
+	sed '[position]s/find/change/flag' file > file.mod
+	# where
+	# [position] - optional - normally called address in most documentation
+	# s          - indicates subsitution command
+	# find       - the expression to be change
+	# change     - the expression to be substituted
+	# flag       - controls the actions and may be
+	#              g = repeat on same line
+	#              N = Nth occurence only on line
+	#              p = output line only if find was found!
+	#              (needs -n option to suppress other lines)
+	#              w ofile = append line to ofile only if find was found
+	# if no flag given changes only the first occurrence of find on every line is 
+	# substituted
+
+	# examples
+	# change every occurrence of abc on every line to def
+	sed 's/abc/def/g' file > file.mod
+
+	# change only 2nd occurrence of abc on every line to def
+	sed 's/abc/def/2' file > file.mod
+
+	# create file changed consisting of only lines in which abc was changed to def
+	sed 's/abc/def/w changed' file
+	# functionally identical to above
+	sed -n 's/abc/def/p' file > changed
+
+Line deletion:
+sed provides for simple line deletion.
+	# line delete syntax
+	sed '/find/d' file > file.mod
+
+	# where
+	# find - find regular expression
+	# d    - delete command
+
+	# delete every comment line (starting with #) in file
+	sed '/^#/d' file > file.mod
+
+Delete vs Replace with null
+	# delete (substitute with null) every occurrence of abc in file
+	sed 's/abc//g' file > file.mod
+	# delete every line with abc in file
+	sed '/abc/d' file > file.mod
+
+Escaping
+you need to escape certain characters when using as literals using the standard \ 
+technique.  This removes the width attribute from html pages that many web editors,
+such as frontpage, annoyingly place on every line. 
+	# delete (substitue with null) every occurrence of width="x" in file
+	# where x may be pure numeric or a percentage
+	sed 's/width=\"[0-9.%]*\"//g' file.html > file.mod
+
+delimiters
+	# use of / delimiter with a path containing / replaces all occurrence of
+	# /var/www with /var/local/www
+	sed 's/\/var\/www\//\/var\/local\/www\//g' file > file.mod
+
+	# functionaly identical using : as delimiter
+	sed 's:/var/www/:/var/local/www/:g' file > file.mod
+
+positioning with sed
+	# delete (subsitute with null) every occurrence of abe in file only lines 
+	# starting with xzy (1 positional expression)
+	sed '/^xyz/s/abc//g' file > file.mod
+
+	# delete (subsitute with null) every occurrence of abc only in lines 1 to 50
+	sed '1,50s/abc//g' file > file.mod
+
+	# delete (subsitute with null) every occurrence of abc except lines 1 - 50
+	# 2 positional expression separated by comma
+	sed '1,50!s/abc//g' file > file.mod
+
+	# delete (subsitute with null) every occurrence of abc between lines containing
+	# aaa and xxx
+	# 2 positional expression separated by comma
+	sed '/aaa/,/xxx/s/abc//g' file > file.mod
+
+	# delete first 50 lines of file
+	sed '1,50d' file > file.mod
+
+	# leave first 50 lines of file
+	sed '1,50!d' file > file.mod
+
+adding line number to files:
+	# add the line number followed by space to every line
+	sed = file|sed 's/\n/ /' > file.lineno
+	# the 1st pass (sed = file) creates a line number and terminates it
+	# with \n (creating a new line)
+	# the 2nd piped pass (sed 's/\n/ /') substitutes a space for \n making a 
+	# single line

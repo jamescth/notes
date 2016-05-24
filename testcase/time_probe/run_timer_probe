@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# for debug
+# set -x
+
+param1=""
+param2=""
+prarm3=""
+param4=""
+
+# make sure the module exists
+if [ ! -f ./time_probe.ko ]; then
+	echo "time_probe.ko not found!"
+	exit
+fi
+
+# get the symbol address
+param1="`cat /proc/kallsyms | grep -w sys_gettimeofday | awk '{print $1}'`"
+param2="`cat /proc/kallsyms | grep -w sys_settimeofday | awk '{print $1}'`"
+param3="`cat /proc/kallsyms | grep -w sys_time | awk '{print $1}'`"
+param4="`cat /proc/kallsyms | grep -w sys_adjtimex | awk '{print $1}'`"
+
+# get the length of the address
+len=${#param1}
+
+if [ ! $len -eq 16 ]; then
+	echo "param1 is not 16 digits"
+	exit
+fi
+
+len=${#param2}
+
+if [ ! $len -eq 16 ]; then
+	echo "param2 is not 16 digits"
+	exit
+fi
+
+len=${#param3}
+
+if [ ! $len -eq 16 ]; then
+	echo "parma3 is not 16 digits"
+	exit
+fi
+
+len=${#param4}
+
+if [ ! $len -eq 16 ]; then
+	echo "param4 is not 16 digits"
+	exit
+fi
+
+# print the last 8 digits
+# echo ${param1:8}
+
+echo gettimeofday is 0x$param1
+echo settimeofday is 0x$param2
+echo time is 0x$param3
+echo adjtimex is 0x$param4
+
+insmod time_probe.ko addr_gettimeofday=0x$param1 addr_settimeofday=0x$param2 addr_time=0x$param3 addr_adjtimex=0x$param4
+
+lsmod | grep time_probe

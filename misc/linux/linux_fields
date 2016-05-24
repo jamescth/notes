@@ -1,0 +1,93 @@
+struct task_struct
+	*files	=> files_struct => FDT / file descriptor table
+	*fs		=> fs_struct
+	*sig	=> signal_struct
+	*mm		=> mm_struct
+
+struct file_system_type
+include/linux/fs.h
+
+struct super_block
+include/linux/fs.h
+
+struct super_operations
+include/linux/fs.h
+
+dentry
+is used to represent the file system sturcture.  It has
+pointers to store parent-child relationship of the files.
+include/linux/dcache.h
+	d_count
+	d_flags
+	*d_inode		where the name belongs to
+	*d_parent		parent directory
+	*d_mounts		mount information
+
+struct address_space_opeartions
+include/linux/fs.h
+
+struct inode
+include/linux/fs.h
+	i_mode			file type and permissions
+					include/linux/stat.h
+	i_links_count	# of hard links to this inode
+	i_uid/igid		User ID assoc. w/ the owner & group
+	i_size
+	i_blocks		$ of data blocks
+	i_atime			last accessed time
+	i_mtime			last modified time for file contents
+	i_ctime			last changed time for inode
+	i_dtime			delete time
+	i_sb			super_block
+	i_mapping		address_space
+
+	i_ino			inode number
+	i_op			inode operations / struct inode_operations
+	i_fop			file operations / struct file_operations
+	i_rdev			dev_t/ major minor
+
+file
+include/linux/fs.h
+	f_count			# file descriptors point to this entry
+	f_flags			check /usr/include/fcntl.h
+	f_owner			fown_struct
+
+struct device
+include/linux/device.h
+    struct device *parent;
+    struct kobject kobj;
+    char bus_id[20];
+	struct device_type *type
+    struct device_driver *driver	driver that control the device
+    void *driver_data;
+    void *platform_data;
+    dev_t devt;
+
+struct mm_struct 
+include/linux/sched.h
+	struct vm_area_struct * mmap;		/* list of VMAs */
+	struct vm_area_struct * mmap_cache;	/* last find_vma result */
+	unsigned long mmap_base;		/* base of mmap area */
+	unsigned long task_size;		/* size of task vm space */
+	unsigned long cached_hole_size;         /* if non-zero, the largest hole below free_area_cache */
+	unsigned long free_area_cache;		/* first hole of size cached_hole_size or larger */
+	pgd_t * pgd;
+	atomic_t mm_users;			/* How many users with user space? */
+	atomic_t mm_count;			/* How many references to "struct mm_struct" (users count as 1) */
+	int map_count;				/* number of VMAs */
+	struct rw_semaphore mmap_sem;
+	spinlock_t page_table_lock;		/* Protects page tables and some counters */
+
+	struct list_head mmlist;
+
+struct vm_area_struct
+include/linux/mm.h
+	struct mm_struct * vm_mm;	/* The address space we belong to. */
+	unsigned long vm_start;		/* Our start address within vm_mm. */
+	unsigned long vm_end;		/* The first byte after our end address
+								   within vm_mm. */
+	/* linked list of VM areas per task, sorted by address */
+	struct vm_area_struct *vm_next;
+	pgprot_t vm_page_prot;		/* Access permissions of this VMA. */
+	unsigned long vm_flags;		/* Flags, listed below. */
+

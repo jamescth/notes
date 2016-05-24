@@ -1,0 +1,9 @@
+reference:
+	struct kernel_stat {}
+	struct softirq_psstat {}
+
+	kstat_update_entry(TASKLET_SOFTIRQ);
+	...
+	kstat_update_done(TASKLET_SOFTIRQ);
+
+	/proc/interrupts

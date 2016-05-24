@@ -1,0 +1,2 @@
+gcc -g -m64 part_test.c -o part_test
+gcc -g mycore.c -o mycore

@@ -1,0 +1,43 @@
+#docker build -t go-dev:1.4.2 .
+
+FROM ubuntu:14.10
+
+MAINTAINER James Ho
+
+# get the needed packages/libs
+RUN apt-get update -y && apt-get install --no-install-recommends -y -q \
+  openssh-client \
+  curl \
+  build-essential \
+  bison \
+  ca-certificates \
+  git \
+  mercurial \
+  wget \
+  vim-gnome \
+  libpcap0.8-dev \
+  firefox \
+  graphviz \
+  libc6-dbg \
+  gdb
+
+# get go compiler
+RUN wget https://storage.googleapis.com/golang/go1.4.2.src.tar.gz
+RUN tar -xzf go1.4.2.src.tar.gz -C /
+RUN mv /go /goroot
+RUN cd /goroot/src && ./make.bash —no-clean 2>&1
+#RUN cd /goroot/src && ./all.make —no-clean 2>&1
+# http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go
+
+# copy my own files
+COPY .vimrc /root/.vimrc
+
+# set the runtime env
+RUN mkdir -p /gopath/src
+
+ENV GOROOT /goroot
+ENV PATH $GOROOT/bin/:.:$PATH
+ENV GOPATH /gopath
+
+# 
+# CMD cd /gopath/src

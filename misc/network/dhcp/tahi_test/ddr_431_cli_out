@@ -1,0 +1,872 @@
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp no
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+ddsh -s net config eth0b up
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp no
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp no
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+ddsh -s net config eth0b up
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp no
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+ddsh -s net config eth0b dhcp no
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+ddsh -s net config eth0b dhcp no
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+ddsh -s net config eth0b up
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp no
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b downddsh -s net config eth0b up
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b upddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b down
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b downddsh -s net config eth0b up
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b down
+ddsh -s net config eth0b up
+ddsh -s net config eth0b dhcp no
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b down
+ddsh -s net config eth0b up
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp no
+done.
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b downddsh -s net config eth0b up
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+ddsh -s net config eth0b up
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+ddsh -s net config eth0b down
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+ddsh -s net config eth0b down
+done.
+ddsh -s net config eth0b up
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b upddsh -s net config eth0b dhcp no
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b down
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b up
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+**** interface eth0b, failed to get DHCPv6 lease information in 60 seconds.
+
+-bash-3.00# ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp noddsh -s net config eth0b dhcp yes ipversion ipv6
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net config eth0b dhcp no
+Configuring interface...
+ddsh -s net config eth0b dhcp yes ipversion ipv6ddsh -s net config eth0b dhcp no

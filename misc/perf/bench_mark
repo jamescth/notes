@@ -1,0 +1,37 @@
+1. ddfs core 
+	./myddfs
+ 	echo 1 > /proc/`pidof myddfs`/rawdump
+ 	kill -sigabrt `pidof myddfs`
+	echo "appdump_clean" > /proc/diskdump
+2. raw device no direct i/o
+	devperf --dev-offset 100m --tick-delay 10 w 512k 20G 1 /dev/sda2
+	devperf --random-data --tick-delay 10 w 512k 20G 1 /dev/sdc2
+	devperf --random --random-data --tick-delay 10 w 512k 20G 1 /dev/sdb2 (non-stop)
+
+3. raw device direct i/o
+4. ext3 w/ nvlog seq
+	devperf --tick-delay 10 w 512k 20G 1 /ddr/var/core/tt
+
+5. ext3 w/ nvlog random
+	devperf --random --tick-delay 10 w 512k 20G 1 /ddr/var/core/tt
+	devperf --random-data --tick-delay 10 w 512k 20G 1 /ddr/var/core/tt
+
+6. ext3 w/out nvlog seq
+	vim /etc/inittab
+		comment out dd_platd
+	reboot
+	
+	ps -edf | grep nvlog
+	dd_raidtool --dg=dg0 --nvlog_action=off --force
+	ps -edf | grep nvlog
+
+7. ext3 w/out nvlog random
+	devperf --tick-delay 10 w 512k 20G 1 /ddr/var/core/tt
+
+8. ext3 /out raid
+	dm_map
+	mkfs.ext3 /dev/dm-3p2
+	mount /dev/dm-3p2 /mnt/sdc2
+	...
+	umount /dev/dm-3p2
+

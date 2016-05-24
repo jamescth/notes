@@ -1,0 +1,31 @@
+# opcontrol --status
+Daemon not running
+Event 0: CPU_CLK_UNHALTED:100000:0:1:1
+Separate options: library cpu
+vmlinux file: /vmlinux-ddr269335
+Image filter: none
+Call-graph depth: 8
+
+# opcontrol --vmlinux=/vmlinux-ddr310367 -c=5 -e=MISALIGN_MEM_REF
+# opcontrol -p=cpu
+# opcontrol -e=CPU_CLK_UNHALTED:100000:0:1:1
+
+# opcontrol --reset
+
+# opcontrol --start-daemon
+Using 2.6+ OProfile kernel interface.
+Reading module info.
+Using log file /var/lib/oprofile/samples/oprofiled.log
+Daemon started.
+
+# opcontrol --start
+Profiler running.
+
+# opcontrol --stop
+Stopping profiling.
+
+# opcontrol --shutdown
+
+# opreport
+
+# opcontrol --deinit

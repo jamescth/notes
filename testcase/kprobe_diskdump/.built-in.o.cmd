@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/kprobe_diskdump/built-in.o :=  rm -f /auto/home5/hoj9/testcase/kprobe_diskdump/built-in.o; /auto/home/lsbuild/desktop-398860/usr/bin/ar rcs /auto/home5/hoj9/testcase/kprobe_diskdump/built-in.o

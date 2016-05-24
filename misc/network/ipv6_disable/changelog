@@ -1,0 +1,19 @@
+tracepath
+	cmd_alias.c
+	cmd_route.c
+	CLI_Spec_route.xml
+
+per iface ipv6 status
+	CLI_Spec_se.xml
+	cmd_priv.c
+		modify
+			cmd_se_ipv6()
+
+	app/ddr/include/reg_utils.h
+	app/ddr/reg/reg_utils.c
+	app/ddr/reg/reg_defaults.c
+
+	sm/sms/sms_net.c
+		sms_net_transaction_store_t
+
+	sm/sms/sms_net.sms??	=> sms_net_iface_config_t??

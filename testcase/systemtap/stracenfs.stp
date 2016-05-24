@@ -1,0 +1,8 @@
+#tracing all nfs inode operations calls
+
+probe 	kernel.function("nfs_inode_add_request"),
+	kernel.function("nfs_inode_remove_request") 
+{
+	printf("%s(%d): %s( %s ) %s\n", execname(), pid(), probefunc(), argsstr, print_backtrace())
+}
+

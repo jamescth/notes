@@ -1,0 +1,17 @@
+setpci -s 00:1c.0 0x5c.B=0x07		# make sure UE could be forwarded to root complex
+setpci -s 72:00.0 0x108.L=0x0000	#enable unsupport error mask
+setpci -s 72:00.0 0xb4.B=0x2F		#make sure UE could be forwarded to root complex
+setpci -s 72:00.0 0x4.B=0x44		# disable memory access
+
+ifconfig ethMa down			# trigger the error
+ifconfig ethMa up
+
+
+Yogi
+
+setpci -s 00:01.0 -x5.B=0x01
+setpci -s 00:01.0 0xac.W=0x07		#rootctl
+setpci -s 00:01.0 0x12c.L=0x0007	#root command
+setpci -s 01:00.0 0x4.B=0x44
+ifconfig ethob down
+ifconfig eth0b up

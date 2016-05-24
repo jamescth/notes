@@ -1,0 +1,5 @@
+gcc -fprofile-arcs -ftest-coverage -g test.c -o sample
+
+# sample
+# gcov test.c
+# gvim test.c.gcov

@@ -1,0 +1,1093 @@
+IPv6
+const struct proto_ops inet6_stream_ops = {
+	.family		   = PF_INET6,
+	.owner		   = THIS_MODULE,
+	.release	   = inet6_release,
+	.bind		   = inet6_bind,
+	.connect	   = inet_stream_connect,	/* ok		*/
+	.socketpair	   = sock_no_socketpair,	/* a do nothing	*/
+	.accept		   = inet_accept,		/* ok		*/
+	.getname	   = inet6_getname,
+	.poll		   = tcp_poll,			/* ok		*/
+	.ioctl		   = inet6_ioctl,		/* must change  */
+	.listen		   = inet_listen,		/* ok		*/
+	.shutdown	   = inet_shutdown,		/* ok		*/
+	.setsockopt	   = sock_common_setsockopt,	/* ok		*/
+	.getsockopt	   = sock_common_getsockopt,	/* ok		*/
+	.sendmsg	   = tcp_sendmsg,		/* ok		*/
+	.recvmsg	   = sock_common_recvmsg,	/* ok		*/
+	.mmap		   = sock_no_mmap,
+	.sendpage	   = tcp_sendpage,
+	.splice_read	   = tcp_splice_read,
+#ifdef CONFIG_COMPAT
+	.compat_setsockopt = compat_sock_common_setsockopt,
+	.compat_getsockopt = compat_sock_common_getsockopt,
+#endif
+};
+
+IPv4
+const struct proto_ops inet_stream_ops = {
+	.family		   = PF_INET,
+	.owner		   = THIS_MODULE,
+	.release	   = inet_release,
+	.bind		   = inet_bind,
+	.connect	   = inet_stream_connect,
+	.socketpair	   = sock_no_socketpair,
+	.accept		   = inet_accept,
+	.getname	   = inet_getname,
+	.poll		   = tcp_poll,
+	.ioctl		   = inet_ioctl,
+	.listen		   = inet_listen,
+	.shutdown	   = inet_shutdown,
+	.setsockopt	   = sock_common_setsockopt,
+	.getsockopt	   = sock_common_getsockopt,
+	.sendmsg	   = tcp_sendmsg,
+	.recvmsg	   = sock_common_recvmsg,
+	.mmap		   = sock_no_mmap,
+	.sendpage	   = tcp_sendpage,
+	.splice_read	   = tcp_splice_read,
+#ifdef CONFIG_COMPAT
+	.compat_setsockopt = compat_sock_common_setsockopt,
+	.compat_getsockopt = compat_sock_common_getsockopt,
+#endif
+};
+
+// IPv6 Server
+crash> ps | grep netser
+  19538      1   4  ffff8101f046a380  IN   0.0    4292    284  netserver
+  20434  19538  10  ffff81021b412080  IN   0.0    4812    568  netserver
+crash> net -s 19538
+PID: 19538  TASK: ffff8101f046a380  CPU: 4   COMMAND: "netserver"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 5 ffff810258ec3200 ffff81020f232500 INET:STREAM  127.0.0.1-40040 127.0.0.1-3006
+ 9 ffff8101f5336740 ffff81023d693800 INET6:STREAM 0:0:0:0:0:0:0:0-12865   0:0:0:0:0:0:0:0-0
+crash> net -s 20434
+PID: 20434  TASK: ffff81021b412080  CPU: 10  COMMAND: "netserver"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 0 ffff810247d22100 ffff810235364140 INET6:STREAM 2001:0:0:0:0:0:0:202-12865 2001:0:0:0:0:0:0:201-53068
+ 2 ffff8101f2d2ec80 ffff810422560740 INET6:STREAM 0:0:0:0:0:0:0:0-51396   0:0:0:0:0:0:0:0-0
+ 5 ffff810258ec3200 ffff81020f232500 INET:STREAM  127.0.0.1-40040 127.0.0.1-3006
+ 9 ffff81023076c480 ffff8101f0587800 INET6:STREAM 2001:0:0:0:0:0:0:202-51396 2001:0:0:0:0:0:0:201-39976
+crash> bt 20434
+PID: 20434  TASK: ffff81021b412080  CPU: 10  COMMAND: "netserver"
+ #0 [ffff8101f0d43a68] schedule at ffffffff804868bc
+ #1 [ffff8101f0d43b60] schedule_timeout at ffffffff80486ed2
+ #2 [ffff8101f0d43bb0] sk_wait_data at ffffffff8040442c
+ #3 [ffff8101f0d43c00] tcp_recvmsg at ffffffff80440222
+ #4 [ffff8101f0d43ca0] sock_common_recvmsg at ffffffff8040341e
+ #5 [ffff8101f0d43cd0] sock_recvmsg at ffffffff80401cb3
+ #6 [ffff8101f0d43e60] sys_recvfrom at ffffffff80402ac8
+ #7 [ffff8101f0d43f80] system_call at ffffffff8020bcae
+    RIP: 00002aca6c40a5e1  RSP: 00007fff3e9f19f0  RFLAGS: 00010213
+    RAX: 000000000000002d  RBX: ffffffff8020bcae  RCX: 00002aca6c40a5e1
+    RDX: 0000000000040000  RSI: 00002aca6c0cb010  RDI: 0000000000000009
+    RBP: 00002aca6c0cb010   R8: 0000000000000000   R9: 0000000000000000
+    R10: 0000000000000000  R11: 0000000000000246  R12: 0000000000040000
+    R13: 0000000000000000  R14: 00007fff3e9f19e0  R15: 0000000000000009
+    ORIG_RAX: 000000000000002d  CS: 0033  SS: 002b
+crash> bt 19538
+PID: 19538  TASK: ffff8101f046a380  CPU: 4   COMMAND: "netserver"
+ #0 [ffff8101f053bca8] schedule at ffffffff804868bc
+ #1 [ffff8101f053bda0] schedule_timeout at ffffffff80486ed2
+ #2 [ffff8101f053bdf0] inet_csk_accept at ffffffff8043cec5
+ #3 [ffff8101f053be70] inet_accept at ffffffff80458ec9
+ #4 [ffff8101f053bea0] sys_accept at ffffffff804025d1
+ #5 [ffff8101f053bf80] system_call at ffffffff8020bcae
+    RIP: 00002aca6c40a3c0  RSP: 00007fff3e9f3a50  RFLAGS: 00010246
+    RAX: 000000000000002b  RBX: ffffffff8020bcae  RCX: 00002aca6c3dff22
+    RDX: 00007fff3e9f3aec  RSI: 00007fff3e9f3af0  RDI: 0000000000000009
+    RBP: 0000000000000000   R8: 0000000000004c52   R9: 0000000000000000
+    R10: 0000000000000000  R11: 0000000000000246  R12: 0000000000000000
+    R13: 00007fff3e9f7d00  R14: 0000000000401e70  R15: 00007fff3e9f3bd0
+    ORIG_RAX: 000000000000002b  CS: 0033  SS: 002b
+
+// IPv6 client
+crash> ps | grep netperf
+  24361  19206  10  ffff8101f1610ea0  ??   0.0    4808   1124  netperf
+crash> bt 24361
+PID: 24361  TASK: ffff8101f1610ea0  CPU: 10  COMMAND: "netperf"
+ #0 [ffff8101f86f7a68] schedule at ffffffff804868bc
+ #1 [ffff8101f86f7b60] schedule_timeout at ffffffff80486ed2
+ #2 [ffff8101f86f7bb0] sk_stream_wait_memory at ffffffff80409f81
+ #3 [ffff8101f86f7c20] tcp_sendmsg at ffffffff8043ee9b
+ #4 [ffff8101f86f7cc0] sock_sendmsg at ffffffff80401dd7
+ #5 [ffff8101f86f7e50] sys_sendto at ffffffff804029a3
+ #6 [ffff8101f86f7f80] system_call at ffffffff8020bcae
+    RIP: 00002b6348d217e9  RSP: 00007fff620dfb10  RFLAGS: 00000202
+    RAX: 000000000000002c  RBX: ffffffff8020bcae  RCX: 00002b6348d217e9
+    RDX: 0000000000040000  RSI: 00002b6348a23010  RDI: 0000000000000009
+    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000000
+    R10: 0000000000000000  R11: 0000000000000246  R12: 00002b6348a23010
+    R13: 0000000000040000  R14: 0000000000000000  R15: 00007fff620dfb00
+    ORIG_RAX: 000000000000002c  CS: 0033  SS: 002b
+crash> net -s 24361
+PID: 24361  TASK: ffff8101f1610ea0  CPU: 10  COMMAND: "netperf"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 5 ffff81024065f6c0 ffff8102064e31c0 INET:STREAM  127.0.0.1-44973 127.0.0.1-3006
+ 7 ffff81022f22c080 ffff81025cd09100 INET6:STREAM 2001:0:0:0:0:0:0:201-53068 2001:0:0:0:0:0:0:202-12865
+ 9 ffff81022f22c340 ffff8101f1f307c0 INET6:STREAM 2001:0:0:0:0:0:0:201-39976 2001:0:0:0:0:0:0:202-51396
+
+
+crash> net -s 19305
+PID: 19305  TASK: ffff8104278f0920  CPU: 6   COMMAND: "netserver"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 5 ffff810258ec3200 ffff81020f232500 INET:STREAM  127.0.0.1-40040 127.0.0.1-3006
+ 9 ffff810416b0b100 ffff81021cba5480 INET:STREAM  0.0.0.0-12865 0.0.0.0-0
+
+// after accept; 19538 forks a child
+crash> ps | grep netser
+  19538      1  10  ffff8101f046a380  IN   0.0    4292    284  netserver
+  20166  19538  10  ffff81040dcb9240  IN   0.0    4812    444  netserver
+crash> net -s 19538
+PID: 19538  TASK: ffff8101f046a380  CPU: 7   COMMAND: "netserver"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 5 ffff810258ec3200 ffff81020f232500 INET:STREAM  127.0.0.1-40040 127.0.0.1-3006
+ 9 ffff8101f5336740 ffff81023d693800 INET6:STREAM 0:0:0:0:0:0:0:0-12865   0:0:0:0:0:0:0:0-0
+crash> net -s 20166
+PID: 20166  TASK: ffff81040dcb9240  CPU: 0   COMMAND: "netserver"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 0 ffff81020571da00 ffff810235364140 INET6:STREAM 2001:0:0:0:0:0:0:202-12865 2001:0:0:0:0:0:0:201-56679
+ 2 ffff81023e1208c0 ffff810422560740 INET6:STREAM 0:0:0:0:0:0:0:0-39703   0:0:0:0:0:0:0:0-0
+ 5 ffff810258ec3200 ffff81020f232500 INET:STREAM  127.0.0.1-40040 127.0.0.1-3006
+ 9 ffff810247d22680 ffff810243f987c0 INET6:STREAM 2001:0:0:0:0:0:0:202-39703 2001:0:0:0:0:0:0:201-59330
+
+crash> net -s 32095
+PID: 32095  TASK: ffff8101f85a3400  CPU: 3   COMMAND: "netperf"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 5 ffff81024065f6c0 ffff8102064e31c0 INET:STREAM  127.0.0.1-44973 127.0.0.1-3006
+ 7 ffff8102327e10c0 ffff810239e87740 INET:STREAM  192.168.50.100-36498 192.168.50.200-12865
+ 9 ffff81025842c100 ffff810422c00200 INET:STREAM  192.168.50.100-40910 192.168.50.200-34186
+
+
+crash> net -S 32095
+PID: 32095  TASK: ffff8101f85a3400  CPU: 3   COMMAND: "netperf"
+FD       SOCKET             SOCK
+ 5  ffff81024065f6c0  ffff8102064e31c0
+
+struct socket {
+  state = SS_CONNECTING,
+  flags = 0,
+  ops = 0xffffffff804d5a80,
+  fasync_list = 0x0,
+  file = 0xffff810258a1ba80,
+  sk = 0xffff8102064e31c0,
+  wait = {
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 282440,
+        owner = 19201
+      }
+    },
+    task_list = {
+      next = 0xffff81024065f700,
+      prev = 0xffff81024065f700
+    }
+  },
+  type = 1
+}
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_family = 2,
+      skc_state = 1 '\001',
+      skc_reuse = 1 '\001',
+      skc_bound_dev_if = 0,
+      skc_node = {
+        next = 0x0,
+        pprev = 0xffffc20012c5a5d0
+      },
+      skc_bind_node = {
+        next = 0x0,
+        pprev = 0xffff81024fc63618
+      },
+      skc_refcnt = {
+        counter = 2
+      },
+      skc_hash = 65465390,
+      skc_prot = 0xffffffff8060e6d0
+    },
+    sk_shutdown = 0 '\0',
+    sk_no_check = 0 '\0',
+    sk_userlocks = 0 '\0',
+    sk_protocol = 6 '\006',
+    sk_type = 1,
+    sk_rcvbuf = 262144,
+    sk_lock = {
+      slock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 2402794,
+          owner = -1
+        }
+      },
+      owner = 0x0,
+      wq = {
+        lock = {
+          raw_lock = {
+            slock = 1
+          },
+          tracker = {
+            caller = 0,
+            owner = 0
+          }
+        },
+        task_list = {
+          next = 0xffff8102064e3228,
+          prev = 0xffff8102064e3228
+        }
+      }
+    },
+    sk_backlog = {
+      head = 0x0,
+      tail = 0x0
+    },
+    sk_sleep = 0xffff81024065f6f0,
+    sk_dst_cache = 0xffff810202c1eb40,
+    sk_policy = {0x0, 0x0},
+    sk_dst_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2462491,
+        owner = 19201
+      }
+    },
+    sk_rmem_alloc = {
+      counter = 0
+    },
+    sk_wmem_alloc = {
+      counter = 0
+    },
+    sk_omem_alloc = {
+      counter = 0
+    },
+    sk_sndbuf = 262144,
+    sk_receive_queue = {
+      next = 0xffff8102064e3288,
+      prev = 0xffff8102064e3288,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_write_queue = {
+      next = 0xffff8102064e32a8,
+      prev = 0xffff8102064e32a8,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_async_wait_queue = {
+      next = 0x0,
+      prev = 0x0,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 0
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_wmem_queued = 0,
+    sk_forward_alloc = 0,
+    sk_allocation = 208,
+    sk_route_caps = 4197,
+    sk_gso_type = 1,
+    sk_rcvlowat = 1,
+    sk_flags = 776,
+    sk_lingertime = 0,
+    sk_error_queue = {
+      next = 0xffff8102064e3310,
+      prev = 0xffff8102064e3310,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_prot_creator = 0xffffffff8060e6d0,
+    sk_callback_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2112981,
+        owner = -1
+      }
+    },
+    sk_err = 0,
+    sk_err_soft = 0,
+    sk_ack_backlog = 0,
+    sk_max_ack_backlog = 0,
+    sk_priority = 0,
+    sk_peercred = {
+      pid = 0,
+      uid = 4294967295,
+      gid = 4294967295
+    },
+    sk_rcvtimeo = 9223372036854775807,
+    sk_sndtimeo = 9223372036854775807,
+    sk_filter = 0x0,
+    sk_protinfo = 0x0,
+    sk_timer = {
+      entry = {
+        next = 0xffff8102064e3a00,
+        prev = 0xffff81042d7fdbd0
+      },
+      expires = 4558283101,
+      function = 0xffffffff8044a9d8 <tcp_keepalive_timer>,
+      data = 18446604444428546496,
+      base = 0xffff81042d7fc000
+    },
+    sk_stamp = {
+      tv64 = -1000000001
+    },
+    sk_socket = 0xffff81024065f6c0,
+    sk_user_data = 0x0,
+    sk_sndmsg_page = 0x0,
+    sk_send_head = 0x0,
+    sk_sndmsg_off = 0,
+    sk_write_pending = 0,
+    sk_security = 0x0,
+    sk_state_change = 0xffffffff80403dc5 <sock_def_wakeup>,
+    sk_data_ready = 0xffffffff8040425a <sock_def_readable>,
+    sk_write_space = 0xffffffff8040a1b7 <sk_stream_write_space>,
+    sk_error_report = 0xffffffff80404173 <sock_def_error_report>,
+    sk_backlog_rcv = 0xffffffff8044c8cb <tcp_v4_do_rcv>,
+    sk_destruct = 0xffffffff80459733 <inet_sock_destruct>
+  },
+  pinet6 = 0x0,
+  daddr = 16777343,
+  rcv_saddr = 16777343,
+  dport = 48651,
+  num = 44973,
+  saddr = 16777343,
+  uc_ttl = -1,
+  cmsg_flags = 0,
+  opt = 0x0,
+  sport = 44463,
+  id = 20777,
+  tos = 0 '\0',
+  mc_ttl = 1 '\001',
+  pmtudisc = 1 '\001',
+  recverr = 0 '\0',
+  is_icsk = 1 '\001',
+  freebind = 0 '\0',
+  hdrincl = 0 '\0',
+  mc_loop = 1 '\001',
+  mc_index = 0,
+  mc_addr = 0,
+  mc_list = 0x0,
+  cork = {
+    flags = 0,
+    fragsize = 0,
+    opt = 0x0,
+    rt = 0x0,
+    length = 0,
+    addr = 0,
+    fl = {
+      oif = 0,
+      iif = 0,
+      mark = 0,
+      nl_u = {
+        ip4_u = {
+          daddr = 0,
+          saddr = 0,
+          tos = 0 '\0',
+          scope = 0 '\0'
+        },
+        ip6_u = {
+          daddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          saddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          flowlabel = 0
+        },
+        dn_u = {
+          daddr = 0,
+          saddr = 0,
+          scope = 0 '\0'
+        }
+      },
+      proto = 0 '\0',
+      flags = 0 '\0',
+      uli_u = {
+        ports = {
+          sport = 0,
+          dport = 0
+        },
+        icmpt = {
+          type = 0 '\0',
+          code = 0 '\0'
+        },
+        dnports = {
+          sport = 0,
+          dport = 0
+        },
+        spi = 0,
+        mht = {
+          type = 0 '\0'
+        }
+      },
+      secid = 0
+    }
+  }
+}
+
+FD       SOCKET             SOCK
+ 7  ffff8102327e10c0  ffff810239e87740
+
+struct socket {
+  state = SS_CONNECTED,
+  flags = 0,
+  ops = 0xffffffff804d5a80,
+  fasync_list = 0x0,
+  file = 0xffff810258af4680,
+  sk = 0xffff810239e87740,
+  wait = {
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 282440,
+        owner = 32095
+      }
+    },
+    task_list = {
+      next = 0xffff8102327e1100,
+      prev = 0xffff8102327e1100
+    }
+  },
+  type = 1
+}
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_family = 2,
+      skc_state = 1 '\001',
+      skc_reuse = 0 '\0',
+      skc_bound_dev_if = 0,
+      skc_node = {
+        next = 0x0,
+        pprev = 0xffffc2001588f650
+      },
+      skc_bind_node = {
+        next = 0x0,
+        pprev = 0xffff81024fd09818
+      },
+      skc_refcnt = {
+        counter = 1
+      },
+      skc_hash = 1220347570,
+      skc_prot = 0xffffffff8060e6d0
+    },
+    sk_shutdown = 0 '\0',
+    sk_no_check = 0 '\0',
+    sk_userlocks = 0 '\0',
+    sk_protocol = 6 '\006',
+    sk_type = 1,
+    sk_rcvbuf = 262144,
+    sk_lock = {
+      slock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 2403967,
+          owner = -1
+        }
+      },
+      owner = 0x0,
+      wq = {
+        lock = {
+          raw_lock = {
+            slock = 1
+          },
+          tracker = {
+            caller = 0,
+            owner = 0
+          }
+        },
+        task_list = {
+          next = 0xffff810239e877a8,
+          prev = 0xffff810239e877a8
+        }
+      }
+    },
+    sk_backlog = {
+      head = 0x0,
+      tail = 0x0
+    },
+    sk_sleep = 0xffff8102327e10f0,
+    sk_dst_cache = 0xffff8102011c29c0,
+    sk_policy = {0x0, 0x0},
+    sk_dst_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2462491,
+        owner = 32095
+      }
+    },
+    sk_rmem_alloc = {
+      counter = 0
+    },
+    sk_wmem_alloc = {
+      counter = 0
+    },
+    sk_omem_alloc = {
+      counter = 0
+    },
+    sk_sndbuf = 262144,
+    sk_receive_queue = {
+      next = 0xffff810239e87808,
+      prev = 0xffff810239e87808,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_write_queue = {
+      next = 0xffff810239e87828,
+      prev = 0xffff810239e87828,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_async_wait_queue = {
+      next = 0x0,
+      prev = 0x0,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 0
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_wmem_queued = 0,
+    sk_forward_alloc = 0,
+    sk_allocation = 208,
+    sk_route_caps = 536953259,
+    sk_gso_type = 1,
+    sk_rcvlowat = 1,
+    sk_flags = 768,
+    sk_lingertime = 0,
+    sk_error_queue = {
+      next = 0xffff810239e87890,
+      prev = 0xffff810239e87890,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_prot_creator = 0xffffffff8060e6d0,
+    sk_callback_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2114154,
+        owner = -1
+      }
+    },
+    sk_err = 0,
+    sk_err_soft = 0,
+    sk_ack_backlog = 0,
+    sk_max_ack_backlog = 0,
+    sk_priority = 0,
+    sk_peercred = {
+      pid = 0,
+      uid = 4294967295,
+      gid = 4294967295
+    },
+    sk_rcvtimeo = 9223372036854775807,
+    sk_sndtimeo = 9223372036854775807,
+    sk_filter = 0x0,
+    sk_protinfo = 0x0,
+    sk_timer = {
+      entry = {
+        next = 0x0,
+        prev = 0x0
+      },
+      expires = 0,
+      function = 0xffffffff8044a9d8 <tcp_keepalive_timer>,
+      data = 18446604445294294848,
+      base = 0xffff81042d160000
+    },
+    sk_stamp = {
+      tv64 = -1000000001
+    },
+    sk_socket = 0xffff8102327e10c0,
+    sk_user_data = 0x0,
+    sk_sndmsg_page = 0xffff810436e1bcc0,
+    sk_send_head = 0x0,
+    sk_sndmsg_off = 256,
+    sk_write_pending = 0,
+    sk_security = 0x0,
+    sk_state_change = 0xffffffff80403dc5 <sock_def_wakeup>,
+    sk_data_ready = 0xffffffff8040425a <sock_def_readable>,
+    sk_write_space = 0xffffffff8040a1b7 <sk_stream_write_space>,
+    sk_error_report = 0xffffffff80404173 <sock_def_error_report>,
+    sk_backlog_rcv = 0xffffffff8044c8cb <tcp_v4_do_rcv>,
+    sk_destruct = 0xffffffff80459733 <inet_sock_destruct>
+  },
+  pinet6 = 0x0,
+  daddr = 3358763200,
+  rcv_saddr = 1681041600,
+  dport = 16690,
+  num = 36498,
+  saddr = 1681041600,
+  uc_ttl = -1,
+  cmsg_flags = 0,
+  opt = 0x0,
+  sport = 37518,
+  id = 56541,
+  tos = 0 '\0',
+  mc_ttl = 1 '\001',
+  pmtudisc = 1 '\001',
+  recverr = 0 '\0',
+  is_icsk = 1 '\001',
+  freebind = 0 '\0',
+  hdrincl = 0 '\0',
+  mc_loop = 1 '\001',
+  mc_index = 0,
+  mc_addr = 0,
+  mc_list = 0x0,
+  cork = {
+    flags = 0,
+    fragsize = 0,
+    opt = 0x0,
+    rt = 0x0,
+    length = 0,
+    addr = 0,
+    fl = {
+      oif = 0,
+      iif = 0,
+      mark = 0,
+      nl_u = {
+        ip4_u = {
+          daddr = 0,
+          saddr = 0,
+          tos = 0 '\0',
+          scope = 0 '\0'
+        },
+        ip6_u = {
+          daddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          saddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          flowlabel = 0
+        },
+        dn_u = {
+          daddr = 0,
+          saddr = 0,
+          scope = 0 '\0'
+        }
+      },
+      proto = 0 '\0',
+      flags = 0 '\0',
+      uli_u = {
+        ports = {
+          sport = 0,
+          dport = 0
+        },
+        icmpt = {
+          type = 0 '\0',
+          code = 0 '\0'
+        },
+        dnports = {
+          sport = 0,
+          dport = 0
+        },
+        spi = 0,
+        mht = {
+          type = 0 '\0'
+        }
+      },
+      secid = 0
+    }
+  }
+}
+
+FD       SOCKET             SOCK
+ 9  ffff81025842c100  ffff810422c00200
+
+struct socket {
+  state = SS_CONNECTED,
+  flags = 1,
+  ops = 0xffffffff804d5a80,
+  fasync_list = 0x0,
+  file = 0xffff81040c36d2c0,
+  sk = 0xffff810422c00200,
+  wait = {
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 282191,
+        owner = 32095
+      }
+    },
+    task_list = {
+      next = 0xffff81025842c140,
+      prev = 0xffff81025842c140
+    }
+  },
+  type = 1
+}
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_family = 2,
+      skc_state = 1 '\001',
+      skc_reuse = 1 '\001',
+      skc_bound_dev_if = 0,
+      skc_node = {
+        next = 0x0,
+        pprev = 0xffffc2001378c7b0
+      },
+      skc_bind_node = {
+        next = 0x0,
+        pprev = 0xffff81024fd09d38
+      },
+      skc_refcnt = {
+        counter = 1
+      },
+      skc_hash = 4262233405,
+      skc_prot = 0xffffffff8060e6d0
+    },
+    sk_shutdown = 0 '\0',
+    sk_no_check = 0 '\0',
+    sk_userlocks = 0 '\0',
+    sk_protocol = 6 '\006',
+    sk_type = 1,
+    sk_rcvbuf = 262144,
+    sk_lock = {
+      slock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 2403967,
+          owner = -1
+        }
+      },
+      owner = 0x0,
+      wq = {
+        lock = {
+          raw_lock = {
+            slock = 1
+          },
+          tracker = {
+            caller = 0,
+            owner = 0
+          }
+        },
+        task_list = {
+          next = 0xffff810422c00268,
+          prev = 0xffff810422c00268
+        }
+      }
+    },
+    sk_backlog = {
+      head = 0x0,
+      tail = 0x0
+    },
+    sk_sleep = 0xffff81025842c130,
+    sk_dst_cache = 0xffff8102011c29c0,
+    sk_policy = {0x0, 0x0},
+    sk_dst_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2462491,
+        owner = 32095
+      }
+    },
+    sk_rmem_alloc = {
+      counter = 0
+    },
+    sk_wmem_alloc = {
+      counter = 0
+    },
+    sk_omem_alloc = {
+      counter = 0
+    },
+    sk_sndbuf = 4194304,
+    sk_receive_queue = {
+      next = 0xffff810422c002c8,
+      prev = 0xffff810422c002c8,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_write_queue = {
+      next = 0xffff810422c002e8,
+      prev = 0xffff810422c002e8,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_async_wait_queue = {
+      next = 0x0,
+      prev = 0x0,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 0
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_wmem_queued = 0,
+    sk_forward_alloc = 0,
+    sk_allocation = 208,
+    sk_route_caps = 536953259,
+    sk_gso_type = 1,
+    sk_rcvlowat = 1,
+    sk_flags = 768,
+    sk_lingertime = 0,
+    sk_error_queue = {
+      next = 0xffff810422c00350,
+      prev = 0xffff810422c00350,
+      qlen = 0,
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      }
+    },
+    sk_prot_creator = 0xffffffff8060e6d0,
+    sk_callback_lock = {
+      raw_lock = {
+        lock = 16777216
+      },
+      tracker = {
+        caller = 2112981,
+        owner = -1
+      }
+    },
+    sk_err = 0,
+    sk_err_soft = 0,
+    sk_ack_backlog = 0,
+    sk_max_ack_backlog = 0,
+    sk_priority = 0,
+    sk_peercred = {
+      pid = 0,
+      uid = 4294967295,
+      gid = 4294967295
+    },
+    sk_rcvtimeo = 9223372036854775807,
+    sk_sndtimeo = 9223372036854775807,
+    sk_filter = 0x0,
+    sk_protinfo = 0x0,
+    sk_timer = {
+      entry = {
+        next = 0x0,
+        prev = 0x0
+      },
+      expires = 0,
+      function = 0xffffffff8044a9d8 <tcp_keepalive_timer>,
+      data = 18446604453495702016,
+      base = 0xffff81042d160000
+    },
+    sk_stamp = {
+      tv64 = -1000000001
+    },
+    sk_socket = 0xffff81025842c100,
+    sk_user_data = 0x0,
+    sk_sndmsg_page = 0xffff810436df54c0,
+    sk_send_head = 0x0,
+    sk_sndmsg_off = 1608,
+    sk_write_pending = 0,
+    sk_security = 0x0,
+    sk_state_change = 0xffffffff80403dc5 <sock_def_wakeup>,
+    sk_data_ready = 0xffffffff8040425a <sock_def_readable>,
+    sk_write_space = 0xffffffff8040a1b7 <sk_stream_write_space>,
+    sk_error_report = 0xffffffff80404173 <sock_def_error_report>,
+    sk_backlog_rcv = 0xffffffff8044c8cb <tcp_v4_do_rcv>,
+    sk_destruct = 0xffffffff80459733 <inet_sock_destruct>
+  },
+  pinet6 = 0x0,
+  daddr = 3358763200,
+  rcv_saddr = 1681041600,
+  dport = 35461,
+  num = 40910,
+  saddr = 1681041600,
+  uc_ttl = -1,
+  cmsg_flags = 0,
+  opt = 0x0,
+  sport = 52895,
+  id = 50892,
+  tos = 0 '\0',
+  mc_ttl = 1 '\001',
+  pmtudisc = 1 '\001',
+  recverr = 0 '\0',
+  is_icsk = 1 '\001',
+  freebind = 0 '\0',
+  hdrincl = 0 '\0',
+  mc_loop = 1 '\001',
+  mc_index = 0,
+  mc_addr = 0,
+  mc_list = 0x0,
+  cork = {
+    flags = 0,
+    fragsize = 0,
+    opt = 0x0,
+    rt = 0x0,
+    length = 0,
+    addr = 0,
+    fl = {
+      oif = 0,
+      iif = 0,
+      mark = 0,
+      nl_u = {
+        ip4_u = {
+          daddr = 0,
+          saddr = 0,
+          tos = 0 '\0',
+          scope = 0 '\0'
+        },
+        ip6_u = {
+          daddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          saddr = {
+            in6_u = {
+              u6_addr8 = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+              u6_addr16 = {0, 0, 0, 0, 0, 0, 0, 0},
+              u6_addr32 = {0, 0, 0, 0}
+            }
+          },
+          flowlabel = 0
+        },
+        dn_u = {
+          daddr = 0,
+          saddr = 0,
+          scope = 0 '\0'
+        }
+      },
+      proto = 0 '\0',
+      flags = 0 '\0',
+      uli_u = {
+        ports = {
+          sport = 0,
+          dport = 0
+        },
+        icmpt = {
+          type = 0 '\0',
+          code = 0 '\0'
+        },
+        dnports = {
+          sport = 0,
+          dport = 0
+        },
+        spi = 0,
+        mht = {
+          type = 0 '\0'
+        }
+      },
+      secid = 0
+    }
+  }
+}
+

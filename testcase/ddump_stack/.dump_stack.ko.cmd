@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/dump_stack/dump_stack.ko := /auto/home/lsbuild/desktop-309426/usr/bin/ld -r -m elf_x86_64 -T /auto/builds_nfs2/devarchive/20120607012253_hoj9/310402/os/linux-3.2/scripts/module-common.lds   -o /auto/home5/hoj9/testcase/dump_stack/dump_stack.ko /auto/home5/hoj9/testcase/dump_stack/dump_stack.o /auto/home5/hoj9/testcase/dump_stack/dump_stack.mod.o

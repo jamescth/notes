@@ -1,0 +1,180 @@
+#include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>	// exit()
+#include <string.h>	// memset()
+
+#define DDFS_BINARY	"/ddr/bin/ddfs"
+#define LOOP_BINARY	"/ddr/var/home/sysadmin/loop"
+
+#define READ	0
+#define WRITE	1
+
+#if 0
+process_state(int pid)
+	sprintf(buf, "/proc/%d/status", pid);
+	if (open(buf))
+		fail
+	read = 
+execv()
+waitpid()??
+#endif
+#if 0
+pid_t
+popen2(const char **command, int *infp, int *outfp)
+{
+	int	p_stdin[2], p_stdout[2];
+	pid_t	pid;
+
+	if ((pipe(p_stdin) != 0) || (pipe(p_stdout) != 0)) {
+		return -1;
+	}
+
+	pid = fork();
+	if (pid < 0)
+		return pid;
+	else if (pid == 0) {
+		close(p_stdin[WRITE]);
+		dup2(p_stdin[READ], READ);
+		close(p_stdout[READ]);
+		dup2(p_stdout[WRITE], WRITE);
+
+		execvp(*command, command);
+		perror("execvp");
+		exit(1);
+	}
+
+	if (infp == NULL)
+		close(p_stdin[WRITE]);
+	else
+		*infp = p_stdin[WRITE];
+
+	if (outfp == NULL)
+		close(p_stdout[READ]);
+	else
+		*outfp = p_stdout[READ];
+
+	return pid;
+}
+#endif
+
+pid_t
+run_command(char command[][28])
+{
+	pid_t	pid;
+
+	if ((pid = fork()) < 0) {
+		return pid;
+	} else if (pid == 0) {
+		execve(command[0], command);
+		perror("execv failed\n");
+		exit(1);
+	}
+
+	return pid;
+}
+
+void
+sig_handler(int sig, siginfo_t *info, void *context)
+{
+	char	*command[4];
+
+	printf("pid %d received sig %d by %d\n",
+		getpid(), sig, info->si_pid);
+
+	memset(command, '\0', sizeof(command));
+
+	if (sig == SIGRTMIN) {
+		// we use SIGRTMIN for livedump
+		printf("running live dump\n");
+	} else if (sig == (SIGRTMIN+1)) {
+		// we use SIGRTMIN+1 for mini dump
+		pid_t	pid;
+		char buf[5];
+
+		if (info->si_code == 1) {
+			printf("running mini ddfs dump\n");
+
+			strncpy(command[0], "/root/gdb_daemon", 16);
+			strncpy(command[1], "/ddr/bin/ddfs", 13);
+			sprintf(command[2], "%d", info->si_pid);
+			pid = run_command(command);
+		} else if (info->si_code == 2) {
+			printf("running mini loop dump\n");
+
+			command[0] = strdup("/root/gdb_daemon");
+			command[1] = strdup("/ddr/var/home/sysadmin/loop");
+			sprintf(buf, "%d\0", info->si_pid);
+			command[2] = strdup(buf);
+			command[3] = NULL;
+			printf("%s %s %s\n", command[0], command[1], command[2]);
+			// pid = run_command(command);
+			if ((pid = fork()) < 0) {
+				return ;
+			} else if (pid == 0) {
+				execve(command[0], command);
+				perror("execv failed\n");
+				exit(1);
+			}
+
+		} else {
+			printf("unknown si_code\n");
+			return;
+		}
+
+		// wait
+
+		// sigcont 
+
+
+	} else {
+		printf("Unsupport sig %d\n", sig);
+	}
+}
+
+main()
+{
+	struct sigaction 	act, oldact;
+	sigset_t		mask;
+	int			i;
+
+	printf("pid is %d\n", getpid());
+
+	// block a bunch of signals
+	sigaddset(&mask, SIGHUP);
+	//sigaddset(&mask, SIGINT);
+	sigaddset(&mask, SIGQUIT);
+	sigaddset(&mask, SIGABRT);
+	sigaddset(&mask, SIGPIPE);
+	sigaddset(&mask, SIGALRM);
+	sigaddset(&mask, SIGUSR1);
+	sigaddset(&mask, SIGUSR2);
+
+	for ( i = SIGRTMIN ; i < SIGRTMAX ; i++) {
+		if (i == SIGRTMIN || i == (SIGRTMIN+1))
+			continue;
+		sigaddset(&mask, i);
+	}
+
+	sigprocmask(SIG_BLOCK, &mask, NULL);
+
+	// set up sig hdlr
+	memset(&act, '\0', sizeof(act));
+	act.sa_sigaction = &sig_handler;
+	act.sa_flags = SA_SIGINFO;
+
+	printf("SIGRTMIN is %d\n", SIGRTMIN);
+
+	if (sigaction(SIGRTMIN, &act, NULL) < 0) {
+		printf("SIGRTMIN sigaction failed\n");
+		exit(1);
+	}
+
+	if (sigaction(SIGRTMIN+1, &act, NULL) < 0) {
+		printf("SIGRTMIN+1 sigaction failed\n");
+		exit(1);
+	}
+
+	while(1) {
+		pause();
+	}
+}

@@ -1,0 +1,24 @@
+#tracing all nfs inode operations calls
+
+probe kernel.statement("scsi_device_unbusy@drivers/scsi/scsi_lib.c:472") {
+    host = $sdev->host->host_no
+    channel = $sdev->channel
+    id = $sdev->id
+    rw = $cmd->request->cmd_flags & 0x1  /* read 0, write 1 */
+    lba = $cmd->request->sector
+    nr_sectors = $cmd->request->nr_sectors
+    printf("%s finish cmd(0x%x) %s dev(%d:%d:%d) at %x nr_sectors %d\n",
+            header(), $cmd, (rw? "read": "write"), host, channel, id, 
+            lba, nr_sectors)
+}
+
+
+probe 	kernel.statement("scsi_dump_probe@drivers/block/scsi_dump.c:765")
+{
+	printf("device %p\n", $dev);
+	printf("scsi_dump_probe(%p)\n", $dev);
+	printf("sdev: %p host :%p hostt :%p dump_poll :%p\n", 
+			$sdev, $sdev->host, $sdev->host->hostt, $sdev->host->hostt->dump_poll);
+	
+}
+

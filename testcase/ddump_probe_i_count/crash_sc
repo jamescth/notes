@@ -1,0 +1,2 @@
+foreach multipathd files > mp_files.out
+exit

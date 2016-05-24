@@ -1,0 +1,13 @@
+# install the neeeded packages first
+#
+# in case apt-get update failed due to: “Hash sum mismatch” error
+#   http://askubuntu.com/questions/41605/trouble-downloading-packages-list-due-to-a-hash-sum-mismatch-error
+#  sudo rm /var/lib/apt/lists/*
+#  sudo rm -R /var/lib/apt/lists/partial/*
+#  sudo apt-get update && sudo apt-get upgrade
+#
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get --assume-yes install portmap nis
+# after install nis, check if /etc/defaultdomain sets to datadomain.com
+sudo apt-get --assume-yes install autofs

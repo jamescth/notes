@@ -1,0 +1,30 @@
+# make sure VT support is enabled in the BIOS
+# install
+sudo apt-get -y install virtualbox
+
+# by default, config files are saved @ ~/VirtualBox\ VMs/<vm name>
+# https://www.virtualbox.org/manual/ch07.html#vboxheadless
+
+# VBoxManage createvm --name "Windows XP" --ostype WindowsXP --register
+#     VBoxManage list ostypes
+
+# VBoxManage modifyvm "Windows XP" --memory 256 --acpi on --boot1 dvd --nic1 nat
+# size of 10GB
+# VBoxManage createhd --filename "WinXP.vdi" --size 10000
+
+# IDE Controller
+# VBoxManage storagectl "Window XP" --name "IDE Controller" --add ide --controller PIIX4
+
+# Set VDI file
+# VBoxManage storageattach "Window XP" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "WinXP.vid"
+
+# attach the ISO
+# VBoxManage storageattach "Window XP" --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium /full/path/to/iso.iso
+
+# Start the virtual machine using VBoxHeadless:
+# VBoxHeadless --startvm "Windows XP"
+#   or
+# VBoxManage startvm "Windows XP" headless
+
+# To stop a VM
+# VBoxManage controlvm <vm> savestate

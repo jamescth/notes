@@ -1,0 +1,397 @@
+1. verify bundle/var/log/cron for crond activities
+2. in crash, count how many crond
+3. in crash, veriy when was the last time syslogd run
+   ps -l | head => top of list is t1
+   ps -l | grep => t2
+   p (t1 - t2)/1000000000 = elaspsed secs for syslogd
+
+4. source ~/bin/crash_script
+5  ls_block
+6. kmem -V
+7. if cronds wait for unix_dgram_sendmsg
+	verify 'foreach syslogd net -s'	bug #59566, 47877
+
+
+0xffff811809869200: dd_dg02 request_queue=0xffff8111ede7aea0 in_queue 0/95 in_flight 36 deadline
+
+crash> request_queue 0xffff8111ede7aea0
+struct request_queue {
+  queue_head = {
+    next = 0xffff8111ede7aea0,
+    prev = 0xffff8111ede7aea0
+  },
+  last_merge = 0xffff8111e8402958,
+  elevator = 0xffff8117f8bd9200,
+		=> crash> elevator_queue 0xffff8117f8bd9200
+			struct elevator_queue {
+			  ops = 0xffffffff8062a930,
+			  elevator_data = 0xffff8117f1304f40,
+			  kobj = {
+			    k_name = 0xffff8117f8bd9218 "iosched",
+			    name = "iosched\000\000\000\000\000\000\000\000\000\000\000\000",
+			    kref = {
+			      refcount = {
+			        counter = 2
+			      }
+			    },
+
+  rq = {
+    count = {0, 95},
+    starved = {0, 0},
+    elvpriv = 95,
+    rq_pool = 0xffff8117f17258c0,
+    wait = {{
+        lock = {
+          raw_lock = {
+            slock = 1
+          },
+          tracker = {
+            caller = 0,
+            owner = 0
+          }
+        },
+        task_list = {
+          next = 0xffff8111ede7aef0,
+          prev = 0xffff8111ede7aef0
+        }
+      }, {
+        lock = {
+          raw_lock = {
+            slock = 1
+          },
+          tracker = {
+            caller = 290474,
+            owner = 18194
+          }
+        },
+        task_list = {
+          next = 0xffff8111ede7af10,
+          prev = 0xffff8111ede7af10
+        }
+      }}
+  },
+  request_fn = 0xffffffff8823cd20,
+  make_request_fn = 0xffffffff803527c0 <__make_request>,
+  prep_rq_fn = 0,
+  unplug_fn = 0xffffffff80350d90 <generic_unplug_device>,
+  merge_bvec_fn = 0,
+  issue_flush_fn = 0,
+  prepare_flush_fn = 0,
+  softirq_done_fn = 0,
+  end_sector = 384780360,
+  boundary_rq = 0x0,
+  unplug_timer = {
+    entry = {
+      next = 0x0,
+      prev = 0x200200
+    },
+    expires = 7206392442,
+    function = 0xffffffff803541c0 <blk_unplug_timeout>,
+    data = 18446604512738651808,
+    base = 0xffffffff80835880
+  },
+  unplug_thresh = 1,
+  unplug_delay = 3,
+  unplug_work = {
+    data = {
+      counter = 0
+    },
+    entry = {
+      next = 0xffff8111ede7afb8,
+      prev = 0xffff8111ede7afb8
+    },
+    func = 0xffffffff80350e30 <blk_unplug_work>
+  },
+  backing_dev_info = {
+    ra_pages = 32,
+    state = 0,
+    capabilities = 4,
+    congested_fn = 0,
+    congested_data = 0x0,
+    unplug_io_fn = 0xffffffff80350dc0 <blk_backing_dev_unplug>,
+    unplug_io_data = 0xffff8111ede7aea0
+  },
+  queuedata = 0x20,
+  bounce_pfn = 25427968,
+  bounce_gfp = 16,
+  queue_flags = 1,
+  __queue_lock = {
+    raw_lock = {
+      slock = 0
+    },
+    tracker = {
+      caller = 0,
+      owner = 0
+    }
+  },
+  queue_lock = 0xffff811809dbc200,
+  kobj = {
+    k_name = 0xffff8111ede7b048 "queue",
+    name = "queue\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+    kref = {
+      refcount = {
+        counter = 5
+      }
+    },
+    entry = {
+      next = 0xffff8111ede7b060,
+      prev = 0xffff8111ede7b060
+    },
+    parent = 0xffff811809869270,
+    kset = 0x0,
+    ktype = 0xffffffff8062a1e0,
+    sd = 0xffff8117f15c0920,
+    poll = {
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      },
+      task_list = {
+        next = 0xffff8111ede7b0a0,
+        prev = 0xffff8111ede7b0a0
+      }
+    }
+  },
+  nr_requests = 1024,
+  nr_congestion_on = 113,
+  nr_congestion_off = 103,
+  nr_batching = 32,
+  max_sectors = 8,
+  max_hw_sectors = 8,
+  max_phys_segments = 1,
+  max_hw_segments = 1,
+  hardsect_size = 512,
+  max_segment_size = 65536,
+  seg_boundary_mask = 4294967295,
+  dma_alignment = 511,
+  queue_tags = 0x0,
+  tag_busy_list = {
+    next = 0x0,
+    prev = 0x0
+  },
+  nr_sorted = 59,
+  in_flight = 36,
+  sg_timeout = 0,
+  sg_reserved_size = 2147483647,
+  node = -1,
+  blk_trace = 0x0,
+  ordered = 0,
+  next_ordered = 0,
+  ordseq = 0,
+  orderr = 0,
+  ordcolor = 0,
+  pre_flush_rq = {
+    queuelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    donelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    q = 0x0,
+    cmd_flags = 0,
+    cmd_type = 0,
+    sector = 0,
+    hard_sector = 0,
+    nr_sectors = 0,
+    hard_nr_sectors = 0,
+    current_nr_sectors = 0,
+    hard_cur_sectors = 0,
+    bio = 0x0,
+    biotail = 0x0,
+    hash = {
+      next = 0x0,
+      pprev = 0x0
+    },
+    {
+      rb_node = {
+        rb_parent_color = 0,
+        rb_right = 0x0,
+        rb_left = 0x0
+      },
+      completion_data = 0x0
+    },
+    elevator_private = 0x0,
+    elevator_private2 = 0x0,
+    rq_disk = 0x0,
+    start_time = 0,
+    nr_phys_segments = 0,
+    nr_hw_segments = 0,
+    ioprio = 0,
+    special = 0x0,
+    buffer = 0x0,
+    tag = 0,
+    errors = 0,
+    ref_count = 0,
+    retries = 0,
+    dd_req_flags = 0,
+    io_start_time = 0,
+    cmd_len = 0,
+    cmd = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+    data_len = 0,
+    sense_len = 0,
+    data = 0x0,
+    sense = 0x0,
+    timeout = 0,
+    end_io = 0,
+    end_io_data = 0x0,
+    next_rq = 0x0,
+    initiator_name = 0,
+    target_port = 0 '\0',
+    dd_scsi_request_flags = 0 '\0'
+  },
+  bar_rq = {
+    queuelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    donelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    q = 0x0,
+    cmd_flags = 0,
+    cmd_type = 0,
+    sector = 0,
+    hard_sector = 0,
+    nr_sectors = 0,
+    hard_nr_sectors = 0,
+    current_nr_sectors = 0,
+    hard_cur_sectors = 0,
+    bio = 0x0,
+    biotail = 0x0,
+    hash = {
+      next = 0x0,
+      pprev = 0x0
+    },
+    {
+      rb_node = {
+        rb_parent_color = 0,
+        rb_right = 0x0,
+        rb_left = 0x0
+      },
+      completion_data = 0x0
+    },
+    elevator_private = 0x0,
+    elevator_private2 = 0x0,
+    rq_disk = 0x0,
+    start_time = 0,
+    nr_phys_segments = 0,
+    nr_hw_segments = 0,
+    ioprio = 0,
+    special = 0x0,
+    buffer = 0x0,
+    tag = 0,
+    errors = 0,
+    ref_count = 0,
+    retries = 0,
+    dd_req_flags = 0,
+    io_start_time = 0,
+    cmd_len = 0,
+    cmd = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+    data_len = 0,
+    sense_len = 0,
+    data = 0x0,
+    sense = 0x0,
+    timeout = 0,
+    end_io = 0,
+    end_io_data = 0x0,
+    next_rq = 0x0,
+    initiator_name = 0,
+    target_port = 0 '\0',
+    dd_scsi_request_flags = 0 '\0'
+  },
+  post_flush_rq = {
+    queuelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    donelist = {
+      next = 0x0,
+      prev = 0x0
+    },
+    q = 0x0,
+    cmd_flags = 0,
+    cmd_type = 0,
+    sector = 0,
+    hard_sector = 0,
+    nr_sectors = 0,
+    hard_nr_sectors = 0,
+    current_nr_sectors = 0,
+    hard_cur_sectors = 0,
+    bio = 0x0,
+    biotail = 0x0,
+    hash = {
+      next = 0x0,
+      pprev = 0x0
+    },
+    {
+      rb_node = {
+        rb_parent_color = 0,
+        rb_right = 0x0,
+        rb_left = 0x0
+      },
+      completion_data = 0x0
+    },
+    elevator_private = 0x0,
+    elevator_private2 = 0x0,
+    rq_disk = 0x0,
+    start_time = 0,
+    nr_phys_segments = 0,
+    nr_hw_segments = 0,
+    ioprio = 0,
+    special = 0x0,
+    buffer = 0x0,
+    tag = 0,
+    errors = 0,
+    ref_count = 0,
+    retries = 0,
+    dd_req_flags = 0,
+    io_start_time = 0,
+    cmd_len = 0,
+    cmd = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+    data_len = 0,
+    sense_len = 0,
+    data = 0x0,
+    sense = 0x0,
+    timeout = 0,
+    end_io = 0,
+    end_io_data = 0x0,
+    next_rq = 0x0,
+    initiator_name = 0,
+    target_port = 0 '\0',
+    dd_scsi_request_flags = 0 '\0'
+  },
+  orig_bar_rq = 0x0,
+  bi_size = 0,
+  sysfs_lock = {
+    count = {
+      counter = 1
+    },
+    wait_lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    },
+    wait_list = {
+      next = 0xffff8111ede7b530,
+      prev = 0xffff8111ede7b530
+    },
+    tracker = {
+      caller = 0,
+      owner = 0
+    }
+  },
+  genhd = 0xffff811809869200
+}
+

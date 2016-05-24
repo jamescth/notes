@@ -1,0 +1,30 @@
+# use this cmd for verify if the CPU arch supports hw virtuallilzation
+# sudo egrep '(vmx|svm)' /proc/cpuinfo
+
+sudo apt-get -y install qemu-kvm qemu virt-manager virt-viewer libvirt-bin
+
+# http://www.itzgeek.com/how-tos/linux/ubuntu-how-tos/install-kvm-qemu-on-ubuntu-14-10.html#axzz3QzqHsxUr
+# better run it under linux account w/ sudo
+# create VM
+# virt-install --name=ddnet-fc4 --ram=2048 --vcpus=2 --cdrom=/auto/home12/hoj9/ubuntu_img_conf/mig/FC4-x86_64-DVD.iso --os-type=linux --os-variant=fedora4  --network bridge=br1 --graphics=vnc,password=abc123  --disk path=/var/lib/libvirt/images/ddnet-fc4.dsk,size=8
+#
+#–name – Name of the Virtual machine
+#
+#–ram – Memory size in MB
+#
+#–vcpus – Virtal cpu’s in numbers
+#
+#–cdrom – Location of the ISO image
+#
+#–os-type – OS type like Linux, Windows and Unix
+#
+#–os-variant – OS variant like rhel 6, solaris
+#
+#–network – Networking
+#
+#–graphics – Guest display settings
+#
+#–disk path – Location of the disk with size of 4 GB
+
+# Type the following command in terminal in GUI mode.
+# virt-manager

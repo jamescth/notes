@@ -1,0 +1,2 @@
+gcc static compile:
+	gcc -v -static -O3 test.c

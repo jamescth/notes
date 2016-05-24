@@ -1,0 +1,57 @@
+dhcp6s 8:
+http://manpages.ubuntu.com/manpages/intrepid/man8/dhcp6s.8.html
+
+dhcp6c 8:
+http://manpages.ubuntu.com/manpages/intrepid/man8/dhcp6c.8.html
+
+dhcp6c 5: dhcp6c.conf
+http://manpages.ubuntu.com/manpages/intrepid/man5/dhcp6c.conf.5.html
+
+dhcp6s 5: dhcp6s.conf
+http://manpages.ubuntu.com/manpages/intrepid/man5/dhcp6s.conf.5.html
+
+dhclient 8:
+http://linux.die.net/man/8/dhclient
+
+dhclient-script 8:
+http://linux.die.net/man/8/dhclient-script
+
+dhclient-conf 5:
+http://linux.die.net/man/5/dhclient.conf
+
+dhclient-leases 5:
+http://linux.die.net/man/5/dhclient.leases
+
+omshell 1:
+http://linux.die.net/man/1/omshell
+
+dhcp6 server:
+/usr/sbin/dhcp6s -dDf eth0
+
+	/etc/wide-dhcpv6/dhcp6s.conf
+	/var/run/dhcp6s.pid
+	/var/lib/dhcpv6/dhcp6s_duid
+
+dhclient:
+dhclient6 -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf /sbin/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -d -cf /etc/dhcp/dd_dhclient6.conf -sf /sbin/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf /sbin/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -x -cf /etc/dhcp/dd_dhclient6.conf -sf /sbin/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+/ddr/bin/update_dns.py delete cherry.local test0b 192.168.100.100/255.255.255.0 192.168.100.1 86400 rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+
+Aug 10 09:44:42 ipv6_ddr2 sysadmin: update_dns.py: delete cherry.local test0b 192.168.100.100/24 192.168.100.1 86400 rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+Aug 10 09:44:42 ipv6_ddr2 sysadmin: update_dns forward zone setting tsig
+
+
+# /ddr/bin/update_dns.py delete cherry.local test0b 192.168.100.100/24 192.168.100.1 86400 rndc-key xsDJgO6KYgo7vVIArjsZ6Q==
+
+	/sbin/
+		dhclient
+		dhclient-script
+		dhclient6
+		dhclient6-ddr-linux
+
+	/var/run/dhclient-eth0b.pid
+	/var/db/dhclient6.leases
+	/etc/dhcp/dd_dhclient6.conf
+	/tmp/dhcpcd-eth0b.info

@@ -1,0 +1,798 @@
+03/09 16:55:17: dd_platd[29939-0x76c310]: [vraid_write_metadata] Write vol 0xaca6d9e44ef59fd9 metadata to MG 0xaca6d9e44ef59fd9: magic 0x6c6f7664, chksum 0x2ef21970, type 254, name vol2
+	elem[0](ext3): 0x80 - elem[1](ppart0): 0x80
+03/09 16:55:17: dd_platd[29939-0x76c310]: [vraid_write_metadata] Verified metadata write for vol 0xaca6d9e44ef59fd9 to mg 0x0
+03/09 16:55:17: dd_platd[29939-0x76c310]: [vraid_write_metadata] Wrote vol 0xaca6d9e44ef59fd9 (vol2) metadata, read back rc 0, exe 0x300
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0xaca6d9e44ef59fd9 (vol2) state 10 (0x8000), event 0x1051
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_reg_assem_functional_act_out] vol 0xaca6d9e44ef59fd9: state vol_st_reg_func (0x0), in 0x1051, exe 0x500
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_unreg_assem_disable_act_out] vol 0xaca6d9e44ef59fd9: state vol_st_unreg_assem_dis (0x20000000), in 0x1051, exe 0x6
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_promote_pending_loop:177: ctx = 0x2aaaab63a880, ret 0, status 0x1, state 0xc, arc 0xffff, pending 0
+
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_loc_destroy_active_vol] destroy active volume 0xaca6d9e44ef59fd9 (vol2), 0x2aaaab63a640
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0xaca6d9e44ef59fd9 (vol2) state 12 (0x20000000), event 0x1053
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_state_err_act_out] vol 0xaca6d9e44ef59fd9: state vol_st_unreg_assem_dis (0x0), in 0x1053, exe 0x4
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vol_unreg_assem_disable_act_out] vol 0xaca6d9e44ef59fd9: state vol_st_unreg_assem_dis (0x0), in 0x1053, exe 0x10000100
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vraid_mark_metadata] Mark vol 0xaca6d9e44ef59fd9 meta-data, magic 0xdeaddead, destroy 1, zero 0, exe 0x21000: ok
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_stor_notif_crm_del_vol] vol 0xaca6d9e44ef59fd9: state vol_st_unreg_del (0x10000000), in 0x0, exe 0x0
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_stor_notif_crm_del_vol] notify CRM del vol 0xaca6d9e44ef59fd9 (vol2)
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_stor_del_vol_output] vm stor del vol 0xaca6d9e44ef59fd9 (vol2), out_code 0x1305
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_stor_del_vol_output] vm stor del vol 0xaca6d9e44ef59fd9 (vol2), out_code 0x1001
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [dd_plib_sys_set_state_no_signal] Set system state to SYS_RUNNING.
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [elem_shutdown_undeploy_active] shutdown undeploy ext3 elem vol 0xaca6d9e44ef59fd9 (vol2)
+03/09 16:55:26: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_ext3_umount_active_vol:umount_active_ext3
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+AIO_model=false
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+cd /
+ext=$DD_ROOT/ext
+col1=$DD_ROOT/col1/repl
+ext_core=$DD_ROOT/var/ext
+sync; sync; sync
+if [ "$AIO_model" == "false" ]; then
+    $DD_ROOT/bin/dd_fuser $ext_core >> $DD_LOG 2>&1
+fi
+$umount $ext_core > /dev/null 2>&1
+ret=$?
+echo Result of umount $ext_core $ret >> $DD_LOG
+sync; sync; sync
+if [ "$AIO_model" == "false" ]; then
+    $DD_ROOT/bin/dd_fuser $col1 >> $DD_LOG 2>&1
+fi
+$umount $col1 > /dev/null 2>&1
+ret=$?
+echo Result of umount $col1 $ret >> $DD_LOG
+sync; sync; sync
+if [ "$AIO_model" == "false" ]; then
+    $DD_ROOT/bin/dd_fuser $ext >> $DD_LOG 2>&1
+/ddr/var/ext is currently mounted
+Programs using /ddr/var/ext reported by fuser
+Result of umount /ddr/var/ext 0
+
+Result of umount /ddr/col1/repl 0
+
+/ddr/ext is currently mounted
+Programs using /ddr/ext reported by fuser
+Result of umount /ddr/ext 0
+03/09 16:55:27: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_destroy_active:destroy_active_vol_ext3
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+dply_etc=$DD_ROOT/etc/dply
+[ -e $dply_etc ] && rm -rf $dply_etc
+ext_uuid=$DD_SYS_ROOT/boot/.ext_strg_uuid
+[ -e $ext_uuid ] && rm -f $ext_uuid
+exit 0
+ )' > /dev/null 2>&1
+03/09 16:55:27: dd_platd[29939-0x76c0d0]: [elem_destroy_active] destroy ext3 elem for vol 0xaca6d9e44ef59fd9 (vol2), ret 0
+03/09 16:55:27: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_destroy_ext3:destroy_ext3_elem
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+exit 0
+ )' > /dev/null 2>&1
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vm_plib_destroy_vol] destroying mg 0xaca6d9e44ef59fd9 in volume (vol2)
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vm_plib_destroy_vol] result from destroy 0xaca6d9e44ef59fd9 (vol2): 0
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [dply_send_msg] dply_send_msg: DEBUG: Enter return_code = 11
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [dply_send_msg] dply_send_msg: DEBUG: status = success, reason = undply
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vol_unreg_deleting_act_out] vol 0xaca6d9e44ef59fd9: state vol_st_unreg_del (0x10000000), in 0x1053, exe 0x1126
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_get_trans_arc:343: state non-existing-vol, no matching arc <0x1054, Vol_Internal>, flags 0xffffffff; but it's OK
+
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vm_refcnt_free_vol_base] Free volume obj 0x2aaaab63a640 for uuid 0xaca6d9e44ef59fd9
+03/09 16:55:28: dd_platd[29939-0x76c0d0]: [vm_free_vol_obj] end of volume obj in fsm, free it 0x2aaaab63a640
+03/09 16:55:28: dd_platd[29939-0x2aaaab633dd0]: [platd_event_handler] received msg type 9, msg STATUS=success;REASON=undply
+03/09 16:55:28: dd_platd[29939-0x2aaaab633dd0]: [dd_platd_handler_msg_dply_response] Received Deploy response msg with status: success and reason: undply
+03/09 16:55:28: dd_platd[29939-0x2aaaab633dd0]: [dd_plib_sys_set_state_no_signal] Set system state to SYS_READY.
+03/09 16:55:33: dd_platd[29939-0x2aaaab633dd0]: [platd_event_handler] received msg type 0, msg 
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_encl_validation_1_svc] Start of SASM enclosure validation. 6
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_encl_validation_1_svc] Number of enclosures to validate  1.
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_dload_encl_fw] System model is MEGATRON.
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523780]: [log_msg] DP  make_process_list: sg_dev=/dev/sg17, dev_pos=2
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523780]: [log_msg] DP  make_process_list: num_dev=1
+03/09 16:55:33: dd_viper_thre*[3696-0x523880]: [log_msg] DPT /dev/sg17:exe_emc_viper: dev=/dev/sg17
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] COM dd_get_hdr_info: num_of_target_version_list=1
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Image magic=ddfw, header_ver=100, generation=0, crc=c7014485, firm_size=2259940
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Image dload_type=0, vendor=EMC, product=Viper, revision=09A0
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: revision=*
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Viper dload_type=0, vendor=EMC     , product=Viper LC, revision=09A0, type=13
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:main: update=0
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:main: query=0
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:main: Viper generation code 00000004
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:main: Start download a firmware /ddr/firmware/shelf/emc/viper_lcc/current to dev /dev/sg17
+03/09 16:55:33: emc_dload_fw_vi[3696-0x527730]: [log_msg] VIP /dev/sg17:main: return=1
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523880]: [log_msg] DPT /dev/sg17:child exited, status=1
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523880]: [log_msg] DPT /dev/sg17:exe_emc_viper: p->status=1
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523880]: [log_msg] DPT /dev/sg17:dload_fw_thread: return=1
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523780]: [log_msg] DP  main: p->dev=/dev/sg17, p->status=1
+03/09 16:55:33: emc_dload_fw_vi[3694-0x523780]: [log_msg] DP  main: status=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523780]: [log_msg] DP  make_process_list: sg_dev=/dev/sg17, dev_pos=2
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523780]: [log_msg] DP  make_process_list: num_dev=1
+03/09 16:55:33: dd_viper_thre*[3714-0x523880]: [log_msg] DPT /dev/sg17:exe_emc_viper: dev=/dev/sg17
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] COM dd_get_hdr_info: num_of_target_version_list=1
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Image magic=ddfw, header_ver=100, generation=0, crc=1f096a5c, firm_size=88152
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Image dload_type=1, vendor=EMC, product=000B0015, revision=2910
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: revision=*
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:validate_firmware: Viper dload_type=1, vendor=EMC     , product=000B0015, revision=2910, type=13
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:main: update=0
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:main: query=0
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:main: Viper generation code 00000004
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:main: Start download a firmware /ddr/firmware/shelf/emc/viper_ps_000B0015/current to dev /dev/sg17
+03/09 16:55:33: emc_dload_fw_vi[3714-0x527730]: [log_msg] VIP /dev/sg17:main: return=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523880]: [log_msg] DPT /dev/sg17:child exited, status=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523880]: [log_msg] DPT /dev/sg17:exe_emc_viper: p->status=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523880]: [log_msg] DPT /dev/sg17:dload_fw_thread: return=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523780]: [log_msg] DP  main: p->dev=/dev/sg17, p->status=1
+03/09 16:55:33: emc_dload_fw_vi[3712-0x523780]: [log_msg] DP  main: status=1
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_act_encl_fw] Validating chain connected to HBA port 10a
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_act_encl_fw] Enc index  2 hop  0
+03/09 16:55:33: sasm[29937-0x60a3b0]: [dd_sasm_encl_validation_1_svc] Done SASM validation check.
+03/09 16:55:33: dd_platd[29939-0x2aaaab633dd0]: [platd_sasm_validate] sasm check return 0
+03/09 16:55:33: dd_platd[29939-0x2aaaab633dd0]: [platd_send_hotplug_evt] platd handles hotplug event: cnt 1.
+03/09 16:55:35: dd_platd[29939-0x2aaaaab3a470]: [vm_dply_hotplug_rescan] device rescan, slot mapping success.
+03/09 16:55:35: dd_platd[29939-0x2aaaaab3a470]: [vm_dply_hotplug_rescan] Product model found from plib: [MEGATRON]
+03/09 16:55:35: dd_platd[29939-0x2aaaaab3a470]: [vm_loc_discovery] start to discover local vol
+03/09 16:55:35: dd_platd[29939-0x2aaaaab3a470]: [vm_loc_discovery] done with local volume discovery
+03/09 16:55:35: dd_platd[29939-0x2aaaaab3a470]: [vm_stor_assem_output] uuids active 0, new 0, incompl 0, compl 0, exe 0x100
+03/09 16:55:36: dd_platd[29939-0x2aaaaab3a470]: [vm_stor_get_registry_vol_count] get volume count from the registry 0
+03/09 16:55:36: dd_platd[29939-0x2aaaaab3a470]: [vm_stor_wait_output] evt in 0x1106, out 0x1103, exe 0x30
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [platd_notif_wait_action] Hotplug result:
+Active uuid 0x0, closed act uuid 0x0
+Online cnt 0, offline 0, total 0
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [platd_send_hotplug_evt] Active uuid 0x0, head uuid 0x0, closed uuid 0x0
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [dd_upgrade_script] Before: prim: 2, state: 0x1
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [dply_send_msg] dply_send_msg: DEBUG: Enter return_code = 1
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [dply_send_msg] dply_send_msg: DEBUG: status = success, reason = ready
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [platd_send_hotplug_evt] Ready dply_send_msg rt 0
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [platd_event_handler] received msg type 9, msg STATUS=success;REASON=ready
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [dd_platd_handler_msg_dply_response] Received Deploy response msg with status: success and reason: ready
+03/09 16:55:36: dd_platd[29939-0x2aaaab633dd0]: [dd_plib_sys_set_state_no_signal] Set system state to SYS_READY.
+
+
+James create
+03/09 17:01:52: dd_platd[29939-0x76c0d0]: [vm_loc_create] create vol vol3, type 3003
+03/09 17:01:52: dd_platd[29939-0x76c0d0]: [vm_dply_create_enc_raid] Initial deployment of 1st shelf.........[start]
+03/09 17:01:52: dd_platd[29939-0x76c0d0]: [vm_dply_create_enc_raid] Create partition table..................[done]
+03/09 17:01:52: dd_platd[29939-0x76c0d0]: [vm_dply_rm_raid_disks] result ok, rc 0
+03/09 17:01:52: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: vm_dply_partition_raid_disks:prepare-raid disks
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Disk_id_list="14 16 17 15 13 12 11 10 9 8 7 6 5 4"
+Disk_nm_list="/dev/dm-14 /dev/dm-16 /dev/dm-17 /dev/dm-15 /dev/dm-13 /dev/dm-12 /dev/dm-11 /dev/dm-10 /dev/dm-9 /dev/dm-8 /dev/dm-7 /dev/dm-6 /dev/dm-5 /dev/dm-4"
+Partition_tmpl=/tmp/disk_partition_table_prim_
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+idx=0
+disk_num=0
+for disk in $Disk_nm_list; do
+    disk_nm_array[$idx]=$disk
+    let idx+=1
+    let disk_num+=1
+done
+idx=0
+for id in $Disk_id_list; do
+    disk_id_array[$idx]=$id
+    let idx+=1
+done
+[ "$idx" -ne "$disk_num" ] && exit 200
+idx=0
+while [ "$idx" -lt "$disk_num" ]; do
+    disk_name=${disk_nm_array[$Exec: /bin/sh /tmp/disk_partition_table_prim_14
+Exec: /bin/sh /tmp/disk_partition_table_prim_16
+Exec: /bin/sh /tmp/disk_partition_table_prim_17
+Exec: /bin/sh /tmp/disk_partition_table_prim_15
+Exec: /bin/sh /tmp/disk_partition_table_prim_13
+Exec: /bin/sh /tmp/disk_partition_table_prim_12
+Exec: /bin/sh /tmp/disk_partition_table_prim_11
+Exec: /bin/sh /tmp/disk_partition_table_prim_10
+Exec: /bin/sh /tmp/disk_partition_table_prim_9
+Exec: /bin/sh /tmp/disk_partition_table_prim_8
+Exec: /bin/sh /tmp/disk_partition_table_prim_7
+Exec: /bin/sh /tmp/disk_partition_table_prim_6
+Exec: /bin/sh /tmp/disk_partition_table_prim_5
+Exec: /bin/sh /tmp/disk_partition_table_prim_4
+Exec: /sbin/partprobe /dev/dm-14
+Exec: /sbin/partprobe /dev/dm-16
+Exec: /sbin/partprobe /dev/dm-17
+Exec: /sbin/partprobe /dev/dm-15
+Exec: /sbin/partprobe /dev/dm-13
+Exec: /sbin/partprobe /dev/dm-12
+Exec: /sbin/partprobe /dev/dm-11
+Exec: /sbin/partprobe /dev/dm-10
+Exec: /sbin/partprobe /dev/dm-9
+Exec: /sbin/partprobe /dev/dm-8
+Exec: /sbin/partprobe /dev/dm-7
+Exec: /sbin/partprobe /dev/dm-6
+Exec: /sbin/partprobe /dev/dm-5
+Exec: /sbin/partprobe /dev/dm-4
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_dg] Created new disk group [         dg1]........[success]
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_dg] Created new disk group [0x2101987ef95e7414]........[success]
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-14p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-16p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-17p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-15p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-13p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-12p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-11p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-10p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-9p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-8p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-7p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-6p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-5p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Using device /dev/dm-4p5 in ppart array
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [dd_platd_run_cmd] Run cmd: [/ddr/bin/check_emulation >>/ddr/var/log/debug/platform/infra.log 2>>/ddr/var/log/debug/platform/infra.log]: 
+03/09 17:02:00.393 (tid 0x586e70): NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1
+03/09 17:02:00.411 (tid 0x586e70): NOTICE: file descriptor rlimit is set to 4096
+03/09 17:02:00 NOTICE: file descriptor rlimit is set to 4096
+03/09 17:02:00.411 (tid 0x586e70): INFO: CC: node role 1, art policy 0
+03/09 17:02:00 INFO: CC: node role 1, art policy 0
+03/09 17:02:00.414 (tid 0x586e70): NOTICE: MSG-DDR-00001: Starting check_emulation (5.3.0.0-292579)
+03/09 17:02:00 NOTICE: MSG-DDR-00001: Starting check_emulation (5.3.0.0-292579)
+03/09 17:02:00.414 (tid 0x586e70): system_init: calling chdir
+03/09 17:02:00.414 (tid 0x586e70): SYSTEM_INIT: ----- Starting INIT_INTER -----
+03/09 17:02:00.414 (tid 0x586e70): SYSTEM_INIT: ----- Completed INIT_INTER -----
+03/09 17:02:00.414 (tid 0x586e70): SYSTEM_INIT: ----- Starting INIT_EXTERN ----- 
+03/09 17:02:00.414 (tid 0x586e70): SYSTEM_INIT: ----- Completed INIT_EXTERN -----
+03/09 17:02:00.417 (tid 0x586e70): dd_run_main ... calling system_startup
+03/09 17:02:00.417 (tid 0x586e70): SYSTEM_STARTUP: ----- Started STARTUP -----
+03/09 17:02:00.417 (tid 0x586e70): SYSTEM_STARTUP: ----- Completed STARTUP -----
+03/09 17:02:00.417 (tid 0x586e70): dd_run_main: ss_seg_size_min=4096 ss_seg_size_avg=8192 ss_seg_size_max=16384
+03/09 17:02:00.417 (tid 0x586e70): NOTICE: MSG-DDR-00002: check_emulation started
+03/09 17:02:00 NOTICE: MSG-DDR-00002: check_emulation started
+03/09 17:02:00.417 (tid 0x586e70): NOTICE: MSG-DDR-00003: Shutting down check_emulation
+03/09 17:02:00 NOTICE: MSG-DDR-00003: Shutting down check_emulation
+03/09 17:02:00.417 (tid 0x586e70): SYSTEM_SHUTDOWN: ----- Starting shutting down components -----
+03/09 17:02:00.417 (tid 0x586e70): SYSTEM_SHUTDOWN: ----- Completed shutting down components -----
+03/09 17:02:00.418 (tid 0x586e70): SYSTEM_SHUTDOWN SUMMARY: ======================
+03/09 17:02:00.418 (tid 0x586e70): INFO: SYSTEM_SHUTDOWN: Shutdown timings:
+03/09 17:02:00 INFO: SYSTEM_SHUTDOWN: Shutdown timings:
+03/09 17:02:00.418 (tid 0x586e70): NOTICE: MSG-DDR-00004: check_emulation shut down
+03/09 17:02:00 NOTICE: MSG-DDR-00004: check_emulation shut down
+03/09 17:02:00.421 (tid 0x586e70): Debug Log File Stat: name: (null), type: 0, file_size: 209715200, num_files: 0, write_cnt: 19
+Emulation is OFF.
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Set su_size to 393216 using scale 0
+03/09 17:02:00: dd_platd[29939-0x76c0d0]: [vm_dply_create_new_ppart_arr] Creating ppart array with parameters: minor 1, name ppart, level 6, unit size 393216, options 1, level opts 3
+03/09 17:02:01: dd_platd[29939-0x76c0d0]: [vm_dply_create_ppart_arr] Created ppart raid array.....................[success]
+03/09 17:02:01: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-14p6 in ext3 array
+03/09 17:02:01: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-16p6 in ext3 array
+03/09 17:02:01: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-17p6 in ext3 array
+03/09 17:02:01: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Creating ext3 array with parameters: minor 2, name ext3-1, level 6, unit size 4096, options 7, level opts 3
+03/09 17:02:02: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Created ext3 sub array [ 1]..................[success]
+03/09 17:02:02: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-15p6 in ext3 array
+03/09 17:02:02: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-13p6 in ext3 array
+03/09 17:02:02: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-12p6 in ext3 array
+03/09 17:02:02: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Creating ext3 array with parameters: minor 3, name ext3-2, level 6, unit size 4096, options 7, level opts 3
+03/09 17:02:03: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Created ext3 sub array [ 2]..................[success]
+03/09 17:02:03: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-11p6 in ext3 array
+03/09 17:02:03: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-10p6 in ext3 array
+03/09 17:02:03: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-9p6 in ext3 array
+03/09 17:02:03: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Creating ext3 array with parameters: minor 4, name ext3-3, level 6, unit size 4096, options 7, level opts 3
+03/09 17:02:04: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Created ext3 sub array [ 3]..................[success]
+03/09 17:02:04: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-8p6 in ext3 array
+03/09 17:02:04: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-7p6 in ext3 array
+03/09 17:02:04: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-6p6 in ext3 array
+03/09 17:02:04: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Creating ext3 array with parameters: minor 5, name ext3-4, level 6, unit size 4096, options 7, level opts 3
+03/09 17:02:05: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Created ext3 sub array [ 4]..................[success]
+03/09 17:02:05: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-5p6 in ext3 array
+03/09 17:02:05: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Using device /dev/dm-4p6 in ext3 array
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_create_ext3_arr] Created ext3 raid group......................[success]
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_create_mg] Created new meta-group [         mg0]........[success]
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_create_mg] Created new meta group [0x2101987ef95e7414]........[success]
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Write vol 0x2101987ef95e7414 metadata to MG 0x2101987ef95e7414: magic 0x4c4f5644, chksum 0xe4e0cf0, type 254, name vol3
+	elem[0](): 0x0 - elem[1](): 0x0
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Verified metadata write for vol 0x2101987ef95e7414 to mg 0x0
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Wrote vol 0x2101987ef95e7414 (vol3) metadata, read back rc 0, exe 0x300
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_create_vol] done create & write metadata 0x2101987ef95e7414 (vol3): meta 0x2aaaaab5f3e0, mg 0x2aaaaab5f330
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_alloc_vol_base] Allocate vol obj 0x2aaaaab603b0 for uuid 0x2101987ef95e7414
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0x2101987ef95e7414 (vol3) state 1 (0x0), event 0x1001
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_incompl_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_incompl (0x4), in 0x1001, exe 0x101
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_promote_pending_loop:177: ctx = 0x2aaaaab605f0, ret 0, status 0x1, state 0x1, arc 0xffff, pending 0
+
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0x2101987ef95e7414 (vol3) state 1 (0x4), event 0x1000
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_incompl_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_incompl (0x4), in 0x1000, exe 0x10
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_unassem_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_unassem (0x4), in 0x1000, exe 0x1000
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_promote_pending_loop:177: ctx = 0x2aaaaab605f0, ret 0, status 0x1, state 0x2, arc 0xffff, pending 0
+
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0x2101987ef95e7414 (vol3) state 2 (0x4), event 0x1002
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_unassem_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_unassem (0x4), in 0x1002, exe 0x3
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_assem_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_assem (0x4), in 0x1005, exe 0x22
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_loc_init_active_vol] init'd element ppart0 in vol 0x2101987ef95e7414 (vol3), type 0xbbb
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_loc_init_active_vol] initi vol 0x2101987ef95e7414 (vol3), type 0xbbb
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Write vol 0x2101987ef95e7414 metadata to MG 0x2101987ef95e7414: magic 0x6c6f7664, chksum 0x5801250, type 254, name vol3
+	elem[0](ext3): 0x80 - elem[1](ppart0): 0x80
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Verified metadata write for vol 0x2101987ef95e7414 to mg 0x0
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Wrote vol 0x2101987ef95e7414 (vol3) metadata, read back rc 0, exe 0x300
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_unreg_assem_doinit_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_doinit (0x4), in 0x1014, exe 0x2
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_promote_pending_loop:177: ctx = 0x2aaaaab605f0, ret 0, status 0x1, state 0x9, arc 0xffff, pending 0
+
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_loc_create] notify CRM about the new vol 0x2101987ef95e7414 (vol3)
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_notif_crm_new_vol] vol 0x2101987ef95e7414: state vol_st_unreg_ready (0x4), in 0x0, exe 0x0
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_notif_crm_new_vol] notify CRM new vol 0x2101987ef95e7414 (vol3)
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_new_vol_output] new volume 0x2101987ef95e7414 (vol3), opts 0x0, out_code 0x1300
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_save_serialno] Saving serial number to MG 0x2101987ef95e7414
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_dply_save_serialno] set serial number  to MG 0x2101987ef95e7414 in vol 0x2101987ef95e7414
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_set_vol_owner_act] set volume owner to 
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_set_vol_owner_act] vol 0x2101987ef95e7414: state vol_st_unreg_ready (0x4), in 0x0, exe 0x1
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_set_vol_owner_output] done with set vol owner 0x2101987ef95e7414 (vol3)
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_stor_wait_crm_action] result volume head uuid 2101987ef95e7414 vol3
+03/09 17:02:07: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_format_ext3:format_ext3
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+Ext3_partition=3
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+cmd=/tmp/raid_ext3_partition_table
+echo "$sfdisk --no-reread --force /dev/dd_${Dg_name}0 < $cmd">> $DD_LOG
+$sfdisk --no-reread --force /dev/dd_${Dg_name}0 < $cmd >> $DD_LOG 2>&1
+[ "$?" -ne "0" ] && exit 200
+idx=0
+partition_cnt=$Ext3_partition
+while [ "$idx" -lt "$partition_cnt" ]; do
+    let devno=$idx+1
+    name=/dev/dd_${Dg_name}0p${devno}
+    $mkfs -t ext3 -R stride=16 -b 4096 -i 4096 $name >> $DD_LOG 2>&1 &
+    echo $mkfs -t ext3 -R stride=16 -b 4096 -i 4096 $name >> $DD_LOG
+    let idx+=1
+done
+wait
+idx=0
+while [ "$idx" -lt "$partition_cnt" ]; do
+    le/sbin/sfdisk --no-reread --force /dev/dd_dg10 < /tmp/raid_ext3_partition_table
+Disk /dev/dd_dg10: cannot get geometry
+
+Disk /dev/dd_dg10: 0 cylinders, 0 heads, 0 sectors/track
+Old situation:
+Warning: The partition table looks like it was made
+  for C/H/S=*/1/0 (instead of 0/0/0).
+For this listing I'll assume that geometry.
+Units = mebibytes of 1048576 bytes, blocks of 1024 bytes, counting from 0
+
+   Device Boot Start   End    MiB    #blocks   Id  System
+/dev/dd_dg10p1         0+ 30720- 30720   31457280   83  Linux
+/dev/dd_dg10p2     30720+ 256000- 225280  230686720   83  Linux
+/dev/dd_dg10p3     256000+ 272384- 16384   16777216   83  Linux
+/dev/dd_dg10p4         0      -      0          0    0  Empty
+Warning: given size (62914560) exceeds max allowable size (0)
+Warning: given size (461373440) exceeds max allowable size (0)
+Warning: given size (33554432) exceeds max allowable size (0)
+New situation:
+Warning: The partition table looks like it was made
+  for C/H/S=*/1/0 (instead of 0/0/0).
+For this listing I'll assume that geometry.
+Units = sectors of 512 bytes, counting from 0
+
+   Device Boot    Start       End   #sectors  Id  System
+/dev/dd_dg10p1           512  62915071   62914560  83  Linux
+/dev/dd_dg10p2      62915584 524289023  461373440  83  Linux
+/dev/dd_dg10p3     524289536 557843967   33554432  83  Linux
+/dev/dd_dg10p4             0         -          0   0  Empty
+Warning: partition 1 extends past end of disk
+Successfully wrote the new partition table
+
+Re-reading the partition table ...
+
+If you created or changed a DOS partition, /dev/foo7, say, then use dd(1)
+to zero the first 512 bytes:  dd if=/dev/zero of=/dev/foo7 bs=512 count=1
+(See fdisk(8).)
+/sbin/mkfs -t ext3 -R stride=16 -b 4096 -i 4096 /dev/dd_dg10p1
+/sbin/mkfs -t ext3 -R stride=16 -b 4096 -i 4096 /dev/dd_dg10p2
+/sbin/mkfs -t ext3 -R stride=16 -b 4096 -i 4096 /dev/dd_dg10p3
+mke2fs 1.38 (30-Jun-2005)
+mke2fs 1.38 (30-Jun-2005)
+mke2fs 1.38 (30-Jun-2005)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+4194304 inodes, 4194304 blocks
+209715 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+128 block groups
+32768 blocks per group, 32768 fragments per group
+32768 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000
+
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+7864320 inodes, 7864320 blocks
+393216 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+240 block groups
+32768 blocks per group, 32768 fragments per group
+32768 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000
+
+Writing inode tables:   0/128Writing inode tables:   0/240  1/128  1/240  2/128  2/240Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+57671680 inodes, 57671680 blocks
+2883584 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+1760 block groups
+32768 blocks per group, 32768 fragments per group
+32768 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872
+
+  3/128  3/240  4/128  4/240  5/128  5/240  6/128  6/240  7/128  7/240  8/128  8/240  9/128  9/240 10/128 10/240 11/128Writing inode tables:    0/1760 11/240 12/128   1/1760 12/240 13/128   2/1760 13/240 14/128   3/1760 14/240 15/128   4/1760 15/240 16/128   5/1760 16/240 17/128   6/1760 17/240 18/128   7/1760 18/240 19/128   8/1760 19/240 20/128   9/1760 20/240 21/128  10/1760 21/240 22/128  11/1760 22/240 23/128  12/1760 23/240 24/128  13/1760 24/240 25/128  14/1760 25/240 26/128  15/1760 26/240 27/128  16/1760 27/240 28/128 28/240  17/1760 29/240 29/128  18/1760 30/240 30/128  19/1760 31/240  20/1760 31/128 32/240  21/1760 32/128 33/240  22/1760 33/128 34/240  23/1760 34/128 35/240  24/1760 35/128 36/240  25/1760 37/240 36/128 38/240 37/128  26/1760 39/240  27/1760 38/128 40/240  28/1760 39/128 41/240  29/1760 40/128 42/240  30/1760 41/128 43/240  31/1760 42/128 44/240  32/1760 43/128 45/240  33/1760 46/240 44/128 47/240 45/128  34/1760 48/240  35/1760 46/128 49/240  36/1760 47/128 50/240  37/1760 48/128 51/240  38/1760 49/128 52/240  39/1760 50/128 53/240  40/1760 51/128 54/240 55/240  41/1760 52/128 56/240 53/128  42/1760 57/240  43/1760 54/128 58/240  44/1760 55/128 59/240  45/1760 56/128 60/240  46/1760 57/128 61/240  47/1760 58/128 62/240  48/1760 63/240 59/128 64/240  49/1760 60/128 65/240  50/1760 61/128 66/240 67/240  51/1760 62/128 68/240  52/1760 63/128 69/240  53/1760 70/240 64/128 71/240  54/1760 65/128 72/240  55/1760 66/128 73/240  56/1760 74/240 67/128 75/240  57/1760 68/128 76/240 77/240 78/240 79/240 69/128 70/128 71/128  58/1760  59/1760  60/1760  61/1760  62/1760  63/1760  64/1760 80/240 81/240 82/240 83/240 84/240 85/240 86/240 87/240 72/128 73/128 74/128 75/128 76/128 77/128 78/128 79/128  65/1760  66/1760  67/1760  68/1760 88/240 89/240 80/128 81/128 82/128 83/128 84/128 85/128 86/128 87/128 88/128 89/128 90/240 91/240 92/240 93/240 94/240 95/240 96/240  69/1760  70/1760  71/1760  72/1760  73/1760  74/1760  75/1760  76/1760  77/1760  78/1760  79/1760 97/240 98/240 99/240100/240101/240  80/1760102/240103/240  81/1760  82/1760  83/1760  84/1760  85/1760104/240105/240106/240107/240  86/1760  87/1760  88/1760  89/1760  90/1760  91/1760  92/1760  93/1760  94/1760  95/1760108/240109/240110/240111/240112/240113/240114/240115/240116/240117/240  96/1760 90/128118/240 91/128  97/1760119/240 92/128  98/1760120/240  99/1760121/240122/240123/240124/240125/240126/240127/240128/240129/240130/240131/240132/240133/240134/240135/240 100/1760 101/1760 102/1760 103/1760 104/1760 105/1760 106/1760 93/128 94/128 95/128 96/128136/240137/240138/240139/240140/240141/240142/240143/240144/240145/240146/240147/240148/240149/240150/240151/240152/240 107/1760 108/1760 97/128 98/128 99/128100/128101/128102/128103/128 109/1760 110/1760 111/1760 112/1760 113/1760 114/1760 115/1760 116/1760 117/1760 118/1760 119/1760 120/1760 121/1760 122/1760 123/1760 124/1760 125/1760 126/1760 127/1760 128/1760 129/1760 130/1760153/240154/240155/240156/240157/240158/240159/240160/240161/240162/240163/240164/240165/240166/240167/240168/240169/240170/240171/240172/240 131/1760104/128105/128106/128107/128108/128109/128110/128111/128112/128113/128 132/1760 133/1760 134/1760 135/1760 136/1760 137/1760 138/1760 139/1760 140/1760 141/1760 142/1760 143/1760 144/1760 145/1760 146/1760 147/1760 148/1760 149/1760 150/1760 151/1760 152/1760 153/1760173/240114/128174/240115/128175/240116/128176/240117/128118/128119/128120/128121/128122/128123/128124/128125/128177/240 154/1760 155/1760 156/1760 157/1760 158/1760 159/1760 160/1760178/240 161/1760 162/1760 163/1760 164/1760 165/1760 166/1760 167/1760179/240 168/1760 169/1760 170/1760 171/1760 172/1760 173/1760 174/1760 175/1760 176/1760 177/1760 178/1760126/128127/128done                            
+ 179/1760 180/1760 181/1760180/240181/240182/240183/240184/240185/240 182/1760 183/1760Creating journal (32768 blocks):  184/1760 185/1760 186/1760 187/1760 188/1760 189/1760 190/1760 191/1760 192/1760 193/1760 194/1760 195/1760186/240187/240188/240189/240190/240191/240192/240193/240194/240 196/1760 197/1760 198/1760 199/1760 200/1760 201/1760195/240196/240197/240198/240 202/1760 203/1760 204/1760 205/1760 206/1760 207/1760 208/1760 209/1760199/240200/240201/240202/240203/240204/240205/240 210/1760 211/1760 212/1760 213/1760 214/1760 215/1760206/240207/240done
+Writing superblocks and filesystem accounting information: 208/240209/240210/240211/240212/240213/240214/240215/240216/240217/240218/240219/240220/240221/240222/240223/240224/240225/240226/240227/240228/240229/240230/240231/240232/240233/240234/240235/240236/240237/240238/240239/240done                            
+Creating journal (32768 blocks):  216/1760 217/1760 218/1760 219/1760 220/1760 221/1760 222/1760 223/1760 224/1760 225/1760 226/1760 227/1760 228/1760 229/1760 230/1760 231/1760 232/1760 233/1760 234/1760 235/1760 236/1760 237/1760 238/1760 239/1760 240/1760 241/1760 242/1760done
+Writing superblocks and filesystem accounting information:  243/1760 244/1760 245/1760 246/1760 247/1760 248/1760 249/1760 250/1760 251/1760 252/1760 253/1760 254/1760 255/1760 256/1760 257/1760 258/1760 259/1760 260/1760 261/1760 262/1760 263/1760 264/1760 265/1760 266/1760 267/1760 268/1760 269/1760 270/1760 271/1760 272/1760 273/1760 274/1760 275/1760 276/1760 277/1760 278/1760 279/1760 280/1760 281/1760 282/1760 283/1760 284/1760 285/1760 286/1760 287/1760 288/1760 289/1760 290/1760 291/1760 292/1760 293/1760 294/1760 295/1760 296/1760 297/1760 298/1760 299/1760 300/1760 301/1760 302/1760 303/1760 304/1760 305/1760 306/1760 307/1760 308/1760 309/1760 310/1760 311/1760 312/1760 313/1760 314/1760 315/1760 316/1760 317/1760 318/1760 319/1760 320/1760 321/1760 322/1760 323/1760 324/1760 325/1760 326/1760 327/1760 328/1760 329/1760 330/1760 331/1760 332/1760 333/1760 334/1760 335/1760 336/1760 337/1760 338/1760 339/1760 340/1760 341/1760 342/1760 343/1760 344/1760 345/1760 346/1760 347/1760 348/1760 349/1760 350/1760 351/1760 352/1760 353/1760 354/1760 355/1760 356/1760 357/1760 358/1760 359/1760 360/1760 361/1760 362/1760 363/1760 364/1760 365/1760 366/1760 367/1760 368/1760 369/1760 370/1760 371/1760 372/1760 373/1760 374/1760 375/1760 376/1760 377/1760 378/1760 379/1760 380/1760 381/1760 382/1760 383/1760 384/1760 385/1760 386/1760 387/1760 388/1760 389/1760 390/1760 391/1760 392/1760 393/1760 394/1760 395/1760 396/1760 397/1760 398/1760 399/1760 400/1760 401/1760 402/1760 403/1760 404/1760 405/1760 406/1760 407/1760 408/1760 409/1760 410/1760 411/1760 412/1760 413/1760 414/1760 415/1760 416/1760 417/1760 418/1760 419/1760 420/1760 421/1760 422/1760 423/1760 424/1760 425/1760 426/1760 427/1760 428/1760 429/1760 430/1760 431/1760 432/1760 433/1760 434/1760 435/1760 436/1760 437/1760done
+
+This filesystem will be automatically checked every 37 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+ 438/1760 439/1760 440/1760 441/1760 442/1760 443/1760 444/1760 445/1760 446/1760 447/1760 448/1760 449/1760 450/1760 451/1760 452/1760 453/1760 454/1760 455/1760 456/1760 457/1760 458/1760 459/1760 460/1760 461/1760 462/1760 463/1760 464/1760 465/1760 466/1760 467/1760 468/1760 469/1760 470/1760 471/1760 472/1760 473/1760 474/1760 475/1760 476/1760 477/1760 478/1760 479/1760 480/1760 481/1760 482/1760 483/1760 484/1760 485/1760 486/1760 487/1760 488/1760 489/1760 490/1760 491/1760 492/1760 493/1760 494/1760 495/1760 496/1760 497/1760 498/1760 499/1760 500/1760 501/1760 502/1760 503/1760 504/1760 505/1760 506/1760 507/1760 508/1760 509/1760 510/1760 511/1760 512/1760 513/1760 514/1760 515/1760 516/1760 517/1760 518/1760 519/1760 520/1760 521/1760 522/1760 523/1760 524/1760 525/1760 526/1760 527/1760 528/1760 529/1760 530/1760 531/1760 532/1760 533/1760 534/1760 535/1760 536/1760 537/1760 538/1760 539/1760 540/1760 541/1760 542/1760 543/1760 544/1760 545/1760 546/1760 547/1760 548/1760 549/1760 550/1760 551/1760 552/1760 553/1760 554/1760 555/1760 556/1760 557/1760 558/1760 559/1760 560/1760 561/1760 562/1760 563/1760done
+
+This filesystem will be automatically checked every 21 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+ 564/1760 565/1760 566/1760 567/1760 568/1760 569/1760 570/1760 571/1760 572/1760 573/1760 574/1760 575/1760 576/1760 577/1760 578/1760 579/1760 580/1760 581/1760 582/1760 583/1760 584/1760 585/1760 586/1760 587/1760 588/1760 589/1760 590/1760 591/1760 592/1760 593/1760 594/1760 595/1760 596/1760 597/1760 598/1760 599/1760 600/1760 601/1760 602/1760 603/1760 604/1760 605/1760 606/1760 607/1760 608/1760 609/1760 610/1760 611/1760 612/1760 613/1760 614/1760 615/1760 616/1760 617/1760 618/1760 619/1760 620/1760 621/1760 622/1760 623/1760 624/1760 625/1760 626/1760 627/1760 628/1760 629/1760 630/1760 631/1760 632/1760 633/1760 634/1760 635/1760 636/1760 637/1760 638/1760 639/1760 640/1760 641/1760 642/1760 643/1760 644/1760 645/1760 646/1760 647/1760 648/1760 649/1760 650/1760 651/1760 652/1760 653/1760 654/1760 655/1760 656/1760 657/1760 658/1760 659/1760 660/1760 661/1760 662/1760 663/1760 664/1760 665/1760 666/1760 667/1760 668/1760 669/1760 670/1760 671/1760 672/1760 673/1760 674/1760 675/1760 676/1760 677/1760 678/1760 679/1760 680/1760 681/1760 682/1760 683/1760 684/1760 685/1760 686/1760 687/1760 688/1760 689/1760 690/1760 691/1760 692/1760 693/1760 694/1760 695/1760 696/1760 697/1760 698/1760 699/1760 700/1760 701/1760 702/1760 703/1760 704/1760 705/1760 706/1760 707/1760 708/1760 709/1760 710/1760 711/1760 712/1760 713/1760 714/1760 715/1760 716/1760 717/1760 718/1760 719/1760 720/1760 721/1760 722/1760 723/1760 724/1760 725/1760 726/1760 727/1760 728/1760 729/1760 730/1760 731/1760 732/1760 733/1760 734/1760 735/1760 736/1760 737/1760 738/1760 739/1760 740/1760 741/1760 742/1760 743/1760 744/1760 745/1760 746/1760 747/1760 748/1760 749/1760 750/1760 751/1760 752/1760 753/1760 754/1760 755/1760 756/1760 757/1760 758/1760 759/1760 760/1760 761/1760 762/1760 763/1760 764/1760 765/1760 766/1760 767/1760 768/1760 769/1760 770/1760 771/1760 772/1760 773/1760 774/1760 775/1760 776/1760 777/1760 778/1760 779/1760 780/1760 781/1760 782/1760 783/1760 784/1760 785/1760 786/1760 787/1760 788/1760 789/1760 790/1760 791/1760 792/1760 793/1760 794/1760 795/1760 796/1760 797/1760 798/1760 799/1760 800/1760 801/1760 802/1760 803/1760 804/1760 805/1760 806/1760 807/1760 808/1760 809/1760 810/1760 811/1760 812/1760 813/1760 814/1760 815/1760 816/1760 817/1760 818/1760 819/1760 820/1760 821/1760 822/1760 823/1760 824/1760 825/1760 826/1760 827/1760 828/1760 829/1760 830/1760 831/1760 832/1760 833/1760 834/1760 835/1760 836/1760 837/1760 838/1760 839/1760 840/1760 841/1760 842/1760 843/1760 844/1760 845/1760 846/1760 847/1760 848/1760 849/1760 850/1760 851/1760 852/1760 853/1760 854/1760 855/1760 856/1760 857/1760 858/1760 859/1760 860/1760 861/1760 862/1760 863/1760 864/1760 865/1760 866/1760 867/1760 868/1760 869/1760 870/1760 871/1760 872/1760 873/1760 874/1760 875/1760 876/1760 877/1760 878/1760 879/1760 880/1760 881/1760 882/1760 883/1760 884/1760 885/1760 886/1760 887/1760 888/1760 889/1760 890/1760 891/1760 892/1760 893/1760 894/1760 895/1760 896/1760 897/1760 898/1760 899/1760 900/1760 901/1760 902/1760 903/1760 904/1760 905/1760 906/1760 907/1760 908/1760 909/1760 910/1760 911/1760 912/1760 913/1760 914/1760 915/1760 916/1760 917/1760 918/1760 919/1760 920/1760 921/1760 922/1760 923/1760 924/1760 925/1760 926/1760 927/1760 928/1760 929/1760 930/1760 931/1760 932/1760 933/1760 934/1760 935/1760 936/1760 937/1760 938/1760 939/1760 940/1760 941/1760 942/1760 943/1760 944/1760 945/1760 946/1760 947/1760 948/1760 949/1760 950/1760 951/1760 952/1760 953/1760 954/1760 955/1760 956/1760 957/1760 958/1760 959/1760 960/1760 961/1760 962/1760 963/1760 964/1760 965/1760 966/1760 967/1760 968/1760 969/1760 970/1760 971/1760 972/1760 973/1760 974/1760 975/1760 976/1760 977/1760 978/1760 979/1760 980/1760 981/1760 982/1760 983/1760 984/1760 985/1760 986/1760 987/1760 988/1760 989/1760 990/1760 991/1760 992/1760 993/1760 994/1760 995/1760 996/1760 997/1760 998/1760 999/17601000/17601001/17601002/17601003/17601004/17601005/17601006/17601007/17601008/17601009/17601010/17601011/17601012/17601013/17601014/17601015/17601016/17601017/17601018/17601019/17601020/17601021/17601022/17601023/17601024/17601025/17601026/17601027/17601028/17601029/17601030/17601031/17601032/17601033/17601034/17601035/17601036/17601037/17601038/17601039/17601040/17601041/17601042/17601043/17601044/17601045/17601046/17601047/17601048/17601049/17601050/17601051/17601052/17601053/17601054/17601055/17601056/17601057/17601058/17601059/17601060/17601061/17601062/17601063/17601064/17601065/17601066/17601067/17601068/17601069/17601070/17601071/17601072/17601073/17601074/17601075/17601076/17601077/17601078/17601079/17601080/17601081/17601082/17601083/17601084/17601085/17601086/17601087/17601088/17601089/17601090/17601091/17601092/17601093/17601094/17601095/17601096/17601097/17601098/17601099/17601100/17601101/17601102/17601103/17601104/17601105/17601106/17601107/17601108/17601109/17601110/17601111/17601112/17601113/17601114/17601115/17601116/17601117/17601118/17601119/17601120/17601121/17601122/17601123/17601124/17601125/17601126/17601127/17601128/17601129/17601130/17601131/17601132/17601133/17601134/17601135/17601136/17601137/17601138/17601139/17601140/17601141/17601142/17601143/17601144/17601145/17601146/17601147/17601148/17601149/17601150/17601151/17601152/17601153/17601154/17601155/17601156/17601157/17601158/17601159/17601160/17601161/17601162/17601163/17601164/17601165/17601166/17601167/17601168/17601169/17601170/17601171/17601172/17601173/17601174/17601175/17601176/17601177/17601178/17601179/17601180/17601181/17601182/17601183/17601184/17601185/17601186/17601187/17601188/17601189/17601190/17601191/17601192/17601193/17601194/17601195/17601196/17601197/17601198/17601199/17601200/17601201/17601202/17601203/17601204/17601205/17601206/17601207/17601208/17601209/17601210/17601211/17601212/17601213/17601214/17601215/17601216/17601217/17601218/17601219/17601220/17601221/17601222/17601223/17601224/17601225/17601226/17601227/17601228/17601229/17601230/17601231/17601232/17601233/17601234/17601235/17601236/17601237/17601238/17601239/17601240/17601241/17601242/17601243/17601244/17601245/17601246/17601247/17601248/17601249/17601250/17601251/17601252/17601253/17601254/17601255/17601256/17601257/17601258/17601259/17601260/17601261/17601262/17601263/17601264/17601265/17601266/17601267/17601268/17601269/17601270/17601271/17601272/17601273/17601274/17601275/17601276/17601277/17601278/17601279/17601280/17601281/17601282/17601283/17601284/17601285/17601286/17601287/17601288/17601289/17601290/17601291/17601292/17601293/17601294/17601295/17601296/17601297/17601298/17601299/17601300/17601301/17601302/17601303/17601304/17601305/17601306/17601307/17601308/17601309/17601310/17601311/17601312/17601313/17601314/17601315/17601316/17601317/17601318/17601319/17601320/17601321/17601322/17601323/17601324/17601325/17601326/17601327/17601328/17601329/17601330/17601331/17601332/17601333/17601334/17601335/17601336/17601337/17601338/17601339/17601340/17601341/17601342/17601343/17601344/17601345/17601346/17601347/17601348/17601349/17601350/17601351/17601352/17601353/17601354/17601355/17601356/17601357/17601358/17601359/17601360/17601361/17601362/17601363/17601364/17601365/17601366/17601367/17601368/17601369/17601370/17601371/17601372/17601373/17601374/17601375/17601376/17601377/17601378/17601379/17601380/17601381/17601382/17601383/17601384/17601385/17601386/17601387/17601388/17601389/17601390/17601391/17601392/17601393/17601394/17601395/17601396/17601397/17601398/17601399/17601400/17601401/17601402/17601403/17601404/17601405/17601406/17601407/17601408/17601409/17601410/17601411/17601412/17601413/17601414/17601415/17601416/17601417/17601418/17601419/17601420/17601421/17601422/17601423/17601424/17601425/17601426/17601427/17601428/17601429/17601430/17601431/17601432/17601433/17601434/17601435/17601436/17601437/17601438/17601439/17601440/17601441/17601442/17601443/17601444/17601445/17601446/17601447/17601448/17601449/17601450/17601451/17601452/17601453/17601454/17601455/17601456/17601457/17601458/17601459/17601460/17601461/17601462/17601463/17601464/17601465/17601466/17601467/17601468/17601469/17601470/17601471/17601472/17601473/17601474/17601475/17601476/17601477/17601478/17601479/17601480/17601481/17601482/17601483/17601484/17601485/17601486/17601487/17601488/17601489/17601490/17601491/17601492/17601493/17601494/17601495/17601496/17601497/17601498/17601499/17601500/17601501/17601502/17601503/17601504/17601505/17601506/17601507/17601508/17601509/17601510/17601511/17601512/17601513/17601514/17601515/17601516/17601517/17601518/17601519/17601520/17601521/17601522/17601523/17601524/17601525/17601526/17601527/17601528/17601529/17601530/17601531/17601532/17601533/17601534/17601535/17601536/17601537/17601538/17601539/17601540/17601541/17601542/17601543/17601544/17601545/17601546/17601547/17601548/17601549/17601550/17601551/17601552/17601553/17601554/17601555/17601556/17601557/17601558/17601559/17601560/17601561/17601562/17601563/17601564/17601565/17601566/17601567/17601568/17601569/17601570/17601571/17601572/17601573/17601574/17601575/17601576/17601577/17601578/17601579/17601580/17601581/17601582/17601583/17601584/17601585/17601586/17601587/17601588/17601589/17601590/17601591/17601592/17601593/17601594/17601595/17601596/17601597/17601598/17601599/17601600/17601601/17601602/17601603/17601604/17601605/17601606/17601607/17601608/17601609/17601610/17601611/17601612/17601613/17601614/17601615/17601616/17601617/17601618/17601619/17601620/17601621/17601622/17601623/17601624/17601625/17601626/17601627/17601628/17601629/17601630/17601631/17601632/17601633/17601634/17601635/17601636/17601637/17601638/17601639/17601640/17601641/17601642/17601643/17601644/17601645/17601646/17601647/17601648/17601649/17601650/17601651/17601652/17601653/17601654/17601655/17601656/17601657/17601658/17601659/17601660/17601661/17601662/17601663/17601664/17601665/17601666/17601667/17601668/17601669/17601670/17601671/17601672/17601673/17601674/17601675/17601676/17601677/17601678/17601679/17601680/17601681/17601682/17601683/17601684/17601685/17601686/17601687/17601688/17601689/17601690/17601691/17601692/17601693/17601694/17601695/17601696/17601697/17601698/17601699/17601700/17601701/17601702/17601703/17601704/17601705/17601706/17601707/17601708/17601709/17601710/17601711/17601712/17601713/17601714/17601715/17601716/17601717/17601718/17601719/17601720/17601721/17601722/17601723/17601724/17601725/17601726/17601727/17601728/17601729/17601730/17601731/17601732/17601733/17601734/17601735/17601736/17601737/17601738/17601739/17601740/17601741/17601742/17601743/17601744/17601745/17601746/17601747/17601748/17601749/17601750/17601751/17601752/17601753/17601754/17601755/17601756/17601757/17601758/17601759/1760done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 28 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+/sbin/tune2fs -c 0 -i 0 /dev/dd_dg10p1
+/sbin/tune2fs -c 0 -i 0 /dev/dd_dg10p2
+/sbin/tune2fs -c 0 -i 0 /dev/dd_dg10p3
+tune2fs 1.38 (30-Jun-2005)
+Setting maximal mount count to -1
+Setting interval between checks to 0 seconds
+tune2fs 1.38 (30-Jun-2005)
+Setting maximal mount count to -1
+Setting interval between checks to 0 seconds
+tune2fs 1.38 (30-Jun-2005)
+Setting maximal mount count to -1
+Setting interval between checks to 0 seconds
+03/09 17:07:30: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_mount_ext3:mount_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+Mount_path=/ddr//vols/0x2101987ef95e7414/
+Partition=1
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+disk=/dev/dd_${Dg_name}0p${Partition}
+cat /proc/mounts | /bin/grep $Mount_path
+if [ "$?" -eq "0" ]; then
+    echo The path $Mount_path is already mounted >> $DD_LOG
+    cat /proc/mounts >> $DD_LOG
+    exit 0
+fi
+mkdir -p $Mount_path
+echo $mount -t ext3 $disk $Mount_path >> $DD_LOG
+$mount -t ext3 $disk $Mount_path
+ret=$?
+exit $ret
+ )' > /dev/null 2>&1
+/bin/mount -t ext3 /dev/dd_dg10p1 /ddr//vols/0x2101987ef95e7414/
+03/09 17:07:31: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_mount_ext3:mount_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+Mount_path=/ddr//var/0x2101987ef95e7414_ext
+Partition=2
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+disk=/dev/dd_${Dg_name}0p${Partition}
+cat /proc/mounts | /bin/grep $Mount_path
+if [ "$?" -eq "0" ]; then
+    echo The path $Mount_path is already mounted >> $DD_LOG
+    cat /proc/mounts >> $DD_LOG
+    exit 0
+fi
+mkdir -p $Mount_path
+echo $mount -t ext3 $disk $Mount_path >> $DD_LOG
+$mount -t ext3 $disk $Mount_path
+ret=$?
+exit $ret
+ )' > /dev/null 2>&1
+/bin/mount -t ext3 /dev/dd_dg10p2 /ddr//var/0x2101987ef95e7414_ext
+03/09 17:07:31: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: vm_ext3_cp_rpm:cp rpm
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Src_file=/ddr/upgrade/link_to_new_rpmfile.rpm
+Rpm_path=/ddr//vols/0x2101987ef95e7414/releases/
+Rpm_file=link_to_new_rpmfile.rpm
+Dply_path=/ddr//var/0x2101987ef95e7414_ext/dply
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+echo /bin/cp $Src_file $Rpm_path/$Rpm_file >> $DD_LOG
+mkdir -p $Rpm_path
+/bin/cp $Src_file $Rpm_path/$Rpm_file >> $DD_LOG
+echo /bin/cp /tmp/disk* $Dply_path >> $DD_LOG
+mkdir -p $Dply_path
+/bin/cp /tmp/disk* $Dply_path
+echo /bin/cp /tmp/raid* $Dply_path >> $DD_LOG
+/bin/cp /tmp/raid* $Dply_path >> $DD_LOG
+exit 0
+ )' > /dev/null 2>&1
+/bin/cp /ddr/upgrade/link_to_new_rpmfile.rpm /ddr//vols/0x2101987ef95e7414/releases//link_to_new_rpmfile.rpm
+/bin/cp /tmp/disk_partition_table_prim_10 /tmp/disk_partition_table_prim_11 /tmp/disk_partition_table_prim_12 /tmp/disk_partition_table_prim_13 /tmp/disk_partition_table_prim_14 /tmp/disk_partition_table_prim_15 /tmp/disk_partition_table_prim_16 /tmp/disk_partition_table_prim_17 /tmp/disk_partition_table_prim_4 /tmp/disk_partition_table_prim_5 /tmp/disk_partition_table_prim_6 /tmp/disk_partition_table_prim_7 /tmp/disk_partition_table_prim_8 /tmp/disk_partition_table_prim_9 /ddr//var/0x2101987ef95e7414_ext/dply
+/bin/cp /tmp/raid_ext3_partition_table /tmp/raid_ext3_partition_table_fdisk /ddr//var/0x2101987ef95e7414_ext/dply
+03/09 17:07:56: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_unmount_ext3:umount_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+Mount_path=/ddr//vols/0x2101987ef95e7414/
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+disk=/dev/dd_${Dg_name}0p
+echo Unmount path $Mount_path, device $disk >> $DD_LOG
+cd /
+sync; sync; sync
+$DD_ROOT/bin/dd_fuser $Mount_path >> $DD_LOG 2>&1
+$umount $Mount_path
+ret=$?
+echo umount $Mount_path result $ret >> $DD_LOG
+rmdir $Mount_path
+exit 0
+ )' > /dev/null 2>&1
+Unmount path /ddr//vols/0x2101987ef95e7414/, device /dev/dd_dg10p
+
+umount /ddr//vols/0x2101987ef95e7414/ result 0
+03/09 17:07:58: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_unmount_ext3:umount_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+Mount_path=/ddr//var/0x2101987ef95e7414_ext
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+disk=/dev/dd_${Dg_name}0p
+echo Unmount path $Mount_path, device $disk >> $DD_LOG
+cd /
+sync; sync; sync
+$DD_ROOT/bin/dd_fuser $Mount_path >> $DD_LOG 2>&1
+$umount $Mount_path
+ret=$?
+echo umount $Mount_path result $ret >> $DD_LOG
+rmdir $Mount_path
+exit 0
+ )' > /dev/null 2>&1
+Unmount path /ddr//var/0x2101987ef95e7414_ext, device /dev/dd_dg10p
+
+umount /ddr//var/0x2101987ef95e7414_ext result 0
+03/09 17:07:58: dd_platd[29939-0x76c0d0]: [elem_init_setup_active] intial setup for active volume 0x2101987ef95e7414 (vol3), exe 0x3
+03/09 17:07:59: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_ext3_mount_active_vol:mount_ext3_active_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Dg_name=dg1
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+null=/dev/null
+ext=$DD_ROOT/ext
+/bin/mkdir -p $ext
+/bin/touch $ext/.x
+cd /
+disk=/dev/dd_${Dg_name}0p1
+cat /proc/mounts | /bin/grep $ext | /bin/grep $disk
+if [ "$?" -eq "0" ]; then
+    sync; sync; sync
+    $DD_ROOT/bin/dd_fuser $ext >> $DD_LOG 2>&1
+    $umount $ext
+    ret=$?
+    echo umount $ext result $ret >> $DD_LOG
+    [ "$ret" -ne "0" ] && exit 101
+fi
+$fsck -a -t ext3 $disk
+$mount -t ext3 $disk $ext
+ret=$?
+echo mount $ext result $ret >> $DD_LOG
+[ "$ret" -ne "0" ] && exit 102
+/bin/mkdir -p $ext/releases
+legacy_extra=$DD_ROOT/var_extra
+$umount $legacy_mount /ddr/ext result 0
+03/09 17:07:59: dd_platd[29939-0x76c0d0]: [elem_ext3_mount_active_vol] mount active vol 0x2101987ef95e7414, ret 0, exe 0x2
+03/09 17:07:59: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: elem_startup_deploy_active:deploy_active_vol
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+AIO_model=false
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+if [ $AIO_model == "false" ]; then
+   /bin/mkdir -p $DD_ROOT/ext/ddr/hd >> $DD_LOG 2>&1
+fi
+if [ $AIO_model == "false" ] &&    [ ! -e $DD_ROOT/hd/need_to_import_logs ] &&    [ ! -e $DD_ROOT/ext/ddr/hd/dd_hd.backup.db.gz ] &&    [ -e $DD_ROOT/hd/dd_hd.db ]; then
+   $DD_ROOT/bin/dd_hd_rdb_tool -b >> $DD_LOG 2>&1
+fi
+if [ $AIO_model == "true" ]; then
+   aio_opt=A
+fi
+echo AIO_model=$AIO_model, aio_opt=$aio_opt >> $DD_LOG
+echo "Exec $DD_ROOT/bin/dd_ver_util -U$aio_opt" >> $DD_LOG
+$DD_ROOT/bin/dd_ver_util -U$aio_opt >> $DD_LOG 2>&1
+ret=$?
+[ "$ret" -ne "0" ] && eAIO_model=false, aio_opt=
+Exec /ddr/bin/dd_ver_util -U
+03/09 17:08:06: dd_ver_util[7374-0x5229f0]: [dd_platd_run_cmd] Run cmd: [/bin/rpm -K /ddr/ext/releases/link_to_new_rpmfile.rpm 2>>/ddr/var/log/debug/platform/infra.log]: 
+/ddr/ext/releases/link_to_new_rpmfile.rpm: sha1 md5 OK
+03/09 17:08:11: dd_ver_util[7374-0x5229f0]: [dd_platd_run_cmd] Run cmd: [cd /tmp; /usr/bin/rpm2cpio /ddr/ext/releases/link_to_new_rpmfile.rpm | /bin/cpio -id ./var/upgrade/dd_ver_db 2>>/ddr/var/log/debug/platform/infra.log]: 
+3637168 blocks
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [dd_platd_run_cmd] Run cmd: [rm -rf /tmp/var >>/ddr/var/log/debug/platform/infra.log 2>>/ddr/var/log/debug/platform/infra.log]: 
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [dd_get_local_model] Get model MEGATRON
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [dd_upgrade_script] Before: prim: 2, state: 0x1
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [main] main: dd_platd_version_check rc = 0
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [main] main: sw_state = 1
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [dd_plib_sw_set_state] Set sw version state to SW_NORMAL.
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [main] main: status = 0
+03/09 17:08:24: dd_ver_util[7374-0x5229f0]: [dd_plib_sw_set_state] Set sw version state to SW_NORMAL.
+[DEPLOY]: main: dd_platd_version_check rc = 0
+[DEPLOY]: main: sw_state = 1
+[DEPLOY]: main: status = 0
+Exec /ddr/bin/ddr_cfg -S
+03/09 17:08:24: ddr_cfg[7407-0x506320]: [main] Initializing system
+03/09 17:08:24: ddr_cfg[7407-0x506320]: [main] Initializing storage layer
+03/09 17:08:24: ddr_cfg[7407-0x506320]: [main] Initializing registry
+03/09 17:08:24: ddr_cfg[7407-0x506320]: [dd_cfg_sync] Sync configuration files from head to external storage
+03/09 17:08:26: ddr_cfg[7407-0x506320]: [main] Shutting down registry
+03/09 17:08:26: ddr_cfg[7407-0x506320]: [main] Syncing and releasing sl layer
+03/09 17:08:26: ddr_cfg[7407-0x506320]: [main] Syncing and releasing dd layer
+03/09 17:08:26: ddr_cfg[7407-0x506320]: [main] Setting plib to unknown state
+03/09 17:08:26: ddr_cfg[7407-0x506320]: [dd_plib_cfg_set_state] Set config state to CFG_NORMAL.
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [elem_startup_deploy_active] deployment script returns 0
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [elem_startup_deploy_active] startup deploy ext3 elem vol 0x2101987ef95e7414 (vol3), exe 0x3
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vm_loc_make_ddfs] mkddr: creating ddfs on ppart................[estimated time: 3 minutes]
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vm_plib_log] Command script: vm_loc_make_ddfs:make_ddfs
+/bin/bash -c '( DD_ROOT=/ddr
+DD_SYS_ROOT=
+DD_LOG=/ddr/var/log/debug/platform/infra.log
+Raidtool=/sbin/dd_raidtool
+Vol_name=vol3
+raidtool=$DD_SYS_ROOT/$Raidtool
+sfdisk=$DD_SYS_ROOT/sbin/sfdisk
+mkfs=$DD_SYS_ROOT/sbin/mkfs
+tune2fs=$DD_SYS_ROOT/sbin/tune2fs
+fsck=$DD_SYS_ROOT/sbin/fsck
+voltool=$DD_ROOT/bin/dd_voltool
+dd=$DD_SYS_ROOT/bin/dd
+mount=$DD_SYS_ROOT/bin/mount
+umount=$DD_ROOT/bin/dd_umount
+exit 0
+ )' > /dev/null 2>&1
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vm_loc_create] format vol 0x2101987ef95e7414 (vol3) ok
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vol_state_in_event] vol 0x2101987ef95e7414 (vol3) state 9 (0x4), event 0x1050
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vol_unreg_assem_ready_act_out] vol 0x2101987ef95e7414: state vol_st_unreg_ready (0x0), in 0x1050, exe 0x103
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vol_flush_metadata] Flushing metadata for volume 0x2101987ef95e7414
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Write vol 0x2101987ef95e7414 metadata to MG 0x2101987ef95e7414: magic 0x6c6f7664, chksum 0xec8c13b5, type 254, name vol3
+	elem[0](ext3): 0x80 - elem[1](ppart0): 0x80
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Verified metadata write for vol 0x2101987ef95e7414 to mg 0x0
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vraid_write_metadata] Wrote vol 0x2101987ef95e7414 (vol3) metadata, read back rc 0, exe 0x300
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vol_reg_assem_functional_act_out] vol 0x2101987ef95e7414: state vol_st_reg_func (0x8000), in 0x1050, exe 0x3
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vol_state_debug_log] comm_evt_promote_pending_loop:177: ctx = 0x2aaaaab605f0, ret 0, status 0x1, state 0xa, arc 0xffff, pending 0
+
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vm_loc_create] registered the new vol 0x2101987ef95e7414 (vol3), state 10 (0x8000)
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [dply_send_msg] dply_send_msg: DEBUG: Enter return_code = 8
+03/09 17:08:26: dd_platd[29939-0x76c0d0]: [vm_plib_add_vol_success] dply success uuid 0x2101987ef95e7414, send res 0
+03/09 17:08:26: dd_platd[29939-0x2aaaab633dd0]: [platd_event_handler] received msg type 9, msg STATUS=success;REASON=dply_initial;UUID=2101987ef95e7414
+03/09 17:08:26: dd_platd[29939-0x2aaaab633dd0]: [dd_platd_handler_msg_dply_response] Received Deploy response msg with status: success and reason: dply_initial
+03/09 17:08:26: dd_platd[29939-0x2aaaab633dd0]: [dd_plib_sys_set_state_no_signal] Set system state to SYS_FUNCTIONAL.
+03/09 17:09:28: dd_platd[29939-0x76c310]: [vraid_write_metadata] Write vol 0x2101987ef95e7414 metadata to MG 0x2101987ef95e7414: magic 0x6c6f7664, chksum 0xef9513b6, type 254, name vol3
+	elem[0](ext3): 0x80 - elem[1](ppart0): 0x81
+03/09 17:09:28: dd_platd[29939-0x76c310]: [vraid_write_metadata] Verified metadata write for vol 0x2101987ef95e7414 to mg 0x0
+03/09 17:09:28: dd_platd[29939-0x76c310]: [vraid_write_metadata] Wrote vol 0x2101987ef95e7414 (vol3) metadata, read back rc 0, exe 0x300
+03/09 17:09:28: dd_platd[29939-0x76c310]: [vraid_write_metadata] Write vol 0x2101987ef95e7414 metadata to MG 0x2101987ef95e7414: magic 0x6c6f7664, chksum 0xef9513b6, type 254, name vol3
+	elem[0](ext3): 0x80 - elem[1](ppart0): 0x81
+03/09 17:09:29: dd_platd[29939-0x76c310]: [vraid_write_metadata] Verified metadata write for vol 0x2101987ef95e7414 to mg 0x0
+03/09 17:09:29: dd_platd[29939-0x76c310]: [vraid_write_metadata] Wrote vol 0x2101987ef95e7414 (vol3) metadata, read back rc 0, exe 0x300

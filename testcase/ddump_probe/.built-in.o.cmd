@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_probe/built-in.o :=  rm -f /auto/home5/hoj9/testcase/ddump_probe/built-in.o; /auto/home/lsbuild/desktop-398860/usr/bin/ar rcs /auto/home5/hoj9/testcase/ddump_probe/built-in.o

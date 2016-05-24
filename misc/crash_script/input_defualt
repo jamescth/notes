@@ -1,0 +1,9 @@
+dmesg > dmesg.out
+foreach bt > tlist.out
+ps -l > ps.out
+runq >> ps.out
+mount > files.out
+files >> files.out
+foreach net > net.out
+dev -pi > dev.out
+kmem -i > kmem.out

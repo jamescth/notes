@@ -1,0 +1,43 @@
+#!/bin/bash
+#echo "$#, parameters"
+#echo "$@";
+
+TMP_FILE="runq.tmp"
+OUTPUT_FILE="runq.txt"
+ARRAY_SIZE=16
+KPERF_MOD="perf_stats.ko"
+
+crash -i ./kperf_crash_script > /dev/null
+sed '1d' ${TMP_FILE} > ${OUTPUT_FILE}
+rm ${TMP_FILE}
+
+cpus=`cat ${OUTPUT_FILE} | wc -l`
+
+echo cpu number is ${cpus}
+
+if [ -z ${cpus} ]; then
+	echo "cpu number is empty"
+	exit
+fi
+
+cpu_index=0
+array_index=1
+runq_array_1=""
+
+while read line; do
+
+	runq_array_1="`echo ${runq_array_1}0x${line}`"
+
+	if [ ${array_index} -ge ${ARRAY_SIZE} ]; then
+		echo New array
+		array_index=0
+		break
+	else
+		array_index=$(( ${array_index} + 1 ))
+	fi
+
+	runq_array_1="`echo ${runq_array_1},`"
+done < ${OUTPUT_FILE}
+
+#echo "insmod ${KPERF_MOD} runq_array_1=${runq_array_1}"
+insmod ${KPERF_MOD} runq_array_1=${runq_array_1}

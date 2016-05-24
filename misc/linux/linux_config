@@ -1,0 +1,18 @@
+[vdurai@vdurai-dl ~]$ ldd /usr/bin/addr2line
+        linux-vdso.so.1 =>  (0x00007fff9e5fe000)
+        libbfd-2.17.50.0.18-1.so => /usr/lib64/libbfd-2.17.50.0.18-1.so (0x0000003513e00000)
+        libc.so.6 => /lib64/libc.so.6 (0x0000003514c00000)
+        /lib64/ld-linux-x86-64.so.2 (0x0000003513a00000)
+
+[hoj9@jho1-dl 56242]$ which addr2line
+/auto/tools/bin/addr2line
+[hoj9@jho1-dl 56242]$ ldd `which addr2line`
+        linux-gate.so.1 =>  (0xffffe000)
+        libbfd-2.11.93.0.2.so => not found
+        libdl.so.2 => /lib/libdl.so.2 (0x00b85000)
+        libc.so.6 => /lib/libc.so.6 (0x00a33000)
+        /lib/ld-linux.so.2 (0x00a15000)
+
+[vdurai@ngarg ~]$ rpm -qf /usr/lib64/libbfd-2.15.94.0.2.2.so
+binutils-2.15.94.0.2.2-2.1
+

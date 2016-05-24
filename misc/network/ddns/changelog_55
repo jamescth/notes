@@ -1,0 +1,52 @@
+Change 450844 on 2014/09/19 by patkads@patkads:5.5-112838 '[Bug 122315] TSIG-key is visibl
+... //prod/5.5/app/ddr/ddsh/CLI_Spec_net.xml#8 edit
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#16 edit
+
+Change 448977 on 2014/09/08 by patkads@patkads:5.5.1 'Updated-[Bug 120648] DDNS updat
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#14 edit
+
+Change 447046 on 2014/08/22 by patkads@patkads:5.5-112838 'Updated - [Bug 119964] DDNS reg'
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#14 edit
+
+Change 445260 on 2014/08/11 by hoj9@hoj9:ddns_55 'DDNS bug fix: 1. If dhclient ex'
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#13 edit
+... //prod/5.5/app/ddr/sm/tools/update_dns.py#4 edit
+
+Change 444002 on 2014/08/04 by hoj9@hoj9:5.5 'DDNS bug fix: 1. Remove the se '
+... //prod/5.5/app/ddr/ddsh/CLI_Spec_net.xml#6 edit
+... //prod/5.5/app/ddr/ddsh/CLI_Spec_se.xml#5 edit
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#12 edit
+... //prod/5.5/app/ddr/ddsh/cmd_priv.c#6 edit
+... //prod/5.5/app/ddr/sm/tools/ddns_get_tsig.cc#1 add
+... //prod/5.5/app/ddr/sm/tools/update_dns.py#3 edit
+
+Change 442324 on 2014/07/20 by hoj9@hoj9:ddns_55 'DDNS bug fixes. 1. encrypt TSIG'
+... //prod/5.5/app/ddr/ddsh/CLI_Spec_se.xml#3 edit
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#10 edit
+... //prod/5.5/app/ddr/ddsh/cmd_priv.c#4 edit
+... //prod/5.5/app/ddr/ddsh/cmd_show_net.c#8 edit
+... //prod/5.5/app/ddr/sm/sml/sml_net.c#5 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net.c#6 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net.sms#7 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net_core.c#12 edit
+... //prod/5.5/app/ddr/sm/tools/update_dns.py#2 edit
+
+Change 439934 on 2014/07/05 by hoj9@hoj9:ddns_55 'Provide DDNS updates for unix m'
+... //prod/5.5/app/ddr/ddsh/CLI_Spec_net.xml#3 edit
+... //prod/5.5/app/ddr/ddsh/cmd_net.c#8 edit
+... //prod/5.5/app/ddr/ddsh/cmd_show_net.c#6 edit
+... //prod/5.5/app/ddr/include/reg_keys.h#11 edit
+... //prod/5.5/app/ddr/sm/include/sml_net.h#3 edit
+... //prod/5.5/app/ddr/sm/include/smu_net.h#4 edit
+... //prod/5.5/app/ddr/sm/sml/sml_net.c#3 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net.c#5 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net.sms#5 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net_core.c#10 edit
+... //prod/5.5/app/ddr/sm/sms/sms_net_core.h#2 edit
+... //prod/5.5/app/ddr/sm/smu/smu_net.c#7 edit
+... //prod/5.5/app/ddr/sm/tools/BuildLists.mk#3 edit
+... //prod/5.5/app/ddr/sm/tools/BuildLists_3.mk#3 edit
+... //prod/5.5/app/ddr/sm/tools/update_dns.py#1 add
+... //prod/5.5/app/makefiles/BOM_ddr.mk#3 edit
+... //prod/5.5/app/makefiles_3/arch/BOM_ddr.mk#4 edit
+

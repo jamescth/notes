@@ -1,0 +1,124 @@
+Jul 23 16:10:38 ipv6_ddr2 ddsh: INFO: command: net config eth0b dhcp  yes  ipversion  ipv6   
+Jul 23 16:10:38 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 28449, file name /var/run/dhcpcd-eth0a.pid 
+Jul 23 16:10:38 ipv6_ddr2 last message repeated 2 times
+Jul 23 16:10:38 ipv6_ddr2 sms: INFO: DDNS: update: DDNS is not enabled. 
+Jul 23 16:10:38 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 28449, file name /var/run/dhcpcd-eth0a.pid 
+Jul 23 16:10:38 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 28449, file name /var/run/dhcpcd-eth0a.pid 
+Jul 23 16:10:38 ipv6_ddr2 sms: INFO: dd_plib_net_setup: Change IF eth0b for type 2, state: RUNNING 
+Jul 23 16:10:46 ipv6_ddr2 sms: NOTICE: dd_plib_net_setup(): Interface, eth0b, configuration complete, err = 0. 
+Jul 23 16:10:46 ipv6_ddr2 sms: NOTICE: sms_net_enable_iface ... file name /var/run/dhclient-eth0b.pid 
+Jul 23 16:10:46 ipv6_ddr2 sms: NOTICE: _sms_net_enable_iface: Starting dhclient (IPv6) for interface eth0b 
+Jul 23 16:10:46 ipv6_ddr2 dhcp_translator: INFO:  destination filename /tmp/dhcpcd-eth0b.info 
+Jul 23 16:10:46 ipv6_ddr2 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info  
+Jul 23 16:10:46 ipv6_ddr2 dhcp_update: NOTICE: error from reg_atomic_put_string: invalid argument
+Jul 23 16:10:54 ipv6_ddr2 netmon: NOTICE: netmon: res_query error 110. 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   interface "eth0b"; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 5 eth0b 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> eth0b 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value     renew 1800; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 4 1800 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 1800 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value     rebind 2880; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 4 2880 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 2880 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value     iaaddr 2100:bad:cafe:f00d::deed:1005 { 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 29 2100:bad:cafe:f00d::deed:1005 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 2100:bad:cafe:f00d::deed:1005 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value       max-life 3600; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 4 3600 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 3600 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.client-id 0:1:0:1:1b:62:fd:76:0:a0:d1:ec:ee:ec; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 36 0:1:0:1:1b:62:fd:76:0:a0:d1:ec:ee:ec 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 0:1:0:1:1b:62:fd:76:0:a0:d1:ec:ee:ec 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.server-id 0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 35 0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.name-servers 2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 52 2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.domain-search "cherry.local."; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 13 cherry.local. 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> cherry.local. 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.nis-servers 2100:bad:cafe:f00d::b:905; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 25 2100:bad:cafe:f00d::b:905 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> 2100:bad:cafe:f00d::b:905 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: key value   option dhcp6.nis-domain-name "cherry.local."; 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 13 cherry.local. 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO: -----> cherry.local. 
+Jul 23 16:11:20 ipv6_ddr2 dhcp_translator: INFO:  destination filename /tmp/dhcpcd-eth0b.info 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  IPADDR=2100:bad:cafe:f00d::deed:1005
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  DOMAIN=cherry.local.
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  NISDOMAIN=cherry.local.
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  DNS=2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  NISSERVERS=2100:bad:cafe:f00d::b:905
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  DHCPSID=0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  LEASETIME=3600
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  RENEWALTIME=1800
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  REBINDTIME=2880
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  INTERFACE=eth0b
+Jul 23 16:11:21 ipv6_ddr2 dhcp_translator: INFO:  CLIENTID=0:1:0:1:1b:62:fd:76:0:a0:d1:ec:ee:ec
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info  
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key ipaddr Putting 2100:bad:cafe:f00d::deed:1005/64 into dynamic.net.dhcp.eth0b.ipaddr 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key domain Putting cherry.local. into dynamic.net.dhcp.eth0b.domain 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key nisdomain Putting cherry.local. into dynamic.net.dhcp.eth0b.nisdomain 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key dns Putting 2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201 into dynamic.net.dhcp.eth0b.dns 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key nisservers Putting 2100:bad:cafe:f00d::b:905 into dynamic.net.dhcp.eth0b.nisservers 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key dhcpsid Putting 0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56 into dynamic.net.dhcp.eth0b.dhcpsid 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key leasetime Putting 3600 into dynamic.net.dhcp.eth0b.leasetime 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key renewaltime Putting 1800 into dynamic.net.dhcp.eth0b.renewaltime 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key rebindtime Putting 2880 into dynamic.net.dhcp.eth0b.rebindtime 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key interface Putting eth0b into dynamic.net.dhcp.eth0b.interface 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key clientid Putting 0:1:0:1:1b:62:fd:76:0:a0:d1:ec:ee:ec into dynamic.net.dhcp.eth0b.clientid 
+Jul 23 16:11:21 ipv6_ddr2 dhcp_update: NOTICE: error from reg_atomic_put_string: invalid argument
+Jul 23 16:11:21 ipv6_ddr2 sms: NOTICE: Configured eth0b with DHCPv6. 
+Jul 23 16:11:36 ipv6_ddr2 sms: NOTICE: MSG-SMSNET-00005: Interface: eth0b failed to come up within 15000 ms.
+Jul 23 16:11:36 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 25042, file name /var/run/dhclient-eth0b.pid 
+Jul 23 16:11:36 ipv6_ddr2 sms: NOTICE: Resolver configuration changed reloading the configuration
+Jul 23 16:11:36 ipv6_ddr2 sms: NOTICE: In _reload_rcd_service: uid is 0, cmd is [/etc/rc.d/init.d/smb reload]
+Jul 23 16:11:36 ipv6_ddr2 smb: Reloading smb.conf file.
+Jul 23 16:11:36 ipv6_ddr2 sms: INFO: DDNS: update: DDNS is not enabled. 
+Jul 23 16:11:37 ipv6_ddr2 sms: NOTICE: _sms_net_find_associated_ifaces, No interfaces found for the reg list config.net.vlan_list
+Jul 23 16:11:37 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 28449, file name /var/run/dhcpcd-eth0a.pid 
+Jul 23 16:11:37 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 25042, file name /var/run/dhclient-eth0b.pid 
+Jul 23 16:11:37 ipv6_ddr2 sms: INFO: _sms_net_enable_iface: config eth0b:200 to add 192.168.100.140 and delete none for eth0b:200
+Jul 23 16:11:37 ipv6_ddr2 sms: INFO: dd_plib_net_setup: Change IF eth0b:200 for type 5, state: RUNNING 
+Jul 23 16:11:37 ipv6_ddr2 sms: NOTICE: dd_plib_net_setup(): Interface, eth0b:200, configuration complete, err = 0. 
+Jul 23 16:11:38 ipv6_ddr2 ntpd[29602]: setsockopt IP_TOS (c0) fails on address 192.168.100.140: Operation not permitted
+Jul 23 16:11:39 ipv6_ddr2 smtp_send: WARNING: EMS: Unknown host specified for mail server (getaddrinfo return result = -2) 
+Jul 23 16:11:39 ipv6_ddr2 emsmon: WARNING: Email failed: Alert-id=218: ReturnCode=512
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: MSG-SMSNET-00005: Interface: eth0b:200 failed to come up within 15000 ms.
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: In _reload_rcd_service: uid is 0, cmd is [/etc/rc.d/init.d/smb reload]
+Jul 23 16:11:52 ipv6_ddr2 smb: Reloading smb.conf file.
+Jul 23 16:11:52 ipv6_ddr2 sms: INFO: DDNS: update: DDNS is not enabled. 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() DefGW: ip = 10.25.128.1, 0x180190a 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib:  qualified for adding def-route on it. 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() Adding route on ifc eth4b 
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: dd_net: plib: Failed to add defgw 10.25.128.1 on ifc eth4b err=(1, 1): grep -q 'File exists' /ddr/var/log/debug/plibnet_err.28333.log 
+Jul 23 16:11:52 ipv6_ddr2 dd_plib_net.adddfgw_eth4b: SIOCADDRT: Network is unreachable
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib:  qualified for adding def-route on it. 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() Adding route on ifc eth4a 
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: dd_net: plib: Failed to add defgw 10.25.128.1 on ifc eth4a err=(1, 1): grep -q 'File exists' /ddr/var/log/debug/plibnet_err.28333.log 
+Jul 23 16:11:52 ipv6_ddr2 dd_plib_net.adddfgw_eth4a: SIOCADDRT: Network is unreachable
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib:  qualified for adding def-route on it. 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() Adding route on ifc eth0b 
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: dd_net: plib: Failed to add defgw 10.25.128.1 on ifc eth0b err=(1, 1): grep -q 'File exists' /ddr/var/log/debug/plibnet_err.28333.log 
+Jul 23 16:11:52 ipv6_ddr2 dd_plib_net.adddfgw_eth0b: SIOCADDRT: Network is unreachable
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib:  qualified for adding def-route on it. 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() Adding route on ifc eth0a 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_plib_net_add_del_gw_on_all_ifc() DefGW: ip = fe80::221:a1ff:fe4a:7400, 0x    80fe       0ffa12102  744afe 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib: eth4b no subnet match: prefix_len:  64 (ip6_addr = 2100:dead:beef:cafe:0:dd2:e4b:1) pfx: 2100:dead:beef:cafe:: != gw_pfx: fe80:: (ip6_gw_addr = fe80::221:a1ff:fe4a:7400) 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib: eth4a no subnet match: prefix_len:  64 (ip6_addr = 2100:bad:cafe:f00d:0:dd2:e4a:1) pfx: 2100:bad:cafe:f00d:: != gw_pfx: fe80:: (ip6_gw_addr = fe80::221:a1ff:fe4a:7400) 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib: eth0b no subnet match: prefix_len:  64 (ip6_addr = 2100:bad:cafe:f00d::deed:1005) pfx: 2100:bad:cafe:f00d:: != gw_pfx: fe80:: (ip6_gw_addr = fe80::221:a1ff:fe4a:7400) 
+Jul 23 16:11:52 ipv6_ddr2 sms: DEBUG: dd_net: plib: eth0a no subnet match: prefix_len:  64 (ip6_addr = 2620:0:170:1106:2a0:d1ff:feec:eeed) pfx: 2620:0:170:1106:: != gw_pfx: fe80:: (ip6_gw_addr = fe80::221:a1ff:fe4a:7400) 
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: Got error while setting the gateway: <NONE>
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: Setting hostname to 'ipv6_ddr2.cherry.local'
+Jul 23 16:11:52 ipv6_ddr2 sms: NOTICE: Resolver configuration changed reloading the configuration
+Jul 23 16:11:52 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 28449, file name /var/run/dhcpcd-eth0a.pid 
+Jul 23 16:11:52 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 25042, file name /var/run/dhclient-eth0b.pid 
+Jul 23 16:11:53 ipv6_ddr2 ntpd[29602]: ntpd exiting on signal 15
+Jul 23 16:11:53 ipv6_ddr2 ntpd[25109]: ntpd 4.2.6p2@1.2194-o Tue Jul  8 18:35:48 UTC 2014 (1)
+Jul 23 16:11:53 ipv6_ddr2 ntpd[25110]: proto: precision = 0.698 usec
+Jul 23 16:11:53 ipv6_ddr2 ddsh: NOTICE: Resolver configuration changed reloading the configuration
+Jul 23 16:11:53 ipv6_ddr2 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 25042, file name /var/run/dhclient-eth0b.pid 
+Jul 23 16:11:53 ipv6_ddr2 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/1, session=24936) root: command "net config eth0b dhcp yes ipversion ipv6"
+

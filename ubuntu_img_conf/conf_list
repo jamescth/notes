@@ -1,0 +1,5 @@
+pre_pkg_install_conf
+backup_conf
+upload_mig_conf
+nis_conf
+sudoers_conf

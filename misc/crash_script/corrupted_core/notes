@@ -1,0 +1,132 @@
+[hoj9@jho1-dl core]$ gdb crash
+
+
+(gdb) run vmlinux vmcore
+
+(gdb) info b
+Num Type           Disp Enb Address            What
+3   breakpoint     keep y   0x00000000004c8d68 in x86_64_cpu_pda_init at x86_64.c:532
+        breakpoint already hit 1 time
+4   breakpoint     keep y   0x00000000004c8f4a in x86_64_cpu_pda_init at x86_64.c:563
+        breakpoint already hit 2 times
+
+(gdb) bt
+#0  x86_64_cpu_pda_init () at x86_64.c:563
+#1  0x00000000004c77b2 in x86_64_init (when=3) at x86_64.c:274
+#2  0x0000000000448960 in main_loop () at main.c:498
+#3  0x000000000054a1b9 in captured_command_loop (data=Variable "data" is not available.
+) at ./main.c:99
+#4  0x000000000057e68e in catcher (func=0x57e7a0 <do_catch_errors>, func_uiout=0xa11220,
+    func_args=0x7fffbc9189b0, func_val=0x7fffbc9189a8, func_caught=0x7fffbc9189ac, errstring=Variable "errstring" is not available.
+)
+    at top.c:430
+#5  0x000000000057e7f0 in catch_errors (func=Variable "func" is not available.
+) at top.c:535
+#6  0x000000000054a876 in captured_main (data=Variable "data" is not available.
+) at ./main.c:813
+#7  0x000000000057e68e in catcher (func=0x57e7a0 <do_catch_errors>, func_uiout=0x9036e0,
+    func_args=0x7fffbc918d40, func_val=0x7fffbc918d38, func_caught=0x7fffbc918d3c, errstring=Variable "errstring" is not available.
+)
+    at top.c:430
+#8  0x000000000057e7f0 in catch_errors (func=Variable "func" is not available.
+) at top.c:535
+#9  0x000000000054af9e in gdb_main (args=Variable "args" is not available.
+) at ./main.c:831
+#10 0x000000000054afe7 in gdb_main_entry (argc=Variable "argc" is not available.
+) at ./main.c:851
+#11 0x00000000004bc28b in gdb_main_loop (argc=2, argv=0x7fffbc918f08) at gdb_interface.c:63
+#12 0x00000000004488d9 in main (argc=3, argv=0x7fffbc918f08) at main.c:470
+
+
+(gdb) bt
+#0  symbol_value (symbol=0x701e13 "_cpu_pda") at symbols.c:3722
+#1  0x00000000004c8f69 in x86_64_cpu_pda_init () at x86_64.c:567
+#2  0x00000000004c77b2 in x86_64_init (when=3) at x86_64.c:274
+#3  0x0000000000448960 in main_loop () at main.c:498
+#4  0x000000000054a1c9 in captured_command_loop (data=Variable "data" is not available.
+) at ./main.c:99
+#5  0x000000000057e69e in catcher (func=0x57e7b0 <do_catch_errors>, func_uiout=0xa11220,
+    func_args=0x7fffe9cd8d70, func_val=0x7fffe9cd8d68, func_caught=0x7fffe9cd8d6c, errstring=Variable "errstring" is not available.
+)
+    at top.c:430
+#6  0x000000000057e800 in catch_errors (func=Variable "func" is not available.
+) at top.c:535
+#7  0x000000000054a886 in captured_main (data=Variable "data" is not available.
+) at ./main.c:813
+#8  0x000000000057e69e in catcher (func=0x57e7b0 <do_catch_errors>, func_uiout=0x903700,
+    func_args=0x7fffe9cd9100, func_val=0x7fffe9cd90f8, func_caught=0x7fffe9cd90fc, errstring=Variable "errstring" is not available.
+)
+    at top.c:430
+#9  0x000000000057e800 in catch_errors (func=Variable "func" is not available.
+) at top.c:535
+#10 0x000000000054afae in gdb_main (args=Variable "args" is not available.
+) at ./main.c:831
+#11 0x000000000054aff7 in gdb_main_entry (argc=Variable "argc" is not available.
+) at ./main.c:851
+#12 0x00000000004bc28b in gdb_main_loop (argc=2, argv=0x7fffe9cd92c8) at gdb_interface.c:63
+#13 0x00000000004488d9 in main (argc=3, argv=0x7fffe9cd92c8) at main.c:470
+
+
+#define _CPU_PDA_READ(CPU, BUFFER) \
+	((STRNEQ("_cpu_pda", closest_symbol((symbol_value("_cpu_pda") +	\
+	     ((CPU) * sizeof(unsigned long)))))) &&			\
+ 	(readmem(symbol_value("_cpu_pda") + ((CPU) * sizeof(void *)),   \
+		 KVADDR, &cpu_pda_addr, sizeof(unsigned long),          \
+		 "_cpu_pda addr", FAULT_ON_ERROR)) &&	   	        \
+	(readmem(cpu_pda_addr, KVADDR, (BUFFER), SIZE(x8664_pda),       \
+		 "cpu_pda entry", FAULT_ON_ERROR)))
+
+closest_symbol_value(ulong value)
+{
+        struct syment *sp;
+
+        if ((sp = value_search(value, NULL)))
+                return(sp->value);
+        else
+                return(0);
+}
+
+symbol_value(char *symbol)
+{
+        struct syment *sp;
+
+        if (!(sp = symbol_search(symbol)))
+                error(INFO, "cannot resolve \"%s\"\n", symbol);
+
+        return(sp->value);
+}
+
+struct syment *
+symbol_search(char *s)
+{
+	int i;
+        struct syment *sp_hashed, *sp, *sp_end;
+	struct load_module *lm;
+	int pseudos;
+
+	sp_hashed = symname_hash_search(s);
+
+        for (sp = sp_hashed ? sp_hashed : st->symtable; sp < st->symend; sp++) {
+                if (STREQ(s, sp->name)) 
+                        return(sp);
+        }
+
+	pseudos = (strstr(s, "_MODULE_START_") || strstr(s, "_MODULE_END_"));
+
+        for (i = 0; i < st->mods_installed; i++) {
+                lm = &st->load_modules[i];
+		sp = lm->mod_symtable;
+                sp_end = lm->mod_symend;
+
+                for ( ; sp < sp_end; sp++) {
+                	if (!pseudos && MODULE_PSEUDO_SYMBOL(sp))
+                        	continue;
+
+                	if (STREQ(s, sp->name))
+                        	return(sp);
+                }
+        }
+
+        return((struct syment *)NULL);
+}
+

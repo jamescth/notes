@@ -1,0 +1,154 @@
+after the basic configuration,
+	3 NICs:
+		1 VM -> lab
+		2 Private
+click setting:
+	CD/DVD drive
+		1. select device type -> Datastore ISO filein
+			datastore1/iso/ubuntu-12.04-server.iso
+		2. select Connect at power on
+		
+# ps -eaf | grep dhcp
+root       686     1  0 14:57 ?        00:00:00 dhclient3 -e IF_METRIC=100 -pf /var/run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -1 eth0
+
+#ifconfig -a
+$ sudo ifconfig eth1 up
+$ sudo ifconfig eth1 192.168.100.1
+$ ifconfig
+eth1      Link encap:Ethernet  HWaddr 00:0c:29:9a:ee:66
+          inet addr:192.168.100.1  Bcast:192.168.100.255  Mask:255.255.255.0
+          inet6 addr: fe80::20c:29ff:fe9a:ee66/64 Scope:Link
+
+
+install DNS/DHCP
+	1. Install the needed package:
+		sudo apt-get install bind9 isc-dhcp-server
+
+	2. creating DNS:
+		sudo vi /etc/bind/named.conf.options
+			options {
+				directory "/var/cache/bind";
+				auto-nxdomain no;
+				forwards {
+					192.168.100.1;
+					};
+	3. Dynamic Updating DNS:
+		$ sudo /usr/sbin/rndc-confgen -a
+		wrote key file "/etc/bind/rndc.key"
+
+		sudo /usr/sbin/rndc-confgen -a
+			creates a file name rndc.key
+				key "rndc-key" {
+				        algorithm hmac-md5;
+				        secret "xsDJgO6KYgo7vVIArjsZ6Q==";
+				};
+	4. Creating DNS Zones_Forward Zond:
+		sudo vi /etc/bind/named.conf.local
+
+			key "rndc-key" {
+			        algorithm hmac-md5;
+			        secret "xsDJgO6KYgo7vVIArjsZ6Q==";
+			};
+
+			zone "example.com" {
+			type master;
+			file "/etc/bind/db.example.com";
+			};
+
+	5. DNS Zones population_Forward zone:
+		sudo cp /etc/bind/db.local /etc/bind/db.example.com
+		sudo vi /etc/bind/db.example.com
+
+key "rndc-key" {
+        algorithm hmac-md5;
+        secret "xsDJgO6KYgo7vVIArjsZ6Q==";
+};
+
+			zone "example.com" {
+			type master;
+			file "/etc/bind/db.example.com";
+			};
+
+			zone "100.168.192.in-addr.arpa" {
+			type master;
+			file "/etc/bind/db.192";
+			};
+
+	6. DNS Zones population_Reverse zone:
+		sudo cp /etc/bind/db.127 /etc/bind/db.192
+		sudo vi /etc/bind/db.192
+
+			$TTL  604800
+			@ IN  SOA ns.example.com. root.example.com. (
+				      1	; Serial
+				 604800 ; Refresh
+				  86400 ; Retry
+				2419200 ; Expire
+				 604800 ) ; Negative Cache TTL
+			;
+			@ IN NS  ns.
+			1 IN PTR ns.example.com.
+			2 IN PRT ibr.example.com.
+
+	7. Now create links for the zone files in the /var/ directory
+		sudo ln -sf /etc/bind/db.example.com /var/lib/bind/
+		sudo ln -sf /etc/bind/db.example.com /var/cache/bind/
+		sudo ln -sf /etc/bind/db.192 /var/lib/bind/
+		sudo ln -sf /etc/bind/db.192 /var/cache/bind/
+
+	8. Configuring DHCP:
+		sudo vi /etc/dhcp/dhcpd.conf
+			#GLOBAL OPTIONS
+			ddns-updates on;
+			ddns-update-style interim;
+			update-static-leases on;
+			#authoritative;
+			key "rndc-key" {
+			        algorithm hmac-md5;
+			        secret "xsDJgO6KYgo7vVIArjsZ6Q==";
+			};
+			allow unknown-clients;
+			use-host-decl-names on;
+			default-lease-time 1814400; #21 days
+			max-lease-time 1814400;
+			log-facility local7;
+
+			#Building DNS Zones
+			zone example.com. {
+				primary localhost;
+				key rndc-key;
+			}
+			zone 100.168.192.in-addr.arpa. {
+				primary localhost;
+				key rndc-key;
+			}
+
+			#building LAN Scope
+			subnet 192.168.100.0 netmask 255.255.255.0 {
+			range 192.168.100.20 192.168.100.50;
+			option subnet-mask 255.255.255.0;
+			option routers 192.168.100.1;
+			option domain-name-servers 192.168.100.1;
+			option domain-name "example.com";
+			ddns-domainname "example.com.";
+			ddns-rev-domainname "in-addr.arpa.";
+			}
+
+server/dhcp
+$ sudo service isc-dhcp-server start
+$ tail -f /var/log/syslog
+
+client/dhcp
+$ sudo dhclient -4 -d -pf /var/run/dhclient.eth1.pid -lf /var/lib/dhcp/dhclient.eth1.leases -1 eth1
+
+
+restart server:
+$ sudo ifconfig eth1 down
+$ sudo ifconfig eth1 up
+$ sudo /etc/init.d/bind9 restart
+$ sudo service isc-dhcp-server restart
+
+
+client:
+# dnssec-keygen -a HMAC-MD5 -b 128 -n HOST rndc-key
+

@@ -1,0 +1,663 @@
+/auto/tools/bin/crash
+
+/auto/cores/<bug #>
+
+datadomain crash commandline:
+> crash vmlinux-ddr<buildno> vmcore
+
+	      KERNEL: vmlinux-ddr155636				<= build#
+	    DUMPFILE: vmcore
+	        CPUS: 2
+	        DATE: Thu Sep 16 10:16:27 2010
+	      UPTIME: 13 days, 23:46:19
+	LOAD AVERAGE: 2.00, 1.90, 1.49
+	       TASKS: 217
+	    NODENAME: sal-dd.int.norpac.com
+	     RELEASE: 2.6.12-ddr155636
+	     VERSION: #2 SMP Thu Feb 18 13:54:31 PST 2010
+	     MACHINE: x86_64  (1795 Mhz)
+	      MEMORY: 6.8 GB
+	       PANIC: "(U0)(MSG-KERN-00005):[1284656850.995497] Oops: 0002 [1] SMP " (check log for details)
+	         PID: 11719
+	     COMMAND: "ddfs"
+	        TASK: ffff8101130620b0  [THREAD_INFO: ffff810112ea8000]
+	         CPU: 1
+	       STATE: TASK_RUNNING (PANIC)
+
+Loading all modules:
+crash> mod -S /auto/builds/4.7/155636/os/install/lib/modules/2.6.12-ddr155636
+
+CRASH
+help ps
+ps
+dmesg
+
+system status
+crash> sys
+
+machine info
+crash> mach
+
+looking at a task_struct
+crash> task <addr>
+crash> task <id>
+crash> p {struct task_struct} 0xffffffff
+
+read memory
+crash> rd
+crash> rd <addr> <size>
+
+show files
+crash> files
+crash> files <pid>
+
+devices info
+crash> dev
+show pci info
+crash> dev -p
+
+run linux commands
+crash> !ls
+
+bt
+bt -a
+bt addr pin	// list stack trace for addr and PIN
+bt -f addr	// examine each frame
+bt -t		// dump text symbols
+bt -e           // 
+bt <pid> -f <addr>
+
+!clear          // clear screen
+jiffies         // tick_since_boot
+sym jiffies     // show symbol jiffies/ its address
+sym jiffies_64
+sym <addr>	// show syntax for the given addr
+
+struct task_struct    // struct detail
+struct -o task_struct // struct detail w/ offset
+struct task_struct <addr>   // struct detail for the given addr
+
+set radix 16    // set output hex
+
+show instruction from EIP
+x/16i addr
+
+x /nfu addr
+	n the repeat count
+	f, the display format
+		x, d, u, o, t, a, c, f, s, i
+	u, the unit size 
+		b Bytes
+		h halfwords (2 bytes)
+		w words (4 bytes)
+		g giant words (8 bytes)
+
+x /100a <addr>
+
+little endian
+    ffff810203cafb78: 0000000024dd6cc0 ffff810169e94080
+                                    78               80
+                                  79               81
+                                7a               82
+                              7b               83
+	
+	function paramenters					<== higher memory addr
+	function return addr
+	saved fprevious frame pointer (EBP)
+	exception handler frame
+	locally declared variables
+	buffer
+	callee save registers
+
+In Linux, when making a syscall
+	eax <= syscall #
+	ebx <= 1st param
+	ecx
+	edx
+	esi
+	edi
+
+	position		contents						frame
+	8n+16(%rbp)		memory argument eightbyte n		Previous
+					...
+	16(%rbp)		memory argument eightbyte 0		Previous
+	 8(%rbp)		return addr						Current
+	 0(%rbp)		previous %rbp value				Current
+	-8(%rbp)		unspecified						Current
+					...
+	 0($RSP)		variable size					Current
+	-128(%RSP)		red zone						Current
+
+windows AMD64 calling convention
+	RAX			return value, syscall #
+	RCX			1st int argument
+	RDX			2nd int argu
+	R8			3rd int arg
+	R9			4th int arg
+	R10,R11		must be preserved as required by caller; used in syscall/sysret inst
+	R12-R15		must be preserved by callee
+	RDI			must be preserved by callee
+	RSI			must be preserved by callee
+	RBX			must be preserved by callee
+	RBP			Can be used as a frame pointer; must be presereved bye called
+	RSP			Stack Pointer
+	XMM0		1st FP arg
+	XMM1		2nd FP arg
+	XMM2		3rd FP arg
+	XMM3		4th FP arg
+	XMM4,Xmm5	must be preserved as required by caller
+	XMM6-XMM15 (low 64 bits)	must be preserved by callee
+	XMM6-XMM15 (high)			must be preserved by caller
+
+Linux x64 calling convention (registers for parameter transfer)
+The 1st parameter has the lowest addr on the stack
+	rdi
+	rsi
+	rdx
+	rcx
+	r8
+	r9
+	XMM0-7
+	YMM0-7
+
+Linux x64 calling convention (registers for return)
+	rax
+	rdx
+	xmm0
+	xmm1
+	ymm0
+	st(0)
+	st(1)
+
+IPMI panic
+get crond status
+> ps | grep crond
+> foreach crond bt
+
+crash> ps -l | grep syslogd
+[85146690930703]  PID: 25662  TASK: ffff8103778a7000  CPU: 3   COMMAND: "syslogd"
+crash> ps -l | head -n1
+[85251627919045]  PID: 26248  TASK: ffff810631dc6800  CPU: 6   COMMAND: "java"
+crash> p (85251627919045-85146690930703)/1000000000
+$2 = 104
+crash> ps | grep core
+crash> ps | grep tar
+
+//check dirty cache pages
+crash> pgcache
+
+// aggregate the output
+awk '{print $4, $5}' pgcache | sort  -n
+
+17739 core/ddfs.core.13052.1285637841.gz
+210000 core/uncompress/ddfs.core.13052.1285637841
+770230 core/ddfs.core.17897.1285691963
+
+crash> p 770230*4/1024
+$3 = 3008					(unit/ MB => 3Gb)
+crash> p 770230/1024*4096/1024
+$8 = 3008
+
+
+crash> mount
+    VFSMOUNT         SUPERBLK     TYPE   DEVNAME         DIRNAME
+ffff810643468d80 ffff810643469800 rootfs rootfs          /
+ffff810624dd6cc0 ffff8106260aa800 ext3   /dev/root-p     /
+ffff810626f35780 ffff810643477c00 proc   /proc           /proc
+ffff810626f35880 ffff81062253d800 usbfs  /proc/bus/usb   /proc/bus/usb
+ffff8106267d2a80 ffff810643469c00 sysfs  /sys            /sys
+ffff810624dd6dc0 ffff8106268bac00 tmpfs  none            /dev
+ffff810643468380 ffff8106437ab800 devpts devpts          /dev/pts
+ffff8106267d2b80 ffff810624edcc00 ext3   /dev/ddr-p      /ddr
+ffff810624dd68c0 ffff81062c3e1400 ext3   /dev/dd_dg00p13 /ddr/var
+ffff8106267d2880 ffff810625e8ec00 tmpfs  shm             /dev/shm
+ffff810626f35180 ffff810631687c00 hugetlbfs hugetlb         /ddr/dev/hugetlb
+ffff8106430011c0 ffff81039d00f000 cgroup pagecache       /pagecache
+ffff810626f35080 ffff81062fa75c00 ext3   /dev/dd_dg10p1  /ddr/ext
+ffff810626f35a80 ffff81063a13a800 ext3   /dev/dd_dg10p2  /ddr/var_extra
+ffff810626f35480 ffff81063407b000 ext3   /dev/dd_dg10p3  /ddr/ext/col1/repl
+ffff8106430012c0 ffff8106376efc00 nfs    localhost:/data /data
+
+crash> struct super_block 0xffff81062c3e1400
+struct super_block {
+  s_list = {
+    next = 0xffff810625e8ec00,
+    prev = 0xffff810624edcc00
+  },
+  s_dev = 63963149,
+  s_blocksize = 4096,
+  s_blocksize_bits = 12 '\f',
+  s_dirt = 1 '\001',
+  s_maxbytes = 2196875759616,
+  s_type = 0xffffffff806280e0,        
+  ...
+  s_fs_info = 0xffff810639ea0000,		<=======
+
+crash> struct ext3_sb_info 0xffff810639ea0000
+struct ext3_sb_info {
+  s_frag_size = 4096,
+  s_frags_per_block = 1,
+  s_inodes_per_block = 32,
+  s_frags_per_group = 32768,
+  ...
+  s_journal_inode = 0x0,
+  s_journal = 0xffff81062caefc00,
+
+crash> journal_s 0xffff81062caefc00
+struct journal_s {
+  j_flags = 16,
+  j_errno = 0,
+  ...
+  j_head = 4745,				<======== log head blk#
+  j_tail = 24879,				<======== log tail blk#
+  j_free = 20134,				<======== log free blks
+  j_first = 1,					<======== log start blk#
+  j_last = 32768,				<======== log end blk#
+  ...
+  j_task = 0xffff810625adc000,  
+  ...
+  j_running_transaction = 0xffff8103995de840,
+  j_committing_transaction = 0xffff81062ee8c540,
+  j_checkpoint_transactions = 0xffff810638ea55c0,
+
+journal_head
+
+crash> source ~/bin/crash_script
+crash> ext3jbd 0xffff81062c3e1400
+
+Journal 0xffff81062caefc00:
+   kjournald pid: 22335
+   log [start,end] blk#: [1, 32768]
+   log [tail,head] blk#: [24879, 4745]
+   log free blks:  20134
+
+Running transaction:   0xffff8103995de840 (tid 1385040)
+
+Committing transaction:   0xffff81062ee8c540 (tid 1385039)	<=====
+
+Checkpointing transactions:
+    0xffff810638ea55c0 (tid 1385037)
+         +-- journal_head buffer(s):
+         +-- 0xffff810102921f70
+         +-- 0xffff810395cfb2b0
+    0xffff81062ee8cc00 (tid 1385038)
+         +-- journal_head buffer(s):
+         +-- 0xffff8100635d35b0
+         +-- 0xffff81007e47d2b0
+         +-- 0xffff810119496190
+
+crash> struct transaction_s 0xffff81062ee8c540
+struct transaction_s {
+  t_journal = 0xffff81062caefc00,
+  t_tid = 1385039,
+  t_state = T_FLUSH,
+  ...
+  t_sync_datalist = 0xffff810055cfba90,						<=====
+
+crash> struct journal_head 0xffff810055cfba90
+struct journal_head {
+  b_bh = 0xffff81036616e540,
+  ...
+
+crash> struct buffer_head 0xffff81036616e540
+struct buffer_head {
+  ...
+  b_page = 0xffff810646bef000,
+
+crash> kmem 0xffff810646bef000
+      PAGE        PHYSICAL      MAPPING       INDEX CNT FLAGS
+ffff810646bef000   fbc0000 ffff810170223360  2291571  2 10000000000083c
+
+crash> struct address_space ffff810170223360
+struct address_space {
+  host = 0xffff810170223228,
+  ...
+  a_ops = 0xffffffff804fe1e0,
+
+crash> gdb inode 0xffff810170223228
+inode: 0xffff810170223228  super_block: dd_dg00p13,ext3  pages_cached: 210000 name: /cor
+e/uncompress/ddfs.core.13052.1285637841
+
+crash> struct address_space_operations 0xffffffff804fe1e0
+struct address_space_operations {
+  ...
+  commit_write = 0xffffffff802e0f90 <ext3_ordered_commit_write>,
+
+the file is in "ordered" mode, and causing fsync latency problem.
+
+crash> sudo chmod 777 .
+crash> ps -l > psl.out
+crash> foreach bt > tlist.out
+crash> dmesg > dmesg.out
+crash> dis -rl <addr>
+crash> kmem -i
+crash> whatis <func>
+
+crash> 
+crash> 
+crash> 
+crash> 
+crash> 
+
+crash> runq
+RUNQUEUES[0]: ffff81000951e160
+ ACTIVE PRIO_ARRAY: ffff81000951e1c0
+ EXPIRED PRIO_ARRAY: ffff81000951eaa0
+RUNQUEUES[1]: ffff810009526160
+ ACTIVE PRIO_ARRAY: ffff810009526aa0
+  [115] PID: 7991   TASK: ffff81013ad930b0  CPU: 1   COMMAND: "sms"
+ EXPIRED PRIO_ARRAY: ffff8100095261c0
+RUNQUEUES[2]: ffff81000952e160
+ ACTIVE PRIO_ARRAY: ffff81000952e1c0
+  [115] PID: 25508  TASK: ffff810128f70130  CPU: 2   COMMAND: "ddfs"
+        PID: 25516  TASK: ffff81025e5850f0  CPU: 2   COMMAND: "ddfs"
+        PID: 9518   TASK: ffff81013ad81170  CPU: 2   COMMAND: "klogd"
+ EXPIRED PRIO_ARRAY: ffff81000952eaa0
+RUNQUEUES[3]: ffff810009536160
+ ACTIVE PRIO_ARRAY: ffff810009536aa0
+ EXPIRED PRIO_ARRAY: ffff8100095361c0
+
+crash> mach
+       MACHINE TYPE: x86_64
+        MEMORY SIZE: 24 GB
+               CPUS: 8
+    PROCESSOR SPEED: 2660 Mhz
+                 HZ: 1000
+          PAGE SIZE: 4096
+KERNEL VIRTUAL BASE: ffff810000000000
+KERNEL VMALLOC BASE: ffffc20000000000
+   KERNEL START MAP: ffffffff80000000
+KERNEL MODULES BASE: ffffffff88000000
+  KERNEL STACK SIZE: 8192
+
+crash> sys
+      KERNEL: vmlinux-ddr203537
+    DUMPFILE: vmcore
+        CPUS: 8
+        DATE: Thu Dec 16 14:01:01 2010
+      UPTIME: 00:45:05
+LOAD AVERAGE: 9.74, 10.15, 8.78
+       TASKS: 549
+    NODENAME: mtlhqddrd1.cn.ca
+     RELEASE: 2.6.23-ddr203537
+     VERSION: #1 SMP Tue Aug 17 14:08:00 PDT 2010
+     MACHINE: x86_64  (2660 Mhz)
+      MEMORY: 24 GB
+       PANIC: "(U0)(MSG-KERN-00018):[1292536983.838845] Kernel panic - not syncing: Watchdog pre
+-timeout"
+
+crash source:
+platform/os/tools/crash/
+
+ud2a
+The guest grsec kernel *crashes* badly, calling ud2a
+(the "just crash" instruction) right after entering
+its entry point.
+
+check the dump format:
+x86_64/kernel/traps.c/dump_trace()
+
+struct stacktrace_ops {
+	void (*warning)(void *data, char *msg);
+	/* msg must contain %s for the symbol */
+	void (*warning_symbol)(void *data, char *msg, unsigned long symbol);
+	void (*address)(void *data, unsigned long address);
+	/* On negative return stop dumping */
+	int (*stack)(void *data, char *name);
+};
+
+static struct stacktrace_ops print_trace_ops = {
+	.warning = print_trace_warning,
+	.warning_symbol = print_trace_warning_symbol,
+	.stack = print_trace_stack,
+	.address = print_trace_address,
+};
+
+
+gdb vmlinux-ddr232576
+(gdb) list *(pipe_write+360)
+0xffffffff802974c8 is in pipe_write (include/linux/mm.h:588).
+583      */
+584     #include <linux/vmstat.h>
+585
+586     static __always_inline void *lowmem_page_address(struct page *page)
+587     {
+588             return __va(page_to_pfn(page) << PAGE_SHIFT);
+589     }
+590
+591     #if defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL)
+592     #define HASHED_PAGE_VIRTUAL
+
+
+Print per CPU data
+cpu 9
+crash> p *_cpu_pda[9]
+$6 = {
+  pcurrent = 0xffff810c287df820,
+  data_offset = 18446604437890416640,
+  kernelstack = 18446604487951892440,
+  oldrsp = 0,
+  irqcount = -1,
+  cpunumber = 9,
+  irqstackptr = 0xffff810c2801ffc0 "",
+  nodenumber = 0,
+  __softirq_pending = 0,
+  __nmi_count = 174516,
+  mmu_state = 2,
+  isidle = 0,
+  active_mm = 0xffff81064e677b00,
+  apic_timer_irqs = 1242508469
+}
+
+pcurrent	<= current process
+kernelstack <= top of kernel stack for current
+oldrsp		<= user rsp for system call
+irqstackptr	<= top of irqstack
+irqcount	<= irq nesting counter, starts w/ -1 (no irq)
+
+
+crash> p irq_desc[0]
+$3 = {
+  handle_irq = 0xffffffff80254a3d <handle_edge_irq>,
+  chip = 0xffffffff8084b9d0,
+  msi_desc = 0x0,
+  handler_data = 0x0,
+  chip_data = 0x0,
+  action = 0xffffffff805b6a50,
+  status = 0,
+  depth = 0,
+  wake_depth = 0,
+  irq_count = 8429,
+  irqs_unhandled = 0,
+  last_unhandled = 0,
+  lock = {
+    raw_lock = {
+      slock = 1
+    },
+    tracker = {
+      caller = 346939,
+      owner = -1
+    }
+  },
+  affinity = {
+    bits = {1, 0, 0, 0}
+  },
+  cpu = 0,
+  pending_mask = {
+    bits = {0, 0, 0, 0}
+  },
+  dir = 0xffff81403a215ec0,
+  name = 0xffffffff8054efb1 "edge"
+}
+
+
+crash> cpu_data
+
+crash> per_cpu__runqueues
+
+crash> per_cpu__kstat
+PER-CPU DATA TYPE:
+  struct kernel_stat per_cpu__kstat;
+PER-CPU ADDRESSES:
+  [0]: ffff810001033950
+  [1]: ffff810001044950
+
+crash> p {struct kernel_stat} 0xffff810001033950
+$5 = {
+  cpustat = {
+    user = 0xb4341,
+    nice = 0x0,
+    system = 0x1afad6,
+    softirq = 0x376cf,
+    ...
+
+strings vmcore | grep ddr | more
+strings vmcore | grep "2.6.23"
+
+//in case crash hang due to search for panic
+crash --no_panic vmlinux vmcore
+
+
+// live system
+crash> init_diskdump
+p: gdb request failed: p init_diskdump
+
+crash> mod
+     MODULE       NAME                 SIZE  OBJECT FILE
+ffffffff88141ac0  diskdump           139384  (not loaded)  [CONFIG_KALLSYMS]
+
+crash> mod -s diskdump
+     MODULE       NAME                 SIZE  OBJECT FILE
+ffffffff88141ac0  diskdump           139384  /lib/modules/2.6.23-ddr278310/kernel/drivers/block/diskdump.ko
+
+crash> init_diskdump
+init_diskdump = $3 =
+ {int (void)} 0xffffffff881399da <init_module>
+
+
+# get kobject
+ PANIC: "(U0)(MSG-KERN-00018):[1327475663.153059] Kernel panic - not syncing: kref ffff8105e00ea25c count is zero"
+crash> kobject -l kobject.kref ffff8105e00ea25c
+struct kobject {
+  k_name = 0x0,
+  name = "holders\000\000\000\000\000\000\000\000\000\000\000\000",
+  kref = {
+    refcount = {
+      counter = 0
+    }
+  },
+  entry = {
+    next = 0xffff8105e00ea260,
+    prev = 0xffff8105e00ea260
+...
+
+# get scsi_disk
+crash> scsi_disk -l scsi_disk.driver 0xffff810234716800
+struct scsi_disk {
+  driver = 0xffffffff805e98d0,
+  device = 0xffff810245ba0800,
+  cdev = {
+    node = {
+      next = 0xffff810234716810,
+      prev = 0xffff810234716810
+    },
+    kobj = {
+      k_name = 0xffff810234716828 "3:0:2246:0",
+      name = "3:0:2246:0\000\000\000\000\000\000\000\000\000",
+...
+
+
+crash> kmem -s
+CACHE            NAME                 OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE
+ffff81008a7c3180 fib6_nodes                64          9        59      1     4k
+ffff81008a35e140 ip6_dst_cache            320          8        12      1     4k
+ffff81008a35f100 ndisc_cache              256          3        15      1     4k
+ffff81008a3530c0 RAWv6                    960          5         8      2     4k
+ffff81008a636080 UDPLITEv6                960          0         0      0     4k
+ffff81008a637040 UDPv6                    960          4         4      1     4k
+ffff810094413740 tw_sock_TCPv6            192          0         0      0     4k
+ffff8100943e8700 request_sock_TCPv6       192          0         0      0     4k
+
+crash> mach -c | grep node | sort | uniq
+  nodenumber = 0,
+  nodenumber = 1,
+
+crash> kmem -n | grep -A1 NODE
+NODE    SIZE      PGLIST_DATA       BOOTMEM_DATA       NODE_ZONES
+  0   12845056  ffff81000006a0a1  ffffffff8073d700  ffff81000006a0a1
+--
+NODE    SIZE      PGLIST_DATA       BOOTMEM_DATA       NODE_ZONES
+  1   12582912  ffff810c40000000  ffffffff8073d740  ffff810c40000000
+
+crash> kmem -S skbuff_head_cache
+CACHE            NAME                 OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE
+ffff810c089b6200 skbuff_head_cache        256     181302    182625  12175     4k
+
+crash> kmem_cache.nodelists ffff810c089b6200
+crash> kmem_cache ffff810c089b6200
+struct kmem_cache {
+  nodelists = {0xffff810c089b2ec0, 0xffff811809d3c940, 0x0, 0xffff810c089bf000, 0xffff810c089bf200, 0xffff810c089bf400, 0x
+ffff810c089bf600, 
+
+	crash> kmem_list3.slabs_full 0xffff810d7ebc5000
+	  slabs_full = {
+	    next = 0x80,
+	    prev = 0xffff810d7ebc5080
+	  },
+
+crash> kmem_list3 0xffff811809d3c940
+struct kmem_list3 {
+  slabs_partial = {
+    next = 0xffff810ce7983040,
+    prev = 0xffff810cffece040
+  },
+  slabs_full = {
+    next = 0xffff810d7ebc5000,
+    prev = 0xffff810e3b65a000
+  },
+  slabs_free = {
+    next = 0xffff811809d3c960,
+    prev = 0xffff811809d3c960
+
+crash> list 0xffff810d7ebc5000 -s slab.nodeid | grep nodeid | sort | uniq
+  nodeid = 1
+  nodeid = 2
+  nodeid = 795
+
+crash> list 0xffff810d7ebc5000 -s slab | grep -A 8 -B 10 "nodeid = 795"
+ffff811809d3c950
+struct slab {
+  list = {
+    next = 0xffff810d7ebc5000,
+    prev = 0xffff810e3b65a000
+  },
+  colouroff = 18446604538976913760,
+  s_mem = 0xffff811809d3c960,
+  inuse = 496,
+  free = 0,
+  nodeid = 795
+}
+
+
+crash> struct -o kobject
+struct kobject {
+    [0] const char *k_name;
+    [8] char name[20];
+   [28] struct kref kref;
+   [32] struct list_head entry;
+
+  [112] struct kobject kobj;
+ 32+112 = 144 = 0x90
+
+crash> p &block_subsys.list
+$13 = (struct list_head *) 0xffffffff805eb4a8
+
+crash> list 0x90 -H 0xffffffff805eb4a8 -s gendisk
+
+crash> list 0x90 -H 0xffffffff805eb4a8 -s gendisk | grep disk_name
+  disk_name = "ram0\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+  disk_name = "ram1\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000",
+ ...
+
+objdump -dl -S *.o | *.ko | vmlinux
+disassemble /m <func>

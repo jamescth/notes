@@ -1,0 +1,533 @@
+aliases -- Aliases of other commands
+breakpoints -- Making program stop at certain points
+data -- Examining data
+files -- Specifying and examining files
+internals -- Maintenance commands
+obscure -- Obscure features
+running -- Running the program
+stack -- Examining the stack
+status -- Status inquiries
+support -- Support facilities
+tracepoints -- Tracing of program execution without stopping the program
+user-defined -- User-defined commands
+
+Type "help" followed by a class name for a list of commands in that class.
+Type "help" followed by command name for full documentation.
+Command name abbreviations are allowed if unambiguous.
+(gdb) help all
+ni -- Step one instruction
+si -- Step one instruction exactly
+stepping -- Specify single-stepping behavior at a tracepoint
+tp -- Set a tracepoint at a specified line or function or address
+where -- Print backtrace of all stack frames
+ws -- Specify single-stepping behavior at a tracepoint
+append binary -- Append target code/data to a raw binary file
+append memory -- Append contents of memory to a raw binary file
+append value -- Append the value of an expression to a raw binary file
+awatch -- Set a watchpoint for an expression
+break -- Set breakpoint at specified line or function
+catch -- Set catchpoints to catch events
+clear -- Clear breakpoint at specified line or function
+commands -- Set commands to be executed when a breakpoint is hit
+condition -- Specify breakpoint number N to break only if COND is true
+delete -- Delete some breakpoints or auto-display expressions
+disable -- Disable some breakpoints
+enable -- Enable some breakpoints
+hbreak -- Set a hardware assisted  breakpoint
+ignore -- Set ignore-count of breakpoint number N to COUNT
+rbreak -- Set a breakpoint for all functions matching REGEXP
+rwatch -- Set a read watchpoint for an expression
+tbreak -- Set a temporary breakpoint
+tcatch -- Set temporary catchpoints to catch events
+thbreak -- Set a temporary hardware assisted breakpoint
+watch -- Set a watchpoint for an expression
+append -- Append target code/data to a local file
+call -- Call a function in the program
+disassemble -- Disassemble a specified section of memory
+display -- Print value of expression EXP each time the program stops
+dump -- Dump target code/data to a local file
+inspect -- Same as "print" command
+mem -- Define attributes for memory region
+output -- Like "print" but don't put in value history and don't print newline
+print -- Print value of expression EXP
+print-object -- Ask an Objective-C object to print itself
+printf -- Printf "printf format string"
+ptype -- Print definition of type TYPE
+restore -- Restore the contents of FILE to target memory
+set -- Evaluate expression EXP and assign result to variable VAR
+undisplay -- Cancel some expressions to be displayed when program stops
+whatis -- Print data type of expression EXP
+x -- Examine memory: x/FMT ADDRESS
+delete breakpoints -- Delete some breakpoints or auto-display expressions
+delete display -- Cancel some expressions to be displayed when program stops
+delete mem -- Delete memory region
+delete tracepoints -- Delete specified tracepoints
+disable breakpoints -- Disable some breakpoints
+disable display -- Disable some expressions to be displayed when program stops
+disable mem -- Disable memory region
+disable tracepoints -- Disable specified tracepoints
+dump binary -- Write target code/data to a raw binary file
+dump ihex -- Write target code/data to an intel hex file
+dump memory -- Write contents of memory to a raw binary file
+dump srec -- Write target code/data to an srec file
+dump tekhex -- Write target code/data to a tekhex file
+dump value -- Write the value of an expression to a raw binary file
+enable delete -- Enable breakpoints and delete when hit
+enable display -- Enable some expressions to be displayed when program stops
+enable mem -- Enable memory region
+enable once -- Enable breakpoints for one hit
+enable tracepoints -- Enable specified tracepoints
+add-shared-symbol-files -- Load the symbols from shared objects in the dynamic linker's link map
+add-symbol-file -- Usage: add-symbol-file FILE ADDR [-s <SECT> <SECT_ADDR> -s <SECT> <SECT_ADDR>
+add-symbol-file-from-memory -- Load the symbols out of memory from a dynamically loaded object file
+cd -- Set working directory to DIR for debugger and program being debugged
+core-file -- Use FILE as core dump for examining memory and registers
+directory -- Add directory DIR to beginning of search path for source files
+edit -- Edit specified file or function
+exec-file -- Use FILE as program for getting contents of pure memory
+file -- Use FILE as program to be debugged
+forward-search -- Search for regular expression (see regex(3)) from last line listed
+generate-core-file -- Save a core file with the current state of the debugged process
+list -- List specified function or line
+load -- Dynamically load FILE into the running program
+nosharedlibrary -- Unload all shared object library symbols
+path -- Add directory DIR(s) to beginning of search path for object files
+pwd -- Print working directory
+reverse-search -- Search backward for regular expression (see regex(3)) from last line listed
+search -- Search for regular expression (see regex(3)) from last line listed
+section -- Change the base address of section SECTION of the exec file to ADDR
+sharedlibrary -- Load shared object library symbols for files matching REGEXP
+symbol-file -- Load symbol table from executable file FILE
+info address -- Describe where symbol SYM is stored
+info all-registers -- List of all registers and their contents
+info args -- Argument variables of current stack frame
+info auxv -- Display the inferior's auxiliary vector
+info breakpoints -- Status of user-settable breakpoints
+info catch -- Exceptions that can be caught in the current stack frame
+info classes -- All Objective-C classes
+info common -- Print out the values contained in a Fortran COMMON block
+info copying -- Conditions for redistributing copies of GDB
+info dcache -- Print information on the dcache performance
+info display -- Expressions to display when program stops
+info extensions -- All filename extensions associated with a source language
+info files -- Names of targets and files being debugged
+info float -- Print the status of the floating point unit
+info frame -- All about selected stack frame
+info functions -- All function names
+info handle -- What debugger does when program gets various signals
+info line -- Core addresses of the code for a source line
+info linkmap -- Display the inferior's linkmap
+info locals -- Local variables of current stack frame
+info macro -- Show the definition of MACRO
+info mem -- Memory region attributes
+info proc -- Show /proc process information about any running process
+info program -- Execution status of the program
+info registers -- List of integer registers and their contents
+info scope -- List the variables local to a scope
+info selectors -- All Objective-C selectors
+info set -- Show all GDB settings
+info sharedlibrary -- Status of loaded shared object libraries
+info signals -- What debugger does when program gets various signals
+info source -- Information about the current source file
+info sources -- Source files in the program
+info stack -- Backtrace of the stack
+info symbol -- Describe what symbol is at location ADDR
+info target -- Names of targets and files being debugged
+info terminal -- Print inferior's saved terminal status
+info threads -- IDs of currently known threads
+info tracepoints -- Status of tracepoints
+info types -- All type names
+info udot -- Print contents of kernel ``struct user'' for current child
+info variables -- All global and static variable names
+info vector -- Print the status of the vector unit
+info warranty -- Various kinds of warranty you do not have
+info watchpoints -- Synonym for ``info breakpoints''
+info win -- List of all displayed windows
+flushregs -- Force gdb to flush its register cache (maintainer command)
+maintenance -- Commands for use by GDB maintainers
+macro define -- Define a new C/C++ preprocessor macro
+macro expand -- Fully expand any C/C++ preprocessor macro invocations in EXPRESSION
+macro expand-once -- Expand C/C++ preprocessor macro invocations appearing directly in EXPRESSION
+macro list -- List all the macros defined using the `macro define' command
+macro undef -- Remove the definition of the C/C++ preprocessor macro with the given name
+maintenance agent -- Translate an expression into remote agent bytecode
+maintenance check-symtabs -- Check consistency of psymtabs and symtabs
+maintenance cplus -- C++ maintenance commands
+maintenance demangle -- Demangle a C++/ObjC mangled name
+maintenance deprecate -- Deprecate a command
+maintenance dump-me -- Get fatal error; make debugger dump its core
+maintenance info -- Commands for showing internal info about the program being debugged
+maintenance internal-error -- Give GDB an internal error
+maintenance internal-warning -- Give GDB an internal warning
+maintenance packet -- Send an arbitrary packet to a remote target
+maintenance print -- Maintenance command for printing GDB internal state
+maintenance set -- Set GDB internal variables used by the GDB maintainer
+maintenance show -- Show GDB internal variables used by the GDB maintainer
+maintenance show-debug-regs -- Set whether to show variables that mirror the x86 debug registers
+maintenance space -- Set the display of space usage
+maintenance time -- Set the display of time usage
+maintenance translate-address -- Translate a section name and address to a symbol
+maintenance undeprecate -- Undeprecate a command
+compare-sections -- Compare section data on target to the exec file
+complete -- List the completions for the rest of the line as a command
+monitor -- Send a command to the remote monitor (remote targets only)
+remote <command> -- Send a command to the remote monitor
+stop -- There is no `stop' command
+overlay auto -- Enable automatic overlay debugging
+overlay list-overlays -- List mappings of overlay sections
+overlay load-target -- Read the overlay mapping state from the target
+overlay manual -- Enable overlay debugging
+overlay map-overlay -- Assert that an overlay section is mapped
+overlay off -- Disable overlay debugging
+overlay unmap-overlay -- Assert that an overlay section is unmapped
+advance -- Continue the program up to the given location (same form as args for break command)
+attach -- Attach to a process or file outside of GDB
+continue -- Continue program being debugged
+detach -- Detach a process or file previously attached
+disconnect -- Disconnect from a target
+finish -- Execute until selected stack frame returns
+handle -- Specify how to handle a signal
+interrupt -- Interrupt the execution of the debugged program
+jump -- Continue program being debugged at specified line or address
+kill -- Kill execution of program being debugged
+next -- Step program
+nexti -- Step one instruction
+run -- Start debugged program
+signal -- Continue program giving it signal specified by the argument
+start -- Run the debugged program until the beginning of the main procedure
+step -- Step program until it reaches a different source line
+stepi -- Step one instruction exactly
+target -- Connect to a target machine or process
+thread -- Use this command to switch between threads
+tty -- Set terminal for future runs of program being debugged
+until -- Execute until the program reaches a source line greater than the current
+set annotate -- Set annotation_level
+set archdebug -- Set architecture debugging
+set architecture -- Set architecture of target
+set args -- Set argument list to give program being debugged when it is started
+set auto-solib-add -- Set autoloading of shared library symbols
+set backtrace -- Set backtrace specific variables
+set breakpoint -- Breakpoint specific settings
+set can-use-hw-watchpoints -- Set debugger's willingness to use watchpoint hardware
+set case-sensitive -- Set case sensitivity in name search
+set charset -- Set the host and target character sets
+set check -- Set the status of the type/range checker
+set coerce-float-to-double -- Set coercion of floats to doubles when calling functions
+set complaints -- Set max number of complaints about incorrect symbols
+set confirm -- Set whether to confirm potentially dangerous operations
+set cp-abi -- Set the ABI used for inspecting C++ objects
+set debug -- Generic command for setting gdb debugging flags
+set debug-file-directory -- Set the directory where separate debug symbols are searched for
+set debugvarobj -- Set varobj debugging
+set demangle-style -- Set the current C++ demangling style
+set disassembly-flavor -- Set the disassembly flavor
+set download-write-size -- Set the write size used when downloading a program
+set editing -- Set editing of command lines as they are typed
+set endian -- Set endianness of target
+set environment -- Set environment variable value to give the program
+set eventdebug -- Set event debugging
+set exec-done-display -- Set notification of completion for asynchronous execution commands
+set extension-language -- Set mapping between filename extension and source language
+set follow-fork-mode -- Set debugger response to a program call of fork or vfork
+set gnutarget -- Set the current BFD target
+set height -- Set number of lines gdb thinks are in a page
+set history -- Generic command for setting command history parameters
+set host-charset -- Set the host character set
+set input-radix -- Set default input radix for entering numbers
+set language -- Set the current source language
+set listsize -- Set number of source lines gdb will list by default
+set logging -- Set logging options
+set max-user-call-depth -- Set the max call depth for user-defined commands
+set opaque-type-resolution -- Set resolution of opaque struct/class/union types (if set before loading symbols)
+set os -- Set operating system
+set osabi -- Set OS ABI of target
+set output-radix -- Set default output radix for printing of values
+set overload-resolution -- Set overload resolution in evaluating C++ functions
+set pagination -- Set state of pagination
+set print -- Generic command for setting how things print
+set prompt -- Set gdb's prompt
+set radix -- Set default input and output number radices
+set remote -- Remote protocol specific variables
+set remoteaddresssize -- Set the maximum size of the address (in bits) in a memory packet
+set remotebaud -- Set baud rate for remote serial I/O
+set remotebreak -- Set whether to send break if interrupted
+set remotecache -- Set cache use for remote targets
+set remotedebug -- Set debugging of remote protocol
+set remotedevice -- Set device for remote serial I/O
+set remotelogbase -- Set numerical base for remote session logging
+set remotelogfile -- Set filename for remote session recording
+set remotetimeout -- Set timeout limit to wait for target to respond
+set remotewritesize -- Set the maximum number of bytes per memory write packet (deprecated)
+set scheduler-locking -- Set mode for locking scheduler during execution
+set serial -- Set default serial/parallel port configuration
+set solib-absolute-prefix -- Set prefix for loading absolute shared library symbol files
+set solib-search-path -- Set the search path for loading non-absolute shared library symbol files
+set step-mode -- Set mode of the step operation
+set stop-on-solib-events -- Set stopping for shared library events
+set struct-convention -- Set the convention for returning small structs
+set symbol-reloading -- Set dynamic symbol table reloading multiple times in one run
+set target-charset -- Set the target character set
+set trust-readonly-sections -- Set mode for reading from readonly sections
+set tui -- TUI configuration variables
+set unwindonsignal -- Set unwinding of stack if a signal is received while in a call dummy
+set variable -- Evaluate expression EXP and assign result to variable VAR
+set verbose -- Set verbosity
+set watchdog -- Set watchdog timer
+set width -- Set number of characters gdb thinks are in a line
+set write -- Set writing into executable and core files
+show annotate -- Show annotation_level
+show archdebug -- Show architecture debugging
+show architecture -- Show the current target architecture
+show args -- Show argument list to give program being debugged when it is started
+show auto-solib-add -- Show autoloading of shared library symbols
+show backtrace -- Show backtrace specific variables
+show breakpoint -- Breakpoint specific settings
+show can-use-hw-watchpoints -- Show debugger's willingness to use watchpoint hardware
+show case-sensitive -- Show case sensitivity in name search
+show charset -- Show the host and target character sets
+show check -- Show the status of the type/range checker
+show coerce-float-to-double -- Show coercion of floats to doubles when calling functions
+show commands -- Show the history of commands you typed
+show complaints -- Show max number of complaints about incorrect symbols
+show confirm -- Show whether to confirm potentially dangerous operations
+show convenience -- Debugger convenience ("$foo") variables
+show copying -- Conditions for redistributing copies of GDB
+show cp-abi -- Show the ABI used for inspecting C++ objects
+show debug -- Generic command for showing gdb debugging flags
+show debug-file-directory -- Show the directory where separate debug symbols are searched for
+show debugvarobj -- Show varobj debugging
+show demangle-style -- Show the current C++ demangling style
+show directories -- Current search path for finding source files
+show disassembly-flavor -- Show the disassembly flavor
+show download-write-size -- Show the write size used when downloading a program
+show editing -- Show editing of command lines as they are typed
+show endian -- Show the current byte-order
+show environment -- The environment to give the program
+show eventdebug -- Show event debugging
+show exec-done-display -- Show notification of completion for asynchronous execution commands
+show follow-fork-mode -- Show debugger response to a program call of fork or vfork
+show gnutarget -- Show the current BFD target
+show height -- Show number of lines gdb thinks are in a page
+show history -- Generic command for showing command history parameters
+show host-charset -- Show the host character set
+show input-radix -- Show default input radix for entering numbers
+show language -- Show the current source language
+show listsize -- Show number of source lines gdb will list by default
+show logging -- Show logging options
+show max-user-call-depth -- Show the max call depth for user-defined commands
+show opaque-type-resolution -- Show resolution of opaque struct/class/union types (if set before
+ loading symbols)
+show os -- Show operating system
+show osabi -- Show OS/ABI of target
+show output-radix -- Show default output radix for printing of values
+show overload-resolution -- Show overload resolution in evaluating C++ functions
+show pagination -- Show state of pagination
+show paths -- Current search path for finding object files
+show print -- Generic command for showing print settings
+show prompt -- Show gdb's prompt
+show radix -- Show the default input and output number radices
+show remote -- Remote protocol specific variables
+show remoteaddresssize -- Show the maximum size of the address (in bits) in a memory packet
+show remotebaud -- Show baud rate for remote serial I/O
+show remotebreak -- Show whether to send break if interrupted
+show remotecache -- Show cache use for remote targets
+show remotedebug -- Show debugging of remote protocol
+show remotedevice -- Show device for remote serial I/O
+show remotelogbase -- Show numerical base for remote session logging
+show remotelogfile -- Show filename for remote session recording
+show remotetimeout -- Show timeout limit to wait for target to respond
+show remotewritesize -- Show the maximum number of bytes per memory write packet (deprecated)
+show scheduler-locking -- Show mode for locking scheduler during execution
+show serial -- Show default serial/parallel port configuration
+show solib-absolute-prefix -- Show prefix for loading absolute shared library symbol files
+show solib-search-path -- Show the search path for loading non-absolute shared library symbol files
+show step-mode -- Show mode of the step operation
+show stop-on-solib-events -- Show stopping for shared library events
+show struct-convention -- Show the convention for returning small structs
+show symbol-reloading -- Show dynamic symbol table reloading multiple times in one run
+show target-charset -- Show the target character set
+show trust-readonly-sections -- Show mode for reading from readonly sections
+show tui -- TUI configuration variables
+show unwindonsignal -- Show unwinding of stack if a signal is received while in a call dummy
+show user -- Show definitions of user defined commands
+show values -- Elements of value history around item number IDX (or last ten)
+show verbose -- Show verbosity
+show version -- Show what version of GDB this is
+show warranty -- Various kinds of warranty you do not have
+show watchdog -- Show watchdog timer
+show width -- Show number of characters gdb thinks are in a line
+show write -- Show writing into executable and core files
+backtrace -- Print backtrace of all stack frames
+bt -- Print backtrace of all stack frames
+down -- Select and print stack frame called by this one
+frame -- Select and print a stack frame
+return -- Make selected stack frame return to its caller
+select-frame -- Select a stack frame without printing anything
+up -- Select and print stack frame that called this one
+info -- Generic command for showing things about the program being debugged
+macro -- Prefix for commands dealing with C preprocessor macros
+show -- Generic command for showing things about the debugger
+apropos -- Search for commands matching a REGEXP
+define -- Define a new command name
+document -- Document a user-defined command
+dont-repeat -- Don't repeat this command
+down-silently -- Same as the `down' command
+echo -- Print a constant string
+help -- Print list of commands
+if -- Execute nested commands once IF the conditional expression is non zero
+interpreter-exec -- Execute a command in an interpreter
+make -- Run the ``make'' program using the rest of the line as arguments
+overlay -- Commands for debugging overlays
+quit -- Exit gdb
+shell -- Execute the rest of the line as a shell command
+source -- Read commands from a file named FILE
+up-silently -- Same as the `up' command
+while -- Execute nested commands WHILE the conditional expression is non zero
+target async -- Use a remote computer via a serial line
+target child -- Unix child process (started by the "run" command)
+target core -- Use a core file as a target
+target exec -- Use an executable file as a target
+target extended-async -- Use a remote computer via a serial line
+target extended-remote -- Use a remote computer via a serial line
+target lwp-layer -- Low level threads support (LWP layer)
+target multi-thread -- Threads and pthreads support
+target remote -- Use a remote computer via a serial line
+tfind end -- Synonym for 'none'
+tfind line -- Select a trace frame by source line
+tfind none -- De-select any trace frame and resume 'live' debugging
+tfind outside -- Select a trace frame whose PC is outside the given range
+tfind pc -- Select a trace frame by PC
+tfind range -- Select a trace frame whose PC is in the given range
+tfind start -- Select the first trace frame in the trace buffer
+tfind tracepoint -- Select a trace frame by tracepoint number
+thread apply -- Apply a command to a list of threads
+actions -- Specify the actions to be taken at a tracepoint
+collect -- Specify one or more data items to be collected at a tracepoint
+end -- Ends a list of commands or actions
+passcount -- Set the passcount for a tracepoint
+save-tracepoints -- Save current tracepoint definitions as a script
+tdump -- Print everything collected at the current tracepoint
+tfind -- Select a trace frame;
+trace -- Set a tracepoint at a specified line or function or address
+tstart -- Start trace data collection
+tstatus -- Display the status of the current trace data collection
+tstop -- Stop trace data collection
+while-stepping -- Specify single-stepping behavior at a tracepoint
+tui reg -- TUI commands to control the register window
+unset environment -- Cancel environment variable VAR for the program
+
+(gdb) ptype mutex
+type = struct {
+    _dd_lock_list_elem_t dl;
+    pthread_mutex_t pmutex;
+    dd_uint64_t success;
+    dd_atomic32_t waiters;
+    dd_atomic64_t contentions;
+    dd_atomic64_t contention_time;
+    dd_int32_t trace_id;
+    dd_uint32_t trace_gen;
+    const char *name;
+}
+
+(gdb) f 4
+#4  0x00000000009cf463 in dd_mutex_lock (mutex=0x124bd40) at include/dd_thread.h:1946
+
+(gdb) p mutex
+$1 = (dd_mutex_t *) 0x124bd40
+(gdb) p {dd_mutex_t} 0x124bd40
+
+$2 = {dl = {dl = {next = 0xdeadbeef, prev = 0xdeadbeef}, type = DD_LOCK_TYPE_MUTEX}, pmutex = {
+    __data = {__lock = 2, __count = 0, __owner = 28608, __nusers = 1, __kind = 0,
+      __spins = 0},
+    __size = "\002\000\000\000\000\000\000\000�\000\000\001", '\0' <repeats 26 times>,
+    __align = 2}, success = 400, waiters = {val = 2}, contentions = {val = 1},
+  contention_time = {val = 285985112343}, trace_id = 763, trace_gen = 1, name = 0xd6fd97 "log"}
+
+(gdb) info threads
+  186 process 28607  0x00002aea3c4f7dd1 in __nanosleep_nocancel () at ../stdlib/stdlib.h:341
+  185 process 28608  0x00002aea3c52282f in __libc_send (fd=8, buf=0x2aaea12a5520, n=65,
+    flags=16384) at ../sysdeps/unix/sysv/linux/x86_64/send.c:28
+  184 process 28609  0x00002aea3b764896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-187866/lib64/libpthread.so.0
+  183 process 28630  0x00002aea3b764896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-187866/lib64/libpthread.so.0
+  182 process 28643  0x00002aea3b764896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-187866/lib64/libpthread.so.0
+
+show instruction from EIP
+x/16i addr
+
+x /nfu addr
+	n the repeat count
+	f, the display format
+		x, d, u, o, t, a, c, f, s, i
+	u, the unit size 
+		b Bytes
+		h halfwords (2 bytes)
+		w words (4 bytes)
+		g giant words (8 bytes)
+
+x /100a <addr>
+
+(gdb) ptype dd_cond_t
+type = struct {
+    pthread_cond_t pcond;
+    const char *name;
+    dd_int32_t trace_id : 31;
+    dd_uint32_t trace_history : 1;
+    dd_uint32_t trace_gen;
+}
+(gdb) p ddr_hmon_cond
+$1 = {pcond = {__data = {__lock = 0, __futex = 1239, __total_seq = 620, __wakeup_seq = 619,
+      __woken_seq = 619, __mutex = 0x1b5a4b8, __nwaiters = 3, __broadcast_seq = 0},
+    __size = "\000\000\000\000×\004\000\000l\002\000\000\000\000\000\000k\002\000\000\000\000\000\000k\002\000\000\000\000\000\000¸¤µ\001\000\000\000\000\003\000\000\000\000\000\000",
+    __align = 5321464479744}, name = 0x14e0e1b "HMON cond", trace_id = 210, trace_history = 1,
+  trace_gen = 0}
+(gdb) p {dd_async_t} ddr_hmon_problem_cb_async
+$1 = {da_link = {next = 0x2ebde30, prev = 0x2e7e5f0}, da_gen_num = {val = 0},
+  da_name = "ddr_hmon_problem_cb_async\000\000\000\000\000\000", da_magic = 1608323353,
+  da_mod = MOD_PERF, da_destroy_cond = {cmutex = 65535, waiter_id_list = 65535},
+  da_barrier_proactive = FALSE, da_accum_runnable_count = {val = 0}, da_enable_histo = FALSE,
+  da_wait_time_histogram = {band_top_value = 0x0, band_column_name = 0x0, band_counts = {94,
+      0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 0, 96, 0, 0, 0}, max = 0, min = 0, sum = 97, ssum = 0,
+    total_count = 0, bands = 0}, da_run_time_histogram = {band_top_value = 0x0,
+    band_column_name = 0x0, band_counts = {98, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 100, 0, 0,
+      0}, max = 0, min = 0, sum = 101, ssum = 0, total_count = 0, bands = 0},
+  da_pending_q_length_histogram = {band_top_value = 0x0, band_column_name = 0x0,
+    band_counts = {102, 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 0, 104, 0, 0, 0}, max = 0, min = 0,
+    sum = 105, ssum = 0, total_count = 0, bands = 0}, da_dld_distribution_histogram = {
+    band_top_value = 0x0, band_column_name = 0x0, band_counts = {106, 0, 0, 0, 0, 0, 107, 0,
+      0, 0, 0, 0, 108, 0, 0, 0}, max = 0, min = 0, sum = 109, ssum = 0, total_count = 0,
+    bands = 0}, da_entry_sync = 0x2e3ab78, da_barrier = 0x2e3b1c0, da_pending_queue = {
+    _register_link = {next = 0x2ebe198, prev = 0x2e7e958, refcnt = {fields = {pin_count = 0,
+          mask = 0, wait_id = 65535}, atomic = 4294901760}, lock = {val = 4294901760, init = {
+          flags = 0, locked = 0, wait_id = 65535}}}, head = 0x0, tail = 0x0, head_lock = {
+      val = 4294901760, init = {flags = 0, locked = 0, wait_id = 65535}}, tail_lock = {
+      val = 4294901760, init = {flags = 0, locked = 0, wait_id = 65535}}, count = {val = 0},
+    domain = 0x2467620, stats = {trace_id = 215, trace_history = 1, trace_gen = 0,
+      name = 0x2e39fd8 "ddr_hmon_problem_cb_async", lock_contentions = {val = 0},
+      unlock_contentions = {val = 0}, lock_contention_cyc = {val = 0},
+      unlock_contention_cyc = {val = 0}}, name = 0x2e39fd8 "ddr_hmon_problem_cb_async"},
+  da_blocked_list = {_register_link = {next = 0x0, prev = 0x0, refcnt = {fields = {
+          pin_count = 0, mask = 0, wait_id = 0}, atomic = 0}, lock = {val = 0, init = {
+          flags = 0, locked = 0, wait_id = 0}}}, head = 0x0, tail = 0x0, head_lock = {
+      val = 4294901760, init = {flags = 0, locked = 0, wait_id = 65535}}, tail_lock = {
+      val = 4294901760, init = {flags = 0, locked = 0, wait_id = 65535}}, count = {val = 0},
+    domain = 0x2467620, stats = {trace_id = 214, trace_history = 1, trace_gen = 0,
+      name = 0x2e39fd8 "ddr_hmon_problem_cb_async", lock_contentions = {val = 0},
+      unlock_contentions = {val = 0}, lock_contention_cyc = {val = 0},
+      unlock_contention_cyc = {val = 0}}, name = 0x2e39fd8 "ddr_hmon_problem_cb_async"},
+  da_pending_and_active_count = {atomic = 0, vd = 0, vi = {0, 0}, vsi = {0, 0}, vw = {0, 0, 0,
+      0}, vb = "\000\000\000\000\000\000\000"}, da_double_unblocks = 0,
+  da_double_unblock_allowed = TRUE, da_max_concurrency = 4, da_destroyed = 0,
+  da_disable_enqueue = 0, da_pool = 0x2e3b320, da_isr_stack = 0x0, da_isr_count = {val = 0}, {
+    da_vtid_seqno = 686, da_stack_size = 686}, da_pending_policy = FIFO, da_free_threads = {
+    head = 0x2e3a478, tail = 0x2e3a9b8, count = 4, __lock = 4294967295}, da_thread_api = {
+    init = 0xd1cce4 <dd_async_guts_thread_init>,
+    schedule = 0xd1cd8a <dd_async_guts_thread_schedule>,
+    schedule_isr = 0xd1cdc5 <dd_async_guts_thread_schedule_isr>,
+    join = 0xd1ce25 <dd_async_guts_thread_join>}, da_threads = 0x2e3a478}
+(gdb) p {struct dd_thread_id_struct} 0x2e3d710
+$7 = {pthread_id = 1135733088, thread_pid = 2263, detached = FALSE, waiter = 0x2abe350,
+  err_stack = 0x2eb31f0, name = 0x14e0e94 "hmon", errno_ptr = 0x43b1e6f8, sync_log = 0x0}
+

@@ -1,0 +1,4 @@
+# gcc dummy.c -o dummy
+# gcc mycore.c -o mycore
+# gcc -g ddfs.c -o myddfs
+gcc -g mm_measure.c -o mm_meas

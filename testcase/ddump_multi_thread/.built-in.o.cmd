@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_multi_thread/built-in.o :=  rm -f /auto/home5/hoj9/testcase/ddump_multi_thread/built-in.o; /auto/home/lsbuild/desktop-295107/usr/bin/ar rcs /auto/home5/hoj9/testcase/ddump_multi_thread/built-in.o

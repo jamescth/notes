@@ -1,0 +1,19 @@
+# build: docker build -t ubuntu-nis -f ${output file from this script} .
+# run  : docker run -ti --rm -u {Your nis id} -v /auto:/auto -v ~/${your nis id}:/home/${your nis id} -h ${container host name} ubuntu-nis
+FROM ubuntu:14.10
+
+MAINTAINER James Ho
+
+ENV GROUP_ID 112747
+ENV GROUP hoj9
+ENV USER_ID 112747
+ENV USER hoj9
+ENV HOME /home/${USER}
+
+RUN groupadd -f -g ${GROUP_ID} ${GROUP} && \
+    useradd -u ${USER_ID} -g ${GROUP} ${USER} && \
+    usermod -a -G ${GROUP_ID},100 ${USER} && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+    mkdir -p ${HOME}
+
+CMD ["/bin/bash"]

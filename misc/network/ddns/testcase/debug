@@ -1,0 +1,104 @@
+# grep -e PID -e do_futex sms_bt.out 
+PID: 28306  TASK: ffff81041f49aee0  CPU: 3   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eaebf2 in __select_nocancel () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x00000000006ce79d in sms_svc_run () at ddr/sm/sms/sms_prot_server.c:136
+#2  0x00000000006cebb6 in sms_start_service () at ddr/sm/sms/sms_prot_server.c:215
+#3  0x000000000064f1ac in main (argc=5, argv=0x7fffbc0fee68) at ddr/sm/sms/sms_main.c:449
+
+PID: 28338  TASK: ffff8101cd776e20  CPU: 1   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eb509a in epoll_wait () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x00000000034a34d5 in dd_poll_task (async=0x2b6af6f82040, thread_num=4, arg=0x2b6af5c6f250)
+    at lib/dd_poll.c:209
+#2  0x0000000003083c65 in dd_async_thread_run (thread=0x2b6af6f82be0) at lib/dd_async.c:660
+#3  0x00000000030839c0 in dd_async_pthread_thread_run (arg=0x2b6af6f82be0) at lib/dd_async.c:563
+#4  0x0000000003134c10 in _dd_thread_start_func (name=0x2b6af6f82058 "dd_rpc_scsitgt client", 
+    tid=0x2b6af5c6c370, thargs=0x2b6af5c6c2e0) at lib/dd_thread.c:1428
+#5  0x0000000003135219 in _dd_thread_base (void_tharg=0x2b6af5c6c2e0) at lib/dd_thread.c:1570
+#6  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#7  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#8  0x0000000000000000 in ?? ()
+
+PID: 28343  TASK: ffff81040be14a20  CPU: 4   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eb509a in epoll_wait () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x00000000034a34d5 in dd_poll_task (async=0x2b6af8880040, thread_num=4, arg=0x2b6af8e00f50)
+    at lib/dd_poll.c:209
+#2  0x0000000003083c65 in dd_async_thread_run (thread=0x2b6af8880be0) at lib/dd_async.c:660
+#3  0x00000000030839c0 in dd_async_pthread_thread_run (arg=0x2b6af8880be0) at lib/dd_async.c:563
+#4  0x0000000003134c10 in _dd_thread_start_func (name=0x2b6af8880058 "dd_rpc_VL client", tid=0x2b6af8e00990, 
+    thargs=0x2b6af8e00900) at lib/dd_thread.c:1428
+#5  0x0000000003135219 in _dd_thread_base (void_tharg=0x2b6af8e00900) at lib/dd_thread.c:1570
+#6  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#7  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#8  0x0000000000000000 in ?? ()
+
+PID: 28346  TASK: ffff8101de052680  CPU: 6   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eb509a in epoll_wait () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x00000000034a34d5 in dd_poll_task (async=0x2b6af9940040, thread_num=2, arg=0x2b6af8e43aa0)
+    at lib/dd_poll.c:209
+#2  0x0000000003083c65 in dd_async_thread_run (thread=0x2b6af9940880) at lib/dd_async.c:660
+#3  0x00000000030839c0 in dd_async_pthread_thread_run (arg=0x2b6af9940880) at lib/dd_async.c:563
+#4  0x0000000003134c10 in _dd_thread_start_func (name=0x2b6af9940058 "dd_rpc_SSM_CLIENT", tid=0x2b6af8e40a10, 
+    thargs=0x2b6af8e40980) at lib/dd_thread.c:1428
+#5  0x0000000003135219 in _dd_thread_base (void_tharg=0x2b6af8e40980) at lib/dd_thread.c:1570
+#6  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#7  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#8  0x0000000000000000 in ?? ()
+
+PID: 28354  TASK: ffff81040be15240  CPU: 1   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eaebf2 in __select_nocancel () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x0000000000758697 in sms_soap_start (argv=0x0) at ddr/sm/sms/sms_soap_main.c:958
+#2  0x0000000003134c10 in _dd_thread_start_func (name=0x35f3890 "sms soap service", tid=0x5621f80, 
+    thargs=0x5621ef0) at lib/dd_thread.c:1428
+#3  0x0000000003135219 in _dd_thread_base (void_tharg=0x5621ef0) at lib/dd_thread.c:1570
+#4  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#5  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#6  0x0000000000000000 in ?? ()
+
+PID: 28360  TASK: ffff8101f004cee0  CPU: 7   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6aeffe6896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#1  0x00000000031370c5 in _dd_cond_wait (cond=0x4ba3548, condlock=0x4ba34d8, silent=FALSE)
+    at lib/dd_thread.c:2190
+#2  0x000000000313726e in dd_cond_wait (cond=0x4ba3548, condlock=0x4ba34d8) at lib/dd_thread.c:2236
+#3  0x000000000075640f in sms_soap_dequeue_conn (queue=0x4ba34c0, conn=0x2b6afb45ade0, wait_on_empty=TRUE)
+    at ddr/sm/sms/sms_soap_main.c:574
+#4  0x000000000075691b in sms_soap_serve_thread_run (soap_thread_arg=0x0) at ddr/sm/sms/sms_soap_main.c:601
+#5  0x0000000003134c10 in _dd_thread_start_func (name=0x362735e "soap worker thread", tid=0x563e2c0, 
+    thargs=0x563cac0) at lib/dd_thread.c:1428
+#6  0x0000000003135219 in _dd_thread_base (void_tharg=0x563cac0) at lib/dd_thread.c:1570
+#7  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#8  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+PID: 28369  TASK: ffff81041f8a7200  CPU: 0   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0e8add1 in __nanosleep_nocancel () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x00002b6af0e8acd2 in sleep () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#2  0x00000000031306a0 in dd_sleep (seconds=3600) at lib/dd_sysiface.c:144
+#3  0x0000000000535a49 in sms_catalog_hd_reconciler_start (argv=0x0) at ddr/sm/sms/sms_catalog.c:117
+#4  0x0000000003134c10 in _dd_thread_start_func (name=0x7fffbc0febf0 "", tid=0x563f850, thargs=0x563bc20)
+    at lib/dd_thread.c:1428
+#5  0x0000000003135219 in _dd_thread_base (void_tharg=0x563bc20) at lib/dd_thread.c:1570
+#6  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#7  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#8  0x0000000000000000 in ?? ()
+
+PID: 28370  TASK: ffff81040dc92580  CPU: 0   COMMAND: "sms"
+(gdb) bt
+#0  0x00002b6af0eb509a in epoll_wait () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#1  0x0000000003179a4a in svctcp_thread (arg=0x563b9d0) at rpc/svc_tcp.c:975
+#2  0x0000000003134c10 in _dd_thread_start_func (name=0x3983954 "svctcp", tid=0x563bd30, thargs=0x563ed70)
+    at lib/dd_thread.c:1428
+#3  0x0000000003135219 in _dd_thread_base (void_tharg=0x563ed70) at lib/dd_thread.c:1570
+#4  0x00002b6aeffe47bb in start_thread () from /auto/home/lsbuild/desktop-439380/lib64/libpthread.so.0
+#5  0x00002b6af0eb4cdd in clone () from /auto/home/lsbuild/desktop-439380/lib64/libc.so.6
+#6  0x0000000000000000 in ?? ()
+
+
+

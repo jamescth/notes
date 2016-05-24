@@ -1,0 +1,5 @@
+#calculate struct offset
+&((struct name *)0)->member
+
+#gdb
+print (size_t)&(struct_name.last_field) - (size_t)(&struct_name)

@@ -1,0 +1,18 @@
+hit tahi firt, then bring up dhclient
+========== TEST 42 ==========
+./C_RFC3315_18_1_2_CnfRetransRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransRT.def -log 42.html -ti "Part B &#58; Retransmission of Confirm message"
+========== TEST 44 ==========
+./C_RFC3315_18_1_2_CnfRetransMRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransMRT.def -log 43.html -ti "Part C &#58; Maximum Retransmission Time of Confirm message"
+
+	hit tahi firt, then bring up dhclient
+
+re-run w/out issue:
+========== TEST 81 ==========
+./C_RFC3315_18_1_8_DecReply.seq -pkt ./C_RFC3315_18_1_8_DecReply.def -log 81.html -ti "Part K &#58; Reply message contains NoBinding in response to a Decline message"
+========== TEST 58 ==========
+./C_RFC3315_18_1_6_RelReplyFail.seq -pkt ./C_RFC3315_18_1_6_RelReplyFail.def -log 58.html -ti "Part E &#58; Retransmission and message exchange termination, Server responds with Reply message"
+========== TEST 88 ==========
+./C_RFC3315_22_4_IANAOptInvalidTime.seq -pkt ./C_RFC3315_22_4_IANAOptInvalidTime.def -log 88.html -ti "Part C &#58; Contains invalid IA_NA option T1>T2"
+========== TEST 89 ==========
+./C_RFC3315_22_6_DiscInvalidIAAddr.seq -pkt ./C_RFC3315_22_6_DiscInvalidIAAddr.def -log 89.html -ti "Part D &#58; Contains invalid IA Address (preferred lifetime > valid lifetime)"
+

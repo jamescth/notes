@@ -1,0 +1,11 @@
+#tracing all the open system calls
+
+probe syscall.open
+{
+	printf("%s(%d) open (%s)\n", execname(), pid(), argsstr)
+}
+
+probe timer.ms(10000) # stop after 10 secs
+{
+	exit()
+}

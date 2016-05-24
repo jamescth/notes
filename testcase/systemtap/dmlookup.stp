@@ -1,0 +1,30 @@
+
+probe module("dm_mod").function("dm_get_device").return {
+	printf("path: %s\n", path);
+        print_backtrace()
+}
+
+probe kernel.function("do_path_lookup").return {
+	printf("DO-PATH-LOOKUP\n");
+	printf("Path : %s\n", path);
+	printf("nameidata : %p\n", nd);
+	// printf("nameidata.dentry: %p\n", nd.dentry);
+}
+
+
+/*
+probe module("dm_mod").function("lookup_device").return {
+	printf("path: %s\n", path);
+	printf("Node Data: %p\n", nd);
+	printf("Dentry : %p\n", nd.dentry);
+	printf("Inode : %p\n", nd.dentry.d_inode);
+        print_backtrace()
+}
+probe module.statement("lookup_device@extdrivers/dm2/dm-table.c:362") {
+	printf("Lookup device called : %s\n", path); 
+	printf("Node Data: %p\n", nd);
+	printf("Dentry : %p\n", nd.dentry);
+	printf("Inode : %p\n", nd.dentry.d_inode);
+        print_backtrace()
+}
+*/

@@ -1,0 +1,24 @@
+
+// Return the cmd_line of a task.
+function task_cmd_line:string (task:long) %{ 
+    strlcpy(THIS->__retvalue, current->cmd_line, 30);
+%}
+
+probe kernel.function("do_fork")
+{
+	clone_flags = $clone_flags;
+	if (execname() == "netlogond") { 
+		printf("%s(%d) do_fork: clone_flags=%x \n", execname(), pid(), clone_flags);
+	}
+}
+
+probe kernel.function("do_execve")
+{
+
+    printf("Caller %s(%d) do_execve:(filename:current->pcmd_line (%s)\n", 
+    	execname(), pid(), task_cmd_line(task_current()));
+}
+
+
+
+

@@ -1,0 +1,22 @@
+#docker build -t ubuntu-nis -f Dockerfile.test .
+# docker run -ti --rm -v /auto:/auto -v ~/:/home/hoj9 ubuntu-nis:latest
+# docker run -ti --rm -e GROUP_ID=112747 -e GROUP=hoj9 -e USER_ID=112747 -e USER=hoj9 -v /auto:/auto -v ~/:/home/hoj9 ubuntu-nis:latest
+FROM ubuntu:14.10
+
+MAINTAINER James Ho
+
+# copy my own files
+ENV GROUP_ID 112747
+ENV GROUP hoj9
+ENV USER_ID 112747
+ENV USER $(JAM)
+ENV HOME /home/${USER}
+
+RUN groupadd -f -g ${GROUP_ID} ${GROUP} && \
+	useradd -u ${USER_ID} -g ${GROUP} ${USER} && \
+	usermod -a -G ${GROUP_ID},100 ${USER} && \
+	echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+	mkdir -p ${HOME}
+
+#
+CMD ["/bin/bash"]

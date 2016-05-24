@@ -1,0 +1,16 @@
+ddsh -s net config eth0b dhcp no
+ddsh -s net config eth0b down
+
+./dhc431 -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+./dhc431 -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+./dhc431 -6 -x -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+./dhc431 -6 -d -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+
+./dhc426cov -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux.org -pf /var/run/dhclient-eth0b.pid eth0b
+./dhc426cov -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux.org -pf /var/run/dhclient-eth0b.pid eth0b
+
+./dhc431cov -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+./dhc431cov -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf ./dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+
+rm /auto/home5/hoj9/dhcp-4.2.6/client/*.gcda
+rm /auto/home5/hoj9/dhcp-4.3.1/client/*.gcda

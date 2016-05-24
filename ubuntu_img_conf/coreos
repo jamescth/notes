@@ -1,0 +1,14 @@
+# install vagrant & virtualbox
+sudo apt-get -y install git
+
+# do we want to use NIS account???
+# sudo apt-get install vagrant
+# git
+# git clone https://github.com/coreos/coreos-vagrant.git
+# cd coreos-vagrant
+# vagrant up
+#     Bringing machine 'default' up with 'virtualbox' provider...
+# vagrant ssh
+# docker run -t -i ubuntu:13.10 bash
+# ps ax
+# logout

@@ -1,0 +1,2 @@
+runq | grep -e "RUNQUEUES" | awk '{ print $2 }' > runq.tmp
+exit

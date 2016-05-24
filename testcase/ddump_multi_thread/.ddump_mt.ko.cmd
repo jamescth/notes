@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_multi_thread/ddump_mt.ko := /auto/home/lsbuild/desktop-295107/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/ddump_multi_thread/ddump_mt.ko /auto/home5/hoj9/testcase/ddump_multi_thread/ddump_mt.o /auto/home5/hoj9/testcase/ddump_multi_thread/ddump_mt.mod.o

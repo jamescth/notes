@@ -1,0 +1,345 @@
+/*
+ * This module measure how much time a kernel function takes.
+ * The time is measure in jiffies (/1000 to get sec). 
+ *
+ * The result is print in kern.info
+ *
+ * required files:
+ * build.sh
+ * Makefile
+ * ddump_module.c
+ * run_ddump
+ *
+ * run build.sh to build ddump_module.ko.
+ * modify Makefile for wherever the kernel build is.
+ *
+ * run_ddump scan /proc/kallsyms to match up the given 
+ * kernel symbol.  Pass the obtained address to 
+ * ddump_module.ko when the module is inserted.
+ *
+ * cp ddump_module.ko & run_ddump to test machine.
+ *
+ * Check workqueue.c as an exmaple.
+ *
+ * on test machine:
+ * run_ddump <kernel symbol>
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/kthread.h>
+#include <linux/pid.h>
+#include <linux/timer.h>
+#include <linux/mm.h>
+#include <linux/pagemap.h>
+#include <linux/completion.h>
+#include <linux/cpumask.h>
+#include <asm/atomic.h>
+
+#define HELPERS		4
+
+extern unsigned long end_pfn;
+
+// 1st probe kernel symbol
+static pid_t target_pid = -1;
+module_param(target_pid, int, 0000);
+
+
+// timer
+static struct timer_list ddump_timer;
+
+/*
+ *global variables
+ */
+static int ddump_nr_cpus = 0;
+	// artemis: 32 cpus, 3 HU, 128 / 256 GB
+	// kuma: 80 cpus, 4 HU, 128 / 256 GB
+
+static int ddump_current_cpu = -1;
+static int max_helpers = -1;
+static int ddump_done = 0;
+
+static atomic64_t	app_zero_pages;
+static atomic64_t	app_non_zero_pages;
+static atomic64_t	app_other_pages;
+
+typedef struct {
+	// make sure it's 8 bytes aligned
+	struct task_struct	*cp_thread;
+	int			cp_cpu;
+	int			cp_range;
+	int			cp_order;
+	unsigned long		cp_app_zero_pages;
+	unsigned long		cp_app_non_zero_pages;
+	unsigned long		cp_app_other_pages;
+	struct completion	cp_buff_io_read;
+	struct completion	cp_buff_io_write;
+} ddump_comp_task_t;
+
+static ddump_comp_task_t	ddump_thread_helper[HELPERS];
+static struct task_struct	*ddump_tp;
+
+// function prototype
+static int start_ddump_helper(void);
+static void ddump_run_helper(long);
+static struct vm_area_struct *first_vma(struct task_struct *, struct vm_area_struct *);
+static struct vm_area_struct *next_vma(struct vm_area_struct *, struct vm_area_struct *);
+static int walk_through_vma(struct task_struct *, ddump_comp_task_t *);
+
+static void ddump_timer_callback(unsigned long data)
+{
+	start_ddump_helper();
+}
+
+static void ddump_run_helper(long data)
+{
+	printk("James is here current %p pid %d index %ld target %p pid %d mm %p\n",
+		current, current->pid, data, ddump_tp, ddump_tp->pid, ddump_tp->mm);
+
+	walk_through_vma(ddump_tp, &ddump_thread_helper[data]);
+	complete(&ddump_thread_helper[data].cp_buff_io_read);
+}
+
+static struct vm_area_struct *first_vma(struct task_struct *tsk,
+					struct vm_area_struct *gate_vma)
+{
+	struct vm_area_struct *ret = tsk->mm->mmap;
+
+	if (ret)
+		return ret;
+	return gate_vma;
+}
+
+static struct vm_area_struct *next_vma(struct vm_area_struct *this_vma,
+					struct vm_area_struct *gate_vma)
+{
+	struct vm_area_struct *ret;
+
+	ret = this_vma->vm_next;
+	if (ret)
+		return ret;
+	if (this_vma == gate_vma)
+		return NULL;
+	return gate_vma;
+}
+
+static int ddump_percpu_thread(void* data)
+{
+	// if someone calls kthread_stop() on this thread, return.
+	// otherwise, keep going.
+	long	i = (long) data;
+
+	set_current_state(TASK_INTERRUPTIBLE);
+	while (!kthread_should_stop()) {
+		schedule();
+
+		// condition to run helper
+		ddump_run_helper(i);
+
+		set_current_state(TASK_INTERRUPTIBLE);
+	}
+	__set_current_state(TASK_RUNNING);
+	return 0;
+}
+
+static int start_ddump_helper(void)
+{
+	int	index = 0;
+	for (; index < max_helpers ; index++) {
+		wake_up_process(ddump_thread_helper[index].cp_thread);
+	}
+
+	return 0;
+}
+
+static void ddump_percpu_thread_create(void)
+{
+//	struct task_struct *ddump_thread_helper;
+	int	index = 0, order = 1;
+	int	cpu = 0;	// need to figure out how to bind CPU
+	struct task_struct *tmp_thread;
+
+	for (; index < HELPERS ; index++, cpu++, order++) {
+
+		// if we have used all cpus, stop
+		if (cpu == ddump_nr_cpus) {
+			break;
+		}
+
+		// we don't want to assign any helper to the current cpu
+		if (cpu == ddump_current_cpu) {
+			cpu++;
+		}
+
+		tmp_thread = kthread_create(ddump_percpu_thread,
+					    (void *)index,
+					    "ddump_helper/%d",
+					    cpu);
+
+		printk("James kthread %p\n", tmp_thread);
+
+		ddump_thread_helper[index].cp_thread = tmp_thread;
+		ddump_thread_helper[index].cp_order = order;
+
+		// bind thread to the cpu
+		if (likely(!IS_ERR(ddump_thread_helper[index].cp_thread))) {
+			ddump_thread_helper[index].cp_cpu = cpu;
+
+			kthread_bind(tmp_thread, cpu);
+		} else {
+		// cant create thread
+		// in real case, do single thread
+			panic("CANT create ddump helper\n");
+		}
+
+		wake_up_process(tmp_thread);
+	}
+
+	max_helpers = index;
+}
+
+static int
+walk_through_vma(struct task_struct *tp, ddump_comp_task_t *compt)
+{
+	struct vm_area_struct 	*vma = NULL;
+	struct vm_area_struct 	*gate_vma= NULL;
+	int                     blk_in_chunk = 0;
+	int			ret;
+
+	for (vma = first_vma(tp, gate_vma) ; vma != NULL ;
+			vma = next_vma(vma, gate_vma)) {
+
+		unsigned long addr;
+		unsigned long pages_in_vma = 0;
+
+#if 0
+		if (!maydump_elf_vma(vma, mm_flags)) {
+			// Dbg("VMA <%lx> startva <%lx> skipped!", 
+			// (unsigned long)vma, vma->vm_start);
+			continue;
+		}
+#endif
+		for (addr = vma->vm_start; addr < vma->vm_end;
+			 addr += PAGE_SIZE) {
+
+			struct vm_area_struct *vma_temp;
+			struct page           *page;
+
+			ret = get_user_pages(tp, tp->mm,
+				addr, 1, 0, 1, &page, &vma_temp);
+
+
+			// JAMES
+			// use atomic increment for the globals
+			// the buffer issue
+			if (ret > 0) { 
+				if (page == ZERO_PAGE(page)) {
+					compt->cp_app_zero_pages++;
+					atomic64_inc(&app_zero_pages);
+					//memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+					//	0, PAGE_SIZE);
+				} else {
+					compt->cp_app_non_zero_pages++;
+					atomic64_inc(&app_non_zero_pages);
+					//kaddr = kmap_atomic(page, 0);
+					//memcpy(primary->scratch + (blk_in_chunk * PAGE_SIZE), 
+					//	kaddr, PAGE_SIZE);
+					//kunmap_atomic(kaddr, 0);
+				}
+				page_cache_release(page);
+
+			}  else {
+				compt->cp_app_other_pages++;
+				atomic64_inc(&app_other_pages);
+				//memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+				//	0, PAGE_SIZE);
+			}
+
+			// take a break here.
+		}
+	}
+}
+
+static void run_master_thread(void)
+{
+	int	index;
+
+	start_ddump_helper();
+#if 0	
+	// setup timer
+	setup_timer(&ddump_timer, ddump_timer_callback, 0);
+
+	ret = mod_timer(&ddump_timer, jiffies+ msecs_to_jiffies(500));
+	if (ret) {
+		printk("Error in mod_timer\n");
+	}
+#endif
+
+	while (! ddump_done) {
+
+		for ( index = 0 ; index < max_helpers ; index++) {
+			wait_for_completion(&ddump_thread_helper[index].cp_buff_io_read);
+		}
+
+	}
+}
+
+static int __init ddump_mt_init(void)
+{
+	int	ret;
+	int	index;
+
+	ddump_nr_cpus = num_online_cpus();
+	printk("James: cpu # is %d\n", ddump_nr_cpus);
+	ddump_current_cpu = smp_processor_id();
+	printk("James: current_cpu # is %d\n", ddump_current_cpu);
+	printk("James: end_pfn is %lu, mem size is %lu\n", end_pfn, end_pfn * 4096);
+
+	// init
+	atomic64_set(&app_zero_pages, 0);
+	atomic64_set(&app_non_zero_pages, 0);
+	atomic64_set(&app_other_pages, 0);
+
+	// create helper
+	ddump_percpu_thread_create();
+
+	// set up the target
+	if (target_pid == -1) {
+		printk("No pid addigned\n");
+		return -1;
+	}
+
+	ddump_tp = find_task_by_pid_type(PIDTYPE_PID, target_pid);
+	printk("James: panic_thread is %p, pid %d\n", ddump_tp, ddump_tp->pid);
+
+	for ( index = 0 ; index < max_helpers ; index++) {
+		init_completion(&ddump_thread_helper[index].cp_buff_io_read);
+	}
+
+	run_master_thread();
+
+	return 0;
+}
+
+static void __exit ddump_mt_exit(void)
+{
+	int	index = 0;
+	unsigned long		cp_app_zero_pages;
+	unsigned long		cp_app_non_zero_pages;
+	unsigned long		cp_app_other_pages;
+
+	for (; index < max_helpers ; index ++) {
+		kthread_stop(ddump_thread_helper[index].cp_thread);
+		printk("order %d cp_app_zero_pages %ld cp_app_non_zero_pages %ld cp_app_other_pages %ld\n",
+			ddump_thread_helper[index].cp_order,
+			ddump_thread_helper[index].cp_app_zero_pages,
+			ddump_thread_helper[index].cp_app_non_zero_pages,
+			ddump_thread_helper[index].cp_app_other_pages);
+	}
+}
+
+module_init(ddump_mt_init);
+module_exit(ddump_mt_exit);
+
+MODULE_DESCRIPTION("diskdump multithread test");
+MODULE_LICENSE("GPL v2");

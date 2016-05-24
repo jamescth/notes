@@ -1,0 +1,48 @@
+!!!! dd505-11 YOUR DATA IS IN DANGER !!!! # cat maps
+00400000-004c7000 r-xp 00000000 3d:0f 147461                             /bin/bash
+005c6000-005d1000 rw-p 000c6000 3d:0f 147461                             /bin/bash
+005d1000-005f7000 rw-p 005d1000 00:00 0                                  [heap]
+2ba3c3d27000-2ba3c3d3f000 r-xp 00000000 3d:0f 229450                     /lib64/ld-2.3.5.so
+2ba3c3d3f000-2ba3c3d42000 rw-p 2ba3c3d3f000 00:00 0
+2ba3c3e3f000-2ba3c3e41000 rw-p 00018000 3d:0f 229450                     /lib64/ld-2.3.5.so
+2ba3c3e41000-2ba3c3e99000 r-xp 00000000 3d:0f 51385                      /usr/lib64/libncurses.so.5.4
+2ba3c3e99000-2ba3c3f98000 ---p 00058000 3d:0f 51385                      /usr/lib64/libncurses.so.5.4
+2ba3c3f98000-2ba3c3fa6000 rw-p 00057000 3d:0f 51385                      /usr/lib64/libncurses.so.5.4
+2ba3c3fa6000-2ba3c3fa7000 rw-p 2ba3c3fa6000 00:00 0
+2ba3c3fa7000-2ba3c3fa9000 r-xp 00000000 3d:0f 229488                     /lib64/libdl-2.3.5.so
+2ba3c3fa9000-2ba3c40a9000 ---p 00002000 3d:0f 229488                     /lib64/libdl-2.3.5.so
+2ba3c40a9000-2ba3c40ab000 rw-p 00002000 3d:0f 229488                     /lib64/libdl-2.3.5.so
+2ba3c40ab000-2ba3c41c7000 r-xp 00000000 3d:0f 229471                     /lib64/libc-2.3.5.so
+2ba3c41c7000-2ba3c42c6000 ---p 0011c000 3d:0f 229471                     /lib64/libc-2.3.5.so
+2ba3c42c6000-2ba3c42c9000 r--p 0011b000 3d:0f 229471                     /lib64/libc-2.3.5.so
+2ba3c42c9000-2ba3c42cc000 rw-p 0011e000 3d:0f 229471                     /lib64/libc-2.3.5.so
+2ba3c42cc000-2ba3c42da000 rw-p 2ba3c42cc000 00:00 0
+7fffc8863000-7fffc8878000 rw-p 7ffffffea000 00:00 0                      [stack]
+7fffc894c000-7fffc894f000 r-xp 7fffc894c000 00:00 0                      [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+crash> task 23827 | grep mm
+  mm = 0xffff81013ec34c00,
+
+  pgd = 0xffff8100578c6000,
+
+crash> mm_struct 0xffff81013ec34c00
+struct mm_struct {
+  mmap = 0xffff810068dcf978,
+
+crash> set radix 16
+output radix: 16 (hex)
+crash> vm_area_struct 0xffff810068dcf978
+struct vm_area_struct {
+  vm_mm = 0xffff81013ec34c00,
+  vm_start = 0x400000,
+  vm_end = 0x4c7000,
+  vm_next = 0xffff810150859978,
+
+crash> vm_area_struct 0xffff810150859978
+struct vm_area_struct {
+  vm_mm = 0xffff81013ec34c00,
+  vm_start = 0x5c6000,
+  vm_end = 0x5d1000,
+  vm_next = 0xffff810066f4a818,
+

@@ -1,0 +1,967 @@
+syrah6:GOOD
+Apr  3 09:12:42 syrah6 kernel: (E6)[1333469674.344417] Signal 6 posted to ddfs(pid=5202)  by bash(pid=3882)
+Apr  3 09:12:42 syrah6 kernel: (E6)[1333469674.347567] disk_dump: Found 4 app dump devices:using 4 primary 4 mirror
+Apr  3 09:12:42 syrah6 kernel: (E7)[1333469674.347594] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 262144 BLOCK_SECTOR 2248704
+Apr  3 09:12:42 syrah6 kernel: (E7)[1333469674.347643] disk_dump: check_appdump_space: Available dump space :24613164, reqd_sects 64
+Apr  3 09:12:45 syrah6 kernel: (E4)[1333469675.430812]
+Apr  3 09:12:45 syrah6 kernel: (E6)[1333469675.870793] disk_dump: Done. Using Block Map at offset :262144
+Apr  3 09:12:46 syrah6 kernel: (E7)[1333469675.870865] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 262152 BLOCK_SECTOR 2248768
+Apr  3 09:12:46 syrah6 kernel: (E7)[1333469675.870911] disk_dump: check_appdump_space: Available dump space :24612908, reqd_sects 4289176
+Apr  3 09:12:46 syrah6 kernel: (E4)[1333469675.870913]
+Apr  3 09:12:46 syrah6 kernel: (E6)[1333469675.870958] disk_dump: Application Dump Starting at offset :262152
+Apr  3 09:12:51 syrah6 kernel: (E6)[1333469683.257755] disk_dump: Dumping process :ddfs (pid = 5202) pages starting block :262660:...
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.706948] disk_dump: APPDUMP complete. Dumped: 811796 diskblocks - 549136 data pages
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.706977] disk_dump: APPDUMP complete. UnCompressed Blocks: 811796 compressed Blocks- 263983
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.707002] disk_dump: write_appdump_header: ndevs=4 : blocks :263983 : offset :262152 chunksize: 65536
+Apr  3 09:13:01 syrah6 kernel: (E7)[1333469693.870674] disk_dump: measurement
+Apr  3 09:13:01 syrah6 kernel: (E4)[1333469693.870676]
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870722] disk_dump: total vm 827788 shared vm 292523 map count 391
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870746] disk_dump: app zero 27467 non-zero 521669 other 0
+Apr  3 09:13:01 syrah6 kernel: (E4)[1333469693.870747]
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870792] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870815] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870839] disk_dump:             3            44        256    1047095
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870863] disk_dump: blocks 811796 data pages 549136 B4-comp 262660 compressed Blocks 1323
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870887] disk_dump: offset bmap 262144 dump start 262152 blk 267956
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870911] disk_dump: written size (Kb) total 23216 non-comp 2032 comp 21184
+Apr  3 09:13:01 syrah6 kernel: (E4)[1333469693.870912]
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870956] disk_dump: Time       start elf th status phdr
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.870980] disk_dump: 4438144666  1569  31     0      42
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871003] disk_dump:  map  sect status     data        end
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871027] disk_dump:  6342   33    905    10623 4438164211
+Apr  3 09:13:02 syrah6 kernel: (E4)[1333469693.871028]
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871072] disk_dump: APPDUMP total time taken 19545
+
+-rw-r--r--  1 root admin 38168910 Apr  3 09:13 ddfs.core.5202.1333469562.gz
+
+
+
+**********************************************
+
+crash> mod -S /ddr/var/home/sysadmin
+crash> ddump_io_task
+crash> ddump_thread_helper
+crash> ddump_max_helpers
+ddump_max_helpers = $5 = 1
+
+(gdb) b appdump_write_pages
+(gdb) run -vD
+(gdb) p {DumpDevice} 0x50c280
+(gdb) p {struct disk_dump_header} 0x5107a0
+
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.706948] disk_dump: APPDUMP complete. Dumped: 811796 diskblocks - 549136 data pages
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.746857] disk_dump: APPDUMP complete. Dumped: 813932 diskblocks - 551274 data pages
+Apr 11 20:09:37 syrah6 kernel: (E6)[1334200426.715536] disk_dump: APPDUMP complete. Dumped: 811607 diskblocks - 548946 data pages
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.706977] disk_dump: APPDUMP complete. UnCompressed Blocks: 811796 compressed Blocks- 263983
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.746881] disk_dump: APPDUMP complete. UnCompressed Blocks: 813932 compressed Blocks- 262658
+Apr 11 20:09:37 syrah6 kernel: (E6)[1334200426.715560] disk_dump: APPDUMP complete. UnCompressed Blocks: 811607 compressed Blocks- 263985
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.707002] disk_dump: write_appdump_header: ndevs=4 : blocks :263983 : offset :262152 chunksize: 65536
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.746906] disk_dump: write_appdump_header: ndevs=4 : blocks :262658 : offset :262152 chunksize: 65536
+
+do_appdump / orig
+	appdump_blocks = blocks;			<===== for print only
+	appdump_comp_data_blocks = comp_data_blocks;	<===== for print only
+
+	Info("APPDUMP complete. Dumped: %ld diskblocks - %ld data pages", 
+			blocks, total_data_pages);
+	Info("APPDUMP complete. UnCompressed Blocks: %ld compressed Blocks- %ld",
+			blocks,  comp_data_blocks);
+
+	// require comp_data_blocks
+	...
+	        if (write_appdump_headers(ndevs, comp_data_blocks, dump_startoff)) {
+
+	// require blk_offset
+	...
+		    ret_val = write_appdump_bmap(primary, devnum, 
+	    		bmap_offset, dump_startoff, blk_offset, 1);
+
+	appdump_dump_startoff = dump_startoff;
+	appdump_bmap_offset = bmap_offset;
+	appdump_blk_offset = blk_offset;
+
+do_appdump / new
+	// assgin back the result from helpers
+	blocks = ddump_blocks;				< ===== no need?
+	blk_offset = ddump_blk_offset = 0;		< ===== wrong, where set ddump_blk_offset?
+	primary = ddump_primary;			< ===== no need
+
+	Info("APPDUMP complete. Dumped: %ld diskblocks - %ld data pages", 
+		appdump_blocks, total_data_pages);
+	Info("APPDUMP complete. UnCompressed Blocks: %ld compressed Blocks- %ld",
+		appdump_blocks, appdump_comp_data_blocks);
+
+	...
+	write_appdump_headers(ndevs, appdump_comp_data_blocks, dump_startoff)
+	                             ^^^^^^^^^^^^^^^^^^^^^^^^
+	...
+	write_appdump_bmap(primary, devnum, 
+	    		bmap_offset, dump_startoff, ddump_blk_offset, 1);
+	                                            ^^^^^^^^^^^^^^^^
+
+	appdump_dump_startoff = dump_startoff;
+	appdump_bmap_offset = bmap_offset;
+	appdump_blk_offset = ddump_blk_offset;
+
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870722] disk_dump: total vm 827788 shared vm 292523 map count 391
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870746] disk_dump: app zero 27467 non-zero 521669 other 0
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965798] disk_dump: total vm 830025 shared vm 292523 map count 389
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965825] disk_dump: app zero 29483 non-zero 521791 other 0
+Apr 11 20:09:37 syrah6 kernel: (E6)[1334200426.935132] disk_dump: total vm 827992 shared vm 292522 map count 394
+Apr 11 20:09:37 syrah6 kernel: (E6)[1334200426.935156] disk_dump: app zero 27204 non-zero 521742 other 0
+
+page counters: vma walker / write app data
+	app zero => app_zero_pages
+	non-zero => app_non_zero_pages
+	other => app_other_pages
+
+do_appdump()
+	total vm => app_mm_total_vm
+	shared vm => app_mm_shared_vm
+	map count => app_mm_map_count
+
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870792] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870815] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870839] disk_dump:             3            44        256    1047095
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870863] disk_dump: blocks 811796 data pages 549136 B4-comp 262660 compressed Blocks 1323
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965872] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965896] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965920] disk_dump:             3            44        256    1047095
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965944] disk_dump: blocks 813932 data pages 551274 B4-comp 262658 compressed Blocks 0	<=======
+Apr 11 20:09:37 syrah6 kernel: (E6)[1334200426.935202] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr 11 20:09:38 syrah6 kernel: (E6)[1334200426.935225] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 11 20:09:38 syrah6 kernel: (E6)[1334200426.935249] disk_dump:             3            44        256    1047095
+Apr 11 20:09:38 syrah6 kernel: (E6)[1334200426.935274] disk_dump: blocks 811607 data pages 548946 B4-comp 262661 compressed Blocks 1324
+
+	init_diskdump()
+	appdump_block_order comp_block_order
+	header_blocks bitmap_blocks printk_log_blocks total_ram_blocks max_written_mm_size
+
+	do_appdump()
+	block_order
+
+	blocks => appdump_blocks
+	data pages => total_data_pages
+	b4-comp => appdump_blocks_no_data
+	compressed blocks => appdump_comp_data_blocks - appdump_blocks_no_data
+
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870887] disk_dump: offset bmap 262144 dump start 262152 blk 267956
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870911] disk_dump: written size (Kb) total 23216 non-comp 2032 comp 21184
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965968] disk_dump: offset bmap 262144 dump start 262152 blk 0				<=======
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.965992] disk_dump: written size (Kb) total -1048608 non-comp 2024 comp -1050632		<=======
+Apr 11 20:09:38 syrah6 kernel: (E6)[1334200426.935298] disk_dump: offset bmap 262144 dump start 262152 blk 267957
+Apr 11 20:09:38 syrah6 kernel: (E6)[1334200426.935321] disk_dump: written size (Kb) total 23220 non-comp 2036 comp 21184
+
+	bmap => appdump_bmap_offset
+	dump start => appdump_dump_startoff
+	blk => appdump_blk_offset
+	written size total => (appdump_blk_offset - appdump_dump_startoff) << 2
+	non-comp => (appdump_blocks_no_data - appdump_dump_startoff) << 2
+	comp => (appdump_blk_offset - appdump_blocks_no_data) << 2)
+
+
+
+
+
+
+
+
+Apr  3 09:13:01 syrah6 kernel: (E4)[1333469693.870912]
+Apr  3 09:13:01 syrah6 kernel: (E6)[1333469693.870956] disk_dump: Time       start elf th status phdr
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.870980] disk_dump: 4438144666  1569  31     0      42
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871003] disk_dump:  map  sect status     data        end
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871027] disk_dump:  6342   33    905    10623 4438164211
+Apr  3 09:13:02 syrah6 kernel: (E4)[1333469693.871028]
+Apr  3 09:13:02 syrah6 kernel: (E6)[1333469693.871072] disk_dump: APPDUMP total time taken 19545
+
+Apr 10 21:16:49 syrah6 kernel: (E4)[1334118067.965994]
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.966038] disk_dump: Time       start elf th status phdr
+Apr 10 21:16:49 syrah6 kernel: (E6)[1334118067.966062] disk_dump: 4295572226  1643  32     0      41
+Apr 10 21:16:50 syrah6 kernel: (E6)[1334118067.966085] disk_dump:  map  sect status     data        end
+Apr 10 21:16:50 syrah6 kernel: (E6)[1334118067.966108] disk_dump:  7300   67   1804    11447 4295594560
+Apr 10 21:16:50 syrah6 kernel: (E4)[1334118067.966110]
+Apr 10 21:16:50 syrah6 kernel: (E6)[1334118067.966154] disk_dump: APPDUMP total time taken 22334
+
+
+crash> mod -S /ddr/var/home/sysadmin
+crash> ddump_io_task
+crash> ddump_thread_helper
+crash> ddump_max_helpers
+
+
+Apr 11 18:12:48 localhost kernel: [REPLAY](E4)[1334192862.190379] JJ blocks 262641 blk_offset 262641 comp_data_blocks 262641
+Apr 11 18:12:48 localhost kernel: [REPLAY](E4)[1334192862.190402] James panic cpu is 0
+Apr 11 18:12:48 localhost kernel: [REPLAY](E4)[1334192862.190461] vma wakes helper 1
+
+crash> ddump_io_task
+ddump_io_task = $3 = (struct task_struct *) 0xffff81002e9df500
+crash> ddump_max_helpers
+ddump_max_helpers = $4 = 1
+
+
+
+Apr 12 10:21:20 syrah6 kernel: (E4)[1334251489.291787] io thread handling EOF
+Apr 12 10:21:20 syrah6 kernel: (E4)[1334251489.291813] ndevs 4, blk_in_chunk 2, blk_off 267970, filled 39922, db 264013
+Apr 12 10:41:23 syrah6 kernel: (E4)[1334252690.932022] ndevs 4, blk_in_chunk 2, blk_off 267964, filled 49656, db 264006
+
+
+Apr 12 13:35:22 syrah6 kernel: (E7)[1334263119.148890] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 262144 BLOCK_SECTOR 2248704
+Apr 12 13:35:22 syrah6 kernel: (E7)[1334263119.148937] disk_dump: check_appdump_space: Available dump space :24613164, reqd_sects 64
+Apr 12 13:35:26 syrah6 kernel: (E6)[1334263121.577846] disk_dump: Done. Using Block Map at offset :262144
+Apr 12 13:35:26 syrah6 kernel: (E7)[1334263121.577926] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 262152 BLOCK_SECTOR 2248768
+Apr 12 13:35:27 syrah6 kernel: (E7)[1334263121.577979] disk_dump: check_appdump_space: Available dump space :24612908, reqd_sects 4304408
+Apr 12 13:35:27 syrah6 kernel: (E6)[1334263121.578029] disk_dump: Application Dump Starting at offset :262152
+Apr 12 13:35:37 syrah6 kernel: (E6)[1334263133.668602] disk_dump: Dumping process :ddfs (pid = 27210) pages starting block :262656:...
+
+Apr 12 13:35:51 syrah6 kernel: (E4)[1334263147.977280] ndevs 4, blk_in_chunk 6, blk_off 267936, filled 48521, db 263977
+Apr 12 13:35:51 syrah6 kernel: (E4)[1334263148.047791] vma awalker awake
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.047818] disk_dump: APPDUMP complete. Dumped: 813630 diskblocks - 550974 data pages
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.047842] disk_dump: APPDUMP complete. UnCompressed Blocks: 813630 compressed Blocks- 263980
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.047867] disk_dump: write_appdump_header: ndevs=4 : blocks :263980 : offset :262152 chunksize: 65536
+Apr 12 13:35:51 syrah6 kernel: (E4)[1334263148.047918]  waiter 0 leaving
+Apr 12 13:35:51 syrah6 kernel: (E7)[1334263148.231475] disk_dump: measurement
+Apr 12 13:35:51 syrah6 kernel: (E4)[1334263148.231477]
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.231523] disk_dump: total vm 829695 shared vm 292522 map count 389
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.231546] disk_dump: app zero 29227 non-zero 521747 other 0
+Apr 12 13:35:51 syrah6 kernel: (E4)[1334263148.231548]
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.231593] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.231616] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 12 13:35:51 syrah6 kernel: (E6)[1334263148.231640] disk_dump:             3            44        256    1047095
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231664] disk_dump: blocks 813630 data pages 550974 B4-comp 262656 compressed Blocks 1324
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231688] disk_dump: offset bmap 262144 dump start 262152 blk 267952
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231712] disk_dump: written size (Kb) total 23200 non-comp 2016 comp 21184
+Apr 12 13:35:52 syrah6 kernel: (E4)[1334263148.231713]
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231757] disk_dump: Time       start elf th status phdr
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231781] disk_dump: 4356446191  2506  69     0      89
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231804] disk_dump:  map  sect status     data        end
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231828] disk_dump: 10033   66   1771    14577 4356475302
+Apr 12 13:35:52 syrah6 kernel: (E4)[1334263148.231830]
+Apr 12 13:35:52 syrah6 kernel: (E6)[1334263148.231874] disk_dump: APPDUMP total time taken 29111
+
+Bad:
+(gdb) p {DumpDevice} 0x50c280
+$1 = {page_offset = 1099511627776, header = 0x5107a0, sub_header = 0x0, bitmap = 0x0, bitmap_len = 0,
+  dumpable_bitmap = 0x0, msgbuf = 0x0, msgbuf_len = 0, byte = 0, bit = 0, segments = 0x0, num_segments = 0,
+  device_fd = 14, dumpfile_fd = 19, fp_popen = 0x50c7d0, dumpfile_off = 70360, data_offset = 73728,
+  device_page_start = 1153433600, appdump_startoff = 1151369216, appdump_lastbmap_idx = 0,
+  dump_dir = 0x50c760 "/ddr/var/core/app-20120412-13.40/", device_name = 0x50c330 "/dev/sdd2",
+  file_name = 0x50c790 "/ddvar/core/ddfs.core.27210.1334262922"}
+Good:
+(gdb)  p {DumpDevice} 0x50c280
+$1 = {page_offset = 1099511627776, header = 0x5107a0, sub_header = 0x0, bitmap = 0x0, bitmap_len = 0,
+  dumpable_bitmap = 0x0, msgbuf = 0x0, msgbuf_len = 0, byte = 0, bit = 0, segments = 0x0, num_segments = 0,
+  device_fd = 14, dumpfile_fd = 19, fp_popen = 0x50c7d0, dumpfile_off = 72864, data_offset = 73728,
+  device_page_start = 1153503232, appdump_startoff = 1151369216, appdump_lastbmap_idx = 0,
+  dump_dir = 0x50c760 "/ddr/var/core/app-20120412-17.54/", device_name = 0x50c330 "/dev/sdd2",
+  file_name = 0x50c790 "/ddvar/core/ddfs.core.32441.1334278439"}
+
+Bad:
+(gdb) p {struct disk_dump_header} 0x5107a0
+$2 = {signature = "APPDUMP", header_version = 3, utsname = {sysname = "Linux", '\0' <repeats 59 times>,
+    nodename = "syrah6.datadomain.com", '\0' <repeats 43 times>, release = "2.6.23-ddr297647", '\0' <repeats 48 times>,
+    version = "#1 SMP Fri Mar 30 14:23:31 PDT 2012", '\0' <repeats 29 times>,
+    machine = "x86_64", '\0' <repeats 58 times>, domainname = "durham.datadomain.com", '\0' <repeats 43 times>},
+  timestamp = {tv_sec = 1334262951, tv_usec = 404276142}, status = 3, block_size = 4096, sub_hdr_size = 1,
+  bitmap_blocks = 44, printk_log_blocks = 256, max_mapnr = 1441792, total_ram_blocks = 1047095,
+  device_blocks = 1050249, written_blocks = 263980, total_reserved_blocks = 303, current_cpu = 1, nr_cpus = 2,
+  ndevs = 4, devnum = 0, chunk_size = 65536, tasks = 0x510980}
+Good:
+(gdb) p {struct disk_dump_header} 0x5107a0
+$3 = {signature = "APPDUMP", header_version = 3, utsname = {sysname = "Linux", '\0' <repeats 59 times>,
+    nodename = "syrah6.datadomain.com", '\0' <repeats 43 times>, release = "2.6.23-ddr297647", '\0' <repeats 48 times>,
+    version = "#1 SMP Fri Mar 30 14:23:31 PDT 2012", '\0' <repeats 29 times>,
+    machine = "x86_64", '\0' <repeats 58 times>, domainname = "durham.datadomain.com", '\0' <repeats 43 times>},
+  timestamp = {tv_sec = 1334278459, tv_usec = 346326906}, status = 3, block_size = 4096, sub_hdr_size = 1,
+  bitmap_blocks = 44, printk_log_blocks = 256, max_mapnr = 1441792, total_ram_blocks = 1047095,
+  device_blocks = 1050249, written_blocks = 263997, total_reserved_blocks = 303, current_cpu = 0, nr_cpus = 2,
+  ndevs = 4, devnum = 0, chunk_size = 65536, tasks = 0x510980}
+
+(gdb)  
+same
+	bitmap_blocks = 44
+	printk_log_blocks = 256
+	total_ram_blocks = 1047095
+	written_blocks = 263980
+	chunk_size = 65536
+
+unknown
+	max_mapnr = 1441792
+	device_blocks = 1050249
+	total_reserved_blocks = 303
+bad
+(gdb) p blocks_read
+$5 = 262656		<= before compression
+
+good
+(gdb) p blocks_read
+$5 = 262673
+(gdb) p lzo
+$6 = {magic_start = 57007, in_size = 32768, out_size = 10795, last_chunk = 0}
+(gdb) p compbuf_offset
+$7 = 16
+
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.035448] disk_dump: APPDUMP complete. Dumped: 814176 diskblocks - 551503 data pages
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.035473] disk_dump: APPDUMP complete. UnCompressed Blocks: 814176 compressed Blocks- 263997
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.035498] disk_dump: write_appdump_header: ndevs=4 : blocks :263997 : offset :262152 chunksize: 65536
+Apr 12 17:54:19 syrah6 kernel: (E7)[1334278640.223000] disk_dump: measurement
+Apr 12 17:54:19 syrah6 kernel: (E4)[1334278640.223001]
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223047] disk_dump: total vm 830532 shared vm 292524 map count 402
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223071] disk_dump: app zero 29734 non-zero 521769 other 0
+Apr 12 17:54:19 syrah6 kernel: (E4)[1334278640.223073]
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223118] disk_dump: app_blk_odr 4 blk_odr 4 comp_blk_odr 3
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223141] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223165] disk_dump:             3            44        256    1047095
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223189] disk_dump: blocks 814176 data pages 551503 B4-comp 262673 compressed Blocks 1324
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223213] disk_dump: offset bmap 262144 dump start 262152 blk 267969
+Apr 12 17:54:19 syrah6 kernel: (E6)[1334278640.223237] disk_dump: written size (Kb) total 23268 non-comp 2084 comp 21184
+Apr 12 17:54:19 syrah6 kernel: (E4)[1334278640.223239]
+
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227065] James panic cpu is 3
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227139] waiter 0 i 0
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227166] waiter 1 i 1
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227172] waiter 2 i 2
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227185] waiter 5 i 4
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227190] waiter 4 i 3
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227211] waiter 6 i 5
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227250] waiter 8 i 7
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227254] waiter 7 i 6
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227256] vma walker wait io ffff8117eaffae60
+Apr 13 15:09:23 vortex6 kernel: (E4)[       837.227278] io thread on cpu 9
+Apr 13 15:09:24 vortex6 kernel: (E4)[       837.227280] io thread wait 0
+Apr 13 15:09:24 vortex6 kernel: (E4)[       837.227633] waiter 0 i 0
+Apr 13 15:09:24 vortex6 kernel: (E4)[       837.227683] io thread wait 1
+
+
+crash> ddump_thread_helper
+ddump_thread_helper = $3 =
+ {{
+    cp_thread = 0xffff81107bd92c60,
+    cp_cpu = 0,
+    cp_issue_wakeup = 1,
+    cp_receive_wakeup = 1,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 10839,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 8,
+    cp_lz = {
+      magic_start = 57007,
+      in_size = 32768,
+      out_size = 10839,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32609
+            }
+          },
+          task_list = {
+            next = 0xffff811030175e78,
+            prev = 0xffff811030175e78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657544,
+              owner = 32617
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b110,
+            prev = 0xffffffff8813b110
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 1,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 172990,
+              owner = 32617
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b138,
+            prev = 0xffffffff8813b138
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f800000 "",
+      mtb_cmprs_buf = 0xffff81101f880000 "\002",
+      mtb_work_buf = 0xffff81101f900000 "¸!\200\037\020\201ÿÿàx\200\037\020\201ÿÿ\vm\200\037\020\201ÿÿ,c\200\037\020\201
+ÿÿlc\200\037\020\201ÿÿÈc\200\037\020\201ÿÿ 0\200\037\020\201ÿÿ\210f\200\037\020\201ÿÿ8\"\200\037\020\201ÿÿ¡\\\200\037\02
+0\201ÿÿ\0201\200\037\020\201ÿÿ 1\200\037\020\201ÿÿp^\200\037\020\201ÿÿ\200^\200\037\020\201ÿÿ\220^\200\037\020\201ÿÿ ^\2
+00\037\020\201ÿÿ@n\200\037\020\201ÿÿh#\200\037\020\201ÿÿÐ^\200\037\020\201ÿÿRb\200\037\020\201ÿÿúb\200\037\020\201ÿÿp0\2
+00\037\020\201ÿÿzf\200\037\020\201ÿÿ\2000\200\037\020\201ÿÿ\2200\200\037\020\201ÿÿ 0\200\037\020\201ÿÿ°0\200\037\020\201
+ÿÿÀ0\200\037\020\201ÿÿÐ0\200\037\020\201ÿÿà0\200\037\020\201ÿÿð0\200\037\020\201ÿÿ\210c\200\037\020\201ÿÿ"
+    }
+  }, {
+    cp_thread = 0xffff8117eaffae60,
+    cp_cpu = 1,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32610
+            }
+          },
+          task_list = {
+            next = 0xffff8110301cde78,
+            prev = 0xffff8110301cde78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32617
+            }
+          },
+          task_list = {
+            next = 0xffff811021351e58,
+            prev = 0xffff811021351e58
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32104
+            }
+          },
+          task_list = {
+            next = 0xffff810592983900,
+            prev = 0xffff810592983900
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f980000 "",
+      mtb_cmprs_buf = 0xffff81101fa00000 "",
+      mtb_work_buf = 0xffff81101fa80000 ""
+    }
+  }, {
+    cp_thread = 0xffff811020b74040,
+    cp_cpu = 2,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32611
+            }
+          },
+          task_list = {
+            next = 0xffff811030207e78,
+            prev = 0xffff811030207e78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b2f0,
+            prev = 0xffffffff8813b2f0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b318,
+            prev = 0xffffffff8813b318
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101fb00000 "",
+      mtb_cmprs_buf = 0xffff81101fb80000 "",
+      mtb_work_buf = 0xffff81101f400000 ""
+    }
+  }, {
+    cp_thread = 0xffff811020a3af60,
+    cp_cpu = 4,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32612
+            }
+          },
+          task_list = {
+            next = 0xffff81102137fe78,
+            prev = 0xffff81102137fe78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b3e0,
+            prev = 0xffffffff8813b3e0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b408,
+            prev = 0xffffffff8813b408
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f480000 "",
+      mtb_cmprs_buf = 0xffff81101f500000 "",
+      mtb_work_buf = 0xffff81101f580000 ""
+    }
+  }, {
+    cp_thread = 0xffff8111d13f8500,
+    cp_cpu = 5,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32613
+            }
+          },
+          task_list = {
+            next = 0xffff811021355e78,
+            prev = 0xffff811021355e78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b4d0,
+            prev = 0xffffffff8813b4d0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b4f8,
+            prev = 0xffffffff8813b4f8
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f600000 "",
+      mtb_cmprs_buf = 0xffff81101f680000 "",
+      mtb_work_buf = 0xffff81101f700000 ""
+    }
+  }, {
+    cp_thread = 0xffff811020a3b780,
+    cp_cpu = 6,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32614
+            }
+          },
+          task_list = {
+            next = 0xffff811021377e78,
+            prev = 0xffff811021377e78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b5c0,
+            prev = 0xffffffff8813b5c0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b5e8,
+            prev = 0xffffffff8813b5e8
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f780000 "",
+      mtb_cmprs_buf = 0xffff81101f000000 "",
+      mtb_work_buf = 0xffff81101f080000 ""
+    }
+  }, {
+    cp_thread = 0xffff8110208e0ca0,
+    cp_cpu = 7,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32615
+            }
+          },
+          task_list = {
+            next = 0xffff811021347e78,
+            prev = 0xffff811021347e78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b6b0,
+            prev = 0xffffffff8813b6b0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b6d8,
+            prev = 0xffffffff8813b6d8
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f100000 "",
+      mtb_cmprs_buf = 0xffff81101f180000 "",
+      mtb_work_buf = 0xffff81101f200000 ""
+    }
+  }, {
+    cp_thread = 0xffff8111d0824040,
+    cp_cpu = 8,
+    cp_issue_wakeup = 0,
+    cp_receive_wakeup = 0,
+    cp_app_zero_pages = 0,
+    cp_app_non_zero_pages = 0,
+    cp_app_other_pages = 0,
+    cp_n_comped = 0,
+    cp_fail = false,
+    cp_eof = false,
+    cp_blk_in_chunk = 0,
+    cp_lz = {
+      magic_start = 0,
+      in_size = 0,
+      out_size = 0,
+      last_chunk = 0
+    },
+    cp_buf = {
+      mtb_state = DDUMP_BUF_CLEAN,
+      mtb_cmplt_vmaw = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 2657430,
+              owner = 32616
+            }
+          },
+          task_list = {
+            next = 0xffff81102133fe78,
+            prev = 0xffff81102133fe78
+          }
+        }
+      },
+      mtb_cmplt_comp = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b7a0,
+            prev = 0xffffffff8813b7a0
+          }
+        }
+      },
+      mtb_cmplt_io = {
+        done = 0,
+        wait = {
+          lock = {
+            raw_lock = {
+              slock = 1
+            },
+            tracker = {
+              caller = 0,
+              owner = 0
+            }
+          },
+          task_list = {
+            next = 0xffffffff8813b7c8,
+            prev = 0xffffffff8813b7c8
+          }
+        }
+      },
+      mtb_scratch = 0xffff81101f280000 "",
+      mtb_cmprs_buf = 0xffff81101f300000 "",
+      mtb_work_buf = 0xffff81101f380000 ""
+    }
+  }}
+

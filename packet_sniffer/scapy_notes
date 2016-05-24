@@ -1,0 +1,24 @@
+http://www.academia.edu/7524463/Scapy_Documentation_Philippe_Biondi_and_the_Scapy_community
+
+sudo apt-get install tcpdump graphviz imagemagick python-gnuplot python-crypto python
+
+$ sudo scapy
+>>> pkts = rdpcap('test.cap')
+>>> pkts.show()
+0000 Ether / IP / TCP 137.69.76.181:5901 > 137.69.76.113:58631 PA / Raw
+0001 Ether / IP / TCP 137.69.76.113:58631 > 137.69.76.181:5901 A
+0002 Ether / IP / TCP 137.69.76.181:5901 > 137.69.76.113:58631 PA / Raw
+0003 Ether / IP / TCP 137.69.76.113:58631 > 137.69.76.181:5901 A
+0004 Ether / IP / TCP 137.69.76.113:58631 > 137.69.76.181:5901 A
+0005 Ether / IP / TCP 137.69.76.113:58631 > 137.69.76.181:5901 A
+0006 Ether / IP / TCP 137.69.76.181:5901 > 137.69.76.113:58631 PA / Raw
+0007 Ether / IP / TCP 137.69.76.113:58631 > 137.69.76.181:5901 A
+0008 Ether / IP / TCP 137.69.76.181:5901 > 137.69.76.113:58631 PA / Raw
+...
+
+>>> ports = [5091]
+>>> filtered = (pkt for pkt in pkts if
+...   TCP in pkt and
+...   (pkt[TCP].sport in ports or pkt[TCP].dport in ports))
+>>> wrpcap('/tmp/tt.pcap', filtered)
+

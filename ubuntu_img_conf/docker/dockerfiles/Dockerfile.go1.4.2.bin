@@ -1,0 +1,45 @@
+#docker build -t go-dev:1.4.2 -f Dockerfile.go1.4.2.bin .
+
+FROM ubuntu:14.10
+
+MAINTAINER James Ho
+
+# get the needed packages/libs
+RUN apt-get update -y && apt-get install --no-install-recommends -y -q \
+  openssh-client \
+  curl \
+  build-essential \
+  bison \
+  ca-certificates \
+  git \
+  mercurial \
+  wget \
+  vim-gnome \
+  libpcap0.8-dev \
+  firefox \
+  graphviz \
+  libc6-dbg \
+  gdb
+
+# get go compiler
+# RUN wget --no-check-certificate https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz
+RUN wget https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz
+RUN tar -xzf go1.4.2.linux-amd64.tar.gz -C /
+RUN mv /go /goroot
+
+# install vim-plug
+RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# copy my own files
+COPY .vimrc /root/.vimrc
+
+# set the runtime env
+RUN mkdir -p /gopath/src
+
+ENV GOROOT /goroot
+ENV PATH $GOROOT/bin/:.:$PATH
+ENV GOPATH /gopath
+
+# 
+# CMD cd /gopath/src

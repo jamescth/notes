@@ -1,0 +1,4 @@
+apt-get source linux-image-$(uname -r)
+apt-get build-dep --no-install-recommends linux-image-$(uname -r)
+cd linux-2.6.32/
+fakeroot make -f debian/rules binary-generic skipdbg=false  

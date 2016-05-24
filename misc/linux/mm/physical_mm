@@ -1,0 +1,132 @@
+start_kernel() => setup_arch() => 
+	...
+	init_mm.start_code = (unsigned long) &_text;
+	init_mm.end_code = (unsigned long) &_etext;
+	init_mm.end_data = (unsigned long) &_edata;
+	init_mm.brk = (unsigned long) &_end;
+
+	code_resource.start = virt_to_phys(&_text);
+	code_resource.end = virt_to_phys(&_etext)-1;
+	data_resource.start = virt_to_phys(&_etext);
+	data_resource.end = virt_to_phys(&_edata)-1;
+
+	...
+
+	finish_e820_parsing();
+
+	e820_register_active_regions(0, 0, -1UL);
+	/*
+	 * partially used pages are not usable - thus
+	 * we are rounding upwards:
+	 */
+	end_pfn = e820_end_of_ram();
+	num_physpages = end_pfn;
+
+	check_efer();
+
+	discover_ebda();
+
+	init_memory_mapping(0, (end_pfn_map << PAGE_SHIFT));
+
+	dmi_scan_machine();
+
+	...
+
+	/* How many end-of-memory variables you have, grandma! */
+	max_low_pfn = end_pfn;
+	max_pfn = end_pfn;
+	high_memory = (void *)__va(end_pfn * PAGE_SIZE - 1) + 1;
+
+	/* Remove active ranges so rediscovery with NUMA-awareness happens */
+	remove_all_active_ranges();
+
+	/*
+	 * Parse SRAT to discover nodes.
+	 */
+	acpi_numa_init();
+
+#ifdef CONFIG_NUMA
+	numa_initmem_init(0, end_pfn); 
+#else
+	contig_initmem_init(0, end_pfn);
+#endif
+
+	/* Reserve direct mapping */
+	reserve_bootmem_generic(table_start << PAGE_SHIFT, 
+				(table_end - table_start) << PAGE_SHIFT);
+
+	/* reserve kernel */
+	reserve_bootmem_generic(__pa_symbol(&_text),
+				__pa_symbol(&_end) - __pa_symbol(&_text));
+
+	/*
+	 * reserve physical page 0 - it's a special BIOS page on many boxes,
+	 * enabling clean reboots, SMP operation, laptop functions.
+	 */
+	reserve_bootmem_generic(0, PAGE_SIZE);
+
+	/* reserve ebda region */
+	if (ebda_addr)
+		reserve_bootmem_generic(ebda_addr, ebda_size);
+#ifdef CONFIG_NUMA
+	/* reserve nodemap region */
+	if (nodemap_addr)
+		reserve_bootmem_generic(nodemap_addr, nodemap_size);
+#endif
+
+#ifdef CONFIG_SMP
+	/* Reserve SMP trampoline */
+	reserve_bootmem_generic(SMP_TRAMPOLINE_BASE, 2*PAGE_SIZE);
+#endif
+
+#ifdef CONFIG_ACPI_SLEEP
+       /*
+        * Reserve low memory region for sleep support.
+        */
+       acpi_reserve_bootmem();
+
+	...
+
+	paging_init();
+
+
+add_memory_region()
+
+
+#define E820MAP	0x2d0		/* our map */
+#define E820MAX	128		/* number of entries in E820MAP */
+#define E820NR	0x1e8		/* # entries in E820MAP */
+
+#define E820_RAM	1
+#define E820_RESERVED	2
+#define E820_ACPI	3
+#define E820_NVS	4
+
+struct e820entry {
+	u64 addr;	/* start of memory segment */
+	u64 size;	/* size of memory segment */
+	u32 type;	/* type of memory segment */
+} __attribute__((packed));
+
+struct e820map {
+	u32 nr_map;
+	struct e820entry map[E820MAX];
+};
+
+- Add a memory region to the kernel e820 map.
+  => add_memory_region()
+
+- Find the hole size (in bytes) in the memory range
+  => e820_hole_size()
+
+- Find the highest page frame number we have available
+  => e820_end_of_ram()
+
+
+crash> max_low_pfn
+max_low_pfn = $7 = 1441792
+crash> min_low_pfn
+min_low_pfn = $8 = 0
+crash> max_pfn
+max_pfn = $9 = 1441792
+

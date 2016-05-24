@@ -1,0 +1,21 @@
+crash> _stext
+_stext = $8 = 0xffffffff80209000
+crash> _etext
+_etext = $9 = 0xffffffff804935b4 ""
+crash> __init_begin
+__init_begin = $10 = 0 '\0'
+crash> __init_end
+__init_end = $11 = 0 '\0'
+crash> _end
+_end = $12 = 0xffffffff80bc66d8
+
+crash> __per_cpu_start
+__per_cpu_start = $3 = 0xffffffff808e3000
+crash> __per_cpu_end
+__per_cpu_end = $4 = 0xffffffff808f11b0
+
+# grep runqueues /proc/kallsyms
+ffffffff8033fba0 t kdbm_runqueues
+ffffffff808f0940 d per_cpu__runqueues
+
+

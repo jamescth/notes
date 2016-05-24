@@ -1,0 +1,5 @@
+/usr/bin/ipmitool mc watchdog get
+
+echo 1 > /dev/watchdog
+or
+echo 1 > /proc/kdeadman/knob

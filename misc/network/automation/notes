@@ -1,0 +1,56 @@
+james@ddnetservice:/etc/bind$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0c:29:09:36:b2  
+          inet addr:10.25.142.81  Bcast:10.25.143.255  Mask:255.255.240.0
+          inet6 addr: fe80::20c:29ff:fe09:36b2/64 Scope:Link
+          inet6 addr: 2620:0:170:1106:20c:29ff:fe09:36b2/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+eth1      Link encap:Ethernet  HWaddr 00:0c:29:09:36:bc  
+          inet6 addr: fe80::20c:29ff:fe09:36bc/64 Scope:Link
+          inet6 addr: 2100:dead:cafe:f00d::beef:101/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+eth2      Link encap:Ethernet  HWaddr 00:0c:29:09:36:c6  
+          inet addr:192.168.1.10  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::20c:29ff:fe09:36c6/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+# nsupdate
+> server 192.168.1.10
+> key rndc-key 81vCfqDRe7mOOx9s0NWBKw==
+> zone test.org
+> update add ddr1.test.org 300 IN A 192.168.1.90
+> send
+> zone 1.168.192.in-addr.arpa
+> update add 90.1.168.192.in-addr.arpa 300 IN PTR ddr1.test.org
+> send
+$ nslookup ddr1.test.org
+$ nslookup 192.168.1.90
+
+
+The Network:
+IPv4:
+Network: 192.168.1.0/24
+DNS/DHCP Server Address: 192.168.1.10
+DNS/DHCP Server Name: ddnetservice
+Gateway Address: 192.168.1.254
+Broad Address: 192.168.1.255
+
+IPv6
+network: 2100:dead:cafe:f00d::beef:101/64
+DNS/DHCP Server Address: 2100:dead:cafe:f00d::beef:101
+
+DHCP Server:
+IPv4:
+Dynamic Pool: 192.168.1.101 to 192.168.1.200 
+Static Pool:
+IPv6:
+Dynamic Pool: 2100:dead:cafe:f00d::beef:1000 to 2100:dead:cafe:f00d::beef:2000 
+
+DNS Server:
+Forward Lookup Zone: test.org.
+IPv4 Reverse Lookup Zone:1.168.192.in-addr.arpa.
+IPv6 Reverse Lookup Zone:d.0.0.f.e.f.a.c.d.a.e.d.0.0.1.2.ip6.arpa.
+
+DDNS:
+rndc-key
+81vCfqDRe7mOOx9s0NWBKw==
+

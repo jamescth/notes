@@ -1,0 +1,378 @@
+global:
+	LIST_HEAD(super_blocks);
+
+super_block -> s_fs_info ( ext3_sb_info/<include/linux/ext3_fs_sb.h> )
+
+include/linux/sched.h
+	struct task_struct 
+	struct mm_struct
+	struct sighand_struct
+	struct signal_struct
+	struct user_struct
+
+include/linux/fs.h
+	struct inode
+	struct iattr
+	struct address_space_operations
+	struct address_space
+	struct block_device
+	struct file
+	struct super_block
+	struct block_device_operations
+	struct file_operations
+
+***********************************************************
+include/linux/ext3_fs_sb.h
+	struct ext3_sb_info {
+
+include/linux/jdb.h
+include/linux/jdb2.h
+	struct journal_s
+	struct transaction_s
+
+include/linux/journal-head.h
+	struct journal_head
+
+include/linux/buffer_head.h
+	struct buffer_head {
+
+include/linux/bio.h
+	struct bio {
+
+***********************************************************
+
+fs/ext3/file.c
+
+const struct file_operations ext3_file_operations = {
+	.llseek		= generic_file_llseek,
+	.read		= do_sync_read,
+	.write		= do_sync_write,
+	.aio_read	= generic_file_aio_read,
+	.aio_write	= ext3_file_write,
+	.ioctl		= ext3_ioctl,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl	= ext3_compat_ioctl,
+#endif
+	.mmap		= generic_file_mmap,
+	.open		= generic_file_open,
+	.release	= ext3_release_file,
+	.fsync		= ext3_sync_file,
+	.splice_read	= generic_file_splice_read,
+	.splice_write	= generic_file_splice_write,
+};
+
+const struct inode_operations ext3_file_inode_operations = {
+	.truncate	= ext3_truncate,
+	.setattr	= ext3_setattr,
+#ifdef CONFIG_EXT3_FS_XATTR
+	.setxattr	= generic_setxattr,
+	.getxattr	= generic_getxattr,
+	.listxattr	= ext3_listxattr,
+	.removexattr	= generic_removexattr,
+#endif
+	.permission	= ext3_permission,
+};
+
+struct address_space_operations {
+  writepage = 0xffffffff802e11f0 <ext3_ordered_writepage>,
+  readpage = 0xffffffff802e1620 <ext3_readpage>,
+  sync_page = 0xffffffff802b55a0 <block_sync_page>,
+  writepages = 0,
+  set_page_dirty = 0,
+  readpages = 0xffffffff802e1630 <ext3_readpages>,
+  prepare_write = 0xffffffff802e0d30 <ext3_prepare_write>,
+  commit_write = 0xffffffff802e0f90 <ext3_ordered_commit_write>,
+  bmap = 0xffffffff802e1100 <ext3_bmap>,
+  invalidatepage = 0xffffffff802e1650 <ext3_invalidatepage>,
+  releasepage = 0xffffffff802e1690 <ext3_releasepage>,
+  direct_IO = 0xffffffff802e2b30 <ext3_direct_IO>,
+  get_xip_page = 0,
+  migratepage = 0xffffffff8028bbe0 <buffer_migrate_page>,
+  launder_page = 0
+}
+
+***********************************************************
+bug 49592
+Registry
+Registry code has a state machine and use some complicated hard link tricks to determine
+the current state in the state machine.  Each registry file has two copies, and when 
+one file get corrupted, it'll recover to the old copy.
+
+No file system gurrantees application level data integrity under power fail since it's
+impossible.
+
+It's not registry that makes the checksum check; it is SL.
+
+The state machine and hard links are done to recover from a crash.  However, registry's
+recovery is based on the existence (or absence) of the files, not the validity of the
+checksum.  Once this recovery has been performed, registry calls sl_open() on the file
+that thinks is the correct one.  This appears to be failing in this case, as the error
+message (IO header crc value doesn't match) is from SL.
+
+***********************************************************
+Journaling file system
+A journaling file system is a file sytem that keeps track of the changes that will be
+made in a journal (usually a circular log in a dedicated area of the file system)
+before committing them to the main file system.  In the event of a system crash or 
+power failure, such file systems are quicker to bring back online and less likely to
+become corrupted.
+
+Updating file systems to reflect changes to files directories usually requires seperate
+write operations.  This makes it possible for an interruption (like a power failure or
+system crash) between writes to leave data structures in an invalid intermediate state.
+
+For example, deleting a file on a Unix file system involves two steps:
+	1. Removing its directgory entry.
+	2. Marking space for the file and its inode as free in the free space map.
+if a crash occurs between steps 1 and 2, there will be an orphaned inode and hence a 
+storage leak.  On the other hand, if only step 2 is performed first before the crash,
+the not-yet-deleted file will be marked free and possibly be overwritten by something
+else.
+
+in a non-journaled file system, detecting and recovering from such in consistencies
+requires a complete walk of its data structures.  This must typically be done before
+the file system is next mounted for read-write access.  If the system is large and if
+there is relatively little I/O bandwidth, this can take a long time and result in longer
+downtime if it blocks the rest of the system from coming back online.
+
+To prevents this, a journaling file system allocates a special area -the journal- in 
+which it records the changes it will make, ahead of time.  After a crash, recovery 
+simply involves reading the journal from the file system and replaying changes from this
+journal until the file system is consistent again.  The changes are thus said to be 
+atomic (or indivisible) in that they either:
+	1. succeed (have succeeded originally or be replayed completely during recovery) or
+	2. are not replayed at all (are skipped because they had not yet been completely
+	   written to the journal).
+
+Techniques
+some file systems allow the journal to grow, shrink and be re-allocated just as a regular
+file, while others put the journal in a contiguous area or a hidden file that is 
+guaranteed not to move or change size while the file system is mounted.  Some file 
+systems may also allow external journals on a separate device, such as a solid-state
+disk or battery-backed non-volatile RAM.  Changes to the journal may themselves be 
+journaled for additional redundancy, or the journal may be distributed across multiple
+physical volumes to protect against device failure.
+
+Physical journals
+A physical journal logs an advance copy of every block that will later be written to the
+main file system, followed by a checksum of those blocks.  If there is a crash when the
+main file system is being written to, the write can simply be replayed to completion 
+when the file system is next mounted.  If there is a crash when the write is being logged
+to the journal, the partial write will have a missing or mismatched checksum and can be
+ignored at next mount.
+
+Physical journals impose a significant performance penalty where every block must be
+committed twice to storage, but may be acceptable when absolute fault protection is
+required.
+
+Logical journals
+A logical journal stores only changes to file metadata in the journal, and trades fault
+tolerance for substantially better write performance.  A file system with a logical 
+journal still recovers quickly after a crash, but may allow unjournaled file data and
+jouraled metadata to fall out of sync with each oterh, causing data corruption.
+
+for example, appending to a file may invoe three separate writes to:
+	1. The file's inode, to increase its size.
+	2. The free space map, to mark out an allocation of space for append.
+	3. The newly-allowcated space, to actually write the appended data.
+
+In a metadata-only journal, step 3 would not be logged.  If step 3 wast not done, but
+steps 1 and 2 are replayed during recovery, the file will be appended with garbage.
+
+Write hazards
+The write cache is most operating system sorts its writes (using the elevator algorithm
+or some similar scheme) to maximize throughput.  To avoid an out-of-order write hazard
+with a metadata-only journal, writes for file data must be sorted so that they are
+committed to storage before their associated metadata.  This can be tricky to implement
+because it requires coordination within the operating system kernel between the file
+system driver and write cache.  An out-of-order write hazard can also exist if the
+underlying storage:
+	1. cannot write blocks atomically, or
+	2. does not honor requests to flush its write cache
+
+To complicate matters, many mass storage devices have their own write caches, in which
+they may aggressively reorder writes for better performance.  (this is particularly
+common on magnetic hard drives, which have large seek latencies that can be minimized
+with elevator sorting.)  Some journaly file systems conservatively assume such 
+write-reordering always takes place, and sacrifice performance for correctness by forcing
+the device to flush its cache at certain points in the journal (called barrier in ext3
+or ext4).
+
+Alternatives
+Soft Updates
+Some UFS implementations avoid journaling and instead implement soft updates: they order
+their writes in such a way that the on-disk file system is nerver inconsistent, or that 
+the only inconsistency that can be created in the event of a crash is a storage leak.
+To recover from there leaks, the free space map is reconciled against a full walk of
+the file system  at next mount.  This garbage collection is usually done in the background.
+
+Log-structured file systems
+in log-structured file systems, the write-twice penalty does not apply because the journal
+itself is the file system: it occupies the entire storage device and is structured so that
+it can be traversed as would a normal file system.
+
+Copy-on-write file systems
+Full copy-on-write file systems (such as Btrfs) avoid in-place changes to file data by 
+writing out the data in newly allocated blocks, followed by updated metadata that would
+point to the new data and disown the old, followed by metadata pointing to that, and so
+on up to the superblock, or the root of the file system hierarchy.  This has the same
+correctness-preserving properties as a journal, but also avoids the write-twice overhead.
+Such file systems, however, were not feasible until the recent discovery of the necessary
+copy-on-write-friendly data structures.
+
+***********************************************************
+EXT4
+Any existing Ext3 filesystem can be mounted as Ext4 without any on-disk format changes.
+Howevr, it is possible to upgrade an Ext3 filesystem to take advantage of some Ext4 
+features by running a couple of commands in read-only mode.  This means that you can 
+imporve the performance, storage limits and features of your current filesystems without
+reformating and/or reinstalling your OS and software environment.  If you need the 
+advantages of Ext4 on a production system, you can upgrade the filesystem.  The procedure
+is safe and doesn't risk your data (obviously, backup of critical data is recommended, 
+eve if your aren't updating your filesystem).  Ext4 will use the new data structures only
+on new data, the old structures will remain untouched and it will be possible to 
+read/modify them when needed.  this means, that, of course, that if you covert your
+filesystem to Ext4 you won't be able to go back to Ext3 again.
+
+Bigger File System and File Sizes
+Currently, Ext3 support 16TB of maximum file system size and 2TB of maximum file size.
+Ext4 adds 48-bit block addressing, so it will have 1EB of maximum file system size and
+16TB of maximum file size.  Why 48-bit and not 64-bit? There are some limitations that 
+would need to be fixed before making Ext4 fully 64-bit capable, which have not been 
+addressed in Ext4.  The Ext4 data structures have been designed keeping this in mind,
+so a future to Ext4 may implement full 64-bit support at some point.  1 EB will be 
+enough until that happens.
+	1 EB = 1024 PB
+	1 PB = 1024 TB
+
+Sub directory scalability
+Right now the maximum possible number of sub directories contained in a single directory
+in Ext3 is 32000.  Ext4 breaks that limits and allows unlimited number of sub directories.
+
+Extents
+The tradionally Unix-derived file systems like Ext3 use a indirect block mapping scheme to
+keep track of each block used for the blocks corresponding to the data of a file.  This is
+inefficient for large files, specially on large file delete and truncate operations,
+because the mapping keeps an entry for every single block, and big files have many blocks
+-> huge mappings, slow to handle.  Modern file systems use a different approach called
+"extents".  An extent is basically a bunch of contiguous physical blocks.  It basically
+says "The data is in the next n blocks".  For example, a 100 MB file can be allocated into
+a single extent of that size, instead of needing to create the indirect mapping for 25600
+blocks (4 KB per block).  Huge files are split in several extents.  Extents improve the 
+performance and also help to reduce the fragmentation, since an extent encourage continous
+layouts on the disk.
+
+Multiblock allocation
+When Ext3 needs to write new data to the disk, there's a block allocate that dicides which
+free blocks will be used to write the data.  But the Ext3 block allocator only allocates
+one block (4KB) at a time.  That means that if the system needs to write the 100MB data 
+mentioned in the previous point, it will need to call the block allocator 25600 times.
+Not only this is inefficient, it doesn't allow the block allocator to optimize the
+allocation policy because it doesn't know how many total data is being allocated, it only
+knows about a single block.  Ext4 uses a "multiblock allocator" (mballoc) which allocates
+many blocks in a single call, instead of a single block per call, avoiding a lot of
+overhead.  This improves the performance, and it's particularly useful with delayed
+allocation and extents.  This feature doesn't affect the disk format.  Also, note that the
+Ext4 block/inode allocator has other improvements.
+
+Delayed allocation
+Delayed allocation is a performance feature found in a few modern filesystems such as XFS,
+ZFS, btrfs or Reiser 4, and it consists in delaying the allocation of blocks as much as 
+possible, contrary to what traditionally filesystems (such as Ext3, reiser3, etc) do: 
+allocate the blocks as soon as possible.  For example, if a process write()s, the filesystem
+code will allocate immediately the blocks where the data will be placed - even if the data
+is not being written right now to the disk.  This gives the block allocator the opportunity 
+to optimize the allocation in situations where the old system couldn't.  Delayed allocation
+plays very nicely with the two prvious features mentioned, extents and multiblock
+allocation, because in many workloads when the file is written finally to the disk it will
+be allocated in extents whose block allocations is done with the mballoc allocator.  The
+performance is much better, and the fragmentation is much improved in some workloads.
+
+Fast fsck
+Fsck is a very slow operation, especially the fist step: checking all the inodes in the
+file system.  In Ext4, at the end of each group's inode table will be stored a list of 
+unused inodes (with a checksum, for safety), so fsck will not check those inodes.  The 
+result is that total fsck time improves from 2 to 20 times, depending on the number of used
+inodes.  It must be noticed that it's fsck, and not Ext4, who will build the list of unused
+inodes built, and only the next fsck run will be faster (you need to pass a fsck in order
+to convert a Ext3 filesystem to Ext4 anyway).  There's also a feature that takes part in
+this fsck speed up - "flexible block groups" - that also speeds up file system operations.
+
+Journal checksumming
+The journal is the most used part of the disk, making the blocks that form part of it more
+prone to hardware failure.  And recovering from a corrupted journal can lead to massive
+corruption.  Ext4 checksums the journal data to know if the journal blocks are failing or
+corrupted.  But journal checksumming has a bonus: it allows one to convert the two-phase
+commit system of Ext3's journaling to a single phase, speeding the filesystem operation
+up to 20% in some cases - so reliability and performance are improved at the same time.  
+(Note: the part of the feature that improves the performance, the asynchronous logging, is
+tuned off by default now, and will be enabled in future releases, when its reliability
+improves)
+
+"No Journaling" mode
+Journaling ensures the integrity of the filesystem by keeping a log of the ongoing disk 
+changes.  However, it is known to have a small overhead.  Some people with special
+requirements and workloads can run without a journal and its integrity advantages.  In Ext4
+the journaling feature can be disabled, which provides a small performance improvement.
+
+Online defragmentation
+(This feature is being developed and will be included in future releases).  While dealyed
+allocation, extents and multiblock allocation help to reduce the fragmentation, with usage
+filesystems can still fragment.  For example: you write three files in a directory and 
+continually on the disk.  Some day you need to update the file of the middle, but the
+updated file has grown a bit, so there's not enough room for it.  you have no option but
+fragment the excess of data to another place, far from the other two files, resulting in
+seeks if an application needs to read all the files on a directory (say, a file manager
+doing thumbnails on a directory full of images).  Besides, the filesystem can only care
+about certain types of fragmentation, it can't know, for example, that it must keep all
+the boot-related files contiguous, because it doesn't know which files are boot-related.
+To solve this issue, Ext4 will support online defragmentation, and there's a e4defrag
+tool which can defragment individual files or the whole filesystem.
+
+Inode-related features
+Larger inodes, nanosecond timestamps, fast extended attributes, inodes reservation...
+	1. Larger inodes: Ext3 supports configurable inode sizes (via the -l mkfs parameter),
+	   but the default inode size is 128 bytes.  Ext4 will default to 256 bytes.  This is
+	   needed to accommodate some extra fields (like nanosecond timestamps or inode
+	   versioning), and the remaining space of the inode will be used to store extend
+	   attributes that are small enough to fit it that space.  This will make the access
+	   to those attributes much faster, and improves the performance of applications that
+	   use extend attributes by a factor of 3-7 times.
+	2. Inode reservation consists in reserving several inodes when a directory is created,
+	   expecting that they will be used in the future.  This improves the performance,
+	   because when new files are created in that directory they'll be able to use the
+	   reserved inodes.  File creation and deletion is hence more efficient.
+	3. Nanoseconds timestamps means that inode fields like "modified time" will be able
+	   to use nanosecond resolution instead of the second resolution in Ext3.
+
+Presistent preallocation
+This feature, available in Ext4 in the latest kernel versions, and emulated by glibc in
+the filesystems that don't support it, allows applications to preallocte disk space:
+Applications tell the filesystem to preallocate the space, and the filesystem preallocates
+the necessary blocks and data structures, but there's no data on it until the application
+really needs to write the data in the future.  This is what P2P applications do in their
+own when they "preallocate" the necessary space for a download that will last hours or
+days, but implemented much more efficiently by the filesystem and with a generic API.
+This have several uses: first, to avoid application (like P2P apps) doing it themselves
+inefficiently by filling a file with zeros.  Second, to improve fragmentation, since the
+blocks will be allocated at one time, as contiguously as possible.  Third, to ensure that
+applications has always the space they know they will need, which is important for RT-ish
+application, since without preallocation the filesystem could get full in the middle of an
+important operation.  The feature is available via the libc posix_fallocate() interface.
+
+Barriers on by default
+this is an option that improves the integrity of the filesystem at the cost of some 
+performance (you can disable it with "mount -o barrier=0", recommended trying it if you're
+benchmarking).  From this LWN article: "The filesystem code must, before writing the
+[journaling] commit record, be absolutely sure that all of the transaction's information
+has made it to the journal.  Just doing the writes in the proper order is insufficient;
+contemporary drives maintain large internal cache and will reorder operations for better
+performance.  So the filesystem must explicitly instruct the disk to get all of the journal
+data onto the media before writing the commit record; if the commit record gets written
+first, the journal may be corrupted.  The kernel's block I/O subsystem makes this capability
+available through the use of barriers; in essence, a barrier forbids the writing of any
+blocks after the barrier until all blocks written before the barrier are committed to the
+media.  By using barriers, filesystems can make sure that their on-disk structures remain
+consistent at all times."
+
+

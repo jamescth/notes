@@ -1,0 +1,5 @@
+# https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-14-04
+sudo apt-get -y install git
+
+# install Git from Source
+# sudo apt-get -y install build-essential libssl-dev libcurl4-gnutls-dev libexpat1-dev gettext unzip

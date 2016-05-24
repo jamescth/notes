@@ -1,0 +1,386 @@
+http://iweb.datadomain.com/eweb/process/buildenv/app.php#s_p4
+
+P4 web:
+http://perforce.datadomain.com:8090/
+
+create a new view
+> p4_newclient -h
+> p4_newclient -c hoj9:main -b main
+
+modify p4 config file. can't run under gvim, gotta set EDITOR=vim
+> p4 client
+=================================
+View:
+        //prod/main/app/... //hoj9:main/app/...
+        -//prod/main/app/ddr-shadow/... //hoj9:main/ddr-shadow/...
+        //prod/main/platform/... //hoj9:main/platform/...
+        //prod/main/tools/... //hoj9:main/tools/...
+
+download source files
+> p4 sync
+
+> p4 sync @<changelog-id>
+
+check out file
+> p4 edit <path/file>
+
+see which files checked out
+> p4 opened
+
+view change
+> p4 diff
+
+p4 changes
+	[hoj9@jho1-dl linux-2.6.23]$ p4 changes -ml drivers/acpi/...
+	Change 133699 on 2009/10/05 by muwu@muwu:main3 'add /proc and registry tunables'
+	Change 120628 on 2009/07/15 by muwu@muwu:main 'use power button press as a tri'
+	Change 103422 on 2009/04/20 by muwu@muwu:main2 'merge nk to main  reviewed-by: '
+
+check for the diff
+	[hoj9@jho1-dl acpi]$ p4 describe 133699
+	Change 133699 by muwu@muwu:main3 on 2009/10/05 15:16:46
+
+        add /proc and registry tunables for crashdump_on_powerbutton
+
+        reviewed-by: vdurai
+        =bug34495 fix-complete
+
+        p4-workspace: madison:/p4/main3
+        review-url: https://iweb.datadomain.com/review/r/3332/
+
+	Differences ...
+
+	==== //prod/main/app/ddr/include/reg_keys.h#262 (text) ====
+
+	809a810
+	> #define K_config_kernel_crashdump_on_powerbutton  K_config_kernel_"crashdump_on_powerbutton"
+
+p4 submit
+
+delete a view
+	p4 client -d hoj9:<view name>
+
+p4 add <file>
+p4 delete <file>
+
+p4 help commands
+p4 help <command>
+p4 filelog <file>  # Get file change history; Also retrievable from p4 web.
+p4 diff -du umem.c#1 umem.c#2
+p4 diff -du mm/*#1 mm/* > p4_diff_mm.txt
+p4 diff -du include/linux/*#1 include/linux/* > p4_diff_include_linux.txt
+
+build app
+> cd <path>/app
+> buildapp_nightly dd_qostool
+> <path>/app/ddr/tools/dd_qostool/build.out/nightly/
+
+buildapp_nightly:
+alias buildapp_nightly='SRCTOP=$PWD BUILD_ANT=0 BUILD_LEVEL=nightly dd_make'
+
+	cd ${src}/app
+	export SRCTOP=$PWD
+	dd_make BUILD_LEVEL=nightly
+
+	cd <dir>
+	dd_make BUILD_LEVEL=nightly <binary>
+
+go2 mcqueen
+login
+
+copy binary to
+mcqueen:/ddr/bin/dd_qostool
+> scp			<= man scp
+> scp root@mcqueen:/ddr/var/traces/trace.bin .
+> sftp root@mcqueen
+
+
+Build kernel
+> cd /<top work dir>
+	[hoj9@jho1-dl main]$ pwd
+	/p4/main
+
+	[hoj9@jho1-dl main]$ ls
+	app  P4ENV  platform  tools
+
+[hoj9@jho1-dl main]$ p4bundle.pl --ddosdev
+[hoj9@jho1-dl main]$ p4bundle.pl --ddosdev --site dur
+[hoj9@jho1-dl main]$ p4bundle.pl --ddosdev --site rtp
+Running: p4 opened ...
+Determining base change: p4 changes -m1 //prod/main/app/...#have  -- 211023
+Zipping files to 20101004204210_hoj9_211023.zip ...
+  adding: p4/main/app/ddr/tools/dd_qostool/dd_qostool.c (deflated 83%)
+  adding: replay.cmd (deflated 49%)
+  adding: replay2.cmd (deflated 48%)
+  adding: p4info.log (deflated 31%)
+Upload Successful!!
+
+Submitting JOB: ddosdev
+
+########################################################################
+
+##### Your build ID: 20101004204210_hoj9 #####
+##### Your build will be located: /auto/devbuilds/20101004204210_hoj9 #####
+
+You can check your build progress at
+        https://iweb.datadomain.com/eweb/cgi/dev_build_status.php
+
+########################################################################
+
+/auto/devbuilds/20101004204210_hoj9/211023/os/<file>.rpm
+	cd /auto/devbuilds/20101004204210_hoj9/211023/zipsrc
+	verify replay* for build source
+	./linux-2.6.23/arch/x86_64/boot/bzImage
+	mv ^ to machine://ddr/var/vers/boot_bkup/vmlinuz-<new name>
+	cd grub
+
+scp <file>.rpm sysadmin@dd-name:/ddr/var/releases/<file>.rpm
+ddsh -s system upgrade force /ddr/var/releases/<file>.rpm
+
+	if UNSUPPORTED
+		/var/upgrade/dd_ver_db
+
+			DD_COMPATIBLE
+			5.1.*.*
+			4.7.*.*
+
+create a file <workspace>/paltform/os/linux-2.6.23/localversion
+edit the file and add "-ddr<build#>"
+
+make changes
+from <workspace>/platform/os, 'make all'
+	1.
+	kernel will be @ <workspace>/platform/os/linux-2.6.23/arch/x86_64/bzImage
+	copy it to /ddr/var/vers/boot_bkup/<vmlinuz-yourname>
+	edit grup to reflect the change
+	run boot_fsck -n
+
+	2.
+	rm -rf install/*
+	make kernel-pkg
+		=> install/pkg.tar
+
+	scp pkg.tar to test machine
+	untar pkg.tar
+
+	run install.pl
+
+	3. PXE install
+
+	[vdurai@jho1-dl pxelinux.cfg]$ pwd
+	/auto/tftpboot/X86PC/UNDI/ddr-install/pxelinux.cfg
+
+	[vdurai@jho1-dl pxelinux.cfg]$ ls -alt merlot6
+	lrwxrwxrwx  1 vdurai vdurai 8 May 14 15:54 merlot6 -> C0A80808		
+
+	durham
+	hoj9@morgan4:/auto/tftpboot/X86PC/UNDI/ddr-install/pxelinux.cfg
+
+reboot
+
+on concole, hit "P" to stop for kernel seletion
+
+verify kernel objects:
+nm /vmlinux-'uname r' | grep <procedure>
+sum vmlinux-* 
+
+Precheckin Test:
+	[hoj9@jho1-dl main]$ p4bundle.pl --ddosprecheckin
+	Running: p4 opened ...
+	Determining base change: p4 changes -m1 //prod/main/...#have  -- 214544
+	Zipping files to 20101019003526_hoj9_214544.zip ...
+	  adding: p4/main/platform/os/extdrivers/diskdump/diskdump_driver.c (deflated 75%)
+	  adding: p4/main/platform/os/linux-2.6.23/arch/x86_64/kernel/crash.c (deflated 56%)
+	  adding: replay.cmd (deflated 65%)
+	  adding: replay2.cmd (deflated 65%)
+	  adding: p4info.log (deflated 31%)
+	Upload Successful!!
+
+	Submitting JOB: ddosprecheckin
+
+	########################################################################
+
+	##### Your build ID: 20101019003526_hoj9 #####
+	##### Your build will be located: /auto/devbuilds/20101019003526_hoj9 #####
+
+	You can check your build progress at
+	        https://iweb.datadomain.com/eweb/cgi/dev_build_status.php
+
+	########################################################################
+
+review:
+	p4 change
+		get the <id>
+	post-review <id>
+	post-review <id> --target-groups ddnetdev
+
+	review others:
+		in the webpage, look for p4-workspace:
+			aduggal-dl:/ws/main_mce
+
+		/auto/tools/bin/xxdiff64
+		
+submit:
+	p4 change -u <id>
+		add:
+			precheckin: <Token>
+
+		in buzilla:
+			add Target
+			Keywords: target_OK
+
+		p4 submit -c 214554
+		
+machine location:
+	lt_host <machine>
+		> lt_host syrah6
+
+		     Hostname               Section     Row     Rack   PDU
+		-------------------------   -------     ---     ----   ---
+		syrah6.datadomain.com          S1       R3       R5    pdu-s1-r3-r5-1, port 16
+
+		http://pdu-s1-r3-r5-1
+		user/abc123
+
+		Device manager => Control => "port 16" or syrah6 => Reboot immediate
+
+2. kdb
+	echo 1 > /proc/sys/kernel/kdb
+	or
+	ddsh -s reg set config.kernel.kdb=1
+
+	then console
+	ctrl+kdb
+
+	crashdump
+
+change list
+	check self changelist
+		# p4 changes -u hoj9
+	see your pendings
+		# p4 changes -u hoj9 -s pending
+		# p4 opened -a -u hoj9
+	view the changelist
+		# p4 describe -s <changelist>
+	revert w/ files
+		# p4 revert -c <changelist> <files>
+	remove the changelist
+		# p4 change -d <changelist>
+	update time stamp
+		# p4 change <changelist>
+
+integrate
+	without checkout
+		p4 integrate -o -Dt //prod/main/app/ddr/include/reg_keys.h@236602,236602 //prod/5.0/app/ddr/include/reg_keys.h
+
+	w/ checkout 
+		p4 integrate -o //prod/main/...@xxxxx,xxxxx //prod/5.0/... 
+
+	Then
+		p4 resolve
+
+
+    Perforce client commands:
+
+        add         Open a new file to add it to the depot
+        admin       Perform administrative operations on the server
+        annotate    Print file lines along with their revisions
+        branch      Create or edit a branch specification
+        branches    Display list of branches
+        change      Create or edit a changelist description
+        changes     Display list of pending and submitted changelists
+        changelist  Create or edit a changelist description
+        changelists Display list of pending and submitted changelists
+        client      Create or edit a client specification and its view
+        clients     Display list of known clients
+        counter     Display, set, or delete a counter
+        counters    Display list of known counters
+        dbstat      Display size or simple statistics for a database table
+        delete      Open an existing file to delete it from the depot
+        depot       Create or edit a depot specification
+        depots      Display list of depots
+        describe    Display a changelist description
+        diff        Display diff of client file with depot file
+        diff2       Display diff of two depot files
+        dirs        List subdirectories of a given depot directory
+        edit        Open an existing file for edit
+        filelog     List revision history of files
+        files       List files in the depot
+        fix         Mark jobs as being fixed by named changelists
+        fixes       List what changelists fix what job
+        flush       Fake a 'p4 sync' by not moving files
+        fstat       Dump file info
+        group       Change members of a user group
+        groups      List groups (of users)
+        have        List revisions last synced
+        help        Print this help message
+        info        Print out client/server information
+        integrate   Schedule integration from one file to another
+        integrated  Show integrations that have been submitted
+        job         Create or edit a job (defect) specification
+        jobs        Display list of jobs
+        jobspec     Edit the job template
+        label       Create or edit a label specification and its view
+        labels      Display list of labels
+        labelsync   Synchronize label with the current client contents
+        license     Update or display the license file
+        lock        Lock an opened file against changelist submission
+        lockstat    Report lock status of database tables
+        logger      Report what jobs and changelists have changed
+        login       Login to Perforce by obtaining a session ticket
+        logout      Logout of Perforce by removing or invalidating a ticket.
+        logstat     Report size of journal/errorLog/auditLog files
+        logtail     Display the last block(s) of the errorLog
+        monitor     Display current running perforce process information
+        move        Moves files from one location to another
+        obliterate  Remove files and their history from the depot
+        opened      Display list of files opened for pending changelist
+        passwd      Set the user's password on the server (and Windows client)
+        print       Retrieve a depot file to the standard output
+        protect     Modify protections in the server namespace
+        protects    Display protections in place for a given user/path
+        rename      Explains how to rename files
+        reopen      Change the type or changelist number of an opened file
+        resolve     Merge open files with other revisions or files
+        resolved    Show files that have been merged but not submitted
+        revert      Discard changes from an opened file
+        review      List and track changelists (for the review daemon)
+        reviews     Show what users are subscribed to review files
+        set         Set variables in the registry (Windows only)
+        shelve      Store files from a pending changelist into the depot
+        sizes       Display size information for files in the depot
+        submit      Submit open files to the depot
+        sync        Synchronize the client with its view of the depot
+        tag         Tag files with a label
+        tickets     Display list of session tickets for this user
+        triggers    Modify list of server triggers
+        typemap     Modify the file name-to-type mapping table
+        unlock      Release a locked file but leave it open
+        unshelve    Restore shelved files from a pending changelist
+        user        Create or edit a user specification
+        users       Display list of known users
+        verify      Verify that the server archives are intact
+        workspace   Create or edit a client specification and its view
+        workspaces  Display list of known clients
+        where       Show how file names map through the client view
+
+
+GUI base:
+	p4v
+
+# savecore -vD
+
+
+enable #define CONFIG
+p4 edit platform/os/linux-2.6.23.config
+make  menuconfig
+
+
+p4_annotate 'file' > 'file.out'
+
+[hoj9@jho1-dl serial]$ p4 changes -i ...
+Change 103422 on 2009/04/20 by muwu@muwu:main2 'merge nk to main  reviewed-by: '
+Change 96922 on 2009/03/06 by muwu@muwu:nk 'port dd patch of converting ALE'
+Change 65744 on 2008/03/31 by muwu@muwu:nk 'patched the kernel with SGI kdb'
+Change 63835 on 2008/03/13 by muwu@muwu:nk 'check in vanilla linux-2.6.23.1'
+

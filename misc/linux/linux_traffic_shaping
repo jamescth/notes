@@ -1,0 +1,40 @@
+Traffic shaping (also known as "packet shaping" or ITMPs: Internet Traffic Management
+Practices) is the control of computer network traffic in order to optimize or 
+guarantee performance, improve latency, and/or increase usable bandwidth for some
+kinds of packets by delaying other kinds of packets that meet certain criteria.  If
+a link becomes saturated to the point where there is a significant level of connection
+(either upstream or downstrea) latency can rise substantially.  As a result, traffic
+shaping can be used to prevent this from occurring and keep latency in check.  Traffice
+shaping provides a means to control the volume of traffic being sent into a network
+in a specified period (bandwidth throttling), or the maximum rate at which the traffic 
+is sent (rate limiting), or more complex criteria such as GCRA.  This control can be 
+accomplished in many ways and for many reasons; however traffic shaping is always
+achieved by delaying packets.  Traffic shaping is commonly applied at the network
+edges to control traffic entering the network, but can also be applied by the 
+traffic source (for example, computer or network card) or by an element in the 
+network.  Traffic policing is the distinct but related pratice of packet dropping
+and packet marking.
+
+Uses
+Traffic shaping is sometimes applied by traffic sources to ensure the traffic they
+send complies with a contract which may be enforced in the network by a policer.
+
+It is widely used for network traffic engineering, and appears in domestic ISPs'
+networks.
+
+Nodes in an IP network which buffer packets before sending on a link which is at
+capacity result in a traffic shaping effect.  This can appear at for example a low
+bandwidth link (such as dial-up), a particularly expensive WAN link or satellite
+hop.
+
+Traffic shaping is often used in combination with:
+. Differentiated services, integrated services - including traffic classification
+  and prioritization.
+. Weighted round robin (WRR)
+. Random early detection (RED), Weighted RED(WRED) and RED In/Out (RIO) - lessens
+  the possibility of port queue buffer tail drops and this lowers the likelihood of
+  TCP global synchronization.
+. A number of port queue buffers
+. VLAN tagging IEEE 802.1q
+
+

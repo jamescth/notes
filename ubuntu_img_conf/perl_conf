@@ -1,0 +1,14 @@
+sudo apt-get -y install tkpng libpng12-0 libpng12-dev
+sudo apt-get -y install libmysqlclient-dev
+ECHO ================================================================================
+ECHO Please run the following cmds on the box to install the rest of the Perl modules:
+ECHO ================================================================================
+ECHO sudo -i
+ECHO perl -MCPAN -eshell
+ECHO install YAML
+ECHO install Tk::Event
+ECHO install DBI
+ECHO install DBD::mysql
+ECHO install Bundle::LWP
+ECHO exit
+ECHO exit

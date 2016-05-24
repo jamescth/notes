@@ -1,0 +1,18 @@
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/james/golang:/gopath $1
+# xhost +
+# xhost +local:`docker inspect --format='{{ .Config.Hostname }}' $(docker ps -l -q)`
+
+# if dns in containers don't work
+# vi (host) /etc/NetworkManager/NetworkManager.conf
+# #dns=dnsmasq
+
+# Install Latest
+# use (for latest)
+# wget -qO- https://get.docker.com/ | sh
+
+# Pre release
+# wget -qO- https://test.docker.com/ | sh
+
+# Repo
+# sudo apt-get install -y docker.io
+# sudo service docker restart

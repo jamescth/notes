@@ -1,0 +1,6 @@
+eth0b
+ddsh -s net create interface eth0b vlan 100
+ddsh -s net create interface eth0b alias 200
+ddsh -s net destroy eth0b.100
+ddsh -s net destroy eth0b:200
+ddsh -s net config eth0b:300

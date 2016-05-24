@@ -1,0 +1,119 @@
+perf monitor
+	proc
+		top
+		ps
+
+		mpstat	- Report processors related statistics
+			mpstat -P ALL
+			mpstat -P ALL 2 5
+
+		lsof	- list open files
+			lsof -i -U				list all open Internet, x.25 (HP-UX), and UNIX domain files
+			lsof -i 4 -a -p 1234	list  all  open IPv4 network files in use by the process whose PID is 1234
+			lsof -i 6				list only open IPv6 network files
+			lsof /dev/hd4			list all open files on device /dev/hd4
+			lsof /u/abe/foo			find the process that has /u/abe/foo open
+			kill -HUP ‘lsof -t /u/abe/bar'
+
+
+		sar
+			-A	equivalent to specifying -bBcdqrRuvwWy -I SUM -n FULL -P ALL
+			-b	I/O and transfer rate statistics
+			-B	paging statistics
+			-c	process creation activity
+			-d	activity for each block device
+			-e hh:mm:ss
+			-f filename
+			-h	
+			-H
+			-i interval
+			-I irq | SUM | ALL | XALL
+			-n DEV | EDEV | SOCK | FULL	Report network statistics
+			-o filename
+			-P cpu | ALL
+			-q	queue length and load averages
+			-r	memory and swap space utilization statistics
+			-R	memory statistics
+			-s hh:mm:ss
+			-t	timestamp
+			-u	CPU utilization
+			-v 	status  of  inode,  file and other kernel tables
+			-V
+			-w	system switching activity
+			-W	swapping statistics
+			-x pid | SELF | ALL		statistics for a given process
+			-X pid | SELF | ALL		the child processes
+			-Y	TTY device activity
+
+			sar -u 2 5
+				report CPU utilization for each 2 seconds, 5 lines are displayed
+
+			sar -l 14 -o int14.file 2 10
+				report statistics on IRQ14 for each 2 seconds, 10 lines are dispalyed
+				saved in int14.file
+
+			sar -r -n DEV -f /var/log/sa/sa16
+				display memory, swap space and network statistics save in sa16
+
+			sar -b 2 5
+			16:29:32          tps      rtps      wtps   bread/s   bwrtn/s
+			16:29:34        19.90      0.00     19.90      0.00    123.38
+			16:29:36         0.00      0.00      0.00      0.00      0.00
+			16:29:38        89.55      0.00     89.55      0.00    555.22
+			Average:        36.48      0.00     36.48      0.00    226.20
+
+				tps		Total number of transfer per second 
+				rtps	Total number of read requests per second
+				bread/s	Total amount of data read in blocks per second
+
+			sar -B 2 3
+			16:41:21     pgpgin/s pgpgout/s   fault/s  majflt/s  pgfree/s pgscank/s pgscand/s pgsteal/s    %vmeff
+			16:41:23         0.00    154.46   4448.02      0.00   1813.86      0.00      0.00      0.00      0.00
+
+				pgpgin/s	Total number of kilobytes paged in from disk
+				fault		Number of page faults (major+minor)
+
+			sar -n [DEV | EDEV | NFS | NFSD | SOCK | ALL ] 2 5
+
+	memory
+		vmstat
+			/proc/meminfo
+			/proc/stat
+			/proc/*/stat
+
+			vmstat -a		active/inactive memory
+			vmstat -f 		the number of forks since boot
+			vmstat -m		slabinfo
+			vmstat -s		a table of various event counters and memory statistics
+			vmstat -d		disk related
+
+		free
+
+	IO
+		iostat - (CPU) statistics and I/O
+			iostat -d 2
+				Display a continuous device report at two second intervals.
+
+			iostat -d 2 6
+				Display six reports at two second intervals for all devices.
+
+			iostat -x hda hdb 2 6
+				Display six reports of extended statistics at two second  intervals  for
+				devices hda and hdb.
+
+			iostat -p ALL -d -x
+
+	Net
+		netstat
+		tcpdump
+			tcpdump -s 100 -w /tmp/tcpdump.out
+		tcptrace
+		nfsstat
+
+		ifconfig
+		ethtool
+
+	file
+		stat <file/dir>
+
+		/proc/fs/cifs/Stats

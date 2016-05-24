@@ -1,0 +1,6088 @@
+./C_RFC3315_SolAdvReqReply.seq -pkt ./C_RFC3315_SolAdvReqReply.def -log 2.html -ti "Part A &#58; Valid Reply message in response to Request"
+./C_RFC3315_ SolAdvReqReply.seq -pkt ./C_RFC3315_SolAdvReqReply.def -log 2.html -ti "Part A & #58; Valid Reply message in response to Request"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 11822487
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462517308
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 10800
+
+ cppstr =  -D'NUT_DUID_TIME=462517308'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462517308'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462517308'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=11822487'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11822487
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462517308
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4737244
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462517308
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462517308'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462517308'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4737244
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462517308
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 5 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_CnfReply.seq -pkt ./C_RFC3315_CnfReply.def -log 3.html -ti "Part B &#58; Valid Reply message in response to Confirm message"
+./C_RFC3315_ CnfReply.seq -pkt ./C_RFC3315_CnfReply.def -log 3.html -ti "Part B &#58; Valid R eply message in response to Confirm message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 2309010
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=2309010'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2309010
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2676953
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2676953
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> Please down interface of  DHCPv6 Client:
+ The Client will be required to send Confirm message when the intaface is upped.
+ then press enter key. 
+lio_stop
+
+
+Wait 5 second
+
+lio_start
+dhcp6c> Please up interface of  DHCPv6 Client:
+ The Client should send Confirm message.
+ You may use another way to send Confirm message .
+ then press enter key. 
+lio_stop
+
+
+Clear Captured Packets (Link0)
+	Send RA(M flag=1): ROUTER --> ALL
+    Receive DHCPv6 Confirm Message
+got DHCPv6 Confirm Message
+Confirm Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 2541448
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518185'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2541448
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518185
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_RenReply.seq -pkt ./C_RFC3315_RenReply.def -log 4.html -ti "Part C &#58; Valid Reply message in response to Renew message"
+./C_RFC3315_ RenReply.seq -pkt ./C_RFC3315_RenReply.def -log 4.html -ti "Part C &#58; Valid R eply message in response to Renew message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 1041976
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=1041976'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 1041976
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2401631
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2401631
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 476103
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+time1:47.5
+time2:52.5
+frame:dhcp6_renew
+Count:3
+recvTimeCnt:1409203102.098153
+senttime1:1409203052.601022
+Received Time is 49.4971311092377
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518303'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 476103
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518303
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_RebReply.seq -pkt ./C_RFC3315_RebReply.def -log 5.html -ti "Part D &#58; Valid Reply message in response to Rebind message"
+./C_RFC3315_ RebReply.seq -pkt ./C_RFC3315_RebReply.def -log 5.html -ti "Part D &#58; Valid R eply message in response to Rebind message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 692506
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462518436'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462518436'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462518436'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=692506'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 692506
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2992064
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518436'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518436'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2992064
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 379098
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Rebind Message
+got DHCPv6 Rebind Message
+Rebind Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9245041
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518436
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+time1:76
+time2:84
+frame:dhcp6_rebind
+Count:2
+recvTimeCnt:1409203275.446293
+senttime1:1409203184.349969
+NG: The Received time error! 
+ 
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_RelReply.seq -pkt ./C_RFC3315_RelReply.def -log 6.html -ti "Part E &#58; Valid Reply message in response to Release message"
+./C_RFC3315_ RelReply.seq -pkt ./C_RFC3315_RelReply.def -log 6.html -ti "Part E &#58; Valid R eply message in response to Release message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 7595091
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=7595091'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7595091
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3526983
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3526983
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Clear Captured Packets (Link0)
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+
+lio_start
+dhcp6c> Please Release Address and information:
+According to RFC3315, 
+   A client sends a Release message to the server
+   that assigned addresses to the client to 
+   indicate that the client will no longer use one
+   or more of the assigned addresses.
+dhcp6c> In order to make client sent Release message. 
+ then press enter key. 
+lio_stop
+
+
+    Receive DHCPv6 Release Message
+got DHCPv6 Release Message
+Release Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7855256
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518608'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7855256
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518608
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+Server1 cannot receive Echo Reply from NUT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_DecReply.seq -pkt ./C_RFC3315_DecReply.def -log 7.html -ti "Part F &#58; Valid Reply message in response to Decline message"
+./C_RFC3315_ DecReply.seq -pkt ./C_RFC3315_DecReply.def -log 7.html -ti "Part F &#58; Valid R eply message in response to Decline message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 13506565
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=13506565'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13506565
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8913433
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8913433
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Clear Captured Packets (Link0)
+    Send DAD NA: SERVER1 --> Lnik-local Allnode Multicast Address
+    Receive DHCPv6 Decline Message
+got DHCPv6 Decline Message
+Decline Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6699345
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462518693'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6699345
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518693
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+
+Clear Captured Packets (Link0)
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+Server1 cannot receive Echo Reply from NUT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_13_CltMsgMCastAddrFormat.seq -pkt ./C_RFC3315_13_CltMsgMCastAddrFormat.def -log 8.html -ti "Part A &#58; Multicast Address"
+./C_RFC3315_ 13_CltMsgMCastAddrFormat.seq -pkt ./C_RFC3315_13_CltMsgMCastAddrFormat.def -log  8.html -ti "Part A &#58; Multicast Address"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 14923038
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462518885
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Stop Capturing Packets (Link0)
+
+ dest IP Address is ff02::1:2 
+ Destination IP address is Multicast Address(ff02::1:2).
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_5_2_UdpPort.seq -pkt ./C_RFC3315_5_2_UdpPort.def -log 9.html -ti "Part B &#58; Valid UDP port"
+./C_RFC3315_ 5_2_UdpPort.seq -pkt ./C_RFC3315_5_2_UdpPort.def -log 9.html -ti "Part B &#58; V alid UDP port"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 8614816
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519016
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Solicit destination UDP port number is 547
+ cppstr =  -D'NUT_DUID_TIME=462519016'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462519016'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462519016'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=8614816'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8614816
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519016
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+Advertise destination UDP port number is 546  
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4962316
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519016
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Request destination UDP port number is 547  
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_5_2_InvalidUdpPort.seq -pkt ./C_RFC3315_5_2_InvalidUdpPort.def -log 10.html -ti "Part C &#58; Invalid UDP port"
+./C_RFC3315_ 5_2_InvalidUdpPort.seq -pkt ./C_RFC3315_5_2_InvalidUdpPort.def -log 10.html -ti  "Part C &#58; Invalid UDP port"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 4610399
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519147
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Solicit destination UDP port number is 547
+ cppstr =  -D'NUT_DUID_TIME=462519147'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462519147'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462519147'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=4610399'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT (Invalid UDP Port)
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4610399
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519147
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+Advertise destination UDP port number is 33536  
+    Receive NS: NUT (Link-local) --> SERVER1 (TGT: Link-local)
+    Send NA: SERVER1 (Link-local) --> NUT (Link-local)
+    Receive ICMP Error Message (Destination Unreachable)
+TN can receive ICMPv6 error message from NUT  
+OK
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_6_CltMsgFormat.seq -pkt ./C_RFC3315_6_CltMsgFormat.def -log 11.html -ti "Client Message Format"
+./C_RFC3315_ 6_CltMsgFormat.seq -pkt ./C_RFC3315_6_CltMsgFormat.def -log 11.html -ti "Client  Message Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 7595172
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519277
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ Address is fe80::28c:faff:fe05:74d0 
+ Identifier is 7595172 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_2_CltIdOpt.seq -pkt ./C_RFC3315_22_2_CltIdOpt.def -log 12.html -ti "Client Identifier Format"
+./C_RFC3315_ 22_2_CltIdOpt.seq -pkt ./C_RFC3315_22_2_CltIdOpt.def -log 12.html -ti "Client Id entifier Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 12589234
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519407
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_CID found
+ Length of DUID is 14 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_2_CltDUIDLLTFormat.seq -pkt ./C_RFC3315_9_2_CltDUIDLLTFormat.def -log 13.html -ti "Part A &#58; DUID-LLT Format"
+./C_RFC3315_ 9_2_CltDUIDLLTFormat.seq -pkt ./C_RFC3315_9_2_CltDUIDLLTFormat.def -log 13.html  -ti "Part A &#58; DUID-LLT Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 8369177
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519538
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_CID found
+DUID type:DHCPv6_DUID_LLT_Ether
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_2_CltDUIDLLTRebootFormat.seq -pkt ./C_RFC3315_9_2_CltDUIDLLTRebootFormat.def -log 14.html -ti "Part B &#58; DUID-LLT Consistency"
+./C_RFC3315_ 9_2_CltDUIDLLTRebootFormat.seq -pkt ./C_RFC3315_9_2_CltDUIDLLTRebootFormat.def - log 14.html -ti "Part B &#58; DUID-LLT Consistency"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 2265552
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519669
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_CID found
+DUID type:DHCPv6_DUID_LLT_Ether
+Clear Captured Packets (Link0)
+==== NUT Initialization ====
+
+reboot> 
+lio_start
+reboot> Reboot NUT.
+reboot>     * Wait until NUT boot up completely.
+reboot>         Ex.) Wait until catch up login prompt.
+reboot> 
+reboot> Press Enter key for continue. 
+lio_stop
+
+
+reboot> 
+
+==== NUT Initialization OK ====
+Wait 10 second
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 13505144
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519669
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_CID found
+DUID type:DHCPv6_DUID_LLT_Ether
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_3_CltDUIDENFormat.seq -pkt ./C_RFC3315_9_3_CltDUIDENFormat.def -log 15.html -ti "Part C &#58; DUID-EN Format"
+./C_RFC3315_ 9_3_CltDUIDENFormat.seq -pkt ./C_RFC3315_9_3_CltDUIDENFormat.def -log 15.html -t i "Part C &#58; DUID-EN Format"
+This test is not supported by NUT now
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_3_CltDUIDENRebootFormat.seq -pkt ./C_RFC3315_9_3_CltDUIDENRebootFormat.def -log 16.html -ti "Part D &#58; DUID-EN Consistency"
+./C_RFC3315_ 9_3_CltDUIDENRebootFormat.seq -pkt ./C_RFC3315_9_3_CltDUIDENRebootFormat.def -lo g 16.html -ti "Part D &#58; DUID-EN Consistency"
+This test is not supported by NUT now
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_4_CltDUIDLLFormat.seq -pkt ./C_RFC3315_9_4_CltDUIDLLFormat.def -log 17.html -ti "Part E &#58; DUID-LL Format"
+./C_RFC3315_ 9_4_CltDUIDLLFormat.seq -pkt ./C_RFC3315_9_4_CltDUIDLLFormat.def -log 17.html -t i "Part E &#58; DUID-LL Format"
+This test is not supported by NUT now
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_9_4_CltDUIDLLRebootFormat.seq -pkt ./C_RFC3315_9_4_CltDUIDLLRebootFormat.def -log 18.html -ti "Part E &#58; DUID-LL Consistency"
+./C_RFC3315_ 9_4_CltDUIDLLRebootFormat.seq -pkt ./C_RFC3315_9_4_CltDUIDLLRebootFormat.def -lo g 18.html -ti "Part E &#58; DUID-LL Consistency"
+This test is not supported by NUT now
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_4_IANAOpt.seq -pkt ./C_RFC3315_22_4_IANAOpt.def -log 19.html -ti "IA_NA Option Format"
+./C_RFC3315_ 22_4_IANAOpt.seq -pkt ./C_RFC3315_22_4_IANAOpt.def -log 19.html -ti "IA_NA Optio n Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 16549481
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462519913
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_IA_NA found
+ IA_NA option Code = 3 
+ IA_NA option Length = 12 
+ IA_NA option Identifier = 4194661584 
+ IA_NA option T1 = 3600 
+ IA_NA option T2 = 5400 
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_10_CltIAIDFormat.seq -pkt ./C_RFC3315_10_CltIAIDFormat.def -log 20.html -ti "Identity Association Consistency"
+./C_RFC3315_ 10_CltIAIDFormat.seq -pkt ./C_RFC3315_10_CltIAIDFormat.def -log 20.html -ti "Ide ntity Association Consistency"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 13824213
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520044
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_IA_NA found
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 13824213
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520044
+Opt_DHCPv6_ElapsedTimeTime = 318
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_IA_NA found
+IAID is same. 
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_3_SrvIdOpt.seq -pkt ./C_RFC3315_22_3_SrvIdOpt.def -log 21.html -ti "Server Identifier Option Format"
+./C_RFC3315_ 22_3_SrvIdOpt.seq -pkt ./C_RFC3315_22_3_SrvIdOpt.def -log 21.html -ti "Server Id entifier Option Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 12371535
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520254
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462520254'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462520254'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462520254'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=12371535'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 12371535
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520254
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8261610
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520254
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+Checking existing option...
+Opt_DHCPv6_SID found
+ Length of DUID is 14 
+Comparing Opt_DHCPv6_SID 
+Code matched.:2 == 2
+Length matched.:14 == 14
+DHCPv6_DUID_LLT_Ether matched.:Type HardwareType Time LinkLayerAddress == Type HardwareType Time LinkLayerAddress
+Type matched.:1 == 1
+HardwareType matched.:1 == 1
+Time matched.:400000 == 400000
+LinkLayerAddress matched.:00:00:00:00:a1:a1 == 00:00:00:00:a1:a1
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_6_IAAddrOpt.seq -pkt ./C_RFC3315_22_6_IAAddrOpt.def -log 22.html -ti "IA Address Option Format"
+./C_RFC3315_ 22_6_IAAddrOpt.seq -pkt ./C_RFC3315_22_6_IAAddrOpt.def -log 22.html -ti "IA Addr ess Option Format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 4306959
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520385
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462520385'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462520385'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462520385'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=4306959'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4306959
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520385
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13326348
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520385
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462520385'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462520385'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13326348
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520385
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 12761016
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520385
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing sub options...
+Opt_DHCPv6_IA_Address found
+ IA address option Code = 5 
+ IA address option Length = 24 
+ IA address option Address = 3ffe:501:ffff:100::abcd 
+ IA address option preferredLifetime = 7200 
+ IA address option ValidLifetime = 7500 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt.def -log 23.html -ti "Part A &#58; Elapsed Time Option in Solicit message"
+./C_RFC3315_ 22_9_ElapTimeOpt.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt.def -log 23.html -ti "Par t A &#58; Elapsed Time Option in Solicit message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9899853
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520559
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_ReqMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_ReqMsg.def -log 24.html -ti "Part B &#58; Elapsed Time Option Format in Request message"
+./C_RFC3315_ 22_9_ElapTimeOpt_ReqMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_ReqMsg.def -log 24 .html -ti "Part B &#58; Elapsed Time Option Format in Request message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 14868062
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520690
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462520690'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462520690'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462520690'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=14868062'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14868062
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520690
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 641633
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520690
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_CnfMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_CnfMsg.def -log 25.html -ti "Part C &#58; Elapsed Time Option Format in Confirm message"
+./C_RFC3315_ 22_9_ElapTimeOpt_CnfMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_CnfMsg.def -log 25 .html -ti "Part C &#58; Elapsed Time Option Format in Confirm message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 6456479
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520820
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462520820'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462520820'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462520820'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=6456479'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6456479
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520820
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 15099746
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520820
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462520820'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462520820'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 15099746
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520820
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> Please down interface of  DHCPv6 Client:
+ The Client will be required to send Confirm message when the intaface is upped.
+ then press enter key. 
+lio_stop
+
+
+Wait 5 second
+
+lio_start
+dhcp6c> Please up interface of  DHCPv6 Client:
+ The Client should send Confirm message.
+ You may use another way to send Confirm message .
+ then press enter key. 
+lio_stop
+
+
+Clear Captured Packets (Link0)
+	Send RA(M flag=1): ROUTER --> ALL
+    Receive DHCPv6 Confirm Message
+got DHCPv6 Confirm Message
+Confirm Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 15660662
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520820
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_RenMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RenMsg.def -log 26.html -ti "Part D &#58; Elapsed Time Option Format in Renew message"
+./C_RFC3315_ 22_9_ElapTimeOpt_RenMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RenMsg.def -log 26 .html -ti "Part D &#58; Elapsed Time Option Format in Renew message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 14165494
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520945
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462520945'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462520945'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462520945'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=14165494'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14165494
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520945
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7419391
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520945
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462520945'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462520945'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7419391
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520945
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 10874021
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462520945
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+time1:47.5
+time2:52.5
+frame:dhcp6_renew
+Count:4
+recvTimeCnt:1409205744.778176
+senttime1:1409205694.327452
+Received Time is 50.4507241249084
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_RebMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RebMsg.def -log 27.html -ti "Part E &#58; Elapsed Time Option Format in Rebind message"
+./C_RFC3315_ 22_9_ElapTimeOpt_RebMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RebMsg.def -log 27 .html -ti "Part E &#58; Elapsed Time Option Format in Rebind message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 11919157
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462521072'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462521072'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462521072'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=11919157'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11919157
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3217576
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462521072'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462521072'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3217576
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7595427
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Rebind Message
+got DHCPv6 Rebind Message
+Rebind Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9600849
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521072
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+time1:76
+time2:84
+frame:dhcp6_rebind
+Count:2
+recvTimeCnt:1409205912.162428
+senttime1:1409205821.062089
+NG: The Received time error! 
+ 
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_RelMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RelMsg.def -log 28.html -ti "Part F &#58; Elapsed Time Option Format in Release message"
+./C_RFC3315_ 22_9_ElapTimeOpt_RelMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_RelMsg.def -log 28 .html -ti "Part F &#58; Elapsed Time Option Format in Release message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 3849743
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521242
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462521242'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462521242'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462521242'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=3849743'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3849743
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521242
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6753284
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521242
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462521242'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462521242'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6753284
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521242
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Clear Captured Packets (Link0)
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+
+lio_start
+dhcp6c> Please Release Address and information:
+According to RFC3315, 
+   A client sends a Release message to the server
+   that assigned addresses to the client to 
+   indicate that the client will no longer use one
+   or more of the assigned addresses.
+dhcp6c> In order to make client sent Release message. 
+ then press enter key. 
+lio_stop
+
+
+    Receive DHCPv6 Release Message
+got DHCPv6 Release Message
+Release Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 5250487
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521242
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_DecMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_DecMsg.def -log 29.html -ti "Part G &#58; Elapsed Time Option Format in Decline message"
+./C_RFC3315_ 22_9_ElapTimeOpt_DecMsg.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_DecMsg.def -log 29 .html -ti "Part G &#58; Elapsed Time Option Format in Decline message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 7726435
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521320
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462521320'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462521320'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462521320'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=7726435'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 7726435
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521320
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6948961
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521320
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462521320'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462521320'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6948961
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521320
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Clear Captured Packets (Link0)
+    Send DAD NA: SERVER1 --> Lnik-local Allnode Multicast Address
+    Receive DHCPv6 Decline Message
+got DHCPv6 Decline Message
+Decline Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3484738
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521320
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 0
+T2= 0
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 0
+ValidLifetime= 0
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Length of Elapsed Time Option is 2 
+ Time of Elapsed Time Option is 0 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_22_9_ElapTimeOpt_maxtime.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_maxtime.def -log 30.html -ti "Part H &#58; Maximum Elapsed Time in elapsed-time field"
+./C_RFC3315_ 22_9_ElapTimeOpt_maxtime.seq -pkt ./C_RFC3315_22_9_ElapTimeOpt_maxtime.def -log  30.html -ti "Part H &#58; Maximum Elapsed Time in elapsed-time field"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 13742267
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462521505'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462521505'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462521505'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=13742267'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13742267
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6033451
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462521505'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462521505'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6033451
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 2500
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 3000
+ValidLifetime= 3500
+#StatusCode Option
+StatusCode= 0 Success 
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 0 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 975
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 975 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 2894
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 2894 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 6817
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 6817 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 14507
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 14507 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 29308
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 29308 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 60227
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 60227 
+    Receive DHCPv6 Renew Message
+got DHCPv6 Renew Message
+Renew Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 13008248
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462521505
+Opt_DHCPv6_ElapsedTimeTime = 65535
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+Elapsed Time = 65535 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_17_1_1_Sol.seq -pkt ./C_RFC3315_17_1_1_Sol.def -log 31.html -ti "Part A &#58; Solicit message format"
+./C_RFC3315_ 17_1_1_Sol.seq -pkt ./C_RFC3315_17_1_1_Sol.def -log 31.html -ti "Part A &#58; So licit message format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 11127130
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462522893
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ Address is fe80::28c:faff:fe05:74d0 
+ Identifier is 11127130 
+Checking existing option...
+Opt_DHCPv6_CID found
+Opt_DHCPv6_ElapsedTime found
+ Length of DUID is 14 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_14_CltMsgRetrans.seq -pkt ./C_RFC3315_14_CltMsgRetrans.def -log 32.html -ti "Part B &#58; Reliability of DHCPv6 Retransmission"
+./C_RFC3315_ 14_CltMsgRetrans.seq -pkt ./C_RFC3315_14_CltMsgRetrans.def -log 32.html -ti "Par t B &#58; Reliability of DHCPv6 Retransmission"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 962185
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523023
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ Address is fe80::28c:faff:fe05:74d0 
+ Identifier is 962185 
+Checking existing option...
+Opt_DHCPv6_CID found
+Opt_DHCPv6_ElapsedTime found
+ Length of DUID is 14 
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 962185
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523023
+Opt_DHCPv6_ElapsedTimeTime = 104
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ Retransmittion Solicit message same as 1st Solicit message
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_17_1_2_SolRetransRT.seq -pkt ./C_RFC3315_17_1_2_SolRetransRT.def -log 33.html -ti "Part C &#58; Retransmission of Solicit Message"
+./C_RFC3315_ 17_1_2_SolRetransRT.seq -pkt ./C_RFC3315_17_1_2_SolRetransRT.def -log 33.html -t i "Part C &#58; Retransmission of Solicit Message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9904657
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523154
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9904657
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523154
+Opt_DHCPv6_ElapsedTimeTime = 109
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 1.09075593948364 sec.
+ Actual RT satisfies RT = IRT + RAND*IRT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_17_1_2_SolRetransMRT.seq -pkt ./C_RFC3315_17_1_2_SolRetransMRT.def -log 34.html -ti "Part D &#58; Maximum Retransmission Time of solicit message"
+./C_RFC3315_ 17_1_2_SolRetransMRT.seq -pkt ./C_RFC3315_17_1_2_SolRetransMRT.def -log 34.html  -ti "Part D &#58; Maximum Retransmission Time of solicit message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Time of Elapsed Time Option is 0 
+
+IRT is 1 sec, MRT is 120 sec
+Retransmitted Maximum Solicitation RT.
+1st 2nd  3rd   4th     5th      6th       7th        8th
+1.1 2.31 4.851 10.1871 21.39291 44.925111 94.3427331 132
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 107
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 1.07084894180298 sec
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 327
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 2.2009129524231 sec
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 776
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 4.49089503288269 sec
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 1654
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 8.7806761264801 sec
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 9668572
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523285
+Opt_DHCPv6_ElapsedTimeTime = 3456
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Actual RT is 18.0203778743744 sec
+Could not get Solicit Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_17_1_2_SolWaitAdv.seq -pkt ./C_RFC3315_17_1_2_SolWaitAdv.def -log 35.html -ti "Part A &#58; Receives Advertise message without Preference Option before first RT elapse"
+./C_RFC3315_ 17_1_2_SolWaitAdv.seq -pkt ./C_RFC3315_17_1_2_SolWaitAdv.def -log 35.html -ti "P art A &#58; Receives Advertise message without Preference Option before first RT  elapse"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 5459486
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523429
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ cppstr =  -D'NUT_DUID_TIME=462523429'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462523429'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462523429'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=5459486'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 5459486
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523429
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 10717983
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523429
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+
+pkt count is  2
+The time between 1st Solicit and Request message was 1.76473498344421 sec.
+It satisfies IRT < RT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_17_1_2_SolNoAdvRT.seq -pkt ./C_RFC3315_17_1_2_SolNoAdvRT.def -log 36.html -ti "Part B &#58; Receives Advertise message without Preference Option after first RT elapse"
+./C_RFC3315_ 17_1_2_SolNoAdvRT.seq -pkt ./C_RFC3315_17_1_2_SolNoAdvRT.def -log 36.html -ti "P art B &#58; Receives Advertise message without Preference Option after first RT  elapse"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 4013931
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523560
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 4013931
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523560
+Opt_DHCPv6_ElapsedTimeTime = 105
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462523560'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462523560'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462523560'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=4013931'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 4013931
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523560
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 36493
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523560
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_1_TransReq.seq -pkt ./C_RFC3315_18_1_1_TransReq.def -log 37.html -ti "Part A &#58; Request message format"
+./C_RFC3315_ 18_1_1_TransReq.seq -pkt ./C_RFC3315_18_1_1_TransReq.def -log 37.html -ti "Part  A &#58; Request message format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 5944792
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523691
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462523691'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462523691'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462523691'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=5944792'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 5944792
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523691
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 3264416
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523691
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_SID found
+Opt_DHCPv6_CID found
+Opt_DHCPv6_ElapsedTime found
+ Identifier is 3264416 
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_1_ReqRetransRT.seq -pkt ./C_RFC3315_18_1_1_ReqRetransRT.def -log 38.html -ti "Part B &#58; Retransmission of Request messages"
+./C_RFC3315_ 18_1_1_ReqRetransRT.seq -pkt ./C_RFC3315_18_1_1_ReqRetransRT.def -log 38.html -t i "Part B &#58; Retransmission of Request messages"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 1511635
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523821
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462523821'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462523821'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462523821'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=1511635'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 1511635
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523821
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14995255
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523821
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+
+pkt count is  2
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14995255
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523821
+Opt_DHCPv6_ElapsedTimeTime = 97
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 0.970345973968506 sec.
+ Actual RT satisfies RT = IRT + RAND*IRT.
+Clear Captured Packets (Link0)
+Stop Capturing Packets (Link0)
+*** Target test finish ***
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+OK
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_1_ReqRetransMRT.seq -pkt ./C_RFC3315_18_1_1_ReqRetransMRT.def -log 39.html -ti "Part C &#58; Maximum Retransmission Time of Request messages"
+./C_RFC3315_ 18_1_1_ReqRetransMRT.seq -pkt ./C_RFC3315_18_1_1_ReqRetransMRT.def -log 39.html  -ti "Part C &#58; Maximum Retransmission Time of Request messages"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 5882720
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462523951'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462523951'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462523951'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=5882720'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 5882720
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Checking existing option...
+Opt_DHCPv6_ElapsedTime found
+ Time of Elapsed Time Option is 0 
+
+pkt count is  2
+
+pkt count is  2
+
+IRT is 1 sec, MRT is 30 sec, MRC is 10
+Retransmitted Maximum Request RT.
+1st 2nd  3rd   4th     5th      6th
+1.1 2.31 4.851 10.1871 21.39291 33
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 105
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 1.05057716369629 sec, RC is 0
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 322
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 2.17099285125732 sec, RC is 1
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 738
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 4.16084694862366 sec, RC is 2
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 1538
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 8.00067019462585 sec, RC is 3
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 14930270
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462523951
+Opt_DHCPv6_ElapsedTimeTime = 3116
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Actual RT is 15.7804980278015 sec, RC is 4
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_1_RetransReq.seq -pkt ./C_RFC3315_18_1_1_RetransReq.def -log 40.html -ti "Part D &#58; Maximum Retransmission Count of Request messages"
+./C_RFC3315_ 18_1_1_RetransReq.seq -pkt ./C_RFC3315_18_1_1_RetransReq.def -log 40.html -ti "P art D &#58; Maximum Retransmission Count of Request messages"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 11977340
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462524089'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462524089'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462524089'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=11977340'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11977340
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+MRC is 10
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 108
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ Retransmission Count is 2. 
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 329
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ Retransmission Count is 3. 
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 783
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ Retransmission Count is 4. 
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 1690
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ Retransmission Count is 5. 
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 11414349
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524089
+Opt_DHCPv6_ElapsedTimeTime = 3441
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ Retransmission Count is 6. 
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_2_TransCnf.seq -pkt ./C_RFC3315_18_1_2_TransCnf.def -log 41.html -ti "Part A &#58; Confirm message format"
+./C_RFC3315_ 18_1_2_TransCnf.seq -pkt ./C_RFC3315_18_1_2_TransCnf.def -log 41.html -ti "Part  A &#58; Confirm message format"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 12990097
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524256
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462524256'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462524256'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462524256'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=12990097'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 12990097
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524256
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 16646615
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524256
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462524256'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462524256'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 16646615
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524256
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> Please down interface of  DHCPv6 Client:
+ The Client will be required to send Confirm message when the intaface is upped.
+ then press enter key. 
+lio_stop
+
+
+Wait 5 second
+
+lio_start
+dhcp6c> Please up interface of  DHCPv6 Client:
+ The Client should send Confirm message.
+ You may use another way to send Confirm message .
+ then press enter key. 
+lio_stop
+
+
+Clear Captured Packets (Link0)
+	Send RA(M flag=1): ROUTER --> ALL
+Could not get Confirm Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_2_CnfRetransRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransRT.def -log 42.html -ti "Part B &#58; Retransmission of Confirm message"
+./C_RFC3315_ 18_1_2_CnfRetransRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransRT.def -log 42.html -t i "Part B &#58; Retransmission of Confirm message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 6074673
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524378
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462524378'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462524378'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462524378'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=6074673'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 6074673
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524378
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 10788746
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524378
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+Clear Captured Packets (Link0)
+ cppstr =  -D'NUT_DUID_TIME=462524378'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462524378'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 10788746
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524378
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> Please down interface of  DHCPv6 Client:
+ The Client will be required to send Confirm message when the intaface is upped.
+ then press enter key. 
+lio_stop
+
+
+Wait 5 second
+
+lio_start
+dhcp6c> Please up interface of  DHCPv6 Client:
+ The Client should send Confirm message.
+ You may use another way to send Confirm message .
+ then press enter key. 
+lio_stop
+
+
+Clear Captured Packets (Link0)
+	Send RA(M flag=1): ROUTER --> ALL
+Could not get Confirm Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_2_CnfRetransMRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransMRT.def -log 43.html -ti "Part C &#58; Maximum Retransmission Time of Confirm message"
+./C_RFC3315_ 18_1_2_CnfRetransMRT.seq -pkt ./C_RFC3315_18_1_2_CnfRetransMRT.def -log 43.html  -ti "Part C &#58; Maximum Retransmission Time of Confirm message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+	Receive DHCPv6 Solicit Message
+got DHCPv6 Solicit Message
+Solicit Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+IdentifierIdentifier = 2762414
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524497
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+
+ cppstr =  -D'NUT_DUID_TIME=462524497'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+cppstr =  -D'NUT_DUID_TIME=462524497'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+**********************************
+
+ cpp:  -D'NUT_DUID_TIME=462524497'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  -D'ID_ADV=2762414'  -D'IA_NA_IDENTIFIER=4194661584'  
+    Send DHCPv6 Advertise Message: SERVER1 --> NUT
+Advertise Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 2762414
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524497
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+	Receive DHCPv6 Request Message
+got DHCPv6 Request Message
+Request Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_OptionRequestOptionCode = 23 OPTION_DNS_SERVERS
+OptionCode = 24 OPTION_DOMAIN_LIST
+OptionCode = 31 PREFIX_INFORMATION
+OptionCode = 27 
+OptionCode = 28 
+OptionCode = 30 
+OptionCode = 29 
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8821952
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524497
+Opt_DHCPv6_ElapsedTimeTime = 0
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 3600
+T2= 5400
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 7200
+ValidLifetime= 7500
+
+ cppstr =  -D'NUT_DUID_TIME=462524497'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+
+ cppstr =  -D'NUT_DUID_TIME=462524497'  -D'NUT_DUID_MAC_ADDR=ether("00:8c:fa:05:74:d0")'  
+    Send DHCPv6 Reply Message: SERVER1 --> NUT
+Reply Message
+
+DHCPv6 OptionValues
+Opt_DHCPv6_SIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:00:00:00:a1:a1
+DUID-LLT TIME = 400000
+IdentifierIdentifier = 8821952
+Opt_DHCPv6_CIDDUID-LLT HardwareType = 1
+DUID-LLT MAC = 00:8c:fa:05:74:d0
+DUID-LLT TIME = 462524497
+Opt_DHCPv6_StatusCodeStatusCode= 0 Success 
+Opt_DHCPv6_IA_NAOption 1
+Identifier= 4194661584
+T1= 50
+T2= 80
+#IA_Addr Option
+Addr= 3ffe:501:ffff:100::abcd
+PreferredLifetime= 100
+ValidLifetime= 200
+
+    Receive DAD NS: :: --> NUT (Addr by DHCP)
+Wait 3 second
+Server1 transmit Echo Request to NUT(global address assigned by DHCP).
+    Send Echo Request: SERVER1 --> NUT (Addr by DHCP)
+    Receive NS: NUT (Addr by DHCP) --> SERVER1 (TGT: Global)
+    Send NA: SERVER1 (Global) --> NUT (Addr by DHCP)
+    Receive Echo Reply: NUT (Addr) (by DHCP) --> SERVER1
+Server1 received Echo Reply from NUT.
+Clear Captured Packets (Link0)
+
+lio_start
+dhcp6c> Please down interface of  DHCPv6 Client:
+ The Client will be required to send Confirm message when the intaface is upped.
+ then press enter key. 
+lio_stop
+
+
+Wait 5 second
+
+lio_start
+dhcp6c> Please up interface of  DHCPv6 Client:
+ The Client should send Confirm message.
+ You may use another way to send Confirm message .
+ then press enter key. 
+lio_stop
+
+
+Clear Captured Packets (Link0)
+	Send RA(M flag=1): ROUTER --> ALL
+Could not get Confirm Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_2_RetransCnf.seq -pkt ./C_RFC3315_18_1_2_RetransCnf.def -log 44.html -ti "Part D &#58; Maximum Retransmission Duration of Confirm message"
+./C_RFC3315_ 18_1_2_RetransCnf.seq -pkt ./C_RFC3315_18_1_2_RetransCnf.def -log 44.html -ti "P art D &#58; Maximum Retransmission Duration of Confirm message"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+Could not get Solicit Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+wait for 32 seconds to complete RELEASE.
+Wait 32 second
+root@ucsc13:~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315 # ./C_RFC3315_18_1_2_ResvCnf.seq -pkt ./C_RFC3315_18_1_2_ResvCnf.def -log 45.html -ti "Part E  &#58; Reserved Address Information"
+./C_RFC3315_ 18_1_2_ResvCnf.seq -pkt ./C_RFC3315_18_1_2_ResvCnf.def -log 45.html -ti "Part E   &#58; Reserved Address Information"
+Start Capturing Packets (Link0)
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop
+
+
+	Send RA(M flag=1): ROUTER --> ALL
+Wait 5 second
+    Send Echo Request: SERVER1 --> NUT (Addr1 by RA)
+Server1 could not receive Echo Reply from NUT.
+
+lio_start
+dhcp6c> According to the following prompt to configure your DHCPv6 Client:
+
+dhcp6c> DHCPv6 Client should send Solicit message 
+dhcp6c> Please set to carry IA-NA Options,
+dhcp6c> Please start NUT (DHCPv6 Client) manually, after press enter key
+
+Please start DHCPv6 after press enter key within 5 seconds. 
+lio_stop
+
+
+Could not get Solicit Message
+NG
+DHCPv6 Client stop
+
+lio_start
+dhcp6c> then press enter key.
+dhcp6c> If NUT has Global address, please remove it. 
+1dhcp6c> Stop the DHCPv6 Client! 
+1lio_stop

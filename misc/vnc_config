@@ -1,0 +1,7 @@
+hostname
+ps uax | grep vnc
+vncserver 
+cd /auto/home5/hoj9/.vnc/
+vi xstartup 
+system-config-services 
+

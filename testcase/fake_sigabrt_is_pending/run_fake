@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# for debug
+# set -x
+
+param1=""
+
+# make sure the module exists
+if [ ! -f ./fake_sigabrt_module.ko ]; then
+	echo "fake_sigabrt_module.ko not found!"
+	exit
+fi
+
+# get the symbol address
+#param1="`cat /proc/kallsyms | grep -i $1 | awk '{print $1}'`"
+# cat /proc/kallsyms | grep -i sigabrt_is_pending | awk '{print $1}'
+
+# get the length of the address
+#len=${#param1}
+
+if [ ! $1 -eq 16 ]; then
+	echo "addr is not 16 digits"
+	exit
+fi
+
+# print the last 8 digits
+# echo ${param1:8}
+
+#echo $1 is 0x$param1
+
+
+# lookup pid
+pid=`pidof $2`
+
+if [ "${pid}" == "" ]; then
+        echo dummy is not running
+        exit
+fi
+
+insmod fake_sigabrt_module.ko long_1=0x$1 long_2=$pid
+
+lsmod | grep fake_sigabrt_module

@@ -1,0 +1,111 @@
+https://fasterdata.es.net/host-tuning/linux/
+
+TCP tuning
+for a host with a 10G NIC, optimized for network paths up to 100ms RTT:
+
+?/etc/sysctl.conf
+# allow testing with buffers up to 64MB
+  net.core.rmem_max = 67108864
+  net.core.wmem_max = 67108864
+# increase Linux autotuning TCP buffer limit to 32MB
+  net.ipv4.tcp_rmem = 4096 87380 33554432
+  net.ipv4.tcp_wmem = 4096 65536 33554432
+# increase the length of the processor input queue
+  net.core.netdev_max_backlog = 30000
+# recommended default congestion control is htcp
+  net.ipv4.tcp_congestion_control=htcp
+# recommended for hosts with jumbo frames enabled
+  net.ipv4.tcp_mtu_probing=1
+
+also add this to /etc/rc.local (where N is the number for your 10G NIC):
+	/sbin/ifconfig ethN txqueuelen 10000
+
+for a host with a 10G NIC optimized for network paths up to 200ms RTT, or a 40G NIC up on paths up to 50ms RTT:
+# allow testing with buffers up to 128MB
+  net.core.rmem_max = 134217728
+  net.core.wmem_max = 134217728
+# increase Linux autotuning TCP buffer limit to 64MB
+net.ipv4.tcp_rmem = 4096 87380 67108864
+  net.ipv4.tcp_wmem = 4096 65536 67108864
+# increase the length of the processor input queue
+  net.core.netdev_max_backlog = 250000
+# recommended default congestion control is htcp
+  net.ipv4.tcp_congestion_control = htcp
+# recommended for hosts with jumbo frames enabled
+  net.ipv4.tcp_mtu_probing = 1
+
+To get a list of congestion control algorithms that available in kernel:
+  sysctl net.ipv4.tcp_available_congestion_control
+
+if cubic and/or htcp are not listed try following:
+  /sbin/modprobe tcp_htcp
+  /sbin/modprobe tcp_cubic
+
+there seems to be bugs in both bic and cubic for a number of versions of linux up to 2.6.33.  Recommended using htcp w/ older kernel to be safe:
+  sysctl -w net.ipv4.tcp_congestion_control=htcp
+
+UDP Tuning
+UDP will not get a full 10Gbps (or more) without some tuning as well. The important factors are:
+.use jumbo frames: performance will be 4-5 times better using 9K MTUs
+.packet size: best performance is MTU size minus packet header size. For example for a 
+ 9000Byte MTU, use 8972 for IPV4, and 8952 for IPV6.
+.socket buffer size: For UDP, buffer size is not related to RTT the way TCP is, but the 
+ defaults are still not large enough. Setting the socket buffer to 4M seems to help a lot in 
+ most cases
+.core selection: UDP at 10G is typically CPU limited, so its important to pick the right core. 
+ This is particularly true on Sandy/Ivy Bridge motherboards.
+
+Sample commands for iperf, iperf3, and nuttnuttcp:
+  nuttcp -l8972 -T30 -u -w4m -Ru -i1 -xc4/4 remotehost
+  iperf3 -l8972 -T30 -u -w4m -b0 -A 4,4  -c remotehost
+  numactl -C 4 iperf -l8972 -T30 -u -w4m -b10G -c remotehost
+
+You may need to try different cores to find the best one for your host. You can use 'mpstat -P 
+ALL 1' to figure out which core is being used for NIC interrupt handling, and then try a core in 
+the same socket, but not the same core. Note that 'top' is not reliable for this.
+
+In general nuttcp seems to be the fastest for UDP. Note that you'll need nuttcp V7.1 or higher 
+to get the "-xc" option.
+
+Even with this tuning, you'll need fast cores to get a full 10Gbps. For example, a 2.9GHz Intel 
+Xeon CPU can get the full 10Gbps line rate, but with a 2.5GHz Intel Xeon CPU, we see only 
+5.9Gbps. The 2.9GHz CPU gets 22 Gbps of UDP using a 40G NIC. 
+
+Processor architectures are being designed to facilitate aggregate capacity (e.g. more cores) at 
+the expense of clock rate. Pushing the clock speeds higher has been problematic, while 
+providing diminishing returns for some use cases. Many newer machines offer more cores, and 
+this generally work great in VMs and for large numbers of small network flows. Single stream 
+performance testing is one use case that benefits from fewer cores, and higher clock speeds.
+
+If you want to see how much you can get with 2 UDP flows, each on a separate core, you can 
+do something like this:
+  nuttcp -i1 -xc 2/2 -Is1 -u -Ru -l8972 -w4m -p 5500 remotehost & \
+  nuttcp -i1 -xc 3/3 -Is2 -u -Ru -l8972 -w4m -p 5501 remotehost & \
+
+Determining CPU Limitations
+If you are running the commands above, but still don't see great performance, use 'mpstat -P 
+ALL 1' to determine how much CPU is being used.  For example, here is a nuttcp test using 
+the suggested command line options, and the result is 5.9 Gbps:
+  [rootjz@llntl-pt1 ~]# ntutcp -l8972 -T10 -u -w4m -Ru -i1 -xc6/6 -p 8888 -P 8889 nersc-pt1.es.net
+  698.6701 MB/  1.00 sec = 5860.7579 Mbps    0 / 81665 ~drop/pkt 0.00 ~%loss
+  ...
+ 6985.8878 MB/ 10.00 sec = 5860.1019 Mbps 99%TX 47 %RX 0 / 816455 drop/pkt 0.00% loss
+
+
+te that nuttcp reports 99% CPU on the transmit host. mpstat on the recieving host confirms 
+that core 6 is not saturated:
+  03:02:41 PM CPU  %usr  %nice   %sys %iowait %irq %soft %steal %guest %idle
+  03:02:42    all  0.27   0.00  18.22    0.00 0.00  1.64   0.00   0.00 79.86
+  ...
+  03:02:42      6  1.04   0.00  61.46    0.00 0.00  6.25   0.00   0.00 31.25
+
+mpstat on the sending host confirms that core 6 is saturated: 
+  03:02:35 PM CPU  %usr  %nice   %sys %iowait %irq %soft %steal %guest %idle
+  03:02:36    all  0.38   0.00  12.55    0.00 0.00  0.25   0.00   0.00 86.82
+  ...
+  03:02:36      6  1.98   0.00  97.03    0.00 0.00  0.99   0.00   0.00  0.00
+
+NIC Tuning
+This can be added to /etc/rc.local to be run at boot time:
+# increase txqueuelen for 10G NICS
+/sbin/ifconfig ethN txqueuelen 10000

@@ -1,0 +1,24 @@
+HWaddr 00:A0:D1:EC:EE:EC  
+
+ddr:
+run: ddsh -s net config eth0b dhcp yes ipversion ipv4
+
+dhcpd:
+Jun  3 17:22:02 TUServer dhcpd: DHCPDISCOVER from 00:a0:d1:ec:ee:ec via eth1
+Jun  3 17:22:03 TUServer dhcpd: DHCPOFFER on 192.168.100.24 to 00:a0:d1:ec:ee:ec via eth1
+Jun  3 17:22:03 TUServer dhcpd: DHCPDISCOVER from 00:a0:d1:ec:ee:ec via eth1
+Jun  3 17:22:03 TUServer dhcpd: DHCPOFFER on 192.168.100.24 to 00:a0:d1:ec:ee:ec via eth1
+Jun  3 17:22:03 TUServer dhcpd: DHCPREQUEST for 192.168.100.24 (192.168.100.1) from 00:a0:d1:ec:ee:ec via eth1
+Jun  3 17:22:03 TUServer dhcpd: DHCPACK on 192.168.100.24 to 00:a0:d1:ec:ee:ec via eth1
+
+# ifconfig eth0b
+eth0b     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC  
+          inet addr:192.168.100.24  Bcast:192.168.100.255  Mask:255.255.255.0
+          inet6 addr: fe80::2a0:d1ff:feec:eeec/64 Scope:Link
+
+ddr:
+run: ddsh -s net config eth0b 2100:bad:cafe:f00d::deed:2/64
+
+dhcpd:
+Jun  3 14:50:02 TUServer dhcpd: DHCPRELEASE of 192.168.100.24 from 00:a0:d1:ec:ee:ec via eth1 (found)
+

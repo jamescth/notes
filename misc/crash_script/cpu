@@ -1,0 +1,293 @@
+crash> cpu_data
+ {{
+    x86 = 6 '\006',
+    x86_vendor = 0 '\0',
+    x86_model = 45 '-',
+    x86_mask = 2 '\002',
+    cpuid_level = 13,
+    x86_capability = {3219913727, 739248128, 0, 80128, 398386175, 0, 1, 0},
+    x86_vendor_id = "GenuineIntel\000\000\000",
+    x86_model_id = "                Genuine Intel(R) CPU  @ 2.30GHz\000\000\000\000\000\000\000\
+000\000\000\000\000\000\000\000\000",
+    x86_cache_size = 20480,
+    x86_clflush_size = 64,
+    x86_cache_alignment = 64,
+    x86_tlbsize = 0,
+    x86_virt_bits = 48 '0',
+    x86_phys_bits = 46 '.',
+    x86_max_cores = 16 '\020',
+    x86_power = 0,
+    extended_cpuid_level = 2147483656,
+    loops_per_jiffy = 2301525,
+    llc_shared_map = {
+      bits = {16711935, 0, 0, 0}
+    },
+    apicid = 0 '\0',
+    booted_cores = 8 '\b',
+    phys_proc_id = 0 '\0',
+    cpu_core_id = 0 '\0'
+  }, {
+...
+
+//  p *_cpu_pda[cpuid]
+crash> p *_cpu_pda[0]
+$118 = {
+  pcurrent = 0xffffffff805d5df0,
+  data_offset = 18446604437888114688,
+  kernelstack = 18446744071570939864,
+  oldrsp = 0,
+  irqcount = -1,
+  cpunumber = 0,
+  irqstackptr = 0xffffc20018199fc0 "",
+  nodenumber = 0,
+  __softirq_pending = 0,
+  __nmi_count = 7453,
+  mmu_state = 2,
+  isidle = 1,
+  active_mm = 0xffff8111bc249b80,
+  apic_timer_irqs = 226135307
+}
+
+// p touch_softlockup_wdog_time[cpuid]
+crash> p touch_softlockup_wdog_time[24]
+$116 = {
+  touch_wdog = {0, 68698, 34, 105212, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  prev_time = 4520812283
+}
+crash> jiffies
+jiffies = $117 = 4520812273
+
+
+crash> per_cpu__kstat
+PER-CPU DATA TYPE:
+  struct kernel_stat per_cpu__kstat;
+PER-CPU ADDRESSES:
+  [0]: ffff810001043950
+  [1]: ffff810001054950
+  [2]: ffff810001065950
+  [3]: ffff810001076950
+  [4]: ffff810001087950
+  [5]: ffff810001098950
+  [6]: ffff8100010a9950
+  [7]: ffff8100010ba950
+  [8]: ffff811840327950
+  [9]: ffff811840338950
+  [10]: ffff811840349950
+
+crash> kernel_stat ffff8118403af950
+struct kernel_stat {
+  cpustat = {
+    user = 581943,
+    nice = 37054,
+    system = 154134,
+    softirq = 57387,
+    irq = 31281,
+    idle = 224537494,
+    iowait = 716785,
+    steal = 0
+  },
+ ...
+
+
+// print stack
+crash> rd -s 0xffff8117d2abffd8 1000
+
+
+crash> irq
+    IRQ: 0
+ STATUS: 0
+HANDLER: ffffffff806a5bc0            <ioapic_chip>
+         typename: ffffffff805ae959  "IO-APIC"
+          startup: ffffffff80219f60  <startup_ioapic_irq>
+         shutdown: ffffffff8025b740  <default_shutdown>
+           enable: ffffffff8025b6e0  <default_enable>
+          disable: ffffffff8025b710  <default_disable>
+              ack: ffffffff8021a220  <ack_apic_edge>
+             mask: ffffffff802193e0  <mask_IO_APIC_irq>
+         mask_ack: 0
+           unmask: ffffffff80219480  <unmask_IO_APIC_irq>
+              eoi: ffffffff8021a240  <ack_apic_level>
+              end: ffffffff8025a240  <noop>
+     set_affinity: ffffffff80219b20  <set_ioapic_affinity_irq>
+        retrigger: ffffffff80219fe0  <ioapic_retrigger_irq>
+         set_type: 0
+         set_wake: 0
+ ACTION: ffffffff806161c0            <irq0>
+          handler: ffffffff8020f660  <timer_interrupt>
+            flags: 1020  ()  (bits 1020 not translated)
+             mask: 0
+             name: ffffffff805add7b  "timer"
+           dev_id: 0
+             next: 0
+  DEPTH: 0
+
+    IRQ: 1
+ STATUS: 0
+HANDLER: ffffffff806a5bc0            <ioapic_chip>
+         typename: ffffffff805ae959  "IO-APIC"
+          startup: ffffffff80219f60  <startup_ioapic_irq>
+         shutdown: ffffffff8025b740  <default_shutdown>
+           enable: ffffffff8025b6e0  <default_enable>
+          disable: ffffffff8025b710  <default_disable>
+              ack: ffffffff8021a220  <ack_apic_edge>
+             mask: ffffffff802193e0  <mask_IO_APIC_irq>
+         mask_ack: 0
+           unmask: ffffffff80219480  <unmask_IO_APIC_irq>
+              eoi: ffffffff8021a240  <ack_apic_level>
+              end: ffffffff8025a240  <noop>
+     set_affinity: ffffffff80219b20  <set_ioapic_affinity_irq>
+        retrigger: ffffffff80219fe0  <ioapic_retrigger_irq>
+         set_type: 0
+         set_wake: 0
+ ACTION: ffff810bec334380
+          handler: ffffffff80424cc0  <i8042_interrupt>
+            flags: 80  ()  (bits 80 not translated)
+             mask: 0
+             name: ffffffff805d62e5  "i8042"
+           dev_id: ffff8117ed277400
+             next: 0
+  DEPTH: 0
+
+    IRQ: 2
+ STATUS: 200 ()
+HANDLER: ffffffff80617720            <i8259A_chip>
+         typename: ffffffff805ae133  "XT-PIC"
+          startup: ffffffff8025b720  <default_startup>
+         shutdown: ffffffff80210ed0  <disable_8259A_irq>
+           enable: ffffffff8025b6e0  <default_enable>
+          disable: ffffffff80210ed0  <disable_8259A_irq>
+              ack: 0
+             mask: ffffffff80210ed0  <disable_8259A_irq>
+         mask_ack: ffffffff80210ed0  <disable_8259A_irq>
+           unmask: ffffffff80210f50  <enable_8259A_irq>
+              eoi: 0
+              end: ffffffff8025a240  <noop>
+     set_affinity: 0
+        retrigger: 0
+         set_type: 0
+         set_wake: 0
+ ACTION: (none)
+  DEPTH: 1
+
+    IRQ: 3
+ STATUS: 200 ()
+HANDLER: ffffffff806a5bc0            <ioapic_chip>
+         typename: ffffffff805ae959  "IO-APIC"
+          startup: ffffffff80219f60  <startup_ioapic_irq>
+         shutdown: ffffffff8025b740  <default_shutdown>
+           enable: ffffffff8025b6e0  <default_enable>
+          disable: ffffffff8025b710  <default_disable>
+              ack: ffffffff8021a220  <ack_apic_edge>
+
+
+crash> irq 16
+    IRQ: 16
+ STATUS: 4000 ()
+HANDLER: ffffffff806a5bc0            <ioapic_chip>
+         typename: ffffffff805ae959  "IO-APIC"
+          startup: ffffffff80219f60  <startup_ioapic_irq>
+         shutdown: ffffffff8025b740  <default_shutdown>
+           enable: ffffffff8025b6e0  <default_enable>
+          disable: ffffffff8025b710  <default_disable>
+              ack: ffffffff8021a220  <ack_apic_edge>
+             mask: ffffffff802193e0  <mask_IO_APIC_irq>
+         mask_ack: 0
+           unmask: ffffffff80219480  <unmask_IO_APIC_irq>
+              eoi: ffffffff8021a240  <ack_apic_level>
+              end: ffffffff8025a240  <noop>
+     set_affinity: ffffffff80219b20  <set_ioapic_affinity_irq>
+        retrigger: ffffffff80219fe0  <ioapic_retrigger_irq>
+         set_type: 0
+         set_wake: 0
+ ACTION: ffff8117edecea40
+          handler: ffffffff88084e80  <mpt_interrupt>
+            flags: 80  ()  (bits 80 not translated)
+             mask: 0
+             name: ffff8117f7f00008  "ioc0"
+           dev_id: ffff8117f7f00000
+             next: ffff8117f7a3ea40
+ ACTION: ffff8117f7a3ea40
+          handler: ffffffff88084e80  <mpt_interrupt>
+            flags: 80  ()  (bits 80 not translated)
+             mask: 0
+             name: ffff810bec44c008  "ioc2"
+           dev_id: ffff810bec44c000
+             next: ffff8117ec4cec40
+ ACTION: ffff8117ec4cec40
+          handler: ffffffff880200f0  <usb_hcd_irq>
+            flags: 80  ()  (bits 80 not translated)
+             mask: 0
+             name: ffff8117eda5b478  "uhci_hcd:usb3"
+           dev_id: ffff8117eda5b400
+             next: ffff8117ed606500
+ ACTION: ffff8117ed606500
+          handler: ffffffff8a3b1830  <qla24xx_intr_handler>
+            flags: a0  ()  (bits a0 not translated)
+             mask: 0
+             name: ffffffff8a3bf3fc  "qla2xxx_ts"
+           dev_id: ffff810e6cdf8518
+             next: ffff8117f1df3c40
+ ACTION: ffff8117f1df3c40
+          handler: ffffffff8a3b1830  <qla24xx_intr_handler>
+            flags: a0  ()  (bits a0 not translated)
+             mask: 0
+             name: ffffffff8a3bf3fc  "qla2xxx_ts"
+           dev_id: ffff810e6d118518
+             next: 0
+  DEPTH: 0
+
+crash> irq 16 | grep handler
+          handler: ffffffff88084e80  <mpt_interrupt>
+          handler: ffffffff88084e80  <mpt_interrupt>
+          handler: ffffffff880200f0  <usb_hcd_irq>
+          handler: ffffffff8a3b1830  <qla24xx_intr_handler>
+          handler: ffffffff8a3b1830  <qla24xx_intr_handler>
+
+
+
+*********************************************************
+%gs points to Per processor data structure (x8664_pda) while the kernel runs
+There is no fast way to get the base addr of the PDA.  All the accesses have
+to mention %fs/%gs.
+
+linux 2.6.23
+crash> set radix hex
+output radix: 16 (hex)
+crash> p *_cpu_pda[0]
+$4 = {
+  pcurrent = 0xffffffff805e7df0,
+  data_offset = 0xffff810080846000,
+
+PER-CPU ADDRESSES:
+  [0]: ffff810001136940 => per_cpu__runqueues  
+       ffffffff808f0940 => kallsyms d per_cpu__runqueues
+     0xffff810080846000 => _cpu_pda
+
+crash> __per_cpu_start
+__per_cpu_start = $7 = 0xffffffff808e3000
+
+crash> __per_cpu_end
+__per_cpu_end = $6 =   0xffffffff808f11b0
+
+*********************************************************
+Linux 3.2
+# grep runq /proc/kallsyms
+0000000000011740 d runqueues
+
+crash> __per_cpu_offset
+__per_cpu_offset = $10 =
+ {0xffff88107f800000,
+  0xffff88307f800000,
+  0xffff88207f800000,
+
+crash> runqueues
+PER-CPU DATA TYPE:
+  struct rq runqueues;
+PER-CPU ADDRESSES:
+  [0]: ffff88107f811740
+  [1]: ffff88307f811740
+  [2]: ffff88207f811740
+

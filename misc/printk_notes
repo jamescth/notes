@@ -1,0 +1,63 @@
+A situation presented itself today where I needed to monitor the ‘dmesg’ 
+output continually.  This is normally easy for regular files because you
+can simply use the command tail -f thefile and it will always present
+you with the latest information.  Well, not so with the dmesg output.
+If you try, you’ll be greeted with some sort of error message.  One way
+around this is to run the dmesg -c command in a while loop like so…
+
+	while true;do dmesg -c;done
+
+Understand that running dmesg -c will clear the dmesg ring buffer
+contents after printing, so you will lose the contents of dmesg.
+
+Now, I’m not 100% sure if that while loop is a totally elegant or
+acceptable solution, so I offer another solution — the 
+/proc/sys/kernel/printk file. According to IBM.com…
+
+    This holds four numeric values that define where logging messages
+	are sent, depending on their importance. For more information on
+	different log levels, read the manpage for syslog(2). The four 
+	values of the file are:
+
+    1. Console Log Level: messages with a higher priority than this 
+	   value will be printed to the console
+    2. Default Message Log Level: messages without a priority will be
+	   printed with this priority
+    3. Minimum Console Log Level: minimum (highest priority) value
+	   that the Console Log Level can be set to
+    4. Default Console Log Level: default value for Console Log Level
+
+    Default setting: 6 4 1 7
+
+By experimenting with these values, you can send printk messages
+directly to the terminal window instead of only to dmesg. You can
+set these values using
+	echo "9 9 9 9" > /proc/sys/kernel/printk
+
+so depending on the level priority you assign to kernel messages in
+syslog.conf, they will be displayed in the log file, most likely 
+/var/log/messages. For the console/dmesg output, look at 
+/proc/sys/kernel/printk.
+
+In the kernel 2.6 two more parameters have been introduced: they 
+are in /proc/sys/kernel/printk_ratelimit (the limit in seconds 
+between two consecutive messages) and 
+/proc/sys/kernel/printk_ratelimit_burst (the number of consecutive
+messages before applying the limitation).
+
+These parameters are configurable by sysctl, adding the 
+corresponding variable-value pairs to /etc/sysctl.conf. The name of
+the parameters and the default values can be seen using Code:
+
+
+normal DDR output:
+# sysctl -a | grep printk
+kernel.printk = 1       4       1       7
+kernel.printk_ratelimit = 5
+kernel.printk_ratelimit_burst = 10
+
+change back to normal:
+echo "1 4 1 7" > /proc/sys/kernel/printk
+crash> rd console_printk 2
+ffffffff805dd350:  0000000400000001 0000000700000001   ................
+

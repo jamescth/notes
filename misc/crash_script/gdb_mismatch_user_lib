@@ -1,0 +1,61 @@
+readelf -a core.1-vtl.core.32586.1329841070 | more
+
+[hoj9@jho1-dl 62789]$ gdb /auto/builds/main/273322/os/tools/multipath/multipath-tools-0.4.8/multipathd/multipathd multipathd.core.28098.1320880549
+
+warning: svr4_current_sos: Can't read pathname for load map: Input/output error
+
+Error while mapping shared library sections:
+/auto/home/lsbuild/desktop-272152/lib64/libdevmapper.so.1.02: No such file or directory.
+...
+
+(gdb) bt
+#0  0x00002ab783d62880 in strchr () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+#1  0x00002ab783d633b7 in strncpy () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+#2  0x00002ab78383887b in ?? ()
+#3  0x0000000000004000 in ?? ()
+#4  0x00002ab783d62d0f in strdup () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+Previous frame inner to this frame (corrupt stack?)
+(gdb)                                                       
+
+
+************************
+solution
+************************
+[hoj9@jho1-dl 62789]$ gdb
+(gdb) set solib-search-path /auto/toolset_nfs/distro/272152/root/lib64
+(gdb) file /auto/builds/main/273322/os/tools/multipath/multipath-tools-0.4.8/multipathd/multipathd
+(gdb) core-file multipathd.core.28098.1320880549
+(gdb) bt
+#0  0x00002ab783d62880 in strchr () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+#1  0x00002ab783d633b7 in strncpy () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+#2  0x00002ab78383887b in dm_task_set_name ()
+   from /auto/toolset_nfs/distro/272152/root/lib64/libdevmapper.so.1.02
+#3  0x000000000041151c in dm_map_present (str=0x0) at devmapper.c:288
+#4  0x0000000000411ae5 in dm_flush_map (mapname=0x0, type=0x433544 "multipath")
+    at devmapper.c:534
+#5  0x000000000040ded2 in coalesce_paths (vecs=0x576460, newmp=0x6f1740, refwwid=0x0)
+    at configure.c:558
+#6  0x0000000000406b0a in configure (vecs=0x576460, start_waiters=1) at main.c:1355
+#7  0x0000000000406ceb in reconfigure (vecs=0x576460) at main.c:1422
+#8  0x000000000040a4b3 in cli_reconfigure (v=0x2aaaaab52e90, reply=0x40074158, len=0x4007416c,
+    data=0x576460) at cli_handlers.c:389
+#9  0x000000000040918b in parse_cmd (cmd=0x2aaaaab299a0 "reconfigure rea", reply=0x40074158,
+    len=0x4007416c, data=0x576460) at cli.c:381
+#10 0x00000000004051c1 in uxsock_trigger (str=0x2aaaaab299a0 "reconfigure rea",
+    reply=0x40074158, len=0x4007416c, trigger_data=0x576460) at main.c:636
+#11 0x0000000000408245 in uxsock_listen (uxsock_trigger=0x405106 <uxsock_trigger>,
+    trigger_data=0x576460) at uxlsnr.c:148
+#12 0x000000000040592a in uxlsnrloop (ap=0x576460) at main.c:819
+#13 0x00002ab7837257bb in start_thread (arg=Variable "arg" is not available.
+) at pthread_create.c:261
+#14 0x00002ab783dabcdd in clone () from /auto/home/lsbuild/desktop-272152/lib64/libc.so.6
+#15 0x0000000000000000 in ?? ()
+(gdb) exit
+
+
+$ ldd netmon | grep libclient
+	libclient.so => /auto/builds/main/488427/app/build.out/nightly/libclient.so (0x00007fbdca2d4000)
+(gdb) set solib-search-path /auto/builds/main/488427/app/build.out/nightly/
+(gdb) file ./netmon
+(gdb) core-file ./netmon.core.30591.1432684652
+

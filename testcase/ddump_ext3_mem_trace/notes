@@ -1,0 +1,357 @@
+cache_grow()
+cache_alloc_refill()
+	x = cache_grow(cachep, flags | GFP_THISNODE, node, NULL);
+fallback_alloc
+	if (cache_grow(cache, flags, nid, obj)) {
+____cache_alloc_node
+	x = cache_grow(cachep, flags | GFP_THISNODE, nodeid, NULL);
+
+free_block
+__drain_alien_cache()
+	free_block(cachep, ac->entry, ac->avail, node);
+cache_free_alien
+	free_block(cachep, &objp, 1, nodeid);
+cpuup_callback
+	if (nc)
+		free_block(cachep, nc->entry, nc->avail, node);
+	shared = l3->shared;
+	if (shared) {
+		free_block(cachep, shared->entry,
+			   shared->avail, node);
+do_drain
+	free_block(cachep, ac->entry, ac->avail, node);
+cache_flusharray
+	free_block(cachep, ac->entry, batchcount, node);
+alloc_kmemlist
+	if (shared)
+		free_block(cachep, shared->entry,
+			shared->avail, node);
+do_tune_cpucache
+	free_block(cachep, ccold->entry, ccold->avail, cpu_to_node(i));
+
+drain_array
+	free_block(cachep, ac->entry, tofree, node);
+
+
+
+
+
+allocated, freeobjs
+#define DUMP_SLAB_INFO() \
+      { \
+        char b1[BUFSIZE], b2[BUFSIZE]; \
+        ulong allocated, freeobjs; \
+        if (vt->flags & (PERCPU_KMALLOC_V1|PERCPU_KMALLOC_V2)) { \
+                allocated = si->s_inuse - si->cpucached_slab; \
+                freeobjs = si->c_num - allocated - si->cpucached_slab; \
+        } else { \
+                allocated = si->s_inuse; \
+                freeobjs = si->c_num - si->s_inuse; \
+        } \
+        fprintf(fp, "%s  %s  %5ld  %9ld  %4ld\n", \
+                mkstring(b1, VADDR_PRLEN, LJUST|LONG_HEX, MKSTR(si->slab)), \
+                mkstring(b2, VADDR_PRLEN, LJUST|LONG_HEX, MKSTR(si->s_mem)), \
+                si->c_num, allocated, \
+                vt->flags & (PERCPU_KMALLOC_V1|PERCPU_KMALLOC_V2) ? \
+		freeobjs + si->cpucached_slab : freeobjs); \
+      }
+
+
+/*
+ *  Dump the FREE, [ALLOCATED] and <CACHED> objects of a slab.
+ */  
+
+#define DUMP_SLAB_OBJECT() \
+        for (j = on_free_list = 0; j < si->c_num; j++) {	\
+                if (obj == si->addrlist[j]) {			\
+                        on_free_list = TRUE;			\
+                        break;					\
+                }						\
+        }							\
+								\
+        if (on_free_list) {					\
+                if (!(si->flags & ADDRESS_SPECIFIED))		\
+                        fprintf(fp, "   %lx\n", obj);		\
+                if (si->flags & ADDRESS_SPECIFIED) {		\
+                        if (INOBJECT(si->spec_addr, obj)) {	\
+                                si->found =			\
+                                    KMEM_OBJECT_ADDR_FREE;	\
+                                return;				\
+                        }					\
+                }						\
+        } else {						\
+                if (!(si->flags & ADDRESS_SPECIFIED))		\
+                        fprintf(fp, "  [%lx]\n", obj);		\
+                cnt++;						\
+                if (si->flags & ADDRESS_SPECIFIED) {		\
+                        if (INOBJECT(si->spec_addr, obj)) {	\
+                                si->found =			\
+                                    KMEM_OBJECT_ADDR_INUSE;	\
+                                return;				\
+                        }					\
+                }						\
+        }
+
+/*
+ *  Dump the contents of a kmem slab.
+ */
+static void
+dump_slab(struct meminfo *si)
+{
+
+crash> kmem_cache ffff81011b44b440
+  nodelists = {0xffff81011c2e7840
+
+crash> kmem_list3 0xffff81011c2e7840
+struct kmem_list3 {
+  slabs_partial = {
+    next = 0xffff81011b44f000,
+    prev = 0xffff81011b44f000
+  },
+  slabs_full = {
+    next = 0xffff81011b44e000,
+    prev = 0xffff81011b44d000
+  },
+  slabs_free = {
+    next = 0xffff81011c2e7860,
+    prev = 0xffff81011c2e7860
+  },
+crash> slab 0xffff81011b44f000
+struct slab {
+  list = {
+    next = 0xffff81011c2e7840,
+    prev = 0xffff81011c2e7840
+  },
+crash> slab ffff81011b44e000
+struct slab {
+  list = {
+    next = 0xffff81011b44d000,
+    prev = 0xffff81011c2e7850
+  },
+crash> slab 0xffff81011b44d000
+struct slab {
+  list = {
+    next = 0xffff81011c2e7850,
+    prev = 0xffff81011b44e000
+  },
+
+crash> kmem -S nvlog_cache
+CACHE            NAME                 OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE
+ffff81011b44b440 nvlog_cache               96        100       120      3     4k
+SLAB              MEMORY            TOTAL  ALLOCATED  FREE
+ffff81011b44f000  ffff81011b44f0d0     40         20    20
+FREE / [ALLOCATED]
+   ffff81011b44f0d0
+   ffff81011b44f130
+   ffff81011b44f190
+   ffff81011b44f1f0
+   ffff81011b44f250
+   ffff81011b44f2b0
+   ffff81011b44f310
+   ffff81011b44f370
+   ffff81011b44f3d0
+   ffff81011b44f430
+   ffff81011b44f490
+   ffff81011b44f4f0
+   ffff81011b44f550
+   ffff81011b44f5b0
+   ffff81011b44f610
+   ffff81011b44f670
+   ffff81011b44f6d0
+   ffff81011b44f730
+   ffff81011b44f790
+   ffff81011b44f7f0
+  [ffff81011b44f850]
+  [ffff81011b44f8b0]
+  [ffff81011b44f910]
+  [ffff81011b44f970]
+  [ffff81011b44f9d0]
+  [ffff81011b44fa30]
+  [ffff81011b44fa90]
+  [ffff81011b44faf0]
+  [ffff81011b44fb50]
+  [ffff81011b44fbb0]
+  [ffff81011b44fc10]
+  [ffff81011b44fc70]
+  [ffff81011b44fcd0]
+  [ffff81011b44fd30]
+  [ffff81011b44fd90]
+  [ffff81011b44fdf0]
+  [ffff81011b44fe50]
+  [ffff81011b44feb0]
+  [ffff81011b44ff10]
+  [ffff81011b44ff70]
+SLAB              MEMORY            TOTAL  ALLOCATED  FREE
+ffff81011b44e000  ffff81011b44e0d0     40         40     0
+FREE / [ALLOCATED]
+  [ffff81011b44e0d0]
+  [ffff81011b44e130]
+  [ffff81011b44e190]
+  [ffff81011b44e1f0]
+  [ffff81011b44e250]
+  [ffff81011b44e2b0]
+  [ffff81011b44e310]
+  [ffff81011b44e370]
+  [ffff81011b44e3d0]
+  [ffff81011b44e430]
+  [ffff81011b44e490]
+  [ffff81011b44e4f0]
+  [ffff81011b44e550]
+  [ffff81011b44e5b0]
+  [ffff81011b44e610]
+  [ffff81011b44e670]
+  [ffff81011b44e6d0]
+  [ffff81011b44e730]
+  [ffff81011b44e790]
+  [ffff81011b44e7f0]
+  [ffff81011b44e850]
+  [ffff81011b44e8b0]
+  [ffff81011b44e910]
+  [ffff81011b44e970]
+  [ffff81011b44e9d0]
+  [ffff81011b44ea30]
+  [ffff81011b44ea90]
+  [ffff81011b44eaf0]
+  [ffff81011b44eb50]
+  [ffff81011b44ebb0]
+  [ffff81011b44ec10]
+  [ffff81011b44ec70]
+  [ffff81011b44ecd0]
+  [ffff81011b44ed30]
+  [ffff81011b44ed90]
+  [ffff81011b44edf0]
+  [ffff81011b44ee50]
+  [ffff81011b44eeb0]
+  [ffff81011b44ef10]
+  [ffff81011b44ef70]
+SLAB              MEMORY            TOTAL  ALLOCATED  FREE
+ffff81011b44d000  ffff81011b44d0d0     40         40     0
+FREE / [ALLOCATED]
+  [ffff81011b44d0d0]
+  [ffff81011b44d130]
+  [ffff81011b44d190]
+  [ffff81011b44d1f0]
+  [ffff81011b44d250]
+  [ffff81011b44d2b0]
+  [ffff81011b44d310]
+  [ffff81011b44d370]
+  [ffff81011b44d3d0]
+  [ffff81011b44d430]
+  [ffff81011b44d490]
+  [ffff81011b44d4f0]
+  [ffff81011b44d550]
+  [ffff81011b44d5b0]
+  [ffff81011b44d610]
+  [ffff81011b44d670]
+  [ffff81011b44d6d0]
+  [ffff81011b44d730]
+  [ffff81011b44d790]
+  [ffff81011b44d7f0]
+  [ffff81011b44d850]
+  [ffff81011b44d8b0]
+  [ffff81011b44d910]
+  [ffff81011b44d970]
+  [ffff81011b44d9d0]
+  [ffff81011b44da30]
+  [ffff81011b44da90]
+  [ffff81011b44daf0]
+  [ffff81011b44db50]
+  [ffff81011b44dbb0]
+  [ffff81011b44dc10]
+  [ffff81011b44dc70]
+  [ffff81011b44dcd0]
+  [ffff81011b44dd30]
+  [ffff81011b44dd90]
+  [ffff81011b44ddf0]
+  [ffff81011b44de50]
+  [ffff81011b44deb0]
+  [ffff81011b44df10]
+  [ffff81011b44df70]
+
+crash> kmem_cache ffff81011b44b440
+struct kmem_cache {
+  array = {0xffff81011b44cc00, 0xffff81011b44c800, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0
+x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x
+0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+ 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0
+x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x
+0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+ 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0
+x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x
+0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
+  batchcount = 60,
+  limit = 120,
+  shared = 8,
+  buffer_size = 96,
+  reciprocal_buffer_size = 44739243,
+  flags = 0,
+  num = 40,
+  gfporder = 0,
+  gfpflags = 0,
+  colour = 0,
+  colour_off = 64,
+  slabp_cache = 0x0,
+  slab_size = 208,
+  dflags = 0,
+  ctor = 0,
+  name = 0xffffffff88197c40 "nvlog_cache",
+  next = {
+    next = 0xffff81011b85ec50,
+    prev = 0xffff810075483cd0
+  },
+  nodelists = {0xffff81011c2e7840, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0
+x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x
+0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+
+
+crash>
+crash> kmem_list3 0xffff81011c2e7840
+struct kmem_list3 {
+  slabs_partial = {
+    next = 0xffff81011b44f000,
+    prev = 0xffff81011b44f000
+  },
+  slabs_full = {
+    next = 0xffff81011b44e000,
+    prev = 0xffff81011b44d000
+  },
+  slabs_free = {
+    next = 0xffff81011c2e7860,
+    prev = 0xffff81011c2e7860
+  },
+  free_objects = 20,
+  free_limit = 220,
+  colour_next = 0,
+  list_lock = {
+    raw_lock = {
+      slock = 1
+    },
+    tracker = {
+      caller = 508121,
+      owner = 15233
+    }
+  },
+  shared = 0xffff81011b875000,
+  alien = 0x0,
+  next_reap = 5566571000,
+  free_touched = 0
+}
+
+===========================================================
+0xffff81011b44b440 nvlog_cache
+num           40 slab_size  208 colour    0 colour_off    64
+batchcount    60 limit      120 shared    8 buffer_size   96
+gfpflags       0 dflags       0 gfporder  0 flags          0
+reciprocal_buffer_size 44739243 slabp_cache (nil)
+======================================================================
+0 kmem_list3 0xffff81011c2e7840 free_obj   20 free_limit  220 part 0xffff81011b44f000 full 0xfff
+f81011b44e000 empty 0xffff81011c2e7860
+0xffff81011b44f000 inuse  20 free  19 nodeid  0
+

@@ -1,0 +1,113 @@
+Command         Usage                Description
+----------------------------------------------------------
+md              <vaddr>              Display Memory Contents, also mdWcN, e.g. md8c1
+mdr             <vaddr> <bytes>      Display Raw Memory
+mdp             <paddr> <bytes>      Display Physical Memory
+mds             <vaddr>              Display Memory Symbolically
+mm              <vaddr> <contents>   Modify Memory Contents
+id              <vaddr>              Display Instructions
+go              [<vaddr>]            Continue Execution
+rd                                   Display Registers
+rm              <reg> <contents>     Modify Registers
+ef              <vaddr>              Display exception frame
+bt              [<vaddr>]            Stack traceback
+btp             <pid>                Display stack for process <pid>
+bta             [DRSTCZEUIMA]        Display stack all processes
+btc                                  Backtrace current process on each cpu
+btt             <vaddr>              Backtrace process given its struct task address
+ll              <first-element> <lin Execute cmd for each element in linked list
+env                                  Show environment variables
+set                                  Set environment variables
+help                                 Display Help Message
+?                                    Display Help Message
+[0]more>
+cpu             <cpunum>             Switch to new cpu
+ps                                   Display active task list
+pid             <pidnum>             Switch to another task
+reboot                               Reboot the machine immediately
+lsmod                                List loaded kernel modules
+sr              <key>                Magic SysRq key
+dmesg           [lines]              Display syslog buffer
+defcmd          name "usage" "help"  Define a set of commands, down to endefcmd
+kill            <-signal> <pid>      Send a signal to a process
+summary                              Summarize the system
+per_cpu                              Display per_cpu variables
+crashdump                            Force a crashdump
+bp              [<vaddr>]            Set/Display breakpoints
+bl              [<vaddr>]            Display breakpoints
+bpa             [<vaddr>]            Set/Display global breakpoints
+bph             [<vaddr>]            Set hardware breakpoint
+bpha            [<vaddr>]            Set global hardware breakpoint
+bc              <bpnum>              Clear Breakpoint
+be              <bpnum>              Enable Breakpoint
+bd              <bpnum>              Disable Breakpoint
+ss                                   Single Step
+ssb                                  Single step to branch/call
+[0]more>
+pt_regs         address              Format struct pt_regs
+cpu_pda         <cpu>                Format struct cpu_pda
+archkdb                              First line arch debugging
+archkdbcpu                           archkdb with only tasks on cpus
+archkdbshort                         archkdb with less detailed backtrace
+archkdbcommon                        Common arch debugging
+bb1             <vaddr>              Analyse one basic block
+bb_all                               Backtrace check on all built in functions
+inode           <vaddr>              Display inode
+sb              <vaddr>              Display super_block
+bh              <buffer head address Display buffer
+bio             <bio address>        Display bio
+inode_pages     <inode *>            Display pages in an inode
+req             <vaddr>              dump request struct
+rqueue          <vaddr>              dump request queue
+task            <vaddr>              Display task_struct
+sigset          <vaddr>              Display sigset_t
+vm              [-v] <vaddr>         Display vm_area_struct
+vmp             [-v] <pid>           Display all vm_area_struct for <pid>
+pte             ( -m <mm> | -p <pid> Display pte_t for mm_struct or pid
+rpte            ( -m <mm> | -p <pid> Find pte_t containing pfn for mm_struct or pid
+dentry          <dentry>             Display interesting dentry stuff
+[0]more>
+kobject         <kobject>            Display interesting kobject stuff
+filp            <filp>               Display interesting filp stuff
+fl              <fl>                 Display interesting file_lock stuff
+sh              <vaddr>              Show scsi_host
+sd              <vaddr>              Show scsi_device
+sc              <vaddr>              Show scsi_cmnd
+rq              <cpunum>             Display runqueue for <cpunum>
+rqa                                  Display all runqueues
+debugmode       [on|off]             Toggle DDOS debug mode
+debugshell      [/dev/ttyS0]         Spawn a debug shell on ttyS0 or other specified terminal
+rdv             <NULL>               Display registers in verbose mode
+gdt             <sel> [<count>]      Display GDT
+idt             <int> [<count>]      Display IDT
+ldt             <sel> [<count>]      Display LDT
+ptex            <addr> [<count>]     Display pagetables
+ldtp            <sel> [<count>]      Display Process LDT
+rdmsr           <maddr>              Display Model Specific Register
+wrmsr           <maddr> <h> <l>      Modify Model Specific Register
+
+
+[51]kdb> set LINES=10000
+[51]kdb> dmesg
+[51]kdb> btc
+[51]kdb> bta
+[51]kdb> md8c7 0xffffffff80af90e0
+
+
+Capture the KDB output via a serial console.
+
+set LINES 10000
+set BTSP 1
+set KDBDEBUG 0x14
+Reproduce the problem.
+set KDBDEBUG 0
+bb_all
+
+
+    [0]kdb> id getname
+    0xc015cce8 getname:         push   %ebp
+    0xc015cce9 getname+0x1:     mov    %esp,%ebp
+    0xc015cceb getname+0x3:     push   %edi
+    0xc015ccec getname+0x4:     push   %esi
+    0xc015cced getname+0x5:     push   %ebx
+

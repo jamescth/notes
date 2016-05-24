@@ -1,0 +1,205 @@
+# sg_map -x
+/dev/sg0  0 0 0 0  0  /dev/sda
+/dev/sg1  1 0 0 0  0  /dev/sdb
+/dev/sg2  9 0 0 0  0  /dev/sdc
+/dev/sg3  9 0 1 0  0  /dev/sdd
+/dev/sg4  9 0 2 0  0  /dev/sde
+/dev/sg5  9 0 3 0  0  /dev/sdf
+/dev/sg6  9 0 4 0  0  /dev/sdg
+/dev/sg7  9 0 5 0  0  /dev/sdh
+/dev/sg8  9 0 6 0  0  /dev/sdi
+/dev/sg9  9 0 7 0  0  /dev/sdj
+/dev/sg10  9 0 8 0  0  /dev/sdk
+/dev/sg11  9 0 9 0  0  /dev/sdl
+/dev/sg12  9 0 10 0  0  /dev/sdm
+/dev/sg13  9 0 11 0  0  /dev/sdn
+/dev/sg14  9 0 12 0  0  /dev/sdo
+/dev/sg15  9 0 13 0  0  /dev/sdp
+/dev/sg16  9 0 14 0  0  /dev/sdq
+/dev/sg17  9 0 15 0  13
+/dev/sg18  9 0 16 0  13
+/dev/sg19  7 0 38 0  0  /dev/sdv
+
+
+# multipathd -k
+multipathd> show paths
+
+!!!! localhost YOUR DATA IS IN DANGER !!!! # sg_map -i
+/dev/sg0  /dev/sda  ATA       Micron_P400e-MTF  0135
+/dev/sg1  /dev/sdb  ATA       Micron_P400e-MTF  0135
+/dev/sg2  /dev/sdc  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg3  /dev/sdd  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg4  /dev/sde  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg5  /dev/sdf  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg6  /dev/sdg  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg7  /dev/sdh  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg8  /dev/sdi  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg9  /dev/sdj  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg10  /dev/sdk  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg11  /dev/sdl  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg12  /dev/sdm  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg13  /dev/sdn  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg14  /dev/sdo  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg15  /dev/sdp  SEAGATE   ST320004CLAR2000  BS17
+/dev/sg16  /dev/sdq  SEAGATE   ST320004CLAR2000  BS17
+
+
+# lsiutil
+
+LSI Logic MPT Configuration Utility, Version 1.65, February 16, 2010
+
+4 MPT Ports found
+
+     Port Name         Chip Vendor/Type/Rev    MPT Rev  Firmware Rev  IOC
+ 1.  ioc0              LSI Logic SAS2008 03      200      09000600     0
+ 2.  ioc1              LSI Logic SAS2008 03      200      09000600     0
+ 3.  ioc2              LSI Logic SAS2008 03      200      09000600     0
+ 4.  ioc3              LSI Logic SAS2008 03      200      09000600     0
+
+Select a device:  [1-4 or 0 to quit] 1
+ 1.  Identify firmware, BIOS, and/or FCode
+ 2.  Download firmware (update the FLASH)
+ 4.  Download/erase BIOS and/or FCode (update the FLASH)
+ 8.  Scan for devices
+10.  Change IOC settings (interrupt coalescing)
+13.  Change SAS IO Unit settings
+16.  Display attached devices
+20.  Diagnostics
+21.  RAID actions
+23.  Reset target
+42.  Display operating system names for devices
+43.  Diagnostic Buffer actions
+45.  Concatenate SAS firmware and NVDATA files
+59.  Dump PCI config space
+60.  Show non-default settings
+61.  Restore default settings
+66.  Show SAS discovery errors
+69.  Show board manufacturing information
+97.  Reset SAS link, HARD RESET
+98.  Reset SAS link
+99.  Reset port
+ e   Enable expert mode in menus
+ p   Enable paged mode
+ w   Enable logging
+
+Main menu, select an option:  [1-99 or e/p/w or 0 to quit] 16
+
+SAS2008's links are down, down, down, down, down, down, down, down
+
+ B___T     SASAddress     PhyNum  Handle  Parent  Type
+        5006016000010018           0001           SAS Initiator
+        5006016000010019           0002           SAS Initiator
+        500601600001001a           0003           SAS Initiator
+        500601600001001b           0004           SAS Initiator
+        500601600001001c           0005           SAS Initiator
+        500601600001001d           0006           SAS Initiator
+        500601600001001e           0007           SAS Initiator
+        500601600001001f           0008           SAS Initiator
+
+Type      NumPhys    PhyNum  Handle     PhyNum  Handle  Port  Speed
+Adapter      8
+
+Enclosure Handle   Slots       SASAddress       B___T (SEP)
+           0001      8      5006016000010018
+
+Main menu, select an option:  [1-99 or e/p/w or 0 to quit] 0
+
+Main menu, select an option:  [1-99 or e/p/w or 0 to quit] 20
+
+ 1.  Inquiry Test
+ 2.  WriteBuffer/ReadBuffer/Compare Test
+ 3.  Read Test
+ 4.  Write/Read/Compare Test
+ 8.  Read Capacity / Read Block Limits Test
+12.  Display phy counters
+13.  Clear phy counters
+14.  SATA SMART Read Test
+15.  SEP (SCSI Enclosure Processor) Test
+18.  Report LUNs Test
+19.  Drive firmware download
+20.  Expander firmware download
+21.  Read Logical Blocks
+99.  Reset port
+ e   Enable expert mode in menus
+ p   Enable paged mode
+ w   Enable logging
+
+Diagnostics menu, select an option:  [1-99 or e/p/w or 0 to quit] 12
+
+Adapter Phy 0:  Link Down, No Errors
+
+Adapter Phy 1:  Link Down, No Errors
+
+Adapter Phy 2:  Link Down, No Errors
+
+Adapter Phy 3:  Link Down, No Errors
+
+Adapter Phy 4:  Link Up
+  Invalid DWord Count                                           0
+  Running Disparity Error Count                                 0
+  Loss of DWord Synch Count                                     0
+  Phy Reset Problem Count                                       1
+
+Adapter Phy 5:  Link Up
+  Invalid DWord Count                                           0
+  Running Disparity Error Count                                 0
+  Loss of DWord Synch Count                                     0
+  Phy Reset Problem Count                                       1
+
+Adapter Phy 6:  Link Up
+  Invalid DWord Count                                           0
+  Running Disparity Error Count                                 0
+  Loss of DWord Synch Count                                     0
+  Phy Reset Problem Count                                       1
+
+Adapter Phy 7:  Link Up
+  Invalid DWord Count                                           0
+  Running Disparity Error Count                                 0
+  Loss of DWord Synch Count                                     0
+  Phy Reset Problem Count                                       1
+
+Expander (Handle 0009) Phy 0:  Link Up, No Errors
+
+Expander (Handle 0009) Phy 1:  Link Up, No Errors
+
+Expander (Handle 0009) Phy 2:  Link Up, No Errors
+
+Expander (Handle 0009) Phy 3:  Link Up, No Errors
+
+Diagnostics menu, select an option:  [1-99 or e/p/w or 0 to quit] 13
+
+Adapter Phy 0 counters have been cleared
+Adapter Phy 1 counters have been cleared
+Adapter Phy 2 counters have been cleared
+Adapter Phy 3 counters have been cleared
+Adapter Phy 4 counters have been cleared
+Adapter Phy 5 counters have been cleared
+Adapter Phy 6 counters have been cleared
+Adapter Phy 7 counters have been cleared
+Expander (Handle 0009) Phy 0 counters have been cleared
+Expander (Handle 0009) Phy 1 counters have been cleared
+Expander (Handle 0009) Phy 2 counters have been cleared
+Expander (Handle 0009) Phy 3 counters have been cleared
+Expander (Handle 0009) Phy 4 counters have been cleared
+Expander (Handle 0009) Phy 5 counters have been cleared
+Expander (Handle 0009) Phy 6 counters have been cleared
+Expander (Handle 0009) Phy 7 counters have been cleared
+Expander (Handle 0009) Phy 8 counters have been cleared
+Expander (Handle 0009) Phy 9 counters have been cleared
+Expander (Handle 0009) Phy 10 counters have been cleared
+Expander (Handle 0009) Phy 11 counters have been cleared
+Expander (Handle 0009) Phy 12 counters have been cleared
+Expander (Handle 0009) Phy 13 counters have been cleared
+Expander (Handle 0009) Phy 14 counters have been cleared
+Expander (Handle 0009) Phy 15 counters have been cleared
+Expander (Handle 0009) Phy 16 counters have been cleared
+Expander (Handle 0009) Phy 17 counters have been cleared
+Expander (Handle 0009) Phy 18 counters have been cleared
+Expander (Handle 0009) Phy 19 counters have been cleared
+Expander (Handle 0009) Phy 20 counters have been cleared
+Expander (Handle 0009) Phy 21 counters have been cleared
+Expander (Handle 0009) Phy 22 counters have been cleared
+
+
+SE@localhost## enclosure show topology
+

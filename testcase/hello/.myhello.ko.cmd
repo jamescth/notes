@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/hello/myhello.ko := /auto/home/lsbuild/desktop-277050/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/hello/myhello.ko /auto/home5/hoj9/testcase/hello/myhello.o /auto/home5/hoj9/testcase/hello/myhello.mod.o

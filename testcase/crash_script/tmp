@@ -1,0 +1,289 @@
+crash> slab 0xffff81054453e000
+struct slab {
+  list = {
+    next = 0xffff810563b2e000,
+    prev = 0xffff81085a72dd50
+  },
+  colouroff = 128,
+  s_mem = 0xffff81054453e080,
+  inuse = 5,
+  free = 4294967295,
+  nodeid = 0
+}
+crash> sock 0xffff81054453e080
+struct sock {
+  __sk_common = {
+    skc_family = 2,
+    skc_state = 10 '\n',
+    skc_reuse = 1 '\001',
+    skc_bound_dev_if = 0,
+    skc_node = {
+      next = 0x0,
+      pprev = 0xffffffff807d5028
+    },
+    skc_bind_node = {
+      next = 0x0,
+      pprev = 0xffff810d64613358
+    },
+    skc_refcnt = {
+      counter = 1
+    },
+    skc_hash = 0,
+    skc_prot = 0xffffffff80613a50
+  },
+  sk_shutdown = 0 '\0',
+  sk_no_check = 0 '\0',
+  sk_userlocks = 4 '\004',
+  sk_protocol = 6 '\006',
+  sk_type = 1,
+  sk_rcvbuf = 262144,
+  sk_lock = {
+    slock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 2134013,
+        owner = -1
+      }
+    },
+    owner = 0x0,
+    wq = {
+      lock = {
+        raw_lock = {
+          slock = 1
+        },
+        tracker = {
+          caller = 0,
+          owner = 0
+        }
+      },
+      task_list = {
+        next = 0xffff81054453e0e8,
+        prev = 0xffff81054453e0e8
+      }
+    }
+  },
+  sk_backlog = {
+    head = 0x0,
+    tail = 0x0
+  },
+  sk_sleep = 0xffff810851965730,
+  sk_dst_cache = 0x0,
+  sk_policy = {0x0, 0x0},
+  sk_dst_lock = {
+    raw_lock = {
+      lock = 16777216
+    },
+    tracker = {
+      caller = 2365218,
+      owner = 30106
+    }
+  },
+  sk_rmem_alloc = {
+    counter = 0
+  },
+  sk_wmem_alloc = {
+    counter = 0
+  },
+  sk_omem_alloc = {
+    counter = 0
+  },
+  sk_sndbuf = 262144,
+  sk_receive_queue = {
+    next = 0xffff81054453e148,
+    prev = 0xffff81054453e148,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_write_queue = {
+    next = 0xffff81054453e168,
+    prev = 0xffff81054453e168,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_async_wait_queue = {
+    next = 0x0,
+    prev = 0x0,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 0
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_wmem_queued = 0,
+  sk_forward_alloc = 0,
+  sk_allocation = 208,
+  sk_route_caps = 0,
+  sk_gso_type = 0,
+  sk_rcvlowat = 1,
+  sk_flags = 776,
+  sk_lingertime = 0,
+  sk_error_queue = {
+    next = 0xffff81054453e1d0,
+    prev = 0xffff81054453e1d0,
+    qlen = 0,
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 0,
+        owner = 0
+      }
+    }
+  },
+  sk_prot_creator = 0xffffffff80613a50,
+  sk_callback_lock = {
+    raw_lock = {
+      lock = 16777216
+    },
+    tracker = {
+      caller = 2135122,
+      owner = -1
+    }
+  },
+  sk_err = 0,
+  sk_err_soft = 0,
+  sk_ack_backlog = 0,
+  sk_max_ack_backlog = 16,
+  sk_priority = 0,
+  sk_peercred = {
+    pid = 0,
+    uid = 4294967295,
+    gid = 4294967295
+  },
+  sk_rcvtimeo = 9223372036854775807,
+  sk_sndtimeo = 9223372036854775807,
+  sk_filter = 0x0,
+  sk_protinfo = 0x0,
+  sk_timer = {
+    entry = {
+      next = 0x0,
+      prev = 0x200200
+    },
+    expires = 4295285593,
+    function = 0xffffffff8044fb84 <tcp_keepalive_timer>,
+    data = 18446604458354008192,
+    base = 0xffff81105cc80000
+  },
+  sk_stamp = {
+    tv64 = -1000000001
+  },
+  sk_socket = 0xffff810851965700,
+  sk_user_data = 0x0,
+  sk_sndmsg_page = 0x0,
+  sk_send_head = 0x0,
+  sk_sndmsg_off = 0,
+  sk_write_pending = 0,
+  sk_security = 0x0,
+  sk_state_change = 0xffffffff80408fad <sock_def_wakeup>,
+  sk_data_ready = 0xffffffff80409442 <sock_def_readable>,
+  sk_write_space = 0xffffffff8040f39f <sk_stream_write_space>,
+  sk_error_report = 0xffffffff8040935b <sock_def_error_report>,
+  sk_backlog_rcv = 0xffffffff80451a77 <tcp_v4_do_rcv>,
+  sk_destruct = 0xffffffff8045e8df <inet_sock_destruct>
+}
+crash>
+crash> bt 30106
+PID: 30106  TASK: ffff81104d58e3c0  CPU: 11  COMMAND: "ssm"
+ #0 [ffff81104dfadbb8] schedule at ffffffff8048b6bc
+ #1 [ffff81104dfadcb0] futex_wait at ffffffff8024a49e
+ #2 [ffff81104dfade10] do_futex at ffffffff8024b773
+ #3 [ffff81104dfadf00] sys_futex at ffffffff8024c256
+ #4 [ffff81104dfadf80] system_call at ffffffff8020bcae
+    RIP: 00002af071ee5896  RSP: 00007fff3d3323e8  RFLAGS: 00010283
+    RAX: 00000000000000ca  RBX: ffffffff8020bcae  RCX: 0000000000581c80
+    RDX: 0000000000000001  RSI: 0000000000000000  RDI: 000000000057f2c4
+    RBP: 0000000000000000   R8: 00000000000000ab   R9: 0000000000000000
+    R10: 0000000000000000  R11: 0000000000000246  R12: 0000000000000000
+    R13: 00007fff3d332650  R14: 0000000000000001  R15: 00007fff3d3324d0
+    ORIG_RAX: 00000000000000ca  CS: 0033  SS: 002b
+crash> net -s 30106
+PID: 30106  TASK: ffff81104d58e3c0  CPU: 11  COMMAND: "ssm"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+27 ffff81184f14c740 ffff8113ffef7c80 UNIX:DGRAM
+29 ffff810557e79400 ffff81085ad42400 NETLINK/ROUTE:DGRAM
+31 ffff81054591a3c0 ffff81054453f980 INET:STREAM  127.0.0.1-59751 127.0.0.1-3011
+32 ffff810851965c80 ffff81054453ed00 INET:STREAM  127.0.0.1-46980 127.0.0.1-3011
+33 ffff810851965700 ffff81054453e080 INET:STREAM  127.0.0.1-36042 0.0.0.0-0
+34 ffff811d659731c0 ffff811d65974980 UNIX:DGRAM
+35 ffff8113fcbc6780 ffff810d64613340 INET:STREAM  127.0.0.1-36042 127.0.0.1-50428
+36 ffff81184f14ca00 ffff8113ffeffb00 INET:DGRAM   0.0.0.0-0 0.0.0.0-0
+37 ffff812051636700 ffff811d65c4db00 INET:DGRAM   0.0.0.0-0 0.0.0.0-0
+38 ffff81184f14c480 ffff810d646126c0 INET:STREAM  127.0.0.1-36042 127.0.0.1-56350
+39 ffff811432685cc0 ffff810d0c5c9980 INET:STREAM  127.0.0.1-36042 127.0.0.1-57049
+40 ffff811432685a00 ffff810d0c5c8d00 INET:STREAM  127.0.0.1-36042 127.0.0.1-51474
+crash> sock 0xffff81054453e080 | grep sock
+struct sock {
+  sk_socket = 0xffff810851965700,
+  sk_state_change = 0xffffffff80408fad <sock_def_wakeup>,
+  sk_data_ready = 0xffffffff80409442 <sock_def_readable>,
+  sk_error_report = 0xffffffff8040935b <sock_def_error_report>,
+  sk_destruct = 0xffffffff8045e8df <inet_sock_destruct>
+crash> socket 0xffff810851965700
+struct socket {
+  state = SS_UNCONNECTED,
+  flags = 0,
+  ops = 0xffffffff804d9b10,
+  fasync_list = 0x0,
+  file = 0xffff810539997a80,
+  sk = 0xffff81054453e080,
+  wait = {
+    lock = {
+      raw_lock = {
+        slock = 1
+      },
+      tracker = {
+        caller = 173301,
+        owner = -1
+      }
+    },
+    task_list = {
+      next = 0xffff810556f9c8d0,
+      prev = 0xffff810556f9c8d0
+    }
+  },
+  type = 1
+}
+
+ffff81054453e080:  00000000010a0002 0000000000000000   ................
+ffff81054453e090:  ffffffff807d5028 0000000000000000   (P}.............
+ffff81054453e0a0:  ffff810d64613358 0000000000000001   X3ad............
+ffff81054453e0b0:  ffffffff80613a50 0004000000010640   P:a.....@.......
+....
+ffff81054453e2d0:  ffffffff8045e8df 0000000000000000   ..E.............
+
+ffff81054453e6c0:  0000000001010002 0000000000000000   ................
+ffff81054453e6d0:  ffffc200387f4cd0 ffff81054453f358   .L.8....X.SD....
+ffff81054453e6e0:  ffff81053d756d18 b5d1a36600000002   .mu=........f...
+ffff81054453e6f0:  ffffffff80613a50 0004000000010640   P:a.....@.......
+...
+ffff81054453e910:  ffffffff8045e8df 0000000000000000   ..E.............
+
+crash> struct -o sock
+struct sock {
+SIZE: 600
+SIZE: 0x258
+

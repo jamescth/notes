@@ -1,0 +1,22 @@
+opcontrol --vmlinux=/vmlinux-ddr420732 --separate=lib,kernel,thread
+opcontrol --reset
+opcontrol --setup --event=CYCLES:1000
+opcontrol --start
+netperf -6 -6 -H 2001::202
+opcontrol --stop
+
+opreport --merge tid
+opreport --symbols
+opreport --help
+opreport --merge=cpu
+
+opcontrol --vmlinux=/vmlinux-ddr420732 --separate=lib,kernel,cpu
+opcontrol --reset
+opcontrol --setup --event=CYCLES:1000
+opcontrol --start
+netperf -6 -6 -H 2001::202
+opcontrol --stop
+opreport --merge=cpu
+cat /proc/cpuinfo
+opreport
+

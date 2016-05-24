@@ -1,0 +1,265 @@
+arch/asm-x86_64/dma.h
+
+include/mmzone.h
+
+enum zone_type {
+#ifdef CONFIG_ZONE_DMA
+	/*
+	 * ZONE_DMA is used when there are devices that are not able
+	 * to do DMA to all of addressable memory (ZONE_NORMAL). Then we
+	 * carve out the portion of memory that is needed for these devices.
+	 * The range is arch specific.
+	 *
+	 * Some examples
+	 *
+	 * Architecture		Limit
+	 * ---------------------------
+	 * parisc, ia64, sparc	<4G
+	 * s390			<2G
+	 * arm			Various
+	 * alpha		Unlimited or 0-16MB.
+	 *
+	 * i386, x86_64 and multiple other arches
+	 * 			<16M.
+	 */
+	ZONE_DMA,
+#endif
+#ifdef CONFIG_ZONE_DMA32
+	/*
+	 * x86_64 needs two ZONE_DMAs because it supports devices that are
+	 * only able to do DMA to the lower 16M but also 32 bit devices that
+	 * can only do DMA areas below 4G.
+	 */
+	ZONE_DMA32,
+#endif
+	/*
+	 * Normal addressable memory is in ZONE_NORMAL. DMA operations can be
+	 * performed on pages in ZONE_NORMAL if the DMA devices support
+	 * transfers to all addressable memory.
+	 */
+	ZONE_NORMAL,
+#ifdef CONFIG_HIGHMEM
+	/*
+	 * A memory area that is only addressable by the kernel through
+	 * mapping portions into its own address space. This is for example
+	 * used by i386 to allow the kernel to address the memory beyond
+	 * 900MB. The kernel will set up special mappings (page
+	 * table entries on i386) for each page that the kernel needs to
+	 * access.
+	 */
+	ZONE_HIGHMEM,
+#endif
+	ZONE_MOVABLE,
+	MAX_NR_ZONES
+};
+
+
+
+enum zone_stat_item {
+	/* First 128 byte cacheline (assuming 64 bit words) */
+	NR_FREE_PAGES,
+	NR_INACTIVE,
+	NR_ACTIVE,
+	NR_ANON_MLOCKED, /* Anon Mlocked pages */
+	NR_ANON_PAGES,	/* Mapped anonymous pages */
+	NR_FILE_MAPPED,	/* pagecache pages mapped into pagetables.
+			   only modified from process context */
+	NR_FILE_PAGES,
+	NR_FILE_DIRTY,
+	NR_WRITEBACK,
+	/* Second 128 byte cacheline */
+	NR_SLAB_RECLAIMABLE,
+	NR_SLAB_UNRECLAIMABLE,
+	NR_PAGETABLE,		/* used for pagetables */
+	NR_UNSTABLE_NFS,	/* NFS unstable pages */
+	NR_BOUNCE,
+	NR_VMSCAN_WRITE,
+#ifdef CONFIG_NUMA
+	NUMA_HIT,		/* allocated in intended node */
+	NUMA_MISS,		/* allocated in non intended node */
+	NUMA_FOREIGN,		/* was intended here, hit elsewhere */
+	NUMA_INTERLEAVE_HIT,	/* interleaver preferred this zone */
+	NUMA_LOCAL,		/* allocation from local node */
+	NUMA_OTHER,		/* allocation from other node */
+#endif
+	NR_VM_ZONE_STAT_ITEMS };
+
+struct per_cpu_pages {
+	int count;		/* number of pages in the list */
+	int high;		/* high watermark, emptying needed */
+	int batch;		/* chunk size for buddy add/remove */
+	struct list_head list;	/* the list of pages */
+};
+
+struct per_cpu_pageset {
+	struct per_cpu_pages pcp[2];	/* 0: hot.  1: cold */
+#ifdef CONFIG_NUMA
+	s8 expire;
+#endif
+#ifdef CONFIG_SMP
+	s8 stat_threshold;
+	s8 vm_stat_diff[NR_VM_ZONE_STAT_ITEMS];
+#endif
+} ____cacheline_aligned_in_smp;
+
+
+PFN / Page Frame Number
+include/linux/pfn.h
+
+Startup happens at absolute address 0x00001000, which is also where
+the page directory will exist.  The startup code will be overwritten by
+the page directory.
+Page 0 is deliberately kept safe, since System Management Mode code in
+laptops may need to access the BIOS data stored there.  This is also
+useful for future device drivers that either access the BIOS via VM86 
+mode.
+
+.globl startup_32
+	.globl startup_64
+		x86_64_start_kernel()
+			copy_bootdata()
+				memcpy(x86_boot_params, real_mode_data, BOOT_PARAM_SIZE)
+
+setup.c/setup_arch => e820.c/setup_memory_region()
+
+e820 is shorthand to refer to the facility by which the BIOS of x86-based
+computer systems reports the memory map to the operating system or boot 
+loader.
+
+setup64.c
+char x86_boot_params[BOOT_PARAM_SIZE] __initdata;
+
+	__init* macros
+	It tells the compiler to put the variable or the function in a 
+	special section, which is declared in vmlinux.lds.  init puts
+	the function in the ".init.text" section and initdata puts the
+	data in the ".init.data" section.
+
+	__exit* macro
+	The exit macro tells the compiler to put the function in the 
+	".exit.text" section.  The exit_data macro tells the compiler
+	to put the function in the ".exit.data" section.
+	exit* sections make sense only for the modules: exit functions
+	will nerver be called if compiled statically.
+	
+bootsetup.h
+#define PARAM	((unsigned char *)x86_boot_params)
+#define BOOT_PARAM_SIZE		4096
+
+#define E820MAP	0x2d0		/* our map */
+#define E820MAX	128		/* number of entries in E820MAP */
+#define E820NR	0x1e8		/* # entries in E820MAP */
+
+#define E820_MAP_NR (*(char*) (PARAM+E820NR))
+#define E820_MAP    ((struct e820entry *) (PARAM+E820MAP))
+
+
+In a 32-bit kernel %fs is the base of per-cpu data area.  In a 64-bit
+kernel %gs points to the pda (processor data area).  The pda is a 
+single structure, whereas per-cpu data is a section that per-cpu
+variables get put into.
+
+both %gs & %fs use the opposite from their respective usermodes use 
+for thread local storage, since there may be a slight performance
+advantage to do so (at least on 32-bit).  32-bit uses of %gs for
+usermode TLS is old and arbitrary, probably predating x86-64.  The
+use of %gs for kernel pre-cpu data is architectureal on 64-bit, 
+because of the "swapgs" instruction; there is no swapfs instruction.
+
+When use "mov %fs ...", on 32-bit, it always returns a value, or it
+will return a GPF.  On 64-bit, the value of the selector doesn't 
+matter because the MSRs are the real content.
+
+The purpose of MSR_FS_BASE & MSR_GS_BASE (gdt[fs_entry].base) for 
+64-bit is that the GDT isn't large enough to hold a 64-bit offset,
+so it only stores the low 32-bits.  When load a segment register
+with a selector, it picks up from the gdt.  If a full 64-bit offset
+is needed, write it to msr.
+
+
+typedef struct { unsigned long pte; } pte_t;
+typedef struct { unsigned long pmd; } pmd_t;
+typedef struct { unsigned long pud; } pud_t;
+typedef struct { unsigned long pgd; } pgd_t;
+
+Page-Map Level 4: 		9-bit, 47:39, IA-32e
+				N/A in 32-bit/PAE
+Page-Directory Pointer Table:	9-bit, 38:30 IA-32e, 1GB page if PS=1
+				2-bit, 31:30 PAE
+				N/A in 32-bit
+Page directory: 		9-bit, 29-21, IA-32e/PAE, 2MB page if PS=1
+				10-bit, 31-22, 32-bit, 4MB page if PS=1
+Page table:			9-bit, 20:12, IA-32e/PAE
+				10-bit, 21-12, 32-bit 
+4k memory page:			12-bit
+
+cr3 => Page global Directory 
+index of pgd => Page Upper Directory
+index of pud => Page Middle Directory
+index of pmd => Page Table
+index of pte => Page
+
+top-level page table entry can map
+PGDIR_SHIFT	39
+PTRS_PER_PGD	512
+
+3rd level page
+PUD_SHIFT	30
+PTRS_PER_PUD	512
+
+middle-level
+PMD_SHIFT	21
+PTRS_PER_PMD	512
+
+PAGE_SHIFT	12
+TRS_PER_PTE	512
+
+Get memory from the zoned pages:
+_get_free_page()
+alloc_page() 
+
+Get memory from slab:
+kmem_cache_alloc()
+kmalloc()
+
+Get noncontiguous memory area
+vmalloc()
+vmalloc_32()
+
+vmalloc_sync_all()
+there is a fundamental assumption that vmalloc_sync_all() makes simply ain't true on
+other architectures.  It's an artifact of the x86 inability to flush by %cr3, so we
+try to keep the kernel mappings alive in a process so that a syscall and return
+doesn't do a full TLB flush.  Thus, because we have a hidden piece of kernel in 
+userspace, we get the HIGHMEM issues
+
+extern void flush_tlb_all(void);
+extern void flush_tlb_current_task(void);
+extern void flush_tlb_mm(struct mm_struct *);
+extern void flush_tlb_page(struct vm_area_struct *, unsigned long);
+
+
+pgd_index(addr)
+  Yields the index (relative position) of the entry in the Page Global Directory
+  that maps the linear address 'addr'
+pgd_offset(mm, addr)
+  Receives as parameters the address of a memory descriptor 'cw' and a linear 
+  address 'addr'. The macro yields the linear address of the entry in a
+  Page Global Directory that corresponds to the address 'addr'; the Page Global
+  Directory is found through a pointer within the memory descriptor.
+pgd_offset_k(addr)
+  Yields the linear address of the entry in the master kernel page global directory
+  that corresponds to the address 'addr'
+page_address(page)
+  The function returns the linear address associated with the page frame, or NULL
+  if the page frame is in high memory and is not mapped.  This function, which 
+  receives as its parameter a page descriptor pointer page, distinguishes 2 cases:
+  1. if the 'page' frame is not in high memory (PG_highmem flag clear), the linear
+     address always exists and is obtained by computing the page frame index, 
+     converting it into a physical address, and finally deriving the linear address
+     corresponding to the physical address.  This is accomplished by the following 
+     code:
+       __va((unsigned long)(page - mem_map) << 12)
+  2. if the 'page' frame is in high memory, the function looks into the 
+     page_address_htable hash table.  If the page frame is found in the hash table,
+     page_address() returns its linear address, otherwise it returns NULL.

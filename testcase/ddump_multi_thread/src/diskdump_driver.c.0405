@@ -1,0 +1,5082 @@
+/*
+ *  linux/drivers/block/diskdump.c
+ *
+ *  Copyright (C) 2004  FUJITSU LIMITED
+ *  Copyright (C) 2002  Red Hat, Inc.
+ *  Written by Nobuhiro Tachino (ntachino@jp.fujitsu.com)
+ *
+ *  Some codes were derived from netdump and copyright belongs to
+ *  Red Hat, Inc.
+ */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
+#include <linux/mm.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <linux/reboot.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/highmem.h>
+#include <linux/smp_lock.h>
+#include <linux/nmi.h>
+#include <linux/crc32.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/seq_file.h>
+#include <linux/proc_fs.h>
+#include <linux/nmi.h>
+#include <linux/dd_msg_id.h>
+#include <linux/buffer_head.h>
+#include <linux/bootmem.h>
+#include <linux/elfcore.h>
+#include <linux/elf.h>
+#include <linux/highuid.h>
+#include <linux/lzo.h>
+
+#include <linux/kthread.h>	// multi-thread
+
+#include <asm/elf.h>
+#include <asm/i387.h>
+
+#include <asm/uaccess.h>
+#include <asm/param.h>
+#include <asm/page.h>
+#include <asm/pgalloc.h>
+
+#include <linux/dump.h>
+#include <asm/dump.h>
+#include "diskdump.h"
+
+#include "dd_resprin.h"
+#include "dd_resclnt_if.h"
+
+#define Dbg(x, ...)	printk(KERN_DEBUG "disk_dump: " x "\n", ## __VA_ARGS__)
+#define Err(x, ...)     printk(KERN_ERR "disk_dump: " x "\n", ## __VA_ARGS__)
+#define Warn(x, ...)	printk(KERN_WARNING "disk_dump: " x "\n", ## __VA_ARGS__)
+#define Info(x, ...)	printk(KERN_INFO "disk_dump: " x "\n", ## __VA_ARGS__)
+
+#define DUMP_ASSERT(expr) \
+	if (!(expr)) { \
+	printk( "Assertion failed! %s,%s,%s,line=%d\n",\
+	#expr,__FILE__,__FUNCTION__,__LINE__); \
+	BUG(); \
+	}
+/* 
+ * Some messages *need* to go to console or the user think the system
+ * is dead
+ */
+#define Con(x, ...)	printk(KERN_EMERG "disk_dump: " x "\n", ## __VA_ARGS__)
+#define Con_raw(x, ...)	printk(KERN_EMERG x , ## __VA_ARGS__)
+
+#ifndef SECTOR_SIZE
+#define SECTOR_SIZE 512
+#endif
+
+/*
+ * revisit
+ * the max kernel core should not be larger than 50 GB. 
+ * 12207031 * 4096 = 50GB.
+ * 2441406 * 4096 = 10GB.
+ */
+#ifndef MAX_KERNEL_CORE_SIZE
+#define MAX_KERNEL_CORE_SIZE	2441406
+#endif
+
+#ifndef MIN
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#endif
+
+#define howmany(x, y)   (((x)+((y)-1))/(y))
+
+#define DUMP_PART(dev)     \
+    list_entry((&(dev)->partitions)->next, struct disk_dump_partition, list)
+
+/* 512byte sectors to blocks */
+#define SECTOR_BLOCK(s)	((s) >> (DUMP_BLOCK_SHIFT - 9))
+
+/* blocks to 512byte sectors */
+#define BLOCK_SECTOR(s) ((s) << (DUMP_BLOCK_SHIFT - 9))
+
+/* The number of block which is used for saving format information */
+#define USER_PARAM_BLOCK	2
+
+/* Size of the chunkblock written out */
+#define CHUNKSIZE ((1<<block_order) * PAGE_SIZE)
+#define COMP_CHUNKSIZE ((1<<comp_block_order) * PAGE_SIZE)
+
+#define DEF_APPDUMP_BLOCK_ORDER  4
+#define MAX_APPDUMP_BLOCK_ORDER  7
+
+#define DEF_COMPRESSED_BLOCK_ORDER 4
+
+#define GB (1024UL * 1024UL * 1024UL)
+
+#define MSGBUF_LEN (1 << CONFIG_LOG_BUF_SHIFT)
+
+static DECLARE_WAIT_QUEUE_HEAD(post_ddfs_panic_queue);
+static int	    post_ddfs_panic_finished = 0;
+
+/* By default, diskdump uses NMI to stop the cpus. To make it use IPI,
+ *  echo 1 > /proc/diskdump_use_ipi
+ */
+static int	    diskdump_use_ipi = 0;
+
+static int          fallback_on_err = 0; // we don't have fallback now, should 
+                                         // proceed to reboot when diskdump fails
+static int          allow_risky_dumps = 1;
+static unsigned int crashdump_block_order = 4;	/* 
+						 * Chunk size for kernel 
+                                                 * crash/live dumps.
+						 */
+
+static unsigned int block_order = 7;		/* sized dynamically during crash */
+static unsigned int appdump_block_order = DEF_APPDUMP_BLOCK_ORDER ;	
+						/* Sized dynamically
+                                                 * on module init based on system
+						 * memory size. 
+						 */
+static unsigned int comp_block_order = DEF_COMPRESSED_BLOCK_ORDER;	
+						/* 
+                                                 * Compression chunk size  for
+                                                 * app rawdumps 
+						 */
+static int          sample_rate = -1;
+
+module_param_named(fallback_on_err, fallback_on_err, bool, S_IRUGO|S_IWUSR);
+module_param_named(allow_risky_dumps, allow_risky_dumps, bool, S_IRUGO|S_IWUSR);
+module_param_named(block_order, block_order, uint, S_IRUGO|S_IWUSR);
+module_param_named(sample_rate, sample_rate, int, S_IRUGO|S_IWUSR);
+
+static unsigned long    timestamp_1sec;
+static uint32_t         module_crc;
+
+/*
+ * Synchronization, used to be in dump header
+ */
+static struct task_struct      *dump_tasks[NR_CPUS];
+
+/*
+ * Resource client handle for QoS tagging of diskdump I/O's.
+ */
+static dd_resclnt_id_t  diskdump_resclnt_id;
+
+
+/*
+ * Primary and mirror devices
+ */
+static struct disk_dump_unit   dump_primary[MAX_DUMPUNITS];
+static struct disk_dump_unit   dump_mirror[MAX_DUMPUNITS];
+static struct disk_dump_unit   dump_nocrash_primary[2*MAX_DUMPUNITS];
+static char   *crashdump_printk_log;
+
+/* Registered dump devices */
+static LIST_HEAD(disk_dump_devices);
+
+/* Registered dump types, e.g. SCSI, ... */
+static LIST_HEAD(disk_dump_types);
+
+static DECLARE_MUTEX(disk_dump_mutex);
+static DECLARE_MUTEX(app_dump_mutex);
+
+static unsigned long header_blocks;		/* The size of all headers */
+static unsigned long bitmap_blocks;		/* The size of bitmap header */
+static unsigned long printk_log_blocks;         /* The size of of msg buffer */
+static unsigned long total_ram_blocks;		/* The size of memory */
+static unsigned long total_blocks;		/* The sum of above */
+
+static unsigned long max_written_mm_size;	/* The max kernel mm size for core */
+
+/*
+ * This is not a parameter actually, but used to pass the number of
+ * required blocks to userland tools
+ */
+module_param_named(total_blocks, total_blocks, ulong, S_IRUGO);
+
+void *diskdump_stack;
+enum disk_dump_states disk_dump_state = DISK_DUMP_INITIAL;
+
+static int diskdump_nios, diskdump_ndones, diskdump_fini;
+static spinlock_t diskdump_lock = SPIN_LOCK_UNLOCKED;
+static int diskdump_error;
+static DECLARE_COMPLETION(diskdump_completion);
+
+static int do_livedump(struct pt_regs *regs, int signr, char *corename);
+static int do_appdump(struct pt_regs *regs, int signr, char *corename);
+
+static asmlinkage void  disk_dump(struct pt_regs *, void *);
+
+/*
+ * DDR local
+ */
+extern void sd_release_device(struct block_device *bdev);
+static int check_primary_space(int ndevs, unsigned long nblocks, 
+                                unsigned long *devblocks);
+static int create_disk_arrays(int *devcount);
+static int update_hdr_nblocks(int ndevs, unsigned int nblocks,
+                     unsigned int flags, int dumptype, unsigned long offset);
+static int write_common_headers(int ndevs, int dumptype);
+static int write_one_header(struct disk_dump_unit *unit, int devnum);
+static void format_header(struct disk_dump_unit *unit, int ndevs, 
+				int devnum, int dumptype);
+static int wait_for_ios(int ndevs);
+static int wait_io(struct disk_dump_unit *unit, 
+                    struct disk_dump_unit *backup_unit);
+static int write_chunk(struct disk_dump_unit *unit, unsigned long offset,
+                        unsigned long nblks, int devnum);
+static int write_blocks(struct disk_dump_unit *unit, int flags);
+static int write_sub_header(struct pt_regs *myregs);
+
+static int write_block(struct disk_dump_unit *unit, off_t offset, int  devnum);
+static int read_block(struct disk_dump_unit *unit, off_t offset, int  devnum);
+
+static int prepare_coredump_devices(off_t *bmap_offset, off_t *dump_startoff);
+static int check_appdump_space(int ndevs, unsigned long reqd_space, 
+		off_t startoff);
+static int write_appdump_headers(int ndevs, off_t nblocks, off_t dump_startoff);
+
+static int write_appdump_bmap(struct disk_dump_unit *unit, int devnum,
+		off_t bmap_off, off_t dump_soff, off_t dump_eoff,int bval);
+
+static int check_if_fatal(int devnum);
+static int diskdump_endio(struct bio *bio, unsigned int bytes_done, int error);
+
+static int diskdump_clear_header_block(int ndevs, off_t offset);
+struct memelfnote;
+static int notesize(struct memelfnote *en);
+static inline int write_compressed_chunk(int type, int devnum, 
+                                char *out_write_buffer, off_t blk_offset, 
+                                int blk_in_chunk );
+static inline
+void reset_completion_notifiers(void);
+
+static void init_measure_global(void);
+static void show_measure_global(void);
+
+#define BLOCKS_PER_CHUNK  (1<<block_order)
+
+static int write_compressed_memory(int ndevs, unsigned long offset, 
+                                   unsigned int max_blocks_written,
+                                   unsigned int *blocks_written);
+static int lapse = 0;		/* 200msec unit */
+
+static int dump_partition_changed = 0;
+
+/* 
+ * Filter mask to decide if a page should
+ * be skipped for dumpping. It's turned off by default.
+ * 
+ * To apply DUMP_FILTER_USERSPACE | DUMP_FILTER_HUGETLB |
+ * DUMP_FILTER_FREE to the filter, run:
+ *   echo 7 >/proc/dump_filter
+ */
+static int dump_filter = DUMP_FILTER_USERSPACE | 
+                         DUMP_FILTER_HUGETLB | 
+                         DUMP_FILTER_FREEPAGES ;
+
+enum { CLEAR = 0, CHECK = 1 };
+
+static char *crash_comp_buf = NULL;
+static char *crash_work_buffer = NULL;
+static char *crash_out_write_buf = NULL;
+
+static int ddump_ndevs;
+
+/*
+ * Global variables for measurement
+ */
+// timestamp
+static unsigned long	crash_start_time;
+static unsigned long	crash_end_time;
+// memory pages
+static unsigned long	skipped_free_pages;
+static unsigned long	diskdump_skipped_pages;
+static unsigned long	diskdump_skipped_user;
+static unsigned long	diskdump_skipped_hugetlb;
+// appdump blocks
+static off_t		appdump_comp_data_blocks;
+static off_t		appdump_blocks;
+static int		appdump_blocks_in_chunk;
+static off_t		appdump_blocks_no_data;
+static off_t		appdump_bmap_offset;
+static off_t		appdump_dump_startoff;
+static off_t		appdump_blk_offset;
+// appdump pages
+
+static unsigned long	total_data_pages;
+static unsigned long	app_zero_pages;
+static unsigned long	app_non_zero_pages;
+static unsigned long	app_other_pages;
+static unsigned long	app_mm_total_vm;
+static unsigned long	app_mm_shared_vm;
+static unsigned long	app_mm_map_count;
+// appdump timestamp
+static unsigned long	app_start_time;
+static unsigned long	app_end_time;
+static unsigned long	app_elf_time;
+static unsigned long	app_th_status_time;
+static unsigned long	app_w_note_phdr;
+static unsigned long	app_w_map_seg;
+static unsigned long	app_w_note_section;
+static unsigned long	app_w_th_status;
+static unsigned long	app_w_data;
+
+/*
+ * multi-threaded ddump
+ */
+#define HELPERS		2
+
+typedef struct {
+	struct task_struct	*cp_thread;
+	int			cp_cpu;
+	int			cp_order;
+	unsigned long		cp_app_zero_pages;
+	unsigned long		cp_app_non_zero_pages;
+	unsigned long		cp_app_other_pages;
+	struct completion	cp_buff_io_read;
+	struct completion	cp_buff_io_write;
+	int			cp_term;
+	char			*cp_buf;
+} ddump_comp_task_t;
+
+static ddump_comp_task_t	ddump_thread_helper[HELPERS];
+static struct task_struct	*ddump_panic_task;
+static int			ddump_nr_cpus;
+static int			ddump_max_helpers;
+static bool			ddump_exit = false;
+static bool			ddump_mt = true;
+
+static void appdump_mt_init(void);
+static int appdump_write_app_data(int);
+
+// tmp
+struct disk_dump_unit 		*ddump_primary;
+int				ddump_blocks;
+int				ddump_blk_offset;
+
+static void init_measure_global() {
+	if (crashdump_mode()) {
+		skipped_free_pages = 0;
+		diskdump_skipped_pages = 0;
+		diskdump_skipped_user = 0;
+		diskdump_skipped_hugetlb = 0;
+	} else {
+		//appdump blocks
+		appdump_comp_data_blocks = 0;
+		appdump_blocks = 0;
+		appdump_blocks_in_chunk = 0;
+		appdump_blocks_no_data = 0;
+		appdump_bmap_offset = 0;
+		appdump_dump_startoff = 0;
+		appdump_blk_offset = 0;
+		//appdump pages
+		total_data_pages = 0;
+		app_zero_pages = 0;
+		app_non_zero_pages = 0;
+		app_other_pages = 0;
+		app_mm_total_vm = 0;
+		app_mm_shared_vm = 0;
+		app_mm_map_count = 0;
+	}
+}
+
+static void show_measure_global() {
+	Dbg("measurement\n");
+
+	if (crashdump_mode()) {
+		Info("Crashdump block size: %lu %d",
+		     PAGE_SIZE << crashdump_block_order, crashdump_block_order);
+
+		Info("skipped_free_pages diskdump_skipped_pages ");
+		Info("diskdump_skipped_user diskdump_skipped_hugetlb");
+		Info("%10ld %10ld %10ld %10ld", 
+		     skipped_free_pages, diskdump_skipped_pages,
+		     diskdump_skipped_user, diskdump_skipped_hugetlb);
+	} else {
+		/******************************
+		 * mm
+		 ******************************/
+		/*
+		 * The request space = (total vm - shared vm) + 2(map) + 100
+		 */
+		Info("total vm %ld shared vm %ld map count %ld",
+		     app_mm_total_vm, app_mm_shared_vm, app_mm_map_count);
+
+		/*
+		 * The total comp pages (vma) = zero + non_zero + other
+		 */
+		Info("app zero %ld non-zero %ld other %ld\n",
+		     app_zero_pages, app_non_zero_pages, app_other_pages);
+
+		/******************************
+		 * blocks (size: 4096)
+		 ******************************/
+		Info("app_blk_odr %u blk_odr %u comp_blk_odr %u",
+		     appdump_block_order, block_order, comp_block_order);
+
+		Info("header_blocks bitmap_blocks log_blocks ram_blocks max_mm");
+		Info("%13lu %13lu %10lu %10lu",
+		     header_blocks, bitmap_blocks, printk_log_blocks,
+		     total_ram_blocks, max_written_mm_size);
+
+		/*
+		 * Total blks	= data pages (comp) + pages b4 comp
+		 * comp blks	= the last comp blk - the start of comp blk
+		 * comp blks size = (1<<appdump_block_order) * (# of comp blks)
+		 */
+		Info("blocks %ld data pages %ld B4-comp %ld compressed Blocks %ld",
+		     appdump_blocks, total_data_pages, appdump_blocks_no_data, 
+		     appdump_comp_data_blocks - appdump_blocks_no_data);
+
+		Info("offset bmap %ld dump start %ld blk %ld",
+		     appdump_bmap_offset, appdump_dump_startoff, appdump_blk_offset);
+
+		/* Per Device (the total has to * ndevs)
+		 * total size 		= the last blk - dump startoff
+		 * non-compression size	= blk @ non_comp - dump startoff
+		 * compression size	= the last blk - blk @ non_comp
+		 */
+		Info("written size (Kb) total %ld non-comp %ld comp %ld\n",
+		     (appdump_blk_offset - appdump_dump_startoff) << 2,
+		     (appdump_blocks_no_data - appdump_dump_startoff) << 2,
+		     (appdump_blk_offset - appdump_blocks_no_data) << 2);
+
+		/******************************
+		 * time
+		 ******************************/
+		Info("Time       start elf th status phdr");
+		Info("%10ld %5ld %3ld %5ld     %3ld",
+		      app_start_time, 
+		      app_elf_time - app_start_time,
+		      app_th_status_time - app_elf_time,
+		      app_w_note_phdr - app_th_status_time,
+		      app_w_map_seg - app_w_note_phdr);
+
+		Info(" map  sect status     data        end");
+		Info("%5ld %4ld %6ld %8ld %10ld\n",
+		      app_w_note_section - app_w_map_seg,
+		      app_w_th_status - app_w_note_section,
+		      app_w_data - app_w_th_status,
+		      app_end_time - app_w_data,
+		      app_end_time);
+
+		Info("APPDUMP total time taken %ld\n",
+		     app_end_time - app_start_time);
+
+	}
+}
+
+static int skip_dump_page(unsigned long pfn)
+{
+        struct page* pg = pfn_to_page(pfn);
+        if (PageReserved(pg))
+                return 0;
+        if (dump_filter & DUMP_FILTER_USERSPACE) {
+                if (page_mapped(pg)) {
+			diskdump_skipped_user++;
+                        diskdump_skipped_pages++;
+                        return 1;
+                }
+        }
+
+        if (dump_filter & DUMP_FILTER_HUGETLB) {
+                if (PageHugeTLB(pg)) {
+			diskdump_skipped_hugetlb++;
+                        diskdump_skipped_pages++;
+                        return 1;
+                }
+        }
+        if((dump_filter & DUMP_FILTER_FREEPAGES)) {
+            if(PageIsFree(pg)) { 
+                    skipped_free_pages++;
+                    diskdump_skipped_pages++;
+                    return 1;
+            }
+        }
+        return 0;
+}
+
+static int
+__proc_read_int_value(int value, char *page, off_t off, int count, int *eof)
+{
+	int i;
+	
+	i = snprintf(page + off, count, "%d\n", value);
+	*eof = 1;
+	return i;
+}
+
+static int
+__proc_write_int_value(int *value, const char *proc_name,
+		const char __user *buffer, unsigned long count)
+{
+	char buf[32];
+	int i = 0;
+	int len = (sizeof(buf)-1) < count ? (sizeof(buf)-1) : count;
+
+	if(copy_from_user(buf, buffer, len)) {
+	    return -EFAULT;
+	}
+
+	buf[len] = '\0';
+
+	if (1 != sscanf(buf, "%d", &i)) {
+	   printk(KERN_INFO "invalid data to %s\n", proc_name);
+	   return -EINVAL;
+	}
+
+	*value = i;
+
+	return len;
+}
+
+static int
+read_dump_filter(char* page, char** start, off_t off,
+		int count, int* eof, void* data)
+{
+	return __proc_read_int_value(dump_filter, page, off, count, eof);
+}
+
+static int
+write_dump_filter(struct file* fp, const char __user *buffer,
+		unsigned long count, void* data)
+{
+	return __proc_write_int_value(&dump_filter, "dump_filter", buffer, count);
+}
+
+static int
+read_post_ddfs_panic_stat(char* page, char** start, off_t off,
+		int count, int* eof, void* data)
+{
+	return __proc_read_int_value(post_ddfs_panic_finished, page, off, count, eof);
+}
+
+static int
+write_post_ddfs_panic_stat(struct file* fp, const char __user *buffer,
+		unsigned long count, void* data)
+{
+	return __proc_write_int_value(&post_ddfs_panic_finished,
+				      "post_ddfs_panic_finished",
+				      buffer,
+				      count);
+}
+
+static int
+read_diskdump_use_ipi(char* page, char** start, off_t off,
+		int count, int* eof, void* data)
+{
+	return __proc_read_int_value(diskdump_use_ipi, page, off, count, eof);
+}
+
+static int
+write_diskdump_use_ipi(struct file* fp, const char __user *buffer,
+		unsigned long count, void* data)
+{
+	return __proc_write_int_value(&diskdump_use_ipi,
+				      "diskdump_use_ipi",
+				      buffer,
+				      count);
+}
+
+static inline unsigned long eta(unsigned long nr, unsigned long maxnr)
+{
+	unsigned long long eta;
+
+	if (nr == 0)
+		nr = 1;
+
+	eta = ((maxnr << 8) / nr) * (unsigned long long)lapse;
+
+	return (unsigned long)(eta >> 8) - lapse;
+}
+
+static inline void print_status(unsigned int nr, unsigned int maxnr)
+{
+        static int next_per = 0;
+        int per;
+
+        per = nr*100/maxnr;
+
+        if (per >= next_per) {
+            Con("%d%% complete", per);
+            next_per = per + 10;
+        }
+}
+
+
+#if 0
+static int 
+read_blocks(
+    struct disk_dump_partition *dump_part, 
+    unsigned int                 offs,
+    char                        *buf, 
+    int                          len)
+{
+	struct disk_dump_device *device = dump_part->device;
+	int ret = 0;
+
+	local_irq_disable();
+	touch_nmi_watchdog();
+
+        if (device->ops.rw_block) {
+	    ret = device->ops.rw_block(dump_part, READ, 
+                                        offs + DISK_DUMP_STARTOFF, buf, len, 
+                                        NULL);
+	    if (ret < 0) {
+		    Err("read error on block %u err %d", offs, ret);
+                    diskdump_mdelay(1000);
+	    }
+        } else {
+            ret = -EINVAL;
+        }
+
+	return ret;
+
+}
+#endif
+
+/*
+ * Write memory bitmap after location of dump headers.
+ *
+ * The bitmap only gets written to the first primary and 
+ * mirror device (if one exists)
+ * If they both fail, we're toast anyway.
+ */
+#define PAGE_PER_BLOCK	(PAGE_SIZE * 8)
+#define idx_to_pfn(nr, byte, bit) (((nr) * PAGE_SIZE + (byte)) * 8 + (bit))
+
+static int 
+write_bitmap(unsigned int bitmap_offset, unsigned int bitmap_blocks)
+{
+        struct disk_dump_unit       *primary, *mirror;
+	unsigned int                 nr;
+	unsigned long                pfn, next_ram_pfn;
+	int                          bit, byte;
+	int                          ret = 0;
+        int                          devnum = 0;
+	unsigned char                val;
+
+        unsigned long                total_pages_dumped = 0;
+        diskdump_skipped_pages = 0;
+        
+        primary =  (crashdump_mode()) ? 
+		&dump_primary[0] : &dump_nocrash_primary[0];
+        mirror  = &dump_mirror[0];
+
+    	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    	diskdump_error = 0;
+    	init_completion(&diskdump_completion);
+
+	for (nr = 0; nr < bitmap_blocks; nr++) {
+		pfn = idx_to_pfn(nr, 0, 0);
+		next_ram_pfn = next_ram_page(pfn - 1);
+
+		if (pfn + PAGE_PER_BLOCK <= next_ram_pfn) {
+			memset(primary->scratch, 0, PAGE_SIZE);
+			if (crashdump_mode()) {
+				memset(mirror->scratch, 0, PAGE_SIZE);
+			}
+		} else {
+			for (byte = 0; byte < PAGE_SIZE; byte++) {
+				val = 0;
+				for (bit = 0; bit < 8; bit++) {
+                                        pfn = idx_to_pfn(nr, byte, bit);
+					if (page_is_ram(pfn) && 
+                                           !skip_dump_page(pfn))
+                                        {
+						val |= (1 << bit);
+                                                total_pages_dumped++;
+                                        }
+                                }
+                                primary->scratch[byte] = (char)val;
+				if (crashdump_mode()) {
+					mirror->scratch[byte] = (char)val;
+                                }
+			}
+                }
+
+                if (!crashdump_mode()) {
+                        /* for livedump, we need to save the bitmap
+                         * for later check
+                         */
+                        char* ptr;
+                        ptr = page_address(dump_nocrash_primary[0].bitmap[nr]);
+                        memcpy(ptr, primary->scratch, PAGE_SIZE);
+                }
+
+                ret = write_chunk(primary, bitmap_offset + nr, 1, devnum);
+                if (ret) {
+                    goto out;
+                }
+		if (crashdump_mode() && mirror->flags & DISK_DUMP_UNIT_OK) {
+                	ret = write_chunk(mirror, bitmap_offset + nr, 1, devnum);
+                	if (ret) {
+                    		goto out;
+                	}
+		}
+
+                ret = wait_for_ios(devnum + 1);
+                if (ret < 0) {
+                    goto out;
+                }
+
+    		diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    		diskdump_error = 0;
+    		init_completion(&diskdump_completion);
+
+	}
+
+out:
+
+        Info("total pages dumped %lu", total_pages_dumped);
+	return ret;
+}
+
+static int
+write_msgbuf(unsigned int msgbuf_offset)
+{
+        struct disk_dump_unit *primary, *mirror;
+	unsigned int nr;
+	int ret = 0;
+        int devnum = 0;
+	int write_mirror;
+
+        diskdump_skipped_pages = 0;
+
+        primary =  (crashdump_mode()) ? 
+		&dump_primary[0] : &dump_nocrash_primary[0];
+        mirror  = &dump_mirror[0];
+	write_mirror = mirror->flags & DISK_DUMP_UNIT_OK;
+
+    	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    	diskdump_error = 0;
+    	init_completion(&diskdump_completion);
+
+	for (nr = 0; nr < printk_log_blocks; nr++) {
+
+		memcpy(primary->scratch, 
+			crashdump_printk_log + nr * PAGE_SIZE, PAGE_SIZE);
+		if (crashdump_mode() && write_mirror) {
+			memcpy(mirror->scratch, 
+				crashdump_printk_log + nr * PAGE_SIZE, PAGE_SIZE);
+		}
+
+                ret = write_chunk(primary, msgbuf_offset + nr, 1, devnum);
+                if (ret) {
+                	return ret;
+                }
+		if (crashdump_mode() && write_mirror) {
+                	ret = write_chunk(mirror, msgbuf_offset + nr, 1, devnum);
+                	if (ret) {
+                    		return ret;
+                	}
+		}
+
+                ret = wait_for_ios(devnum + 1);
+                if (ret < 0) {
+                	return ret;
+                }
+    		diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    		diskdump_error = 0;
+    		init_completion(&diskdump_completion);
+	}
+        return ret;
+}
+
+int diskdump_compress_and_write_remaining(int type, void *scratch, int ndevs, 
+                                          int *dev, int blk_in_chunk, 
+                                          off_t *blk_off, long *filled, 
+                                          long *data_blocks)
+
+{
+        lzo_tag_t lz;
+        int devnum = *dev;
+        long outbuf_filled = *filled;
+        int ret = 0, ret2 ;
+        int blk_offset = *blk_off;
+        int comp_data_blocks = *data_blocks;
+
+        memset(&lz,0,sizeof(lzo_tag_t));
+        lz.magic_start = LZO_MAGIC_START;
+        lz.last_chunk = 0;
+        BUG_ON(scratch == NULL);
+	if (blk_in_chunk > 0) {
+	    memcpy(crash_work_buffer, scratch, blk_in_chunk * PAGE_SIZE);
+        }
+	/* Write out the remaining compressed block as a separate chunk */
+	if (outbuf_filled) {
+	    lzo_tag_t end_of_chunk_lz = { 0xDEAF, -1, -1 , 0};
+	    memcpy(crash_out_write_buf + outbuf_filled, 
+			                 &end_of_chunk_lz, sizeof(lzo_tag_t));
+	    outbuf_filled += sizeof(lzo_tag_t);
+	    DUMP_ASSERT(outbuf_filled < CHUNKSIZE);
+
+	    if ((ret = write_compressed_chunk(type, devnum, crash_out_write_buf, 
+				blk_offset, (1<<block_order))) != 0) {
+		goto out;
+	    }
+	    devnum++;
+	    comp_data_blocks++;
+
+	    ret = wait_for_ios(ndevs);
+	    if (ret < 0) {
+		goto out;
+	    }
+
+	    /* Reset I/O completion notfiers */
+	    reset_completion_notifiers();
+	    if (devnum == ndevs) {
+		devnum = 0;
+		blk_offset += (1<<block_order);
+	    }
+	    outbuf_filled = 0;
+	}
+	if (blk_in_chunk > 0) {
+	    lzo_tag_t end_of_chunk_lz = { 0xDEAF, -1, -1 , 0 };
+
+	    long      uncomp_size = blk_in_chunk * PAGE_SIZE;
+
+	    DUMP_ASSERT(outbuf_filled == 0);
+	    lz.in_size  = uncomp_size;
+	    lz.out_size = -1; /* Will store it uncompressed */
+
+	    memcpy(crash_out_write_buf , &lz, sizeof(lzo_tag_t));
+	    outbuf_filled += sizeof(lzo_tag_t);
+	    /* 
+	     * NOTE: crash_work_buffer contains what was in scratch
+	     * in the main VMA loop.
+	     */
+	    memcpy(crash_out_write_buf + outbuf_filled, crash_work_buffer, uncomp_size);
+	                            
+	    outbuf_filled += uncomp_size;
+	    memcpy(crash_out_write_buf + outbuf_filled, 
+	                             &end_of_chunk_lz, sizeof(lzo_tag_t));
+	    outbuf_filled += sizeof(lzo_tag_t);
+	    DUMP_ASSERT(outbuf_filled < CHUNKSIZE);
+
+	    if ((ret = write_compressed_chunk(type, devnum, crash_out_write_buf, 
+				blk_offset, (1<<block_order))) != 0) {
+		goto out;
+	    }
+	    devnum++;
+	    comp_data_blocks++;
+	    ret = wait_for_ios(ndevs);
+	    if (ret < 0) {
+		goto out;
+	    }
+	    /* Reset I/O completion notfiers */
+	    reset_completion_notifiers();
+
+	    if (devnum == ndevs) {
+		devnum = 0;
+		blk_offset += (1<<block_order);
+	    }
+	    outbuf_filled = 0;
+        }
+
+	/* The last chunk will be the LZO tag to indicate EOF */
+	lz.in_size = -1; lz.out_size = -1;
+	lz.last_chunk = 1;
+	DUMP_ASSERT(outbuf_filled == 0);
+	memcpy(crash_out_write_buf + outbuf_filled, &lz, sizeof(lzo_tag_t));
+	outbuf_filled += sizeof(lzo_tag_t);
+    
+	if ((ret = write_compressed_chunk(type, devnum, crash_out_write_buf,
+		 		   blk_offset, (1<<block_order))) != 0) { 
+		    goto out;
+	}
+ 	comp_data_blocks++;
+	blk_offset += (1<<block_order);
+   
+	ret = wait_for_ios(ndevs);
+	if (ret < 0) {
+		goto out;
+	}
+
+out:
+         *blk_off = blk_offset;
+        *data_blocks = comp_data_blocks;
+       /*
+         * Make sure there are no lingering IOs
+         */
+        ret2 = wait_for_ios(ndevs);
+	return ret? ret:ret2;
+
+}
+
+/*
+ * compress n pages & write it to I/O buffer
+ *
+ * 1. compress the given buffer, and store the compressed result in 
+ *    crash_comp_buf.  crash_work_buffer is the tmp buf used by lz.
+ * 2. Check the compressed size, if the I/O buf (crash_out_write_buf)
+ *    doesn't have enough space:
+ *    a. Write a special tag @ the end of the I/O buf.
+ *    b. Iusse I/O Write OP via write_compressed_chunk().
+ *    c. Move the the next I/O buf.
+ * 3. copy the compressed result to the I/O buf.
+ */
+
+int diskdump_compress_and_write(int type, void* scratch, int ndevs, int *dev, 
+				int *blk_in_chunk, off_t *blk_offset, 
+                                long *filled, long *comp_data_blocks)
+{
+    
+    long outbuf_filled = *filled;
+    int devnum = *dev;
+    off_t offset = *blk_offset;
+    lzo_tag_t lz;
+    int ret = 0;
+    long n_comped = 0;
+
+    memset(&lz,0,sizeof(lzo_tag_t));
+    lz.magic_start = LZO_MAGIC_START;
+    lz.last_chunk = 0;
+
+    BUG_ON(scratch == NULL);
+    ret = lzo1x_1_compress(scratch, COMP_CHUNKSIZE, 
+                               crash_comp_buf, &n_comped, 
+                              (void *)crash_work_buffer);
+    if (ret != LZO_E_OK)  {
+        Dbg("LZO Compression failed. Aborting Rawdump!\n");
+        Info("LZO compression failed");
+        goto out;
+    }
+    DUMP_ASSERT(n_comped > 0);
+    /*
+     * Special case for chunks which don't compress well.
+     * Some data sets can result in a bigger compresed
+     * buffer. Just store the original data set in that case.
+     */
+    lz.in_size  = COMP_CHUNKSIZE;
+    lz.out_size = (n_comped >= COMP_CHUNKSIZE) ? -1 : n_comped;
+    if (n_comped >= COMP_CHUNKSIZE) {
+        n_comped = COMP_CHUNKSIZE;
+    }
+    /*
+     * Ensure enough space in buffer for:
+     * Current comp chunk + start lzo_tag + end-of-chunk lzo_tag
+     */
+    if ((outbuf_filled + n_comped + 
+                     2 * sizeof(lzo_tag_t)) >= CHUNKSIZE) {
+
+        lzo_tag_t end_of_chunk_lz = { 0xDEAF, -1, -1 , 0 };
+        memcpy(crash_out_write_buf + outbuf_filled, 
+               &end_of_chunk_lz, sizeof(lzo_tag_t));
+        outbuf_filled += sizeof(lzo_tag_t);
+        DUMP_ASSERT(outbuf_filled < CHUNKSIZE);
+        /* 
+         * There isn't enough space to include the LZO tag 
+         * in the current chunk. Write it out and start with 
+         * a fresh one.
+         */
+        if ((ret = write_compressed_chunk(type, devnum, crash_out_write_buf, 
+                            offset, (1<<block_order))) != 0) {
+
+            Info("Write compressed chunk failed");
+            goto out;
+        }
+
+        /*
+         * If we've written out a stripeline worth,
+         * wait for the completions
+         */
+        devnum++;
+        (*comp_data_blocks)++;
+        if (devnum == ndevs) {
+        
+            ret = wait_for_ios(ndevs);
+            if (ret < 0) {
+                Info("Waiting for ios failed");
+                goto out;
+            }
+
+            devnum = 0;
+            offset += (1 << block_order);
+            reset_completion_notifiers();
+        }
+
+        *blk_in_chunk = 0;
+
+        outbuf_filled = 0;
+    }
+
+    
+    memcpy(crash_out_write_buf + outbuf_filled, &lz, sizeof(lzo_tag_t));
+    outbuf_filled += sizeof(lzo_tag_t);
+
+    /* 
+     * Special case for compressed chunks which are > COMP_CHUNKSIZE.
+     * Use the uncompessed buffer itself.
+     */
+    if (lz.out_size != -1) {
+        memcpy(crash_out_write_buf + outbuf_filled, crash_comp_buf, 
+                                  n_comped);
+    } else {
+        memcpy(crash_out_write_buf + outbuf_filled, 
+                                    scratch, n_comped);
+    }
+
+    outbuf_filled += n_comped;
+out:
+    *blk_offset = offset;
+    *filled = outbuf_filled;
+    *blk_in_chunk = 0;
+    *dev = devnum;
+    return ret;
+}
+
+/*
+ * Write whole memory to dump partition.
+ * Return value is the number of writen blocks.
+ *
+ * ndevs is the number of primary and mirror devices.
+ */
+static int 
+write_compressed_memory(int ndevs, unsigned long offset, 
+                        unsigned int max_blocks_written,
+			unsigned int *blocks_written)
+{
+	char                    *kaddr;
+        struct disk_dump_unit   *primary, *mirror;
+	unsigned int             blocks = 0;
+	struct page             *page;
+	unsigned long            nr;
+	int                      ret = 0, devnum = 0;
+        int                      ret2 = 0;
+	int                      blk_in_chunk = 0;
+	int			 write_mirror = 0;
+	long			 outbuf_filled = 0;
+	off_t 			 comp_data_blocks = 0;
+        off_t                    blk_offset = 0;
+        Info("Writing compressed diskdump...");
+
+        primary = &dump_primary[0];
+        mirror = &dump_mirror[0];
+        /*Number of blocks already written*/
+        blk_offset = offset;
+
+	for (nr = next_ram_page(ULONG_MAX); nr < ULONG_MAX; 
+                nr = next_ram_page(nr)) 
+        {
+
+		print_status(blocks, max_blocks_written);
+
+                if (skip_dump_page(nr))
+                        continue;        
+
+		if (blocks >= max_blocks_written) {
+			Err("dump device is too small. "
+                             "%lu pages were not saved", get_max_pfn() - blocks);
+                        ret = -ENOSPC;
+			goto out;
+		}
+
+		write_mirror = mirror->flags & DISK_DUMP_UNIT_OK;
+
+		page = pfn_to_page(nr);
+		if (nr != page_to_pfn(page)) {
+			/* page_to_pfn() is called from kmap_atomic().
+			 * If page->flag is broken, it specified a wrong
+			 * zone and it causes kmap_atomic() fail.
+			 */
+			Err("Bad page. PFN %lu flags %lx\n",
+			    nr, (unsigned long)page->flags);
+
+			memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 0,
+			       PAGE_SIZE);
+			sprintf(primary->scratch + blk_in_chunk * PAGE_SIZE,
+				"Bad page. PFN %lu flags %lx\n",
+			 	 nr, (unsigned long)page->flags);
+
+			if (write_mirror) {
+				memset(mirror->scratch + blk_in_chunk * PAGE_SIZE, 
+					0, PAGE_SIZE);
+			}
+
+			goto write;
+		}
+
+		if (!kern_addr_valid((unsigned long)pfn_to_kaddr(nr))) {
+
+
+			memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 0,
+			       PAGE_SIZE);
+			sprintf(primary->scratch + blk_in_chunk * PAGE_SIZE,
+				"Unmapped page. PFN %lu\n", nr);
+			if (write_mirror) {
+				memset(mirror->scratch + blk_in_chunk * PAGE_SIZE, 
+					0, PAGE_SIZE);
+			}
+			goto write;
+		}
+
+		kaddr = kmap_atomic(page, 0);
+		/*
+		 * need to copy because adapter drivers use
+		 * virt_to_bus()
+		 */
+		memcpy(primary->scratch + (blk_in_chunk * PAGE_SIZE), kaddr, 
+                        PAGE_SIZE);
+		if (write_mirror) {
+		    memcpy(mirror->scratch + (blk_in_chunk * PAGE_SIZE), 
+		    		kaddr, PAGE_SIZE);
+		}
+
+		kunmap_atomic(kaddr, 0);
+
+write:
+		blk_in_chunk++;
+		blocks++;
+
+            if (blk_in_chunk >= (1 << comp_block_order)) {
+                ret = diskdump_compress_and_write(CRASHDUMP, primary->scratch, ndevs, &devnum,
+                                            &blk_in_chunk, &blk_offset, 
+                                            &outbuf_filled, &comp_data_blocks);
+                if(ret < 0) {
+                    Err("CRASHDUMP : diskdump_compress_and_write failed %d\n",ret);   
+                    goto out;
+                }
+                *blocks_written = comp_data_blocks;
+                primary =  (crashdump_mode()) ? 
+		            &dump_primary[devnum] : &dump_nocrash_primary[devnum];
+
+                mirror  = &dump_mirror[devnum];
+
+
+            }
+
+        }
+
+	primary =  (crashdump_mode()) ? 
+		    &dump_primary[devnum] : &dump_nocrash_primary[devnum];
+        ret = diskdump_compress_and_write_remaining(CRASHDUMP, primary->scratch, ndevs, &devnum,
+                                            blk_in_chunk, &blk_offset, 
+                                            &outbuf_filled,&comp_data_blocks);
+        if(ret < 0) {
+            Err("CRASHDUMP : diskdump_compress_and_write_remaining failed %d\n",ret);   
+            goto out;
+        }
+
+        *blocks_written = comp_data_blocks;
+	if (blk_offset > APPDUMP_BMAP_STARTOFF(ndevs)) {
+		Warn("CRASHDUMP:" "offset beyond appdump startblock %ld!!\n", 
+				APPDUMP_BMAP_STARTOFF(ndevs));
+	}
+
+	//Dbg("James write_compressed_memory blk_inchunk %d blocks %d\n",
+	//    blk_in_chunk, blocks);
+	//Dbg("James write_compressed_memory diskdump_skipped_pages %ld blocks_written %ld\n",
+	//    diskdump_skipped_pages, comp_data_blocks);
+
+out:
+        /*
+         * Make sure there are no lingering IOs
+         */
+        ret2 = wait_for_ios(ndevs);
+	return ret? :ret2;
+
+}
+
+/*
+ * Check the bitmap array in dump_nocrash_primary[0].bitmap
+ * to decide whether we should dump a page or not.
+ * Note that we should not call skip_dump_page in write_memory_nocrash
+ * as the system state would have changed when we are doing livedump.
+ * Inconsistency between bitmap and page dump will make the vmcore
+ * unusable.
+ */
+static long livedump_skipped = 0;
+static int livedump_skip_page(unsigned long pfn)
+{
+        int idx = pfn/8/PAGE_SIZE;
+        int chr = (pfn/8)%PAGE_SIZE;
+        int bit = pfn%8;
+        int skip;
+
+        struct page* pg = dump_nocrash_primary[0].bitmap[idx];
+        char* ptr = page_address(pg);
+        skip = !(ptr[chr] & (1 << bit));
+        if (skip)
+                livedump_skipped++;
+        return skip;
+}
+
+static int write_memory_nocrash(int ndevs, unsigned long offset,
+			unsigned int max_blocks_written,
+			unsigned int *blocks_written)
+{
+        struct disk_dump_unit   *primary;
+	char                    *kaddr;
+	unsigned int             blocks = 0;
+	struct page             *page;
+	unsigned long            nr;
+	int                      ret = 0, devnum = 0, ret2;
+	int                      blk_in_chunk = 0;
+	long			 outbuf_filled = 0;
+	off_t 			 comp_data_blocks = 0;
+        off_t                    blk_offset = 0;
+        primary = &dump_nocrash_primary[0];
+        Info("Compressed livedump\n");
+    	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    	diskdump_error = 0;
+    	init_completion(&diskdump_completion);
+        blk_offset = offset;
+        if (!(primary->flags & DISK_DUMP_UNIT_OK))  {
+                return -1;
+        }
+
+	for (nr = next_ram_page(ULONG_MAX); nr < ULONG_MAX;nr = next_ram_page(nr))
+        {
+        
+                if (livedump_skip_page(nr)) {
+                        continue;
+                }
+		print_status(blocks, max_blocks_written);
+
+		if (blocks >= max_blocks_written) {
+			Warn("dump device is too small. "
+                             "%lu pages were not saved", get_max_pfn() - blocks);
+			goto out;
+		}
+
+		page = pfn_to_page(nr);
+		if (nr != page_to_pfn(page)) {
+			/* page_to_pfn() is called from kmap_atomic().
+			 * If page->flag is broken, it specified a wrong
+			 * zone and it causes kmap_atomic() fail.
+			 */
+			Err("Bad page. PFN %lu flags %lx\n",
+			    nr, (unsigned long)page->flags);
+
+			memset(primary->scratch, 0, PAGE_SIZE);
+			page = virt_to_page((unsigned long)primary->scratch);
+		} else if (!kern_addr_valid((unsigned long)pfn_to_kaddr(nr))) {
+			memset(primary->scratch, 0, PAGE_SIZE);
+			page = virt_to_page((unsigned long)primary->scratch);
+		}
+		kaddr = kmap_atomic(page, 0);
+		/*
+		 * need to copy because adapter drivers use
+		 * virt_to_bus()
+		 */
+		memcpy(primary->scratch + (blk_in_chunk * PAGE_SIZE), kaddr, 
+                        PAGE_SIZE);
+		kunmap_atomic(kaddr, 0);
+
+                blk_in_chunk++;
+                blocks++;
+                if (blk_in_chunk >= (1 << comp_block_order)) {
+                    
+                    ret = diskdump_compress_and_write(LIVEDUMP, primary->scratch, ndevs, &devnum,
+                                                &blk_in_chunk, &blk_offset, 
+                                                &outbuf_filled, &comp_data_blocks);
+                    if(ret < 0) {
+                        Err("CRASHDUMP : diskdump_compress_and_write failed %d\n",ret);   
+                        goto out;
+                    }
+                    *blocks_written = comp_data_blocks;
+                    primary =  (crashdump_mode()) ? 
+                                &dump_primary[devnum] : &dump_nocrash_primary[devnum];
+
+            }
+
+        }
+    primary =  (crashdump_mode()) ? 
+	    &dump_primary[devnum] : &dump_nocrash_primary[devnum];
+
+    ret = diskdump_compress_and_write_remaining(LIVEDUMP, primary->scratch, ndevs, &devnum,
+                                        blk_in_chunk, &blk_offset, 
+                                        &outbuf_filled,&comp_data_blocks);
+    if(ret < 0) {
+        Err("CRASHDUMP : diskdump_compress_and_write_remaining failed %d\n",ret);   
+        goto out;
+    }
+
+    if (offset > APPDUMP_BMAP_STARTOFF(ndevs)) {
+		Warn("LIVEDUMP!" "offset beyond appdump startblock %ld!!\n", 
+			APPDUMP_BMAP_STARTOFF(ndevs));
+    }
+
+out:
+        /*
+         * Make sure there are no lingering IOs
+         */
+        ret2 = wait_for_ios(ndevs);
+        *blocks_written = comp_data_blocks;
+
+	return ret? :ret2;
+}
+
+static void __freeze_this_cpu(void* info)
+{
+    unsigned long flags;
+    int cpu = smp_processor_id();
+    int sender = (int)info;
+    
+    if (sender == cpu) {
+        // We get the freeze IPI from ourself which could happen
+         // when the call_lock is zapped.
+         Con("CPU#%d got freeze IPI from itself, ignored.", cpu);
+         return;
+     }
+ 
+     local_irq_save(flags);
+
+     Con("CPU#%d frozen.", cpu);
+     dump_tasks[cpu] = current; 
+
+     for (;;) {
+         diskdump_mdelay(100);
+ 
+         if (dump_tasks[cpu] == NULL)
+             break;
+     } 
+
+     Con("CPU#%d awake.", cpu);
+     local_irq_restore(flags);
+}
+ 
+ 
+static void freeze_other_cpus(void)
+{
+         memset(dump_tasks, 0, sizeof(dump_tasks));
+         mb();       
+#if CONFIG_SMP
+         dump_freeze_cpus(__freeze_this_cpu);
+         diskdump_mdelay(500);
+#endif                          
+       Con("CPU#%d is executing diskdump.", smp_processor_id());
+       dump_tasks[smp_processor_id()] = current;
+}
+
+static int dump_err = 0;	/* Indicate Error state which occured in
+				 * disk_dump(). We need to make it global
+				 * because disk_dump() can't pass
+				 * error state as return value.
+				 */
+static int do_crashdump(struct pt_regs *regs, int signr, char *filename)
+{
+	unsigned long flags;
+        int i, timeout;
+        struct pt_regs __regs;
+
+	block_order = crashdump_block_order; 
+
+        if (regs == NULL) {
+            get_current_regs(&__regs);
+            regs = &__regs;
+        }
+
+	if (list_empty(&disk_dump_devices)) {
+		Err("no dump device registered yet, abort.");
+                return -1;
+	}
+
+	/* Inhibit interrupt and stop other CPUs */
+	local_irq_save(flags);
+	preempt_disable();
+
+	/*
+	 * Check the checksum of myself
+	 */
+	if (down_trylock(&disk_dump_mutex)) {
+		Err("down_trylock(disk_dump_mutex) failed.");
+                diskdump_mdelay(2000);
+		goto done;
+	}
+
+	disk_dump_state = DISK_DUMP_RUNNING;
+
+	touch_nmi_watchdog();
+
+        if (diskdump_use_ipi) {
+                freeze_other_cpus();
+        } else {
+	        machine_crash_shutdown(regs);
+        }
+
+	/*
+	 *  Some platforms may want to execute netdump on its own stack.
+	 */
+	platform_start_crashdump(diskdump_stack, disk_dump, regs);
+
+done:
+	/*
+	 * If diskdump failed and fallback_on_err is set,
+	 * We just return and leave panic to netdump.
+	 */
+	if (dump_err) {
+		disk_dump_state = DISK_DUMP_FAILURE;
+		if (fallback_on_err && dump_err) {
+			Con("diskdump failed.");
+
+                        //TODO: fallbak does not work now, to cleanly
+                        // recover from a failed diskdump needs more work
+                        memset(dump_tasks, 0, sizeof(dump_tasks));
+                        preempt_enable();
+                        local_irq_restore(flags);
+			return -1;
+		}
+		Con("diskdump failed with error");
+	} else {
+		disk_dump_state = DISK_DUMP_SUCCESS;
+		Con("diskdump succeeded.");
+	}
+
+
+        timeout = 5;
+        /*
+         * Delay timeout seconds before rebooting the machine. 
+         * We can't use the "normal" timers since we just panicked..
+         */
+        Con("Rebooting in %d seconds..",timeout);
+        for (i = 0; i < timeout; i++) {
+            touch_nmi_watchdog();
+            diskdump_mdelay(1000);
+        }
+
+        machine_emergency_restart();
+
+        // we shouln't reach here
+        return -1;
+}
+
+static void do_a_crashdump(void)
+{
+        struct pt_regs regs;
+
+        get_current_regs(&regs);
+	try_crashdump(&regs);
+}
+
+static asmlinkage void disk_dump(struct pt_regs *regs, void *platform_arg)
+{
+        struct pt_regs myregs;
+	unsigned int max_written_blocks, written_blocks = 0;
+	struct disk_dump_device *dump_device = NULL;
+	int ret, ndevs = 0;
+        unsigned long devblocks = 0;
+
+	dump_err = -EIO;
+	/*
+	 * Setup timer/tasklet
+	 */
+	dump_clear_timers();
+	dump_clear_tasklet();
+	dump_clear_workqueue();
+
+	diskdump_poll_init();
+
+	platform_fix_regs();
+
+	if (list_empty(&disk_dump_devices)) {
+		Err("adapter driver is not registered.");
+                diskdump_mdelay(2000);
+		goto done;
+	}
+
+	crash_start_time = jiffies;
+	Info("start dumping..");
+
+        if (create_disk_arrays(&ndevs)) {
+		Err("No sane dump device found");
+                diskdump_mdelay(2000);
+		goto done;
+	}
+
+        /*
+         * Make sure there is enough space on the primary
+         * partitions
+         */
+        if (check_primary_space(ndevs, header_blocks + bitmap_blocks, NULL)) {
+		Warn("dump partition is too small. Aborted");
+                diskdump_mdelay(2000);
+		goto done;
+	}
+        
+
+	/* Snapshot the message buffer. This will be saved in the crashdump */
+	copy_msgbuf(crashdump_printk_log, MSGBUF_LEN);
+
+	/*
+	 * Write the common header out to each primary disk and mirror
+	 */
+        if (write_common_headers(ndevs, CRASHDUMP)) {
+                Err("Can not write out headers");
+                diskdump_mdelay(2000);
+		goto done;
+	}
+
+        /*
+         * Write the architecture dependent header.
+         * This writes out the ELF info
+         */
+        if ((ret = write_sub_header(&myregs)) < 0) {
+                Err("writing sub header failed. error %d", ret);
+                diskdump_mdelay(2000);
+                goto done;
+        }
+	
+        Info("writing message buffer..");
+	if ((ret = write_msgbuf(header_blocks + bitmap_blocks)) < 0) {
+	        Err("diskdump write_msgbuf failed");
+                goto done;
+        }
+	max_written_blocks = max_written_mm_size;
+        if (update_hdr_nblocks(ndevs, 
+		bitmap_blocks + size_of_sub_header() + printk_log_blocks,
+		0, CRASHDUMP, 1)) 
+        {
+		Warn("Can not update header bitmaps. Aborted");
+                diskdump_mdelay(2000);
+		goto done;
+        }
+
+        /* All diskdump memory has been allocated.
+           Now we can mark pages which should be skipped.
+         */
+        diskdump_mark_free_pages();
+	Info("writing memory bitmaps..");
+	if ((ret = write_bitmap(header_blocks, bitmap_blocks)) < 0) {
+                Err("Writing bitmap failed: %d", ret);
+                goto done;
+        }
+	max_written_blocks = max_written_mm_size;	
+        if (check_primary_space(ndevs, 
+		(max_written_mm_size - diskdump_skipped_pages), &devblocks)) {
+			Err("dump partition is too small. actual blocks %lu "
+                     	"expected blocks %lu. whole memory will not be saved",
+			devblocks, total_blocks - diskdump_skipped_pages);
+
+		max_written_blocks -= (total_blocks - devblocks);
+	}
+ 
+	Info("dumping memory..");
+	if ((ret = write_compressed_memory(ndevs, header_blocks + 
+                                            bitmap_blocks + printk_log_blocks,
+				             max_written_blocks, &written_blocks)) < 0) {
+                Err("dumping memory failed: %d", ret);
+		goto done;
+        }
+
+        /*
+	 * Set the number of block that is written into and write it
+	 * into partition again.
+	 */
+        Info("updating dump headers");
+        (void)update_hdr_nblocks(ndevs, written_blocks, 
+				 DUMP_HEADER_COMPLETED, CRASHDUMP, 1);
+        
+        Info("Blocks written %d ",written_blocks);
+
+	dump_err = 0;
+
+done:
+	crash_end_time = jiffies;
+	Info("diskdump time %ld\n", crash_end_time - crash_start_time);
+
+	Info("do adapter shutdown..");
+	if (dump_device && dump_device->ops.shutdown)
+		if (dump_device->ops.shutdown(dump_device))
+			Err("adapter shutdown failed.");
+}
+
+static struct disk_dump_partition *find_dump_partition(struct block_device *bdev)
+{
+	struct disk_dump_device *dump_device;
+	struct disk_dump_partition *dump_part;
+
+	list_for_each_entry(dump_device, &disk_dump_devices, list)
+		list_for_each_entry(dump_part, &dump_device->partitions, list)
+			if (dump_part->bdev == bdev)
+				return dump_part;
+	return NULL;
+}
+
+/*
+ * DDR LOCAL:
+ *  When a scsi device is removed, all we have is the struct scsi_device,
+ *  so we need to be able to search the avail dump devices via this key
+ *
+ * Must be called with app_dump_mutex held.
+ */
+static struct disk_dump_partition *find_dump_partition_realdev(void *real_device)
+{
+	struct disk_dump_device *dump_device;
+	struct disk_dump_partition *dump_part;
+
+	list_for_each_entry(dump_device, &disk_dump_devices, list) {
+		list_for_each_entry(dump_part, &dump_device->partitions, list) {
+			if (dump_part->real_device == real_device)
+				return dump_part;
+                }
+        }
+	return NULL;
+}
+
+static struct disk_dump_device *find_dump_device(struct disk_dump_device *device)
+{
+	struct disk_dump_device *dump_device;
+
+	list_for_each_entry(dump_device, &disk_dump_devices, list)
+		if (device == dump_device->device)
+			return  dump_device;
+	return NULL;
+}
+
+static void *find_real_device(struct device *dev,
+			      struct disk_dump_type **_dump_type)
+{
+	void *real_device;
+	struct disk_dump_type *dump_type;
+
+	list_for_each_entry(dump_type, &disk_dump_types, list) {
+		if ((real_device = dump_type->probe(dev)) != NULL) {
+			*_dump_type = dump_type;
+			return real_device;
+		}
+        }
+	return NULL;
+}
+
+/*
+ * Add dump partition structure corresponding to file to the dump device
+ * structure.
+ *
+ * DDR LOCAL:
+ *  Add real_device (actually a struct scsi_device *) for searching
+ *  from the scsi teardown layer.
+ */
+static int add_dump_partition(struct disk_dump_device *dump_device,
+			      struct block_device *bdev, void *real_device)
+{
+	struct disk_dump_partition *dump_part;
+
+	if (!(dump_part = kmalloc(sizeof(*dump_part), GFP_KERNEL)))
+		return -ENOMEM;
+
+	dump_part->device = dump_device;
+	dump_part->bdev = bdev;
+        dump_part->real_device = real_device;
+
+	if (!bdev || !bdev->bd_part) {
+                kfree(dump_part);
+		return -EINVAL;
+        }
+	dump_part->nr_sects   = bdev->bd_part->nr_sects;
+	dump_part->start_sect = bdev->bd_part->start_sect;
+
+        /*
+         * Since we stripe dumps now, we don't bother checking
+         * the size of individual disks
+         */
+	list_add(&dump_part->list, &dump_device->partitions);
+
+	return 0;
+}
+
+/*
+ * Add dump device and partition.
+ * Must be called with disk_dump_mutex held.
+ */
+static int add_dump(
+    struct device *dev, 
+    struct block_device *bdev, 
+    unsigned int flags)
+{
+	struct disk_dump_type *dump_type = NULL;
+	struct disk_dump_device *dump_device;
+	void *real_device;
+	int ret;
+
+        /*
+         * DDR LOCAL: removed blkdev_get() and put since
+         * upper layers already do that
+         */
+
+	/* Check whether this block device is already registered */
+	if (find_dump_partition(bdev)) {
+                return -EEXIST;
+	}
+
+	/* find dump_type and real device for this inode */
+	if (!(real_device = find_real_device(dev, &dump_type))) {
+		return -ENXIO;
+	}
+
+	/* Check whether this device is already registered */
+	dump_device = find_dump_device(real_device);
+	if (dump_device == NULL) {
+		/* real_device is not registered. create new dump_device */
+		if (!(dump_device = kmalloc(sizeof(*dump_device), GFP_KERNEL))) {
+			return -ENOMEM;
+		}
+
+		memset(dump_device, 0, sizeof(*dump_device));
+		INIT_LIST_HEAD(&dump_device->partitions);
+
+		dump_device->dump_type = dump_type;
+		dump_device->device = real_device;
+		if ((ret = dump_type->add_device(dump_device)) < 0) {
+			kfree(dump_device);
+			return ret;
+		}
+		if (!try_module_get(dump_type->owner)) {
+		        dump_type->remove_device(dump_device);
+
+			kfree(dump_device);
+			return -EINVAL;
+                }
+
+                dump_device->flags = flags;
+		list_add(&dump_device->list, &disk_dump_devices);
+
+	}
+
+	ret = add_dump_partition(dump_device, bdev, real_device);
+	if (ret < 0 && list_empty(&dump_device->partitions)) {
+		dump_type->remove_device(dump_device);
+		module_put(dump_type->owner);
+		list_del(&dump_device->list);
+		kfree(dump_device);
+	}
+
+	return ret;
+}
+
+/*
+ * Remove dump partition corresponding to bdev.
+ * Must be called with disk_dump_mutex held.
+ */
+static int remove_dump(struct block_device *bdev)
+{
+	struct disk_dump_device *dump_device;
+	struct disk_dump_partition *dump_part;
+	struct disk_dump_type *dump_type;
+
+	if (!(dump_part = find_dump_partition(bdev))) {
+		return -ENOENT;
+	}
+
+	dump_device = dump_part->device;
+	list_del(&dump_part->list);
+	kfree(dump_part);
+
+	if (list_empty(&dump_device->partitions)) {
+		dump_type = dump_device->dump_type;
+		dump_type->remove_device(dump_device);
+		module_put(dump_type->owner);
+		list_del(&dump_device->list);
+		kfree(dump_device);
+	}
+
+	return 0;
+}
+
+#ifdef CONFIG_PROC_FS
+static struct disk_dump_partition *dump_part_by_pos(struct seq_file *seq,
+						    loff_t pos)
+{
+	struct disk_dump_device *dump_device;
+	struct disk_dump_partition *dump_part;
+
+	list_for_each_entry(dump_device, &disk_dump_devices, list) {
+		seq->private = dump_device;
+		list_for_each_entry(dump_part, &dump_device->partitions, list)
+			if (!pos--)
+				return dump_part;
+	}
+	return NULL;
+}
+
+static void *disk_dump_seq_start(struct seq_file *seq, loff_t *pos)
+{
+	loff_t n = *pos;
+
+	down(&disk_dump_mutex);
+
+	if (!n--)
+		return (void *)1;	/* header */
+
+	return dump_part_by_pos(seq, n);
+}
+
+static void *disk_dump_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+{
+	struct list_head *partition = v;
+	struct list_head *device = seq->private;
+	struct disk_dump_device *dump_device;
+
+	(*pos)++;
+	if (v == (void *)1)
+		return dump_part_by_pos(seq, 0);
+
+	dump_device = list_entry(device, struct disk_dump_device, list);
+
+	partition = partition->next;
+	if (partition != &dump_device->partitions)
+		return partition;
+
+	device = device->next;
+	seq->private = device;
+	if (device == &disk_dump_devices)
+		return NULL;
+
+	dump_device = list_entry(device, struct disk_dump_device, list);
+
+	return dump_device->partitions.next;
+}
+
+static void disk_dump_seq_stop(struct seq_file *seq, void *v)
+{
+	up(&disk_dump_mutex);
+}
+
+static int disk_dump_seq_show(struct seq_file *seq, void *v)
+{
+	struct disk_dump_partition *dump_part = v;
+	char buf[BDEVNAME_SIZE];
+
+	if (v == (void *)1) {	/* header */
+		seq_printf(seq, "# sample_rate: %u\n", sample_rate);
+		seq_printf(seq, "# block_order: %u\n", block_order);
+		seq_printf(seq, "# fallback_on_err: %u\n", fallback_on_err);
+		seq_printf(seq, "# allow_risky_dumps: %u\n", allow_risky_dumps);
+		seq_printf(seq, "# total_blocks: %lu\n", total_blocks);
+		seq_printf(seq, "#\n");
+
+		return 0;
+	}
+
+	seq_printf(seq, "%s %lu %lu\n", bdevname(dump_part->bdev, buf),
+			dump_part->start_sect, dump_part->nr_sects);
+	return 0;
+}
+
+static struct seq_operations disk_dump_seq_ops = {
+	.start	= disk_dump_seq_start,
+	.next	= disk_dump_seq_next,
+	.stop	= disk_dump_seq_stop,
+	.show	= disk_dump_seq_show,
+};
+
+static int disk_dump_open(struct inode *inode, struct file *file)
+{
+	return seq_open(file, &disk_dump_seq_ops);
+}
+
+
+static int
+do_livedump(struct pt_regs *regs, int signr, char *corename)
+{
+    	struct disk_dump_unit       *unit;
+    	struct disk_dump_partition  *dump_part;
+       	struct pt_regs myregs;
+	unsigned int max_written_blocks, written_blocks = 0;
+    	struct disk_dump_device     *dump_device;
+    	int                          primary = 0;
+	int ret = 0, ndevs = 0;
+        unsigned long devblocks = 0;
+        int  i;
+
+	if (list_empty(&disk_dump_devices)) {
+		Err("no dump device registered yet, abort.");
+		return -1;
+	}
+
+	get_current_regs(&myregs);
+
+	Info("Starting Livedump");
+	/*
+	 * To avoid appdump and live dump stepping on eather other,
+	 * take the app dump mutex when performing a livedump.
+	 */
+	down(&app_dump_mutex);
+	down(&disk_dump_mutex);
+
+	/* Setup the block chunksize to DISKDUMP chunksize */
+        block_order = crashdump_block_order; 
+
+    	list_for_each_entry(dump_device, &disk_dump_devices, list) {
+       		if (primary > NUM_DUMPDEVS)  {
+        		break;
+        	}
+
+        	dump_part = DUMP_PART(dump_device);
+        	if (dump_part == NULL) {
+			continue;
+		}
+
+        	if (dump_device->ops.quiesce) {
+	    		if (dump_device->ops.quiesce(dump_device) < 0)
+				continue;
+		}
+
+            	unit = &dump_nocrash_primary[primary];
+		
+        	unit->dev = dump_device;
+        	unit->part = dump_part;
+        	unit->flags = DISK_DUMP_UNIT_OK;
+		unit->scratch = (primary < MAX_DUMPUNITS) ? dump_primary[primary].scratch :
+		    dump_mirror[primary - MAX_DUMPUNITS].scratch;
+                /* primary should not be greater than MAX_DUMPUNITS
+                 * which is also the number of block order page chunks
+                 * allocated per dump device
+                 */
+		if(primary < MAX_DUMPUNITS) {
+                    primary++;
+                }
+        	unit->offset = 0;
+        	unit->nblks = 0;
+		invalidate_bdev(unit->part->bdev);
+
+    	}
+
+        ndevs = primary;
+
+        if (!ndevs) {
+		Err("No sane dump device found");
+		goto done;
+	}
+
+        /*
+         * Make sure there is enough space on the primary
+         * partitions
+         */
+        if (check_primary_space(ndevs, header_blocks + bitmap_blocks, NULL)) {
+		Warn("dump partition is too small. Aborted");
+		goto done;
+	}
+
+        /*
+         * Allocate pags to hold bitmap in dump_nocrash_primary[0]
+         */
+        unit = &dump_nocrash_primary[0];
+        unit->bitmap = kmalloc(sizeof(void*)*bitmap_blocks,
+                                GFP_KERNEL | __GFP_ZERO);
+        if (unit->bitmap == NULL) {
+                Err("No memory.");
+                ret = -ENOMEM;
+                goto done;
+        }
+        for (i = 0; i < bitmap_blocks; i++) {
+                struct page* pg = alloc_page(GFP_KERNEL);
+                if (pg == NULL) {
+                        Err("No memory.");
+                        ret = -ENOMEM;
+                        goto done;
+                }
+                unit->bitmap[i] = pg;
+        }
+
+	/* Snapshot the message buffer. This will be saved in the crashdump */
+	copy_msgbuf(crashdump_printk_log, MSGBUF_LEN);
+
+	/*
+	 * Write the common header out to each primary disk and mirror
+	 */
+        if (write_common_headers(ndevs, CRASHDUMP) < 0) {
+               	Err("Can not write out headers");
+		goto done;
+	}
+
+        /*
+        * Write the architecture dependent header.
+        * This writes out the ELF info
+        */
+        if ((ret = write_sub_header(&myregs)) < 0) {
+               	Err("writing sub header failed. error %d", ret);
+              	goto done;
+        }
+
+	Dbg("Marking free pages..");
+        diskdump_mark_free_pages();
+	Dbg("writing memory bitmaps..");
+	if ((ret = write_bitmap(header_blocks, bitmap_blocks)) < 0) {
+                Warn("writing memory bitmap failed: %d", ret);
+		goto done;
+        }
+
+	Info("writing message buffer..");
+	if ((ret = write_msgbuf(header_blocks + bitmap_blocks)) < 0) {
+	        Err("livedump write_msgbuf failed");
+		goto done;
+        }
+	max_written_blocks = max_written_mm_size;
+	
+        if (check_primary_space(ndevs, total_blocks, &devblocks)) {
+		Warn("dump partition is too small. actual blocks %lu "
+                    	"expected blocks %lu. whole memory will not be saved",
+			devblocks, total_blocks);
+
+		max_written_blocks -= (total_blocks - devblocks);
+	}
+
+       	if (update_hdr_nblocks(ndevs, 
+		bitmap_blocks + size_of_sub_header() + printk_log_blocks, 0, CRASHDUMP, 1)) {
+		Warn("Can not update header bitmaps. Aborted");
+		goto done;
+       	}
+
+	Info("dumping memory..");
+	if ((ret = write_memory_nocrash(ndevs, header_blocks + bitmap_blocks + printk_log_blocks,
+			max_written_blocks, &written_blocks)) < 0) {
+                Warn("dumping memory failed: %d", ret);
+		goto done;
+        }
+
+	/*
+ 	 * Set the number of block that is written into and write it
+ 	 * into partition again.
+	 */
+        Info("updating dump headers");
+        (void)update_hdr_nblocks(ndevs, written_blocks, 
+		   DUMP_HEADER_COMPLETED, CRASHDUMP, 1);
+
+done:
+        if (ret != 0) {
+            Warn("livedump failed");
+        }
+
+        /* free resource */
+        unit = &dump_nocrash_primary[0];
+        if (unit->bitmap) {
+                for (i = 0; i < bitmap_blocks; ++i) {
+                        if (unit->bitmap[i]) {
+                                __free_page(unit->bitmap[i]);
+                        }
+                }
+                kfree(unit->bitmap);
+                unit->bitmap = NULL;
+        }
+
+	up(&disk_dump_mutex);
+	up(&app_dump_mutex);
+        Info("livedump completed: %d blocks written", written_blocks);
+	return 0;
+}
+
+static ssize_t disk_dump_write(struct file *file, const char __user *buffer,
+    size_t count, loff_t *ppos)
+{
+	char c[16];
+        int len;
+
+	if (!buffer || count <= 0)
+		return -EINVAL;
+
+        memset(c, 0, sizeof(c));
+
+        len = (sizeof(c) < count)? sizeof(c): count;
+	if (copy_from_user(c, buffer, len))
+		return -EFAULT;
+
+	if (!strncmp(c, "dump", 4)) {
+		do_livedump(NULL, 0, NULL);
+	} else if (!strncmp(c, "crashdump", 9)) {
+                Info("starting a crashdump by user request...");
+                do_a_crashdump();
+        } else if (!strncmp(c, "appdump_clean", 13)) {
+
+		off_t bmap_offset, dump_startoff;
+		/* 
+		 * This option is primarily done to cleanup 
+		 * appdump bmaps when the system is being freshly installed.
+		 * Since this offsets of the appdump bmaps can vary
+		 * it is clumsy doing this in userspace (i.e. by saveore).
+		 *
+		 * Force the dump_partition_changed flag so that the 
+		 * blockmaps are zero'ed out.
+		 */
+		dump_partition_changed = 1;
+		if (prepare_coredump_devices(&bmap_offset, &dump_startoff)) {
+			up(&app_dump_mutex);
+		}
+	}
+	return count;
+}
+
+static struct file_operations disk_dump_fops = {
+	.owner		= THIS_MODULE,
+	.open		= disk_dump_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release,
+	.write		= disk_dump_write,
+};
+#endif
+
+int 
+register_disk_dump_device(struct device *dev, struct block_device *bdev,
+    				unsigned int flags)
+{
+	int ret;
+
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+	dump_partition_changed = 1;
+	ret = add_dump(dev, bdev, flags);
+	set_crc_modules();
+	up(&app_dump_mutex);
+	up(&disk_dump_mutex);
+
+	return ret;
+}
+/* HACK HACK HACK */
+EXPORT_SYMBOL(register_disk_dump_device);
+
+
+int unregister_disk_dump_device(struct block_device *bdev)
+{
+	int ret;
+
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+	dump_partition_changed = 1;
+	ret = remove_dump(bdev);
+	set_crc_modules();
+	up(&app_dump_mutex);
+	up(&disk_dump_mutex);
+
+	return ret;
+}
+/* HACK HACK HACK */
+EXPORT_SYMBOL(unregister_disk_dump_device);
+
+/* see request_module for details */
+void
+remove_all_disk_dump_devices(void)
+{
+    struct disk_dump_device *cur, *next;
+    int ret;
+
+    down(&disk_dump_mutex);
+    down(&app_dump_mutex);
+
+    list_for_each_entry_safe(cur, next, &disk_dump_devices, list) {
+        struct disk_dump_partition *cur_part, *next_part;
+        
+        list_for_each_entry_safe(cur_part, next_part, &cur->partitions, list) {
+            struct block_device *bdev = cur_part->bdev;
+            ret = remove_dump(bdev);
+            if (ret) {
+                Warn("Can't remove disk %s errno %d", bdev->bd_disk->disk_name, ret);
+            } else {
+                sd_release_device(bdev);
+            }
+        }
+    }
+    set_crc_modules();
+    up(&app_dump_mutex);
+    up(&disk_dump_mutex);
+}
+EXPORT_SYMBOL(remove_all_disk_dump_devices);
+
+int find_disk_dump_device(struct block_device *bdev)
+{
+	int ret;
+
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+	ret = (find_dump_partition(bdev) != NULL);
+	down(&app_dump_mutex);
+	up(&disk_dump_mutex);
+
+	return ret;
+}
+
+/*
+ * DDR LOCAL:
+ *  When a scsi device is removed, we need to remove any
+ *  references
+ */
+int remove_crashdev(void *real_device)
+{
+	struct disk_dump_partition *dump_part;
+        struct block_device        *bdev;
+        int                         error = 0;
+
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+
+	dump_part = find_dump_partition_realdev(real_device);
+        if (dump_part) {
+            bdev = dump_part->bdev;
+
+	    error = remove_dump(bdev);
+	    set_crc_modules();
+
+	    up(&disk_dump_mutex);
+	    up(&app_dump_mutex);
+
+            if (error == 0) {
+                Info("CRASHDUMP: removed device %x", bdev->bd_dev);
+
+                /*
+                 * Release the holds on the device
+                 */
+                sd_release_device(bdev);
+
+            } else {
+                Warn("CRASHDUMP: could not remove device %x error %d",
+                        bdev->bd_dev, error);
+            }
+
+        } else {
+	    up(&app_dump_mutex);
+	    up(&disk_dump_mutex);
+        }
+
+        return error;
+}
+EXPORT_SYMBOL(remove_crashdev);
+
+
+int register_disk_dump_type(struct disk_dump_type *dump_type)
+{
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+	list_add(&dump_type->list, &disk_dump_types);
+	set_crc_modules();
+	up(&app_dump_mutex);
+	up(&disk_dump_mutex);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(register_disk_dump_type);
+
+int unregister_disk_dump_type(struct disk_dump_type *dump_type)
+{
+	down(&disk_dump_mutex);
+	down(&app_dump_mutex);
+	list_del(&dump_type->list);
+	set_crc_modules();
+	up(&app_dump_mutex);
+	up(&disk_dump_mutex);
+
+	return 0;
+}
+
+EXPORT_SYMBOL_GPL(unregister_disk_dump_type);
+
+static void compute_total_blocks(void)
+{
+	unsigned long nr;
+
+	/*
+	 * the number of block of the common header and the header
+	 * that is depend on the architecture
+	 *
+	 * block 0:		dump partition header
+	 * block 1:		dump header
+	 * block 2:		dump subheader
+	 * block 3..n:		memory bitmap
+	 * block n..m           printk log
+	 * block (n + 1)...:	saved memory
+	 *
+	 * We never overwrite block 0
+	 */
+	header_blocks = 2 + size_of_sub_header();
+
+	total_ram_blocks = 0;
+	for (nr = next_ram_page(ULONG_MAX); nr < ULONG_MAX; nr = next_ram_page(nr))
+		total_ram_blocks++;
+
+	if (total_ram_blocks > MAX_KERNEL_CORE_SIZE) {
+		max_written_mm_size  = MAX_KERNEL_CORE_SIZE;
+	} else {
+		max_written_mm_size = total_ram_blocks;
+	}
+
+	bitmap_blocks = howmany(get_max_pfn(), 8 * PAGE_SIZE);
+
+	printk_log_blocks = MSGBUF_LEN / PAGE_SIZE;
+	/*
+	 * The necessary size of area for dump is:
+	 * 1 block for common header
+	 * m blocks for architecture dependent header
+	 * n blocks for memory bitmap
+         * o blocks for printk log
+	 * and whole memory
+	 */
+	total_blocks = header_blocks + bitmap_blocks + 
+					printk_log_blocks + max_written_mm_size;
+
+	Info("total blocks required: %lu "
+                "(header %lu + bitmap %lu + printk_log_blocks %lu + memory %lu max mm %lu)",
+		total_blocks, header_blocks, bitmap_blocks, 
+		printk_log_blocks, total_ram_blocks, max_written_mm_size);
+}
+
+
+/*
+ * DDR LOCAL stripe and mirror support
+ */
+
+/*
+ * Initialize the common header
+ */
+static void
+format_header(
+    struct disk_dump_unit       *unit,
+    int                          ndevs,
+    int                         devnum,
+    int				dumptype)
+{
+    struct disk_dump_header     *hdr;
+    struct disk_dump_partition  *dump_part;
+    char                        *scratch;
+
+    hdr = &unit->hdr;
+    scratch = unit->scratch;
+    dump_part = unit->part;
+
+    memset(hdr, 0, sizeof(struct disk_dump_header));
+    memset(scratch, 0, PAGE_SIZE);
+
+    hdr->utsname	    = init_uts_ns.name;
+    hdr->timestamp	    = xtime;
+    hdr->status	            = DUMP_HEADER_STARTED;
+    hdr->block_size	    = PAGE_SIZE;
+    hdr->sub_hdr_size       = size_of_sub_header();
+    hdr->bitmap_blocks      = bitmap_blocks;
+    hdr->printk_log_blocks  = printk_log_blocks;
+    hdr->max_mapnr	    = get_max_pfn();
+    hdr->total_ram_blocks   = max_written_mm_size;
+    hdr->device_blocks      = SECTOR_BLOCK(dump_part->nr_sects);
+    hdr->current_cpu        = smp_processor_id();
+    hdr->nr_cpus	    = num_online_cpus();
+    hdr->written_blocks     = 2;
+    hdr->devnum             = (unsigned short)devnum;
+    hdr->ndevs              = (unsigned short)ndevs;
+    hdr->chunk_size         = PAGE_SIZE << block_order;
+    
+    /* Reserved space for headers and other diskdump internal stuff */
+    hdr->total_reserved_blocks = total_blocks - max_written_mm_size;
+
+    if (dumptype == CRASHDUMP) {
+    	memcpy(hdr->signature, DISK_DUMP_SIGNATURE, sizeof(hdr->signature));
+	hdr->header_version = DISK_DUMP_HEADER_VERSION;
+    } else {
+    	memcpy(hdr->signature, APP_DUMP_SIGNATURE, sizeof(hdr->signature));
+	hdr->header_version = APP_DUMP_HEADER_VERSION;
+    }
+
+}
+
+/*
+ * Copy the header to our page scratchpad and write it out
+ */
+static int
+write_one_header( struct disk_dump_unit *unit, int devnum)
+{
+    struct disk_dump_header     *hdr;
+    char                        *scratch;
+    int                          error = 0;
+
+    hdr = &unit->hdr;
+    scratch = unit->scratch;
+
+    memcpy(scratch, hdr, sizeof(struct disk_dump_header));
+
+    error = write_chunk(unit, unit->offset, 1, devnum);
+
+    return error;
+}
+
+/*
+ * write_common_header - Write the common headers for all the disk units
+ * Input 
+ * 	ndevs 	: Number of registered devices.
+ * 	dumptype: Dump invoking context 
+ * 		  CRASHDUMP - Kernel crashdump
+ * 		  APPDUMP   - Application core dump.
+ * Error 
+ *  If we fail to write out a header, we just mark the 
+ *  unit as bad and don't use it.
+ */
+static int 
+write_common_headers(int ndevs, int dumptype)
+{
+    struct disk_dump_unit       *unit;
+    int                          devnum, error = 0;
+
+    diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    diskdump_error = 0;
+    init_completion(&diskdump_completion);
+
+    for (devnum=0; devnum<ndevs; devnum++) {
+
+        unit = (crashdump_mode() || dumptype == APPDUMP) ? 
+		&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+        if (unit->flags & DISK_DUMP_UNIT_OK) {
+	    unit->offset = 1;
+            format_header(unit, ndevs, devnum, dumptype);
+            error = write_one_header(unit, devnum);
+            if (error) {
+                break;
+            }
+        }
+
+	if (dumptype != APPDUMP && !crashdump_mode()) {
+		/* No mirroring for kernel livedumps */
+		continue;
+	}
+
+        unit = &dump_mirror[devnum];
+        if (unit->flags & DISK_DUMP_UNIT_OK) {
+	    unit->offset = 1;
+            format_header(unit, ndevs, devnum, dumptype);
+            error = write_one_header(unit, devnum);
+            if (error) {
+                break;
+            }
+        }
+
+    }
+
+    if (error == 0) {
+        error = wait_for_ios(ndevs);
+    }
+    return error;
+}
+
+
+static int write_appdump_headers(int ndevs, off_t nblocks, off_t dump_startoff)
+{
+    struct disk_dump_unit       *unit;
+    int                          devnum, error = 0;
+
+    Info("write_appdump_header: ndevs=%d : blocks :%ld : offset :%ld chunksize: %ld",
+    			ndevs, nblocks, dump_startoff, PAGE_SIZE << block_order);
+
+    diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    diskdump_error = 0;
+    init_completion(&diskdump_completion);
+
+    for (devnum=0; devnum<ndevs; devnum++) {
+
+	unit = &dump_primary[devnum];
+        if (unit->flags & DISK_DUMP_UNIT_OK) {
+		unit->offset = dump_startoff;
+		format_header(unit, ndevs, devnum, APPDUMP);
+		unit->hdr.status = DUMP_HEADER_STARTED|DUMP_HEADER_COMPLETED;
+		unit->hdr.written_blocks = nblocks;
+		error = write_one_header(unit, devnum);
+		if (error) {
+		    break;
+		}
+	}
+
+	/* Write to the mirror only for kernel crashdumps  & appdumps */
+        unit = &dump_mirror[devnum];
+        if (unit->flags & DISK_DUMP_UNIT_OK) {
+		unit->offset = dump_startoff;
+		format_header(unit, ndevs, devnum, APPDUMP);
+		unit->hdr.status = DUMP_HEADER_STARTED | DUMP_HEADER_COMPLETED;
+		unit->hdr.written_blocks = nblocks;
+		error = write_one_header(unit, devnum);
+		if (error) {
+		    break;
+		}
+	}
+        if (!error) {
+    	    error = wait_for_ios(devnum);
+        }
+    }
+    return error;
+}
+
+/*
+ * At completion, we set the DUMP_HEADER_COMPLETED flag.
+ */
+static int
+update_one_hdr(
+    struct disk_dump_unit   *unit,
+    int                      devnum,                 
+    unsigned int             nblocks,
+    unsigned int             done)
+{ 
+    struct disk_dump_header     *hdr;
+    int                          error  = 0;
+
+    if (unit->flags & DISK_DUMP_UNIT_OK) {
+        hdr  = &unit->hdr;
+
+        hdr->written_blocks += nblocks;
+        if (done) {
+            hdr->status |= DUMP_HEADER_COMPLETED;
+
+            memcpy(hdr->tasks, dump_tasks, sizeof(dump_tasks));
+        }
+
+        if (write_one_header(unit, devnum)) {
+            unit->flags &= ~DISK_DUMP_UNIT_OK;
+
+            error = check_if_fatal(devnum);
+        }
+    }
+
+    return error;
+}
+
+/*
+ * Update the amount written
+ *
+ */
+static int
+update_hdr_nblocks(int ndevs, unsigned int nblocks, 
+			unsigned int done, int dumptype, unsigned long offset)
+{
+    int i, error = 0;
+    struct disk_dump_unit *unit;
+
+    diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    diskdump_error = 0;
+    init_completion(&diskdump_completion);
+
+    for (i=0; i<ndevs; i++) {
+	
+	if (crashdump_mode() || dumptype == APPDUMP) {
+		unit = &dump_primary[i];
+	} else {
+		unit = &dump_nocrash_primary[i];
+	}
+	unit->offset = offset;
+
+        error = update_one_hdr(unit, i, nblocks, done);
+        if (error) {
+            break;
+	}
+
+	if (crashdump_mode() || dumptype == APPDUMP) {
+	    if (dump_mirror[i].flags & DISK_DUMP_UNIT_OK) { 
+            	error = update_one_hdr(&dump_mirror[i], i, nblocks, done);
+            	if (error) {
+            	    break;
+	    	}
+	    }
+    	}
+    }
+    i = wait_for_ios(ndevs);
+    if (error == 0) {
+        error = i;
+    }
+    return error;
+}
+
+
+/*
+ * Write out the sub header that includes elf footer
+ */
+static int
+write_sub_header(struct pt_regs *myregs)
+{
+    struct disk_dump_unit           *primary, *mirror;
+    int                              devnum = 0, ret = 0;
+    struct disk_dump_sub_header      dump_sub_header;
+
+
+    diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    diskdump_error = 0;
+    init_completion(&diskdump_completion);
+
+    primary =  (crashdump_mode()) ? 
+    		&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+    mirror  = &dump_mirror[devnum];
+
+    ELF_CORE_COPY_REGS(dump_sub_header.elf_regs, (myregs));        
+
+    memset(primary->scratch, 0, PAGE_SIZE);
+    if (crashdump_mode())
+    	memset(mirror->scratch, 0, PAGE_SIZE);
+
+    memcpy(primary->scratch, &dump_sub_header, sizeof(dump_sub_header));     
+    if (crashdump_mode())
+    	memcpy(mirror->scratch, &dump_sub_header, sizeof(dump_sub_header));     
+
+    ret = write_chunk(primary, 2, 1, devnum);
+    if (ret) {
+        goto out;
+    }
+    if (crashdump_mode()) {
+	if (mirror->flags & DISK_DUMP_UNIT_OK) {
+    	    memset(mirror->scratch, 0, PAGE_SIZE);
+    	    memcpy(mirror->scratch, &dump_sub_header, sizeof(dump_sub_header));     
+    	    if ((ret = write_chunk(mirror, 2, 1, devnum)) != 0) {
+        	goto out;
+    	    }
+	}
+    }
+
+    ret = wait_for_ios(devnum + 1);
+    if (ret < 0) {
+        goto out;
+    }
+
+out:
+    return ret;
+}
+/*
+ * Put together the primary and mirror device arrays
+ */
+static int
+create_disk_arrays(
+    int *devcount)
+{
+    struct disk_dump_device     *dump_device;
+    struct disk_dump_partition  *dump_part;
+    struct disk_dump_unit       *unit;
+    char                        *scratch;
+    int                          primary = 0, mirror = 0;
+    int                          error = 0, ndevs = 0, sanity = 0;
+
+    /*
+     * We use the first scratch area to read from. It doesn't
+     * really matter which one we use.
+     */
+    scratch = dump_primary[0].scratch;
+
+    list_for_each_entry(dump_device, &disk_dump_devices, list) 
+    {
+        sanity = 0;
+        if (dump_device->ops.sanity_check) {
+	    sanity = dump_device->ops.sanity_check(dump_device);
+        }
+
+        if (sanity != 0)
+            continue;
+
+        if (ndevs > NUM_DUMPDEVS)  {
+            goto out;
+        }
+
+        dump_part = DUMP_PART(dump_device);
+        if (dump_part == NULL) {
+            error = -EINVAL;
+            goto out;
+        }
+
+        /*
+         * We have to quiesce the device before we can read from it
+         */
+        if (dump_device->ops.quiesce) {
+	    error = dump_device->ops.quiesce(dump_device);
+	    if (error < 0) {
+		Err("Quiesce failed on dump dev %d error %d", ndevs, error);
+		continue;
+            }
+        }
+
+        /*
+         * Put the device in either the primary or mirror list
+         */
+        if (dump_device->flags & DISK_DUMP_MIRROR) {
+            unit = &dump_mirror[mirror++];
+        } else {
+            unit = &dump_primary[primary++];
+        }
+
+        unit->dev = dump_device;
+        unit->part = dump_part;
+        unit->flags = DISK_DUMP_UNIT_OK;
+
+        ndevs++;
+
+        /*
+         * Polling read support seems to be deprecated so we
+         * try and write to the header location of the device
+         */
+        unit->offset = 1;
+        unit->nblks  = 1;
+
+        error = write_blocks(unit, DISK_DUMP_SYNC);
+        if (error) {
+            unit->flags &= ~DISK_DUMP_UNIT_OK;
+            Warn("Skipping unit %d", ndevs - 1);
+        }
+        /*
+        error = read_blocks(dump_part, 1, unit->scratch, 1);
+        if (error) {
+            unit->flags &= ~DISK_DUMP_UNIT_OK;
+            Warn("Skipping unit %d: read failed", ndevs - 1);
+        }
+        */
+
+        unit->offset = 0;
+        unit->nblks = 0;
+
+    }
+
+    if (ndevs == 0) {
+        error = -ENOENT;
+
+        Err("Not enough devices (%d) for crashdump. Aborted\n", ndevs);
+
+    } else {
+
+        /*
+         * If there are mirror devices, then take the min of either
+         * the primary or mirror. If no mirror devices, then the 
+         * device count is just the primary
+         */
+        if (mirror) {
+            *devcount = MIN(mirror, primary);
+            Info("Found %d crashdump devices; using %d primary %d mirror\n",
+                    ndevs, *devcount, *devcount);
+        } else {
+            *devcount = primary;
+
+            Info("Found %d crashdump devices; using %d primary NO mirror\n",
+                    ndevs, *devcount);
+        }
+
+    }
+
+out:
+    return error;
+
+}
+
+/*
+ * Make sure the dump partitions in the primary
+ * have enough space to store the dump
+ */
+static int
+check_primary_space(
+    int                      ndevs,
+    unsigned long            nblocks,
+    unsigned long           *devblocks)
+{
+    struct disk_dump_partition  *dump_part = NULL;
+    unsigned long                nr_sects = 0;
+    int                          i, error = 0;
+
+    for (i=0; i<ndevs; i++) {
+
+        dump_part = (crashdump_mode()) ? dump_primary[i].part : dump_nocrash_primary[i].part;
+        if (dump_part == NULL) {
+            error = -ENOENT;
+            goto out;
+        }
+
+        /*
+         * dd_raid uses the first chunk of the partition
+         * for nvlog 
+         */
+        nr_sects += (dump_part->nr_sects - BLOCK_SECTOR(DISK_DUMP_STARTOFF) );
+    }
+
+    if (SECTOR_BLOCK(nr_sects) < nblocks) {
+        error = -EINVAL;
+    }
+
+out:
+    if (devblocks) {
+        *devblocks = SECTOR_BLOCK(nr_sects);
+    }
+
+
+    return error;
+}
+
+
+/*
+ * We can surrive every disk in either
+ * the primary or mirror giving us errors.
+ * However, if the same unit goes out, we are toast
+ */
+static int
+check_if_fatal(
+    int devnum)
+{
+    struct disk_dump_unit   *primary, *mirror;
+    int                      ret = 0;
+
+    primary = &dump_primary[devnum];
+    mirror  = &dump_mirror[devnum];
+
+
+    if (((primary->flags & DISK_DUMP_UNIT_OK) == 0) &&
+        ((mirror->flags & DISK_DUMP_UNIT_OK) == 0))
+    {
+        ret = -EIO;
+    }
+
+    return ret;
+}
+    
+static int
+wait_io( struct disk_dump_unit *unit, struct disk_dump_unit *backup_unit)
+{
+    int error = 0;
+
+    local_irq_disable();
+    touch_nmi_watchdog();
+
+    if ((unit->flags & DISK_DUMP_UNIT_OK) && unit->cmdptr)  {
+
+        error = (unit->dev)->ops.result(unit->cmdptr);
+        if (error) {
+            /*
+             * Retry the IO synchronously; if it fails again, mark the
+             * unit as bad
+             */
+            error = write_blocks(unit, DISK_DUMP_SYNC);
+
+            if (error) {
+                Err("I/O completion error %d on block %lu", 
+                    error, unit->offset);
+                
+                diskdump_mdelay(3000);
+                unit->flags &= ~DISK_DUMP_UNIT_OK;
+
+                /*
+                 * If the mirror for this unit is bad,
+                 * we are dead
+                 */
+                error = 0;
+
+                if ((backup_unit->flags & DISK_DUMP_UNIT_OK) == 0) {
+                    error = -EIO;
+                }
+            }
+
+        } 
+
+        unit->cmdptr = NULL;
+    }
+
+    return error;
+}
+
+/*
+ * Wait for a bunch of async commands to complete.
+ * If there are any errors, the command is retried
+ */
+static int
+wait_for_ios(int ndevs) 
+{
+    int     i, error, retval = 0;
+
+    if (crashdump_mode()) {
+    	for (i=0; i<ndevs; i++) {
+
+        	error = wait_io(&dump_primary[i], &dump_mirror[i]);
+        	if (error && (retval == 0)) {
+            		retval = error;
+        	}
+
+        	error = wait_io(&dump_mirror[i], &dump_primary[i]);
+        	if (error && (retval == 0)) {
+            		retval = error;
+        	}
+	}
+    } else {
+	spin_lock_bh(&diskdump_lock);
+	diskdump_fini = 1;
+	if (diskdump_ndones == diskdump_nios )
+		complete(&diskdump_completion);
+	spin_unlock_bh(&diskdump_lock);
+	wait_for_completion(&diskdump_completion);
+	return diskdump_error;
+    }
+
+    return retval;
+}
+
+static int diskdump_endio(struct bio *bio, unsigned int bytes_done, int error)
+{
+	if (error != 0)
+		diskdump_error = error;
+	if (bio->bi_size)
+		return 1;
+	bio_put(bio);
+	spin_lock_bh(&diskdump_lock);
+	diskdump_ndones++;
+	if ((diskdump_fini == 1 && diskdump_nios == diskdump_ndones) ||
+	    (diskdump_fini == 2 && (diskdump_nios - diskdump_ndones) < 56))
+		complete(&diskdump_completion);
+	spin_unlock_bh(&diskdump_lock);
+	return 0;
+}
+
+/*
+ * Write blocks asynchronously.
+ *
+ * The caller must wait for the IO completion
+ */
+
+
+static int 
+write_blocks(struct disk_dump_unit *unit, int flags)
+{
+
+    int     error = 0;
+    void    **cmdptr;
+
+    if (crashdump_mode()) {
+    	local_irq_disable();
+    	touch_nmi_watchdog();
+
+    	if (flags & DISK_DUMP_ASYNC) {
+        	cmdptr = &unit->cmdptr;
+    	} else {
+        	cmdptr = NULL;
+    	}
+
+    	error = (unit->dev)->ops.rw_block(unit->part, WRITE, 
+                                        unit->offset + DISK_DUMP_STARTOFF,
+                                        unit->scratch, unit->nblks, cmdptr);
+    } else {
+	int i;
+	struct bio *bio = bio_alloc(GFP_KERNEL, unit->nblks);
+	struct page *page;
+	char *addr;
+
+	if (!bio) {
+		Err("BIO alloc failed! Crashdump aborted");
+		return -ENOMEM;
+	}
+
+	addr = unit->scratch;
+
+	bio->bi_sector = BLOCK_SECTOR(unit->offset + DISK_DUMP_STARTOFF);
+	bio->bi_bdev = unit->part->bdev;
+	bio->bi_rw = WRITE | (1 << BIO_RW_SYNC);
+	bio->bi_private = unit;
+	bio->bi_end_io = diskdump_endio;
+	bio->bi_qos_info = (void *)&diskdump_resclnt_id;
+
+	for (i = 0; i < unit->nblks; i++) {
+		page = virt_to_page((unsigned long)addr);
+		if (!bio_add_page(bio, page, PAGE_SIZE, 0)) {
+			bio_put(bio);
+			return -EINVAL;
+		}
+		addr += PAGE_SIZE;
+	}
+	spin_lock_bh(&diskdump_lock);
+	diskdump_nios++;
+	spin_unlock_bh(&diskdump_lock);
+	generic_make_request(bio);
+    }
+
+    return error;
+}
+
+/*
+ * Write a chunk asynchronously and display a message if it barfed
+ */
+static int
+write_chunk(
+    struct disk_dump_unit   *unit,
+    unsigned long            offset,
+    unsigned long            nblks,
+    int                      devnum)
+{
+    int     error = 0;
+
+    if (unit->flags & DISK_DUMP_UNIT_OK)  {
+
+        unit->offset = offset;
+        unit->nblks  = nblks;
+
+        if (unit->cmdptr) {
+            /*
+             * This "shouldn't happen". If it does, it's
+             * a programmatic failure, the caller should
+             * always wait for async IOs before issuing another one.
+             */
+            Err("Outstanding IO, crashdump aborted");
+            diskdump_mdelay(5000);
+            error = -EIO;
+            goto out;
+        }
+
+        error = write_blocks(unit, DISK_DUMP_ASYNC);
+
+        if (error) {
+            Err("I/O error %d on block %lu", error, unit->offset);
+
+            unit->flags &= ~DISK_DUMP_UNIT_OK;
+
+            error = check_if_fatal(devnum);
+            if (error) {
+                Err("Too many disk errors. Crashdump aborted");
+                diskdump_mdelay(5000);
+
+                error = -EIO;
+            }
+        }
+    } else {
+        Err("disk dump unit is not ok, aborting!");
+        error = -1;
+    }
+
+out:
+    return error;
+}
+
+/*
+ * End DDR local
+ */
+static void ddump_run_helper(int i)
+{
+	printk("James thread %p is helping\n", ddump_thread_helper[i].cp_thread);
+	//appdump_write_app_data_tmp(i);
+}
+
+static int ddump_percpu_thread(void* data)
+{
+	// if someone calls kthread_stop() on this thread, return.
+	// otherwise, keep going.
+	long	i = (long) data;
+
+	printk("James percpu data is %d\n", (long) data);
+
+	set_current_state(TASK_INTERRUPTIBLE);
+	while (!kthread_should_stop()) {
+		schedule();
+
+		// do not run helper if the module is being removed.
+		if (ddump_exit)
+			break;
+
+		// assign task
+		ddump_run_helper(i);
+
+		set_current_state(TASK_INTERRUPTIBLE);
+	}
+	__set_current_state(TASK_RUNNING);
+
+	printk("James thread %p is exiting\n", ddump_thread_helper[i].cp_thread);
+
+	return 0;
+}
+
+static void ddump_start_helpers(void)
+{
+	int	index = 0;
+	for (; index < ddump_max_helpers ; index++) {
+		wake_up_process(ddump_thread_helper[index].cp_thread);
+
+		// Need to change.  this only works for 1-thread.
+		//wait_for_completion(&ddump_thread_helper[index].cp_buff_io_read);
+	}
+
+	return 0;
+}
+
+static void appdump_mt_init(void)
+{
+	int	index = 0, order = 1;
+	int	cpu = 0;	// need to figure out how to bind CPU
+
+	struct task_struct *tmp_thread;
+	struct page *page;
+
+	for (; index < HELPERS ; index++, cpu++, order++) {
+
+		// if we have used all cpus, stop
+		if (cpu == ddump_nr_cpus) {
+			break;
+		}
+
+		// we don't want to assign any helper to the current cpu
+		//if (cpu == ddump_panic_task) {
+		//	cpu++;
+		//}
+
+		tmp_thread = kthread_create(ddump_percpu_thread,
+					    (void *)index,
+					    "ddump_helper/%d",
+					    cpu);
+
+		printk("James kthread %p\n", tmp_thread);
+
+		ddump_thread_helper[index].cp_thread = tmp_thread;
+		ddump_thread_helper[index].cp_order = order;
+
+		// bind thread to the cpu
+		if (likely(!IS_ERR(ddump_thread_helper[index].cp_thread))) {
+			ddump_thread_helper[index].cp_cpu = cpu;
+
+			kthread_bind(tmp_thread, cpu);
+		} else {
+		// cant create thread
+		// in real case, do single thread
+			panic("CANT create ddump helper\n");
+		}
+
+		// page
+		page = alloc_pages(GFP_KERNEL, block_order);
+
+		if (page == NULL) {
+			printk("diskdump not able to alloc mt pages %d", index);
+
+			// turn off mt
+			// make sure all the alloc'ed pages are free
+		} 
+
+		ddump_thread_helper[index].cp_buf = page_address(page);
+
+		wake_up_process(tmp_thread);
+	}
+
+	ddump_max_helpers = index;
+}
+
+static int init_diskdump(void)
+{
+	unsigned long long t0;
+	unsigned long long t1;
+	struct page *page;
+        int i, error = 0;
+
+        size_t buffer_alloc_size = 0;
+	buffer_alloc_size =  ((1<<(block_order)) * PAGE_SIZE) * 2;
+	crash_comp_buf = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (crash_comp_buf == NULL) {
+                Err("Allocation failed for crash compression buffer");
+		goto out;
+	}
+
+	crash_work_buffer = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (crash_work_buffer == NULL) {
+                Err("Allocation failed for crash compression buffer");
+		goto out;
+	}
+
+	crash_out_write_buf = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (crash_out_write_buf == NULL) {
+                Err("Allocation failed for crash compression buffer");
+		goto out;
+	}
+
+        memset(dump_primary, 0, sizeof(dump_primary));
+        memset(dump_mirror, 0, sizeof(dump_mirror));
+
+        for (i=0; i<MAX_DUMPUNITS; i++) {
+
+            /* Allocate one chunk that is used temporally */
+            do {
+                    page = alloc_pages(GFP_KERNEL, block_order);
+                    if (page != NULL)
+                            break;
+            } while (--block_order >= 0);
+            if (!page) {
+                    Err("alloc_pages failed.");
+                    error = -ENOMEM;
+                    goto out;
+            }
+            dump_primary[i].scratch = page_address(page);
+	    dump_nocrash_primary[i].scratch =  page_address(page);
+            do {
+                    page = alloc_pages(GFP_KERNEL, block_order);
+                    if (page != NULL)
+                            break;
+            } while (--block_order >= 0);
+            if (!page) {
+                    Err("alloc_pages failed.");
+                    error = -ENOMEM;
+                    goto out;
+            }
+            dump_mirror[i].scratch = page_address(page);
+	    dump_nocrash_primary[i+MAX_DUMPUNITS].scratch = page_address(page);
+        }
+
+	crashdump_printk_log = kzalloc(MSGBUF_LEN, GFP_KERNEL);
+	if (crashdump_printk_log == NULL) {
+		Err("failed to allocate crashdump printk_log\n");
+		error = -ENOMEM;
+		goto out;
+	}
+
+	compute_total_blocks();
+
+	/* Compute the appdump block size based on memory size of the system */
+	if (total_ram_blocks > ((16*GB) >> PAGE_SHIFT)) {
+		appdump_block_order = MIN(block_order, MAX_APPDUMP_BLOCK_ORDER);
+		comp_block_order = DEF_COMPRESSED_BLOCK_ORDER - 1;
+	} else {
+		/* 
+		 * Note the compression chunk size needs to be readjusted
+		 * if we are dropping the appdump block order (since we need 
+		 * space in the buffer lzo header and footer.
+		 */
+		appdump_block_order = MIN(block_order, DEF_APPDUMP_BLOCK_ORDER);
+		comp_block_order = DEF_COMPRESSED_BLOCK_ORDER - 1;
+	}
+	crashdump_block_order = MIN(block_order, crashdump_block_order);
+	Info("Appdump block size: %lu %u", PAGE_SIZE << appdump_block_order, block_order);
+	Info("Crashdump block size: %lu", PAGE_SIZE << crashdump_block_order);
+
+	if (register_dump_op("diskdump", do_crashdump, CRASHDUMP)) {
+		Err("failed to register crashdump hooks.");
+                error = -EINVAL;
+		goto out;
+	}
+
+	if (register_dump_op("livedump", do_livedump, LIVEDUMP)) {
+		Err("failed to register livedump hooks.");
+                error = -EINVAL;
+		goto out;
+	}
+
+	if (register_dump_op("appdump", do_appdump, APPDUMP)) {
+		Err("failed to register appdump hooks.");
+                error = -EINVAL;
+		goto out;
+	}
+
+	/*
+	 * appdump multi-thread init
+	 */
+	ddump_nr_cpus = num_online_cpus();
+
+	if (ddump_mt) {
+		appdump_mt_init();
+	}
+
+	platform_timestamp(t0);
+	diskdump_mdelay(1);
+	platform_timestamp(t1);
+	timestamp_1sec = (unsigned long)(t1 - t0) * 1000;
+
+	/*
+	 *  Allocate a separate stack for diskdump.
+	 */
+	platform_init_stack(&diskdump_stack);
+
+	down(&disk_dump_mutex);
+	set_crc_modules();
+	up(&disk_dump_mutex);
+
+	/* Create the resource client for QoS tagging */
+	dd_resclnt_create(DD_SCHED_PRNID_CRASHDUMP, "DISKDUMP", 
+				&diskdump_resclnt_id);
+
+#ifdef CONFIG_PROC_FS
+	{
+		struct proc_dir_entry *p;
+
+		p = create_proc_entry("diskdump", S_IRUGO|S_IWUSR, NULL);
+		if (p)
+			p->proc_fops = &disk_dump_fops;
+
+                p = create_proc_entry("dump_filter", S_IRUGO|S_IWUSR, NULL);
+                if (p) {
+                        p->read_proc = read_dump_filter;
+                        p->write_proc = write_dump_filter;
+                }
+
+                p = create_proc_entry("post_ddfs_panic_stat", S_IRUGO|S_IWUSR, NULL);
+                if (p) {
+                        p->read_proc = read_post_ddfs_panic_stat;
+                        p->write_proc = write_post_ddfs_panic_stat;
+                }
+
+                p = create_proc_entry("diskdump_use_ipi", S_IRUGO|S_IWUSR, NULL);
+                if (p) {
+                        p->read_proc = read_diskdump_use_ipi;
+                        p->write_proc = write_diskdump_use_ipi;
+                }
+	}
+#endif
+
+
+out:
+    if (error) {
+	if (ddump_mt) {
+		// terminate herlper threads
+		ddump_exit = true;
+
+		for ( i = 0 ; i < ddump_max_helpers ; i++) {
+			kthread_stop(ddump_thread_helper[i].cp_thread);
+			free_pages((unsigned long)ddump_thread_helper[i].cp_buf, 
+					block_order);
+		}
+	}
+
+        for (i=0; i<MAX_DUMPUNITS; i++) {
+            if (dump_primary[i].scratch) {
+                free_pages((unsigned long)dump_primary[i].scratch, block_order);
+            }
+            if (dump_mirror[i].scratch) {
+                free_pages((unsigned long)dump_mirror[i].scratch, block_order);
+            }
+        }
+    }
+
+    return error;
+}
+
+static void cleanup_diskdump(void)
+{
+        int     i;
+
+	Info("shut down.");
+
+	if (ddump_mt) {
+		// terminate helper threads
+		ddump_exit = true;
+
+		for ( i = 0 ; i < ddump_max_helpers ; i++) {
+			kthread_stop(ddump_thread_helper[i].cp_thread);
+			free_pages((unsigned long)ddump_thread_helper[i].cp_buf, 
+					block_order);
+		}
+	}
+      
+	unregister_dump_op(CRASHDUMP);
+	unregister_dump_op(LIVEDUMP);
+	unregister_dump_op(APPDUMP);
+	platform_cleanup_stack(diskdump_stack);
+
+        for (i=0; i<MAX_DUMPUNITS; i++) {
+            if (dump_primary[i].scratch) {
+                free_pages((unsigned long)dump_primary[i].scratch, block_order);
+            }
+            if (dump_mirror[i].scratch) {
+                free_pages((unsigned long)dump_mirror[i].scratch, block_order);
+            }
+        }
+	if (crash_comp_buf) {
+		kfree(crash_comp_buf);
+	}
+	if (crash_work_buffer) {
+		kfree(crash_work_buffer);
+	}
+	if (crash_out_write_buf) {
+		kfree(crash_out_write_buf);
+	}
+
+	dd_resclnt_destroy(diskdump_resclnt_id);
+	kfree(crashdump_printk_log);
+
+#ifdef CONFIG_PROC_FS
+	remove_proc_entry("diskdump", NULL);
+        remove_proc_entry("dump_filter", NULL);
+        remove_proc_entry("post_ddfs_panic_stat", NULL);
+        remove_proc_entry("diskdump_use_ipi", NULL);
+#endif
+}
+
+
+static unsigned long long poll_last_run;
+static unsigned long poll_inerval;
+
+void diskdump_poll_init(void)
+{
+	unsigned long long t;
+
+	platform_timestamp(poll_last_run);
+	udelay(1000000/HZ);
+	platform_timestamp(t);
+	poll_inerval = (unsigned long)(t - poll_last_run);
+	diskdump_poll_run();
+}
+
+/*
+ * Update jiffies, run timers, tasklet, workqueue etc
+ * in polling mode
+ */
+void diskdump_poll_run(void)
+{
+	unsigned long long t;
+
+	touch_nmi_watchdog();
+
+	/* update jiffies */
+	platform_timestamp(t);
+	while (t > poll_last_run + poll_inerval) {
+		poll_last_run += poll_inerval;
+		jiffies++;
+		platform_timestamp(t);
+	}
+
+	dump_run_timers();
+	dump_run_tasklet();
+	dump_run_workqueue();
+}
+
+EXPORT_SYMBOL_GPL(diskdump_poll_run);
+
+
+/* 
+ * ----------------  Application coredumps -----------------
+ */
+
+/*
+ * The structure definitions and the functions have been lifted
+ * directly from fs/binfmt_elf.c. There are issues with exporting
+ * the function definitions from that file (being written as a module).
+ * Since ELF fmt isn't changing anywhere in the near future, this 
+ * would be a safe code copy. 
+ */
+
+
+/* An ELF note in memory */
+struct memelfnote
+{
+	const char 	*name;
+	int 		type;
+	unsigned int 	datasz;
+	void 		*data;
+};
+
+/* Here is the structure in which status of each thread is captured. */
+struct elf_thread_status
+{
+	struct list_head list;
+	struct elf_prstatus prstatus;	/* NT_PRSTATUS */
+	elf_fpregset_t fpu;		/* NT_PRFPREG */
+	struct task_struct *thread;
+#ifdef ELF_CORE_COPY_XFPREGS
+	elf_fpxregset_t xfpu;		/* NT_PRXFPREG */
+#endif
+	struct memelfnote notes[3];
+	int num_notes;
+};
+
+
+/* Fill elfhdr - There exists one elf header per coredump */
+static inline void fill_elf_header(struct elfhdr *elf, int segs)
+{
+	memcpy(elf->e_ident, ELFMAG, SELFMAG);
+	elf->e_ident[EI_CLASS] = ELF_CLASS;
+	elf->e_ident[EI_DATA] = ELF_DATA;
+	elf->e_ident[EI_VERSION] = EV_CURRENT;
+	elf->e_ident[EI_OSABI] = ELF_OSABI;
+	memset(elf->e_ident+EI_PAD, 0, EI_NIDENT-EI_PAD);
+
+	elf->e_type = ET_CORE;
+	elf->e_machine = ELF_ARCH;
+	elf->e_version = EV_CURRENT;
+	elf->e_entry = 0;
+	elf->e_phoff = sizeof(struct elfhdr);
+	elf->e_shoff = 0;
+	elf->e_flags = 0;
+	elf->e_ehsize = sizeof(struct elfhdr);
+	elf->e_phentsize = sizeof(struct elf_phdr);
+	elf->e_phnum = segs;
+	elf->e_shentsize = 0;
+	elf->e_shnum = 0;
+	elf->e_shstrndx = 0;
+	return;
+}
+
+/* Fill ELF note_phdr : Each of these represents a VMA mapping */
+static inline void fill_elf_note_phdr(struct elf_phdr *phdr, size_t sz, off_t offset)
+{
+	phdr->p_type = PT_NOTE;
+	phdr->p_offset = offset;
+	phdr->p_vaddr = 0;
+	phdr->p_paddr = 0;
+	phdr->p_filesz = sz;
+	phdr->p_memsz = 0;
+	phdr->p_flags = 0;
+	phdr->p_align = 0;
+	return;
+}
+
+/*  Note headers for each of the note sections (like auxv, psinfo  etc.*/
+static void fill_note(struct memelfnote *note, const char *name, int type, 
+		unsigned int sz, void *data)
+{
+	note->name = name;
+	note->type = type;
+	note->datasz = sz;
+	note->data = data;
+	return;
+}
+
+
+/*
+ * fill up all the fields in prstatus from the given task struct, except registers
+ * which need to be filled up separately.
+ */
+static void fill_prstatus(struct elf_prstatus *prstatus,
+			struct task_struct *p, long signr) 
+{
+	prstatus->pr_info.si_signo = prstatus->pr_cursig = signr;
+	prstatus->pr_sigpend = p->pending.signal.sig[0];
+	prstatus->pr_sighold = p->blocked.sig[0];
+	prstatus->pr_pid = p->pid;
+	prstatus->pr_ppid = p->parent->pid;
+	prstatus->pr_pgrp = process_group(p);
+	prstatus->pr_sid = process_session(p);
+	if (thread_group_leader(p)) {
+		/*
+		 * This is the record for the group leader.  Add in the
+		 * cumulative times of previous dead threads.  This total
+		 * won't include the time of each live thread whose state
+		 * is included in the core dump.  The final total reported
+		 * to our parent process when it calls wait4 will include
+		 * those sums as well as the little bit more time it takes
+		 * this and each other thread to finish dying after the
+		 * core dump synchronization phase.
+		 */
+		cputime_to_timeval(cputime_add(p->utime, p->signal->utime),
+				   &prstatus->pr_utime);
+		cputime_to_timeval(cputime_add(p->stime, p->signal->stime),
+				   &prstatus->pr_stime);
+	} else {
+		cputime_to_timeval(p->utime, &prstatus->pr_utime);
+		cputime_to_timeval(p->stime, &prstatus->pr_stime);
+	}
+	cputime_to_timeval(p->signal->cutime, &prstatus->pr_cutime);
+	cputime_to_timeval(p->signal->cstime, &prstatus->pr_cstime);
+}
+
+
+/*
+ * Gather process psinfo
+ */
+static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
+		       struct mm_struct *mm)
+{
+	unsigned int i, len;
+	
+	/* first copy the parameters from user space */
+	memset(psinfo, 0, sizeof(struct elf_prpsinfo));
+
+	len = mm->arg_end - mm->arg_start;
+	if (len >= ELF_PRARGSZ)
+		len = ELF_PRARGSZ-1;
+	if (copy_from_user(&psinfo->pr_psargs,
+		           (const char __user *)mm->arg_start, len))
+		return -EFAULT;
+	for(i = 0; i < len; i++)
+		if (psinfo->pr_psargs[i] == 0)
+			psinfo->pr_psargs[i] = ' ';
+	psinfo->pr_psargs[len] = 0;
+
+	psinfo->pr_pid = p->pid;
+	psinfo->pr_ppid = p->parent->pid;
+	psinfo->pr_pgrp = process_group(p);
+	psinfo->pr_sid = process_session(p);
+
+	i = p->state ? ffz(~p->state) + 1 : 0;
+	psinfo->pr_state = i;
+	psinfo->pr_sname = (i < 0 || i > 5) ? '.' : "RSDTZW"[i];
+	psinfo->pr_zomb = psinfo->pr_sname == 'Z';
+	psinfo->pr_nice = task_nice(p);
+	psinfo->pr_flag = p->flags;
+	SET_UID(psinfo->pr_uid, p->uid);
+	SET_GID(psinfo->pr_gid, p->gid);
+	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
+	
+	return 0;
+}
+
+/*
+ * Per-thread info 
+ */
+static int elf_dump_thread_status(long signr, struct elf_thread_status *t)
+{
+	int sz = 0;
+	struct task_struct *p = t->thread;
+	t->num_notes = 0;
+
+	fill_prstatus(&t->prstatus, p, signr);
+	elf_core_copy_task_regs(p, &t->prstatus.pr_reg);	
+	
+	fill_note(&t->notes[0], "CORE", NT_PRSTATUS, 
+			sizeof(t->prstatus), &(t->prstatus));
+	t->num_notes++;
+	sz += notesize(&t->notes[0]);
+
+	if ((t->prstatus.pr_fpvalid = 
+		elf_core_copy_task_fpregs(p, NULL, &t->fpu))) {
+		fill_note(&t->notes[1], "CORE", NT_PRFPREG, 
+			sizeof(t->fpu), &(t->fpu));
+		t->num_notes++;
+		sz += notesize(&t->notes[1]);
+	}
+
+#ifdef ELF_CORE_COPY_XFPREGS
+	if (elf_core_copy_task_xfpregs(p, &t->xfpu)) {
+		fill_note(&t->notes[2], "LINUX", NT_PRXFPREG, 
+				sizeof(t->xfpu), &t->xfpu);
+		t->num_notes++;
+		sz += notesize(&t->notes[2]);
+	}
+#endif
+	return sz;
+}
+
+static struct vm_area_struct *first_vma(struct task_struct *tsk,
+					struct vm_area_struct *gate_vma)
+{
+	struct vm_area_struct *ret = tsk->mm->mmap;
+
+	if (ret)
+		return ret;
+	return gate_vma;
+}
+/*
+ * Helper function for iterating across a vma list.  It ensures that the caller
+ * will visit `gate_vma' prior to terminating the search.
+ */
+static struct vm_area_struct *next_vma(struct vm_area_struct *this_vma,
+					struct vm_area_struct *gate_vma)
+{
+	struct vm_area_struct *ret;
+
+	ret = this_vma->vm_next;
+	if (ret)
+		return ret;
+	if (this_vma == gate_vma)
+		return NULL;
+	return gate_vma;
+}
+
+/*
+ * Helper to compute size of the note 
+ */
+static int notesize(struct memelfnote *en)
+{
+	int sz;
+
+	sz = sizeof(struct elf_note);
+	sz += roundup(strlen(en->name) + 1, 4);
+	sz += roundup(en->datasz, 4);
+
+	return sz;
+}
+
+
+/* A pseudo VMA to allow ptrace access for the vsyscall page.  This only
+   covers the 64bit vsyscall page now. 32bit has a real VMA now and does
+   not need special handling anymore. */
+
+static struct vm_area_struct gate_vma = {
+	.vm_start = VSYSCALL_START,
+	.vm_end = VSYSCALL_START + (VSYSCALL_MAPPED_PAGES << PAGE_SHIFT),
+	.vm_page_prot = PAGE_READONLY_EXEC,
+	.vm_flags = VM_READ | VM_EXEC
+};
+
+struct vm_area_struct *get_gate_vma(struct task_struct *tsk)
+{
+#ifdef CONFIG_IA32_EMULATION
+	if (test_tsk_thread_flag(tsk, TIF_IA32))
+		return NULL;
+#endif
+	return &gate_vma;
+}
+
+
+/*
+ * prepare_coredump_devices - Setup dump devices for appdump
+ *
+ * Input Parameters :
+ * 	None.
+ * Output Parameters:
+ * 	bmap_offset 	- Computed offset of the appdump block map
+ * 	dump_startoff 	- Starting offset of the appdump (acutally the header)
+ *
+ * Description:
+ * 	The routine identifies the primary and mirror partitions for
+ * 	performing the appliction crashdump. Then for each of the devices
+ * 	computes the offset of the block map for appdump and the starting
+ * 	location of the dump.
+ * 	If any changes were made to the dump partition, it reinitializes the 
+ * 	blockmaps.
+ *
+ */
+static int 
+prepare_coredump_devices(off_t *bmap_offset, off_t *dump_startoff)
+{
+    	struct disk_dump_unit       *unit, *primary_unit, *mirror_unit;
+    	struct disk_dump_partition  *dump_part;
+	struct disk_dump_device     *dump_device;
+	int	ndevs = 0, primary = 0, mirror = 0;
+	off_t 	bmap_start_offset;
+	off_t 	blkoff = 0, header_start_blkoff = 0;
+	int	devnum;
+        int     ret = 0;
+
+	if (list_empty(&disk_dump_devices)) {
+		Err("adapter driver is not registered.");
+		return 0;
+	}
+	down(&app_dump_mutex);
+    	list_for_each_entry(dump_device, &disk_dump_devices, list) {
+       		if (primary > NUM_DUMPDEVS)  {
+        		break;
+        	}
+
+        	dump_part = DUMP_PART(dump_device);
+        	if (dump_part == NULL) {
+			continue;
+		}
+
+        	if (dump_device->ops.quiesce) {
+	    		if (dump_device->ops.quiesce(dump_device) < 0)
+				continue;
+		}
+		if (dump_device->flags & DISK_DUMP_MIRROR) {
+			unit = &dump_mirror[mirror++];
+		} else {
+			unit = &dump_primary[primary++];
+		}
+
+        	unit->dev 	= dump_device;
+        	unit->part 	= dump_part;
+        	unit->flags 	= DISK_DUMP_UNIT_OK;
+        	unit->offset 	= 0;
+        	unit->nblks 	= 0;
+		invalidate_bdev(unit->part->bdev);
+		ndevs++;
+    	}
+
+	if (ndevs == 0) {
+		up(&app_dump_mutex);
+        	Info("Not enough devices (%d) for appdump. Aborted", ndevs);
+		goto out;
+    	} else {
+        	/*
+         	 * If there are mirror devices, then take the min of either
+          	 * /he primary or mirror. If no mirror devices, then the 
+         	 * device count is just the primary
+         	 */
+        	if (mirror) {
+            	    ndevs = MIN(mirror, primary);
+            	    Info("Found %d app dump devices:"
+		    	"using %d primary %d mirror", ndevs, ndevs, ndevs);
+        	} else {
+            	    ndevs = primary;
+            	    Info("Found %d appdump devices;"
+		    	"using %d primary NO mirror", ndevs, ndevs);
+        	}
+    	}
+	
+	/* We have determined the primary and the mirror devices 
+	 * now verify if the application dump headers are valid 
+	 * (i.e. no dump devices were added or deleted).
+	 * If anything changed, zero out the application blockmap 
+	 * contents.
+	 */
+	bmap_start_offset = APPDUMP_BMAP_STARTOFF(ndevs);
+
+	/* 
+	 * Check if the app blocks themselves can be accommodated.
+	 * The dump device can be so small that even the blockmaps
+	 * can't fit in, bail!
+	 */
+	if (!check_appdump_space(ndevs, MAX_APPDUMP_BMAP_IDX, 
+					bmap_start_offset)) {
+		up(&app_dump_mutex);
+		Warn("Insufficient crashdump space for application dump");
+		ndevs = 0;
+		goto out;
+	}
+	if (dump_partition_changed) {
+		
+	    for (blkoff = bmap_start_offset; 
+				blkoff < bmap_start_offset+8 ; blkoff++)  {
+		Info("Zeroing Block Map at offset :%ld\n", blkoff);
+	    	for (devnum = 0; devnum < ndevs; devnum++) {
+			primary_unit = &dump_primary[devnum];
+			mirror_unit = &dump_mirror[devnum];
+
+			if (write_appdump_bmap(primary_unit, 
+					devnum, blkoff, 0, 0, 0)) {
+			    up(&app_dump_mutex);
+			    Warn("APPDUMP: Error writing blockmap to primary");
+			    ndevs = 0;
+			    goto out;
+			}
+			if (mirror_unit->flags & DISK_DUMP_UNIT_OK) {
+				if (write_appdump_bmap(mirror_unit, devnum, 
+							blkoff, 0, 0, 0)) {
+			    	    Warn("APPDUMP: Error writing blockmap to mirror");
+			   	    up(&app_dump_mutex);
+			    	    ndevs = 0;
+			    	    goto out;
+				}
+			}
+		}
+		Info("Done. Zeroing Block Map at offset :%ld\n", blkoff);
+	    }
+
+            header_start_blkoff = bmap_start_offset + MAX_APPDUMP_BMAP_IDX;
+            /* Zero out appdump header */
+	    for (blkoff = header_start_blkoff; 
+                 blkoff < header_start_blkoff + MAX_APPDUMP_HEADER_IDX; 
+                 blkoff++)  {
+                Info("Zeroing out appdump header at offset %lu ", blkoff);
+                ret = diskdump_clear_header_block(ndevs, blkoff);
+                if(ret < 0) {
+                    up(&app_dump_mutex);
+                    ndevs = 0;
+                    goto out;
+                }
+            }
+            /* Zero out common header */
+            for(blkoff = 0; blkoff < 2; blkoff++) {
+
+                Info("Zeroing out common header at offset %lu ", blkoff);
+                ret = diskdump_clear_header_block(ndevs, blkoff);
+                if(ret < 0) {
+                    up(&app_dump_mutex);
+                    ndevs = 0;
+                    goto out;
+                }
+            }
+                
+            Info("Done zeroing appdump and common header\n ");
+	    *bmap_offset = bmap_start_offset;
+	    *dump_startoff =  APPDUMP_STARTOFF(ndevs);
+	    dump_partition_changed = 0;
+	    Info("Done. Using Block Map at offset :%ld\n", bmap_start_offset);
+	} else {
+
+	    struct 	disk_dump_app_bmap bmap;
+	    off_t 	end_of_last_dump = 0UL;
+	    int		blk_found = 0;
+
+	    *bmap_offset = 0;
+	    Dbg("Dump partition unchanged.. Scanning block maps..\n");
+	    primary_unit = &dump_primary[0];
+	    devnum = 0;
+	    for (blkoff = bmap_start_offset; 
+	    		blkoff < bmap_start_offset+8 ; blkoff++)  {
+		/*
+		 * There could be other valid dumps in the device.
+		 * appdump will always use the last available slot 
+		 * to avoid dealing with fragementation issues 
+		 * rising from storing heterogenous coredumps.
+		 * For example of bmap #0 is available and #1 and #2 
+		 * are used and we attempt to dump an application core, 
+		 * bmap #0 will not be used. Instead we will use bmap #3.
+		 */
+		if (read_block(primary_unit, blkoff, devnum) < 0) {
+			up(&app_dump_mutex);
+			ndevs = 0;
+			goto out;
+		}
+	    	memcpy(&bmap, primary_unit->scratch, 
+				sizeof(struct disk_dump_app_bmap));
+		Info("BMAP @:%ld:  Used <%ld> Soff <%ld> Eoff <%ld>",
+		   blkoff,  bmap.block_used, 
+		   bmap.appdump_startoff,  bmap.appdump_endoff);
+
+		if (bmap.block_used == 0) {
+			Info("Block :%ld: at bmap_offset :%ld Available!\n", 
+					blkoff, blkoff - bmap_start_offset);
+			if (blk_found == 0) {
+
+			    *bmap_offset = blkoff;
+			    if (blkoff == bmap_start_offset) {
+				*dump_startoff = APPDUMP_STARTOFF(ndevs);
+			    } else {
+				/* New offset = end of the old one rounded up to 1M */
+				*dump_startoff = roundup(end_of_last_dump , 256);
+			    }
+			    blk_found = 1;
+			}
+		} else {
+			end_of_last_dump = bmap.appdump_endoff;
+			DUMP_ASSERT(end_of_last_dump > APPDUMP_STARTOFF(ndevs));
+			DUMP_ASSERT(end_of_last_dump <= 
+				SECTOR_BLOCK(primary_unit->part->nr_sects));
+			/* 
+			 * There is a valid dump. Reset bmap_offset so that
+			 * we can find the last available dump slot.
+			 */
+			*bmap_offset = 0;
+			*dump_startoff = 0;
+			blk_found = 0;
+		}
+	    }
+	    if (blk_found == 0)  {
+		up(&app_dump_mutex);
+		DUMP_ASSERT(*bmap_offset == 0);
+		DUMP_ASSERT(*dump_startoff== 0);
+		Warn("No free blocks availble for appdump!\n");
+	    	ndevs = 0;
+	    } 
+	}
+out:
+	return ndevs;
+}
+
+
+
+/*
+ * Check the available space in the dump partition for application crashdumps.
+ * Parameters
+ * IN
+ * 	ndevs 		- Number of devices available
+ * 	reqd_space 	- Minimum space required for storing this dump
+ * 	startoff  	- Dump start offset.
+ * RETURN
+ * 	0 - Dump space unavilable
+ * 	1 - Dump space available.
+ */
+static int 
+check_appdump_space(int ndevs, unsigned long reqd_space, off_t startoff)
+{
+    struct disk_dump_partition  *dump_part = NULL;
+    long                nr_sects = 0;
+    long       reqd_sects = 0;
+    int                 i;
+
+   Dbg("DISK_DUMP_STARTOFF %ld startoff %ld BLOCK_SECTOR %ld\n",
+	DISK_DUMP_STARTOFF, startoff, BLOCK_SECTOR(DISK_DUMP_STARTOFF+startoff));
+    
+    for (i=0; i < ndevs; i++) {
+        dump_part = dump_primary[i].part;
+	if (!dump_part) {
+    	    Warn("check_user_dumpspace: No dump partitions!!!\n");
+	    return ENOMEM;
+	}
+	nr_sects += (dump_part->nr_sects - 
+			BLOCK_SECTOR(DISK_DUMP_STARTOFF+startoff) );
+    }
+
+    reqd_sects = BLOCK_SECTOR(reqd_space);
+
+    if (1 == i) {
+	Dbg(" Only 1 head unit available!!!\n");
+    }
+
+    Dbg("check_appdump_space: Available dump space :%ld, reqd_sects %ld\n", 
+    		nr_sects, reqd_sects);
+
+    if (nr_sects < 0 || reqd_sects > nr_sects) {
+	return 0 ;
+    } else {
+	return 1;
+    }
+}
+
+
+/*
+ * Decide whether a segment is worth dumping; default is yes to be
+ * sure (missing info is worse than too much; etc).
+ * Personally I'd include everything, and use the coredump limit...
+ *
+ * I think we should skip something. But I am not sure how. H.J.
+ */
+static int maydump_elf_vma(struct vm_area_struct *vma, unsigned long mm_flags)
+{
+	/* The vma can be set up to tell us the answer directly.  */
+	if (vma->vm_flags & VM_ALWAYSDUMP)
+		return 1;
+
+	/* Do not dump I/O mapped devices or special mappings */
+	if (vma->vm_flags & (VM_IO | VM_RESERVED))
+		return 0;
+
+	/* By default, dump shared memory if mapped from an anonymous file. */
+	if (vma->vm_flags & VM_SHARED) {
+		if (vma->vm_file->f_path.dentry->d_inode->i_nlink == 0)
+			return test_bit(MMF_DUMP_ANON_SHARED, &mm_flags);
+		else
+			return test_bit(MMF_DUMP_MAPPED_SHARED, &mm_flags);
+	}
+
+	/* By default, if it hasn't been written to, don't write it out. */
+	if (!vma->anon_vma)
+		return test_bit(MMF_DUMP_MAPPED_PRIVATE, &mm_flags);
+
+	return test_bit(MMF_DUMP_ANON_PRIVATE, &mm_flags);
+}
+
+
+/* 
+ * Merge a dump note into a buffer so that it can be dumped
+ * to a block.
+ */
+static int 
+dump_writenote(struct memelfnote *men, void *buffer)
+{
+	struct 	elf_note en;
+	char	*ptr = (char *)buffer;
+	int	bytes = 0;
+
+	memset(&en, 0, sizeof(struct elf_note));
+	en.n_namesz 	= strlen(men->name) + 1;
+	en.n_descsz 	= men->datasz;
+	en.n_type 	= men->type;
+	memcpy(ptr, &en, sizeof(en)); 
+	ptr += sizeof(en);
+	bytes += sizeof(en);
+	memcpy(ptr, men->name, en.n_namesz);
+	ptr += en.n_namesz;
+	bytes += en.n_namesz;
+	memcpy(ptr, men->data, men->datasz);
+	bytes += men->datasz;
+
+	return bytes;
+}
+
+/* Write a buffer to a specified dump device devnum at the specified offset */
+int 
+write_block(struct disk_dump_unit *unit, off_t offset, int  devnum) 
+{
+	if (!(unit->flags & DISK_DUMP_UNIT_OK))  {
+		return 0;
+	}
+
+	unit->offset = offset;
+	unit->nblks  = 1;
+	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    	diskdump_error = 0;
+    	init_completion(&diskdump_completion);
+	write_blocks(unit, DISK_DUMP_ASYNC);
+	return (wait_for_ios(devnum + 1));
+}
+
+/* Read a block from the dump device */
+int 
+read_block(struct disk_dump_unit *unit, off_t offset, int  devnum) 
+{
+	char 	*addr;
+	struct bio *bio;
+	struct page *page;
+	
+	if (unit->flags & DISK_DUMP_UNIT_OK)  {
+		unit->offset = offset;
+		unit->nblks  = 1;
+	}
+	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+    	diskdump_error = 0;
+    	init_completion(&diskdump_completion);
+
+ 	bio = bio_alloc(GFP_KERNEL, 1);
+	if (!bio) {
+		Err("BIO alloc failed! Crashdump aborted");
+		return -ENOMEM;
+	}
+
+	addr = unit->scratch;
+
+	bio->bi_sector = BLOCK_SECTOR(unit->offset + DISK_DUMP_STARTOFF);
+	bio->bi_bdev = unit->part->bdev;
+	bio->bi_rw = READ;
+	bio->bi_private = unit;
+	bio->bi_end_io = diskdump_endio;
+	bio->bi_qos_info = (void *)&diskdump_resclnt_id;
+
+	page = virt_to_page((unsigned long)addr);
+	if (!bio_add_page(bio, page, PAGE_SIZE, 0)) {
+		bio_put(bio);
+		return -EINVAL;
+	}
+
+	spin_lock_bh(&diskdump_lock);
+	diskdump_nios++;
+	spin_unlock_bh(&diskdump_lock);
+	generic_make_request(bio);
+    return (wait_for_ios(devnum + 1));
+}
+
+/* Set the appdump block map in the dump device */
+static int
+diskdump_clear_header_block(int ndevs, off_t offset)
+{
+        struct disk_dump_unit *primary_unit, *mirror_unit;
+        int devnum = 0;
+	int    ret = 0;
+
+        for (devnum = 0; devnum < ndevs; devnum++) {
+            primary_unit = &dump_primary[devnum];
+            mirror_unit = &dump_mirror[devnum];
+	    memset(primary_unit->scratch, 0, PAGE_SIZE);
+	    ret = write_block(primary_unit, offset, devnum);
+            if(ret < 0) {
+    	        Warn("diskdump_clear_header_block: Failed to clear block!!!\n");
+                goto out;
+            }
+            if (mirror_unit->flags & DISK_DUMP_UNIT_OK) {
+	        memset(mirror_unit->scratch, 0, PAGE_SIZE);
+	        ret = write_block(mirror_unit, offset, devnum);
+                if(ret < 0) {
+                    Warn("diskdump_clear_header_block: Failed to clear mirror block!!!\n");
+                    goto out;
+                }   
+            }
+        }
+out:        
+	return ret;
+}
+
+
+/* Set the appdump block map in the dump device */
+static int
+write_appdump_bmap(struct disk_dump_unit *unit, int devnum,
+		   off_t bmap_off, off_t dump_soff, off_t dump_eoff, int bval)
+{
+	int    ret = 0;
+	struct disk_dump_app_bmap bmap;
+
+	bmap.start_cookie = 0xDEADBEEF;
+	bmap.block_used = (unsigned long)bval;
+	bmap.appdump_startoff = dump_soff;
+	bmap.appdump_endoff   = dump_eoff;
+	bmap.end_cookie = 0xDEADBEEF;
+	memcpy(unit->scratch, &bmap, sizeof(struct disk_dump_app_bmap));
+
+	ret = write_block(unit, bmap_off, devnum);
+	return ret;
+}
+
+/*
+ * Capture the user space registers if the task is not running.
+ */
+int dump_task_regs(struct task_struct *tsk, elf_gregset_t *regs)
+{
+        struct pt_regs *pp, ptregs;
+
+        pp = (struct pt_regs *)(tsk->thread.rsp0);
+        --pp;
+
+        ptregs = *pp;
+        ptregs.cs &= 0xffff;
+        ptregs.ss &= 0xffff;
+
+        elf_core_copy_regs(regs, &ptregs);
+
+        return 1;
+}
+
+/*
+ * Capture the user space FPU registers if the task is not running.
+ */
+int dump_task_fpu(struct task_struct *tsk, struct user_i387_struct *fpu)
+{
+	int fpvalid = !!tsk_used_math(tsk);
+
+	if (fpvalid) {
+		if (tsk == current) {
+			unlazy_fpu(tsk);
+		}
+		memcpy(fpu, &tsk->thread.i387.fxsave, 
+				sizeof(struct user_i387_struct));
+	}
+	return fpvalid;
+}
+
+/*
+ * reset_completion_notifiers: Reset completion notfiers
+ * Helper function to reset diskdump notifier.
+ */
+static inline
+void reset_completion_notifiers(void)
+{
+	diskdump_nios = diskdump_ndones = diskdump_fini = 0;
+	diskdump_error = 0;
+	init_completion(&diskdump_completion);
+}
+
+/*
+ * write_compressed_chunk: Write out a compressed chunk.
+ *
+ * Input Parameters:
+ * devnum : 		device nummber (for primary/mirror)
+ * out_write_buffer:	The compressed buffer.
+ * blk_offset:		Block Offset in the device.
+ * blk_in_chunk:	Number of "block_size" blocks.
+ *
+ * Return Values:
+ * 0 :		Chunk succcessfully written out.
+ * non-zero:	Write failed.
+ */
+static inline
+int write_compressed_chunk(int type, int devnum, char *out_write_buffer, 
+				off_t blk_offset, int blk_in_chunk )
+{
+        struct disk_dump_unit   *primary, *mirror;
+	int    ret_val = 0;
+        
+        primary =  (type == CRASHDUMP || type == APPDUMP) ? 
+		&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+	mirror  = &dump_mirror[devnum]; 
+
+ 	memcpy(primary->scratch, out_write_buffer, CHUNKSIZE);
+	if (mirror->flags & DISK_DUMP_UNIT_OK) {
+	    memcpy(mirror->scratch, out_write_buffer, CHUNKSIZE);
+	}
+
+ 	/* Write to primary */
+	ret_val = write_chunk(primary, blk_offset, blk_in_chunk, devnum);
+	if (ret_val) {
+	    return ret_val;
+	}
+
+	/* Write to mirror */
+	if (mirror->flags & DISK_DUMP_UNIT_OK) {
+	    ret_val = write_chunk(mirror, blk_offset, blk_in_chunk, devnum);
+	}
+
+	return ret_val;
+}
+
+/*
+ * sigabrt_pending: clear or verify SIGABRT in the current pending signal set.
+ *
+ * This routine is called by do_appdump().  When we reach here, the process
+ * has been marked PF_EXITING, no signals should be delivered after this
+ * point.  However, we want to re-use SIGABR at this point to provide 
+ * interruptable core dump.  So, we have to clear and check SIGABRT in 
+ * do_appdump().  Also, signal delivery routine, wants_signal() has to be 
+ * modified accordingly for PF_DUMPCORE validation.
+ *
+ * If the given flag is CLEAR, it clears SIGABRT from the pending signal set.
+ *
+ * If the given flag is CHECK, the routine checks if SIGABRT is pending.
+ *
+ * Input Parameters:
+ * CLEAR    : clear SIGABRT in the current pending signal set
+ * CHECK    : check if SIGABRT is pending
+ * 
+ * Return Values:
+ * 1        : SIGABRT is pending.
+ * 0        : SIGABRT is not pending.
+ *
+ */
+static int
+sigabrt_pending(int flag)
+{
+	sigset_t sigpending;
+	sigemptyset(&sigpending);
+	sigorsets(&sigpending, &current->pending.signal,
+			  &current->signal->shared_pending.signal);
+
+	if (flag == CLEAR) {
+		if (sigismember(&sigpending, SIGABRT)) {
+			Info("SIGABRT is pending in appdump.\n");
+		}
+
+		sigdelset(&current->pending.signal, SIGABRT);
+		sigdelset(&current->signal->shared_pending.signal, SIGABRT);
+	} else {
+		/* In the normal case, we should hold the signal lock when dealing
+		 * with pending signal.  However, this code flow is a special case.
+		 *
+		 * We only allow SIGABRT to be delivered for core dump termination
+		 * verification.  If SIGABRT is lost (should not), user can re-send
+		 * another one to terminate core dump; a lost signal is no harm for
+		 * this case.
+		 */
+		if (sigismember(&sigpending, SIGABRT)) {
+			printk(KERN_WARNING
+               "SIGABRT Received in app dump. Core dump terminated.\n");
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+#define post_ddfs_panic_TIMEOUT 5000	/* 5000 ms */
+/*
+ * Invoke script to do extra data dump in user space
+ */
+static void
+__post_appdump(void)
+{
+	char *post_ddfs_panic_path = "/ddr/bin/post_ddfs_panic.sh";
+	char ddfs_pid[16];
+	char *post_ddfs_panic_args[] = { post_ddfs_panic_path,
+					ddfs_pid,
+					NULL };
+	char *envp[] = { "HOME=/",
+			  "PATH=/sbin:/bin:/usr/sbin:/usr/bin",
+			  NULL };
+	int ret;
+
+	/* Do nothing for non-ddfs process */
+	if (strcmp(current->comm, "ddfs")) {
+		return;
+	}
+
+	Info("Invoking post_ddfs_panic script\n");
+	post_ddfs_panic_finished = 0;
+	sprintf(ddfs_pid, "%d", current->pid);
+	ret = call_usermodehelper(post_ddfs_panic_path, post_ddfs_panic_args, envp, 0);
+	if (ret) {
+		Info("Invoking post_ddfs_panic script failed: ret=%d!\n", ret);
+		return;
+	}
+
+	/* Wait for blocking part to finish */
+	wait_event_timeout(post_ddfs_panic_queue, (post_ddfs_panic_finished == 1),
+			   msecs_to_jiffies(post_ddfs_panic_TIMEOUT));
+}
+
+/*
+ *
+ */
+static int appdump_write_app_data(int comp_index)
+{
+	off_t	blocks = ddump_blocks;
+	off_t	blk_offset;
+	off_t	comp_data_blocks;
+	int	blk_in_chunk = 0;
+	long	outbuf_filled = 0;
+	int	ret = 0;
+	int	devnum = 0;
+	int	index = 0;
+
+	struct disk_dump_unit	*primary = ddump_primary;
+	ddump_comp_task_t	*comp = &ddump_thread_helper[index];
+
+	// mm
+	struct vm_area_struct 	*vma, *gate_vma= NULL;
+	unsigned long 		mm_flags = ddump_panic_task->mm->flags;
+	char			*kaddr;
+
+	printk("primary is %p comp %p\n", primary, comp);
+
+	//init_completion(&comp->cp_buff_io_read);
+	appdump_blocks_no_data = blk_offset = blocks;
+	//blk_in_chunk = 0; 
+	//outbuf_filled = 0;
+	comp_data_blocks = blocks;
+
+	printk("JJ blocks %ld blk_offset %ld comp_data_blocks %ld\n", 
+		blocks, blk_offset, comp_data_blocks);
+
+	// revisit
+	// reset_completion_notifiers();
+
+	for (vma = first_vma(ddump_panic_task, gate_vma); vma != NULL;
+			vma = next_vma(vma, gate_vma)) {
+
+          unsigned long addr;
+          unsigned long pages_in_vma = 0;
+
+          if (!maydump_elf_vma(vma, mm_flags)) {
+          	// Dbg("VMA <%lx> startva <%lx> skipped!", 
+                    // (unsigned long)vma, vma->vm_start);
+          	continue;
+          }
+          for (addr = vma->vm_start; addr < vma->vm_end; addr += PAGE_SIZE) {
+
+            struct vm_area_struct *vma_temp;
+            struct page           *page;
+
+	    DUMP_ASSERT(blk_in_chunk <= (1 << comp_block_order));
+
+            /* Verify if we should abandon core dump. */
+            if (sigabrt_pending(CHECK)) {
+                Err("sigabrt_pending failed");
+            	return -1;
+            }
+
+            ret = get_user_pages(ddump_panic_task, ddump_panic_task->mm,
+                    addr, 1, 0, 1, &page, &vma_temp);
+	    /* 
+	     * Note: copy the page data over to primary->scratch only.
+	     * This will be the input buffer for compression.
+	     */
+            if (!ddump_mt) {
+	            if (ret > 0) { 
+	                if (page == ZERO_PAGE(page)) {
+	                    app_zero_pages++;
+	                    memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+			    		0, PAGE_SIZE);
+	                } else {
+	                    app_non_zero_pages++;
+	                    kaddr = kmap_atomic(page, 0);
+	                    memcpy(primary->scratch + (blk_in_chunk * PAGE_SIZE), 
+			    		kaddr, PAGE_SIZE);
+	                    kunmap_atomic(kaddr, 0);
+	                }
+	                page_cache_release(page);
+	            }  else {
+	                 app_other_pages++;
+	                 memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+			 		0, PAGE_SIZE);
+	            }
+            } else { //ddump_mt
+	            int i;
+
+	            if (ret > 0) { 
+	                if (page == ZERO_PAGE(page)) {
+	                    app_zero_pages++;
+	                    memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+			    		0, PAGE_SIZE);
+	                    memset(ddump_thread_helper[index].cp_buf + blk_in_chunk * PAGE_SIZE
+			    		, 0, PAGE_SIZE);
+	                } else {
+	                    app_non_zero_pages++;
+	                    kaddr = kmap_atomic(page, 0);
+	                    memcpy(primary->scratch + (blk_in_chunk * PAGE_SIZE), 
+			    		kaddr, PAGE_SIZE);
+	                    memcpy(ddump_thread_helper[index].cp_buf + (blk_in_chunk * PAGE_SIZE),
+			    		kaddr, PAGE_SIZE);
+	                    kunmap_atomic(kaddr, 0);
+	                }
+	                page_cache_release(page);
+	            }  else {
+	                 app_other_pages++;
+	                 memset(primary->scratch + blk_in_chunk * PAGE_SIZE, 
+			 		0, PAGE_SIZE);
+	                 memset(ddump_thread_helper[index].cp_buf + blk_in_chunk * PAGE_SIZE, 
+			 		0, PAGE_SIZE);
+	            }
+            }
+
+            blk_in_chunk++;
+            blocks++;
+
+	    if (blk_in_chunk >=  (1 << comp_block_order)) {
+                
+                ret = diskdump_compress_and_write(APPDUMP, primary->scratch, ddump_ndevs, &devnum,
+                                &blk_in_chunk, &blk_offset, 
+                                &outbuf_filled, &comp_data_blocks);
+                if(ret < 0) {
+                    Err("APPDUMP : diskdump_compress_and_write failed %d\n",ret);   
+                    return -1;
+                }
+                primary = &dump_primary[devnum];
+
+                if (ddump_mt) {
+	            // if the next index is out of bound, reset index to 0
+		    if (++index == ddump_max_helpers) {
+		       index = 0;
+		    }
+	            // advance to next thread
+		    comp = &ddump_thread_helper[index];
+                }
+            }
+            pages_in_vma++;
+	  } /* end for vma->start to vma->end */ 
+
+          total_data_pages += pages_in_vma;
+          // Info("VMA <%lx> start <%lx> Dumped %ld pages. Total Pages :%ld", 
+                 // (unsigned long)vma, vma->vm_start, pages_in_vma, total_data_pages);
+          pages_in_vma = 0;
+        }  /* for each vma */
+	
+	//primary =  (crashdump_mode()) ? 
+	//	&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+	ret = diskdump_compress_and_write_remaining(APPDUMP, primary->scratch, ddump_ndevs, &devnum,
+                                            blk_in_chunk, &blk_offset, 
+                                            &outbuf_filled,&comp_data_blocks);
+        if(ret < 0) {
+            Err("crashdump : diskdump_compress_and_write_remaining failed %d\n",ret);   
+            return -1;
+        }
+
+	appdump_blocks = blocks;
+	appdump_comp_data_blocks = comp_data_blocks;
+	ddump_blk_offset = blk_offset;
+
+	//complete(&comp->cp_buff_io_read);
+	return 0;
+}
+
+/*
+ * do_appdump : Dump a process corefile to a crash device
+ *
+ * Input parameters:
+ * 	regs  	- The register state at the time of coredump.
+ * 	signr 	- Signal causing the core dump
+ * 	corename- Name of the generated corefile (on ext3)
+ *
+ * Return Values:
+ * 	0 - Sucessful dump
+ * 	1 - Unsuccessful dump
+ *
+ * Description:
+ * The routine dumps an ELF corefile to the dump device. 
+ * First the headers and the notes of the process are written out followed
+ * by the application data pages.
+ * Each of the headers and notes dumped occupy block in the dump device. 
+ * At the end of it, invoke "savecore" which copies the dump from the 
+ * crashdevice to the location specified by corename.
+ */
+#define NUM_NOTES 6
+#define CORENAME_MAX_SIZE 64
+int
+do_appdump(struct pt_regs *regs, int signr, char *corename)
+{
+	int			ndevs = 0;
+	struct vm_area_struct 	*vma, *gate_vma= NULL;
+        struct disk_dump_unit   *primary, *mirror;
+	off_t			blocks = 0, bmap_offset = 0, dump_startoff = 0;
+	off_t			comp_data_blocks = 0;
+	int                     devnum = 0;
+	int                     blk_in_chunk = 0;
+	off_t 			offset = 0, blk_offset = 0;
+	unsigned long		notes_total_size = 0;
+	char			*kaddr;
+
+	size_t			size = 0;
+	int 			thread_status_size = 0, numnote = 0;
+	int			segs = 0, i = 0, has_dumped = 0;
+	int			bmap_idx = 0, ret_val = 0;
+	struct elfhdr 		*elf = NULL;
+	struct elf_phdr 	phdr;
+	struct elf_prstatus 	*prstatus = NULL;	/* NT_PRSTATUS */
+	struct elf_prpsinfo 	*psinfo = NULL;		/* NT_PRPSINFO */
+	struct memelfnote 	*notes = NULL;
+	unsigned long		*auxv;
+	elf_fpregset_t 		*fpu = NULL;
+ 	struct task_struct 	*g, *p;
+ 	struct list_head 	*t;
+	size_t			app_size;
+//	char			*comp_buf = NULL, *work_buffer = NULL, 
+//				*out_write_buffer = NULL;
+	long			outbuf_filled = 0;
+        lzo_tag_t 		lz;
+	size_t			buffer_alloc_size = 0;
+	unsigned long		dumpstart_tsc;
+
+
+	unsigned long 		mm_flags;
+        int                     ret = 0;
+#ifdef ELF_CORE_WRITE_EXTRA_NOTES
+	int extra_notes_size;
+#endif
+
+ 	LIST_HEAD(thread_list);
+#ifdef ELF_CORE_COPY_XFPREGS
+	elf_fpxregset_t 	*xfpu = NULL;
+#endif
+
+	if (regs == NULL) {
+		Warn("APPDUMP: Invalid application register state");
+		return -1;
+	}
+
+	app_start_time = jiffies;
+
+	block_order = appdump_block_order;
+
+#if 0
+
+	buffer_alloc_size =  ((1<<(block_order)) * PAGE_SIZE) * 2;
+
+	comp_buf = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (comp_buf == NULL) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+
+	work_buffer = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (work_buffer == NULL) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+
+	out_write_buffer = kzalloc(buffer_alloc_size, GFP_KERNEL);
+	if (out_write_buffer == NULL) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+#endif
+
+	init_measure_global();
+
+	/* Initialize LZO tag */
+        memset(&lz, 0, sizeof(lzo_tag_t));
+        lz.magic_start = LZO_MAGIC_START;
+	lz.last_chunk = 0;
+
+	ndevs = prepare_coredump_devices(&bmap_offset, &dump_startoff);
+	ddump_ndevs = ndevs;
+	if (ndevs == 0) {
+                Err("prepare_coredump_devices failed");
+                goto rawdump_failed;
+        }      
+	bmap_idx = bmap_offset - APPDUMP_BMAP_STARTOFF(ndevs);
+	DUMP_ASSERT(bmap_idx >= 0 && bmap_idx < MAX_APPDUMP_BMAP_IDX);
+
+	ddump_panic_task = current;
+
+	rdtscll(dumpstart_tsc);
+	Info("Dumping core file for process %d (%s) tsc: %ld",
+		current->pid, current->comm, dumpstart_tsc);
+
+	/* Space required for an application coredump is roughly the 
+	 * number of private VM + mappings and additional pages for 
+	 * storing headers.
+	 */
+	app_size =  (current->mm->total_vm - current->mm->shared_vm) + 
+			2 * current->mm->map_count + 100;
+
+	app_mm_total_vm = current->mm->total_vm;
+	app_mm_shared_vm = current->mm->shared_vm;
+	app_mm_map_count = current->mm->map_count;
+	/* 
+	 * Ensure that we have enough space to cover the private data,
+	 * rounded up to the next gig.
+	 */
+      	if (!check_appdump_space(ndevs, app_size, dump_startoff)) { 
+	    Warn(KERN_WARNING "Insufficient crashdump space for rawdump" );
+	    Warn(KERN_WARNING "Switching to normal dump!");
+	    goto rawdump_failed;
+        }   
+	Info("Application Dump Starting at offset :%ld", dump_startoff);
+
+	sigabrt_pending(CLEAR);
+
+	/* Begin core dump */
+	current->flags |= PF_DUMPCORE; 
+
+	primary = &dump_primary[0]; 
+	mirror  = &dump_mirror[0];
+	/*
+	 * Write the common header out to each primary disk and mirror
+	 */
+        if (write_common_headers(ndevs, APPDUMP)) {
+               	Err("Can not write out headers");
+		goto rawdump_failed;
+	}
+
+	blocks = 2 + dump_startoff;   /* app dump header in block 1 */
+	segs = current->mm->map_count;
+#ifdef ELF_CORE_EXTRA_PHDRS
+	segs += ELF_CORE_EXTRA_PHDRS;
+#endif
+	gate_vma = get_gate_vma(current);
+	if (gate_vma != NULL) {
+		segs++;
+	}
+
+	/*
+	 * -----------  ELF header + corefile name ------------
+	 */
+	app_elf_time = jiffies;
+	elf = kmalloc(sizeof(*elf), GFP_KERNEL);
+	if (!elf) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	fill_elf_header(elf, segs+1);	/* including notes section */
+
+    	memset(primary->scratch, 0, PAGE_SIZE);
+	memcpy(primary->scratch, elf, sizeof(struct elfhdr)); 
+	memcpy(primary->scratch+sizeof(struct elfhdr), corename,
+			strlen(corename)+1);
+	if (write_block(primary, blocks, devnum) < 0) {
+                Err("write_block: Failed line %d", __LINE__);
+        	goto rawdump_failed;
+	}
+
+    	memset(mirror->scratch, 0, PAGE_SIZE);
+	memcpy(mirror->scratch, elf, sizeof(struct elfhdr)); 
+	memcpy(mirror->scratch+sizeof(struct elfhdr), corename,
+			strlen(corename)+1);
+	if (write_block(mirror, blocks, devnum) < 0) {
+                Err("write_block: Failed line %d", __LINE__);
+        	goto rawdump_failed;
+	}
+	blocks++;
+
+	/*
+	 * -----------  Thread Status Notes -------------
+	 */
+	app_th_status_time = jiffies;
+	if (signr) {
+		struct elf_thread_status *tmp;
+
+		rcu_read_lock();
+		do_each_thread(g,p)
+		    if (current->mm == p->mm && current != p) {
+			tmp = kzalloc(sizeof(*tmp), GFP_ATOMIC);
+			if (!tmp) {
+				rcu_read_unlock();
+                                Err("Allocation failed %d", __LINE__);
+				goto rawdump_failed;
+			}
+			memset(tmp, 0, sizeof(struct elf_thread_status));
+			INIT_LIST_HEAD(&tmp->list);
+			tmp->thread = p;
+			list_add(&tmp->list, &thread_list);
+		    }
+		while_each_thread(g,p);
+		rcu_read_unlock();
+
+		list_for_each(t, &thread_list) {
+		    struct elf_thread_status *tmp;
+		    int sz;
+
+		    tmp = list_entry(t, struct elf_thread_status, list);
+		    sz = elf_dump_thread_status(signr, tmp);
+		    thread_status_size += sz;
+		}
+	}
+
+	prstatus = kmalloc(sizeof(struct elf_prstatus), GFP_KERNEL);
+	if (!prstatus) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	memset(prstatus, 0, sizeof(struct elf_prstatus));
+	fill_prstatus(prstatus, current, signr);
+	elf_core_copy_regs(&prstatus->pr_reg, regs);
+
+	/* Gather program notes */
+	notes = kmalloc(NUM_NOTES * sizeof(struct memelfnote), GFP_KERNEL);
+	if (!notes) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	psinfo = kmalloc(sizeof(struct elf_prpsinfo), GFP_KERNEL);
+	if (!psinfo) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	fill_psinfo(psinfo, current->group_leader, current->mm);
+
+	fill_note(&notes[numnote++] , "CORE", NT_PRSTATUS, 
+				sizeof(struct elf_prstatus), prstatus);
+	fill_note(&notes[numnote++], "CORE", NT_PRPSINFO, 
+				sizeof(struct elf_prpsinfo), psinfo);
+	/*
+	fill_note(&notes[numnote++], "CORE", NT_TASKSTRUCT, 
+				sizeof(*current), current);
+	*/
+	auxv = current->mm->saved_auxv;
+	i = 0;
+	do {
+		i += 2;
+	} while (auxv[i - 2] != AT_NULL);
+
+	fill_note(&notes[numnote++], "CORE", NT_AUXV,  
+				i * sizeof (elf_addr_t), auxv);
+
+	fpu = kmalloc(sizeof(*fpu), GFP_KERNEL);
+	if (!fpu) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	if ((prstatus->pr_fpvalid = 
+			elf_core_copy_task_fpregs(current, regs, fpu))) {
+		fill_note(notes + numnote++, "CORE", NT_PRFPREG, 
+				sizeof(*fpu), fpu);
+	}
+#ifdef ELF_CORE_COPY_XFPREGS
+	xfpu = kmalloc(sizeof(*xfpu), GFP_KERNEL);
+	if (!xfpu) {
+                Err("Allocation failed %d", __LINE__);
+		goto rawdump_failed;
+	}
+	if (elf_core_copy_task_xfpregs(current, xfpu)) {
+		fill_note(notes + numnote++, "LINUX", NT_PRXFPREG, 
+				sizeof(*xfpu), xfpu);
+	}
+#endif
+
+	offset += sizeof(struct elfhdr);
+	offset += (segs+1) * sizeof(struct elf_phdr);
+
+	/* 
+	 * -------------- Write notes phdr -------------- 
+	 */
+	app_w_note_phdr = jiffies;
+	memset(&phdr, 0, sizeof(struct elf_phdr));
+	for (i = 0; i < numnote; i++) {
+	    size += notesize(&notes[i]);
+	}
+	size += thread_status_size;
+
+#ifdef ELF_CORE_WRITE_EXTRA_NOTES
+		/* 
+		 * REVISIT - Code needs to be revsited to write extra
+		 * notes if the assertion below breaks 
+		 */
+		extra_notes_size = ELF_CORE_EXTRA_NOTES_SIZE;
+		DUMP_ASSERT(extra_notes_size == 0);
+		size += extra_notes_size;
+#endif
+
+	fill_elf_note_phdr(&phdr, size, offset);
+	offset += size;
+	memset(primary->scratch, 0, PAGE_SIZE);
+	memcpy(primary->scratch, &phdr, sizeof(phdr));
+	if (write_block(primary, blocks, devnum) < 0) {
+                Err("write_block: Failed line %d", __LINE__);
+        	goto rawdump_failed;
+	}
+	memset(mirror->scratch, 0, PAGE_SIZE);
+	memcpy(mirror->scratch, &phdr, sizeof(phdr));
+	if (write_block(mirror, blocks, devnum) < 0) {
+                Err("write_block: Failed line %d", __LINE__);
+        	goto rawdump_failed;
+	}
+	blocks++;
+
+	offset = roundup(offset, ELF_EXEC_PAGESIZE);
+	/*
+	 * We must use the same mm->flags while dumping core to avoid
+	 * inconsistency between the program headers and bodies, otherwise an
+	 * unusable core file can be generated.
+	 */
+	mm_flags = current->mm->flags;
+
+	/* 
+	 * ------ Write program headers for each of the mapped segments ----- 
+	 */
+	app_w_map_seg = jiffies;
+	for (vma = first_vma(current, gate_vma); vma != NULL; 
+				vma = next_vma(vma, gate_vma)) {
+
+		memset(&phdr, 0, sizeof(struct elf_phdr));
+		size = vma->vm_end - vma->vm_start;
+
+		phdr.p_type = PT_LOAD;
+		phdr.p_offset = offset;
+		phdr.p_vaddr = vma->vm_start;
+		phdr.p_paddr = 0;
+		phdr.p_filesz = maydump_elf_vma(vma, mm_flags) ? size: 0;
+		phdr.p_memsz = size;
+		offset += phdr.p_filesz;
+		phdr.p_flags = vma->vm_flags & VM_READ ? PF_R : 0;
+		if (vma->vm_flags & VM_WRITE) {
+			phdr.p_flags |= PF_W;
+		}
+		if (vma->vm_flags & VM_EXEC)  {
+			phdr.p_flags |= PF_X;
+		}
+		phdr.p_align = ELF_EXEC_PAGESIZE;
+
+		memset(primary->scratch, 0, PAGE_SIZE);
+		memcpy(primary->scratch, &phdr, sizeof(phdr));
+		if (write_block(primary, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		}
+
+		memset(mirror->scratch, 0, PAGE_SIZE);
+		memcpy(mirror->scratch, &phdr, sizeof(phdr));
+		if (write_block(mirror, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		}
+		blocks++;
+	}
+
+#ifdef ELF_CORE_WRITE_EXTRA_PHDRS
+	/* REVISIT */
+	Use EXTRA_PHDRS generate compile error.
+	ELF_CORE_WRITE_EXTRA_PHDRS;
+#endif
+
+	/*
+	 * ------------------- Write the notes section ----------------
+	 */
+	app_w_note_section = jiffies;
+	for (i = 0; i < numnote; i++) {
+		memset(primary->scratch, 0, PAGE_SIZE);
+		notes_total_size += dump_writenote(&notes[i], primary->scratch);
+		if (write_block(primary, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		}
+		memset(mirror->scratch, 0, PAGE_SIZE);
+		notes_total_size += dump_writenote(&notes[i], mirror->scratch);
+		if (write_block(mirror, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		}
+		blocks++;
+	}
+
+#ifdef ELF_CORE_WRITE_EXTRA_NOTES
+	/* REVISIT  - see DUMP_ASSERT(extra_notes_size == 0) above */
+	// ELF_CORE_WRITE_EXTRA_NOTES;
+	// foffset += extra_notes_size;
+#endif
+
+	/* 
+	 * -----------------  Write thread status notes ----------------
+	 */
+	app_w_th_status = jiffies;
+	list_for_each(t, &thread_list) {
+		struct elf_thread_status *tmp = 
+			list_entry(t, struct elf_thread_status, list);
+
+		for (i = 0; i < tmp->num_notes; i++) { 
+		    memset(primary->scratch, 0, PAGE_SIZE);
+		    notes_total_size += dump_writenote(&tmp->notes[i], 
+							primary->scratch);
+		    if (write_block(primary, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		    }
+
+		    memset(mirror->scratch, 0, PAGE_SIZE);
+		    notes_total_size += dump_writenote(&tmp->notes[i], 
+						mirror->scratch);
+		    if (write_block(mirror, blocks, devnum) < 0) {
+                        Err("write_block: Failed line %d", __LINE__);
+        		goto rawdump_failed;
+		    }
+
+		    numnote++;
+		    blocks++;
+		}
+	}
+
+	Info("Dumping process :%s (pid = %d) pages starting block :%ld:...",
+			current->comm, current->pid, blocks );
+
+	/* 
+	 * -----------------  Write application data pages ----------------
+	 */
+	app_w_data = jiffies;
+
+	// setup variables b4 starts helpers
+	ddump_panic_task = current;
+	ddump_primary = primary;
+	ddump_blocks = blocks;
+
+	if (ddump_mt) {
+		ddump_start_helpers();
+
+		if (-1 == appdump_write_app_data(0)) {
+			goto rawdump_failed;
+		}
+	} else {
+		panic("haven't implemented non-mt version\n");
+	}
+
+	// assgin back the result from helpers
+	blocks = ddump_blocks;
+	blk_offset = ddump_blk_offset;
+	primary = ddump_primary;
+
+#ifdef ELF_CORE_WRITE_EXTRA_DATA
+	Use EXTRA_DATA generate compile error.
+	ELF_CORE_WRITE_EXTRA_DATA;
+#endif
+	Info("APPDUMP complete. Dumped: %ld diskblocks - %ld data pages", 
+		appdump_blocks, total_data_pages);
+	Info("APPDUMP complete. UnCompressed Blocks: %ld compressed Blocks- %ld",
+		appdump_blocks, appdump_comp_data_blocks);
+
+	/*
+	 * Write the application dump header 
+	 */
+        if (write_appdump_headers(ndevs, appdump_comp_data_blocks, dump_startoff)) {
+               	Err("Can not write out headers");
+		goto rawdump_failed;
+	}
+
+	/* Update appdump block maps so savecore can pick the coredump */
+	for (devnum = 0; devnum < ndevs; devnum++) {
+		
+	    primary = &dump_primary[devnum];
+	    mirror = &dump_mirror[devnum];
+
+	    ret_val = write_appdump_bmap(primary, devnum, 
+	    		bmap_offset, dump_startoff, blk_offset, 1);
+	    if (mirror->flags & DISK_DUMP_UNIT_OK) {
+	    	ret_val = write_appdump_bmap(mirror, devnum, 
+	    		bmap_offset, dump_startoff, blk_offset, 1);
+	    }
+	}
+	has_dumped = 1;
+	appdump_dump_startoff = dump_startoff;
+	appdump_bmap_offset = bmap_offset;
+	appdump_blk_offset = blk_offset;
+rawdump_failed:
+	while(!list_empty(&thread_list)) {
+		struct list_head *tmp = thread_list.next;
+		list_del(tmp);
+		kfree(list_entry(tmp, struct elf_thread_status, list));
+	}
+	kfree(elf);
+	kfree(prstatus);
+	kfree(notes);
+	kfree(fpu);
+#ifdef ELF_CORE_COPY_XFPREGS
+	kfree(xfpu);
+#endif
+	if (ndevs != 0) {
+		/* prepare_coredump_devices already dropped the mutex */
+		up(&app_dump_mutex);
+	}
+
+#if 0
+	if (comp_buf) {
+		kfree(comp_buf);
+	}
+	if (work_buffer) {
+		kfree(work_buffer);
+	}
+	if (out_write_buffer) {
+		kfree(out_write_buffer);
+	}
+#endif
+
+	app_end_time = jiffies;
+	show_measure_global();
+
+	/* 
+	 * Dump to crash device was sucessful, invoke savecore
+	 * to asynchronously move the dump to the ext3 partition
+	 *
+	 * !! ACHTUNG !!
+	 * We dont invoke savecore directly because   Invoking through 
+	 * usermodehelper means stdin/stdout/stderr aren't open. 
+	 * 0, 1 & 2 could be the fd for devices itself and any logging
+	 * writes could end up corrupting the dump device.
+	 * invoke_save_core makes sure that that writes to 
+	 * stdin/out/err are all redirected to /dev/null.
+	 */
+	if (has_dumped) {
+	    char *umh_wrapper_path = "/ddr/bin/call_usermodehelper_wrapper.sh";
+	    char *savecore_path = "/ddr/bin/invoke_save_core.sh";
+
+   	    char *umh_args[] = { umh_wrapper_path,
+	    			 "-o",
+				 "/ddr/var/core/invoke_savecore.log",
+				 "-c",
+	    			 savecore_path, 
+				 NULL
+			      };
+    	    char *envp[] = { "HOME=/", 
+		      	     "PATH=/sbin:/bin:/usr/sbin:/usr/bin:/ddr/bin", 
+		      	     NULL 
+			   };
+	    int ret;
+	    Info("Invoking savecore\n");
+    	    ret = call_usermodehelper(umh_wrapper_path, umh_args, envp, 0);
+	    if (ret) {
+		Info("Invoking savecore failed: ret=%d\n", ret);
+	    }
+	} else {
+	    ret_val = -1; 
+	}
+	
+        __post_appdump();
+
+	return ret_val;
+
+#undef NUM_NOTES
+}
+
+module_init(init_diskdump);
+module_exit(cleanup_diskdump);
+
+MODULE_LICENSE("GPL");
+
+

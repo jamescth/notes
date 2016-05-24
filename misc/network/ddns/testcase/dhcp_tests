@@ -1,0 +1,4 @@
+TEST:Test_DHCP6
+CMD:hostname EXPECT:ipv6_ddr2
+CMD:ddsh -s net config eth0b 192.168.100.100 netmask 255.255.255.0
+CMD:ddsh -s net show se EXPECT:192.168.100.100

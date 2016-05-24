@@ -1,0 +1,188 @@
+ipmitool mc watchdog get
+ipmitool mc watchdog off
+ipmitool mc watchdog on
+
+ipmitool raw 0x06 0x25		<= Get timer
+ 44 31 ff 00 1e 2d 0a 2b
+
+44 = timer is on, if timer is off, 00
+31 = pre-timeout set
+ff = pre-timeout interval value
+00 = timer hasn't expired yet
+1e 2d = initial countdown value.  0x2d1e (100 ms/count) = 11550 / 10 = 1155 sec
+0a 2b = present countdown value.  0x2b0a (100 ms/count) = 11018 / 10 = 1101 sec
+
+
+from IPMI specification
+Set watchdog timer command
+	byte	data field
+	1	Timer Use
+		[7]	1b = don't log
+		[6]	1b = don't stop timer on Set Watchdog Timer command
+			     if timer is already running, countdown value will get
+			     set to given value and countdown will continue from that 
+			     point.  If timer already stopped, it remainds stopped.
+			     If the pre-timeout bit is set, it will get cleared.
+		[5:3] = reserved
+		[2:0] = timer use
+			000b = reserved
+			001b = BIOS FRB2
+			010b = BIOS/POST
+			011b = OS Load
+			100b = SMS/OS
+			101b = OEM
+			110b - 111b = reserved
+
+	2	timer actions
+		[7] = reserved
+		[6:4] = pre-timeout interrupt (logged on expiration when "don't log" bit = 0b)
+			000b = none
+			001b = SMI
+			010b = NMI / Diagnostic interrupt
+			011b = Messaging Interrupt
+			100b = reserved
+			111b = reserved
+		[3] = reserved
+		[2:0] = timeout action
+			000b = no action
+			001b = Hard Reset
+			010b = Power Down
+			011b = Power Cycle
+			100b = reserved
+			111b = reserved
+
+	3	pre-timeout interval in seconds, '1' based
+
+	4	Timer Use Expiration flags clear
+		(0b = leave alone, 1b = clear timer use expiration bit)
+		[7] = reserved
+		[6] = reserved
+		[5] = OEM
+		[4] = SMS/OS
+		[3] = OS Load
+		[2] = BIOS/POST
+		[1] = BIOS FRB2
+		[0] = reserved
+
+	5	initial countdown value, lsbyte (100 ms/count)
+	6	initial countdown value, msbyte
+
+Response Data
+	1	completion code
+
+Get watchdog timer command
+
+	byte	data field
+	1	completion code
+	2	Timer Use
+		[7]	1b = don't log
+		[6]	1b = Timer is started (running)
+		        0b = timer is stopped
+		[5:3] = reserved
+		[2:0] = timer use
+			000b = reserved
+			001b = BIOS FRB2
+			010b = BIOS/POST
+			011b = OS Load
+			100b = SMS/OS
+			101b = OEM
+			110b - 111b = reserved
+	3	timer actions
+		[7] = reserved
+		[6:4] = pre-timeout interrupt (logged on expiration when "don't log" bit = 0b)
+			000b = none
+			001b = SMI
+			010b = NMI / Diagnostic interrupt
+			011b = Messaging Interrupt
+			100b = reserved
+			111b = reserved
+		[3] = reserved
+		[2:0] = timeout action
+			000b = no action
+			001b = Hard Reset
+			010b = Power Down
+			011b = Power Cycle
+			100b = reserved
+			111b = reserved
+	4	pre-timeout interval in seconds, '1' based
+	5	Timer Use Expiration flags (1b = timer expired while associated 'use' was selected)
+		[7] = reserved
+		[6] = reserved
+		[5] = OEM
+		[4] = SMS/OS
+		[3] = OS Load
+		[2] = BIOS/POST
+		[1] = BIOS FRB2
+		[0] = reserved
+	6	initial countdown value. lsbyte (100 ms/cout)
+	7	initial countdown value msbyte
+	8	Present countdown value, lsbyte.  The inital countdown value and present
+		countdown values should match immediately after the countdown is 
+		initailized via a Set Watchdog Timer command and after a Reset Watchdog
+		Timer has been executed.
+		Note that internal delays in the BMC may require software to delay up to
+		100 ms before seeing the countdown value change and be reflected in the
+		Get Watchdog Timer command
+	9	Present countdown value, msbyte
+
+wdt
+
+#reset timer
+wdt -r
+Usage: wdt [-adelrx -t sec -NUPRETV]
+ where -r      reset watchdog timer
+       -a N    set watchdog Action (N=0,1,2,3)
+       -d      disable watchdog timer
+       -e      enable watchdog timer
+       -l      dont Log watchdog events
+       -t N    set timeout to N seconds
+       -x      show eXtra debug messages
+       -N node  Nodename of target system
+       -U user  Username for remote node
+       -P/-R pswd  Remote Password
+       -E    use password from Environment IPMI_PASSWORD
+       -T 1  use auth Type: 1=MD2, 2=MD5(default)
+       -V 2  use priVilege level: 2=user, 4=admin(default)
+
+
+panic_event() => send_panic_event()
+
+static struct notifier_block panic_block = {
+	.notifier_call	= panic_event,
+	.next		= NULL,
+	.priority	= 200	/* priority: INT_MAX >= x >= 0 */
+};
+
+
+wdog_panic_handler() => 
+	panic_halt_ipmi_set_timeout() => 
+		panic_halt_ipmi_set_timeout() => 
+			i_ipmi_set_timeout()
+
+static struct notifier_block wdog_panic_notifier = {
+	.notifier_call	= wdog_panic_handler,
+	.next		= NULL,
+	.priority	= 150	/* priority: INT_MAX >= x >= 0 */
+};
+
+
+unsigned char                     data[6];
+	data[0] = 0;
+	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
+	data[1] = 0;
+	WDOG_SET_TIMEOUT_ACT(data[1], ipmi_watchdog_state);
+	data[2] = pretimeout;
+	data[3] = 0;
+	WDOG_SET_TIMEOUT(data[4], data[5], timeout);
+
+
+Watchdog barks on NMI
+
+rmmod ipmi_watchdog
+insmod ipmi_watchdog.ko timeout=1155 action=reset pretimeout=255 preaction=pre_nmi preop=preop_panic
+
+# sysctl kernel.unknown_nmi_panic
+kernel.unknown_nmi_panic = 0
+# sysctl -w kernel.unknown_nmi_panic=1
+kernel.unknown_nmi_panic = 1
+

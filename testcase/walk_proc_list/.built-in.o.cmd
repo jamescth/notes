@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/walk_proc_list/built-in.o :=  rm -f /auto/home5/hoj9/testcase/walk_proc_list/built-in.o; /auto/home/lsbuild/desktop-354533/usr/bin/ar rcs /auto/home5/hoj9/testcase/walk_proc_list/built-in.o

@@ -1,0 +1,750 @@
+Linux Run-time Alternatives
+  like UP & SMP, compile once and decision making at run time in early boot.
+	alternative() macro
+	apply_alternatives() function
+	arch/x86/include/asm/alternative.h
+
+	w/ hot-pluggable CPU's, one can even change behaviour long after boot,
+	selecting between different alternatives on the fly. (this is x86 only
+	implementation)
+
+initrd & initramfs
+- On many if not most Linux systems certain kernel modules need to be loaded before
+  the root filesystem can be fully mounted.  In most circumstances the modules
+  required are those needed to mount the proper block devices on which the filesystem
+  resides.  This has always been true for SCSI systems, but has come to include 
+  journalling filesystems, such as ext3.
+- In the early days of Linux, if the necessary block drivers and filesystems were
+  built-in to the kernel it was unnecessary to go through the two-phase boot
+  procedure we are about to discuss.  However, if your system is configured to use
+  the udev facility to generate device nodes automatically (which most modern
+  Linux distributions are), the two step procedure can be less painful than
+  avoiding it and is customary in all major distributions.
+- On the other hand, for embedded devices it is rarely necessary to use udev, and
+  a one stage boot process is usually the most efficient procedure.
+- In kernel before 2.6, the initrd (initial ram disk) method was used to solve
+  this problem.  The initial ram disk (usually built with a utility with a name
+  like 'mkinitrd') contained the necessary driver modules, a version of 'insmod'
+  to load them, a copy of 'udev' if necessary, and a simple shell (such as nash
+  on Red Hat-based systems) used to execute any other necessary commands.
+- In the 2.6 kernel, a newer method called 'initramfs (initial ram filesystem) is
+  the default.  It is leaner and differs in many technical details.  In particular,
+  an initramfs image can be embedded in the kernel itself.  It can also be supplied
+  on the kernel command line with the initrd= specification.  For this method to
+  work the kernel has to be built with ram disk and initrd support.
+- The man pages for initrd and mkinitrd contain sufficient documentation to explain
+  the details. (Even though the method is now initramfs the name of the utility has
+  not been changed.)  Here we simply note you'll need a line in your 'lilo' or
+  'grub' configuration file pointing to the initial ram disk, and to prepare a new
+  ram disk for a new kernel.  For example, on Red Hat-based systems you need only
+  to do something like:
+	$ mkinitrd initrd-3.1.0.img 3.1.0
+- This figures out exactly which files, utilities and modules you need for the 
+  first phase.  The image will be in the form of a 'cpio'archive of a root
+  filesystem which can be unpacked and examined with:
+	$ mkdir temp && cd temp
+	$ gunzip -c ../initrd-3.1.0.img | cpio -idv
+	$ ls -lR
+
+3 preemption options:
+	No Forced Preemption (server)
+	Voluntary Kernel Preemption (Desktop)
+	Preemptible Kernel (Low-Latency Desktop)
+
+The real Time Preemption patch brings lower latencies than the other preemption methods,
+and requires quite different basic methods in the Linux Kernel:
+- Spinlocks become preemptible and are replaced with the locking primitives known as
+  rtmutexes; one can still use the non-preemptible raw_spinlock_t, however.
+- Priority inheritance is implemented for spinlocks and semaphores.
+- Interrupt handlers become preemptible kernel threads as do soft interrupt threads
+  of executions, such as softirqs.  Ths means they can sleep and be scheduled.
+
+interrupt comes in
+	common_interrupt() -> do_IRQ() ->
+
+x86_64 linux has a kernel stack for every active thread.  these thread stacks are 
+THREAD_SIZE (2*PAGE_SIZE).  These stacks contain useful data as long as a thread 
+is alive or a zombie.  While the thread is in user space ther kernel stack is 
+empty except for the thread_info structure at the bottom.
+
+In addition to the per thread stackes, there are specialized stacks associated with
+each CPU.  These stacks are only used while the kernel is in control on that CPU;
+when a CPU returns to user space the specialized stacks contain no useful data.
+The main CPU stacks are:
+
+Interrupt stack.  IRQSTACKSIZE
+	Used for external hardware interrupts.  If this is the first external hw interrupt
+	(i.e. not a nested hw interrupt) then the kernel switches from the current task
+	to the interrupt stack.  Like the split thread and interrupt stacks on i386, 
+	this gives more room for kernel interrupt processing without having to increase 
+	the size of every per thread stack.
+
+	The interrupt stack is also used when processing a softirq.
+
+Switching to the kernel interrupt stack is done by software based on a per CPU
+interrupt nest counter.  This is needed because x86-64 "IST" hw stack cannot nest
+without races.
+
+x86_64 also has a feature which is not available on i386, the ability to automatically
+switch to a new stack for designated events such as double fault or NMI, which makes
+it easier to handle these unusual events on x86_64.  This feature is called the 
+Interrupt Stack Table (IST).  There can be up to 7 IST entries per CPU.  The IST
+code is an index into the Task State Segment (TSS).  The IST entries in the TSS
+point to dedicated stacks; each stack can be a different size.
+
+An IST is selected by a non-zero value in the IST field of an interrupt-gate 
+descriptor.  When an interrupt occurs and the hardware loads such descriptor, the
+hardware automatically sets the new stack pointer based on the IST value, then 
+invokes the interrupt handler.  If software wants to allow nested IST interrupts 
+then the handler must adjust the IST values on entry to and exit from the interrupt
+handler. (This is occasionally done, e.g. for debug exceptions)
+
+Events with different IST codes (i.e. with different stacks) can be nested.  For 
+example, a debug interrupt can safely be interrupted by an NMI.  
+arch/x86_64/kernel/entry.S::paranoidentry adjusts the stack pointers on entry to
+and exit from all IST events, in theory allowing IST events with the same code to
+be nested.  However in most cases, the stack size allocated to an IST assumes no
+nesting for the same code.  If that assumption is ever broken then the stacks will
+become corrupt.
+
+The currently assigned IST stacks are:
+
+STACKFAULT_STACK. EXCEPTION_STKSZ (PAGE_SIZE)
+	used for interrupt 12 - Stack Fault Exception ($SS)
+	This allows the CPU to recover from invalid stack segments.  Rarelly happens.
+
+DOUBLEFAULT_STACK. EXCEPTION_STKSZ (PAGE_SIZE)
+	used for interrupt 8 - Double Fault Exception (#DF)
+	Invoked when handling one exception causes another exception.  Happens when the
+	kernel is very confused (e.g. kernel stack pointer corrupt). Using a separate
+	stack allows the kernel to recover from it well enough in many cases to still 
+	output an oops.
+
+NMI_STACK. EXCEPTION_STKSZ (PAGE_SIZE)
+	used for non-maskable interrupt (NMI)
+	NMI can be delivered at any time, including when the kernel is in the middle
+	of switching stacks.  Using IST for NMI events avoids making assumptions about
+	the previous state of the kernel state.
+
+DEBUG_STACK.  DEBUG_STKSZ
+	used for hardware debug interrupts (interrupt 1) and for software debug
+	interrupts (INT3)
+	When debugging a kernel, debug interrupts (both hardware and software) can 
+	occur at any time.  Using IST for these interrupts avoids making assumptions
+	about the previous state of the kernel stack.
+
+MCE_STACK. EXCEPTION_STKSZ (PAGE_SIZE)
+	Used for interrupt 18 - Machine Check Exception (#MC)
+	MCE can be delivered at any time, including when the kernel is in th emiddle
+	of switching stacks.  Using IST for MCE events avoids making assumptions
+	about the previous state of the kernel stack.
+
+
+sched.h/task_struct => file.h/files_struct => fs.h/struct file => 
+fs.h/struct inode (in-core inode/cache)
+fs.h/struct inode_operations
+fs.h/struct file_operations
+fs.h/struct super_block
+
+kernel's file list
+ on entry for each instance of an open file
+kernel directory cache
+ one entry for each file name that has been opened since last system has booted
+
+file.f_dentry => points to directory cache/inode
+
+grep jiffies /proc/kallsyms | more
+grep jiffies /boot/System.map... | more		<= similar to 'nm' output
+	T exported
+	t non-exported
+	D data
+	b bss
+	A absolute
+
+2.6 kernel, global variables are default to static.  only known inside the module.
+EXPORT_SYMBOL(var);
+
+The Linux IPMI Driver
+http://www.mjmwired.net/kernel/Documentation/IPMI.txt
+The Intelligent Platform Management Interface, or IPMI, is a standard for controlling
+intelligent devices that monitor a system.  It provides for dynamic discovery of
+sensors in the system and the ability to monitor the sensors and be informed when 
+the sensor's values change or go outside certain boundaries.  It also has a 
+standardized database for field-replaceable units (FRUs) and a watchdog timer.
+
+To use this, you need an interface to an IPMI countroller in your system (called
+a Baseboard Management Controller, or BMC) and management software that can use
+the IPMI system.
+
+This document describes how to use IPMI driver for Linux.  If you are not familiar
+w/ IPMI itself, see the web site at http://www.intel.com/design/servers/ipmi/index.htm
+
+NMI
+	grep NMI /proc/interrupts
+	this line exports a running tally of "non-maskable interrupts" on each CPU
+	since system boot.
+
+	in the X86, "non-maskable interrupts" differ from regualr old IRQs not so much
+	in their maskability (they're pretty much maskable, just not by the same methods
+	typically used for IRQs), but in their source (they are signalled to the CPU via
+	different line than IRQs) and semantics.
+
+	The architectural purpose for NMIs is to serve as sort of "meta-interrupt;" 
+	they're in terrupts that can interrupt interrupt handlers.  This may sound 
+	rediculous initially, but for a kernel developer, judicious use of NMIs makes
+	it possible to port some of the luxuries of user-level development to the kernel.
+	Consider, e.g., profiling. User-level apps typically use SIGPROF, which in turn
+	is driven by the kernel's timer interrupt handler.  But what if you're a kernel 
+	developer concerned with the performance of the timer interrupt handler itself?
+
+	NMIs provide one solution; by setting up periodic NMIs, and gathering execution
+	samples in the NMI handler, you can peer into the performance of kernel critical
+	sections that run with disabled interrupts. We've used this technique to good 
+	effect to study the performance of VMware's virtual machine monitor. The oprofile
+	system-wid profiler on Linux leverages the same technique.
+
+	Another important application for NMIs is best-effort deadlock detection; an NMI
+	"watchdog" runs perioically and looks for signs of forward progress (e.g., those
+	counts of interrupts in /proc/interrupts rolling forward) has a decent chance
+	of detecting most "hard" kernel hangs.  9 times out of 10, an NMI handler that
+	detects a wedged system can't do much of use for the user.  The system will 
+	crash, and often do so just as hard as if there were no NMI handler present;
+	however, perhaps it will dump some sort of kernel core file that can be recovered
+	after the inevitable reboot to aid kernel engineers in diagnosing the problem
+	post-mortem.  Even something as simple as pretty=printing a register dump and
+	stack-trace to the system console provides a world of improvement in debuggability
+	over a mute, locked-up box.
+
+	It's this last application that gets Linux excited.  On x86_64, the Linux kernel 
+	defaults to building with an NMI watchdog enabled.  If you cat /proc/interrupts
+	on a 32-bit x86 system, you'll see the NMI line with a total of zero (unless
+	you've compiled your own kernel with NMIs enabled).  So, if NMIs are so nifty,
+	why do we use them for X86_64, and not plain old i386?  Good question, I'm not
+	sure why the two architectures are treated differently.  Perhaps there are 
+	architecture-specific differences in other parts of the kernel that make the
+	watchdog less appealing for i386.
+
+	Too much of a good thing?
+	
+soft lockup
+A soft lockup is the symptom of a task or kernel thread using and not releasing a CPU
+for a period of time (the softlockup_thresh setting).  User space processes should not
+be able to soft lockup a CPU.
+
+	how a soft lockup detected
+	the Linux kernel creates a watchdog process for each CPU in the system.  This
+	should be visible using in the standard "ps" command, this is shown as 
+	[watchdog/N], where N is the number of the logical CPU.
+
+	this watchdog process/thread wakes up once a second, gets the current time stamp
+	for the CPU it is running on and saves it into a per-CPU structure.
+
+	the softlockup_tick() function that gets called from the timer interrupt().
+	This function gets the current time stamp for the specified CPU and compares it
+	to the saved one in the per-CPU structure.
+
+	If the current time stamp is more than softlockup_thresh seconds later than
+	the saved time stamp then it's because the watchdog thread has not been run
+	recently and a soft lockup message is generated on the console.  As the timer
+	counter on each CPU can be slightly show or fast the counter is compared to the
+	previous tick.
+
+	why was the process/task allowed to hog the CPU
+	not all code that runs on the CPU is considered to be a process.  
+	Tasklets/Interrupt handlers and blah are kernel functions that do not show up
+	in the standard process listing(w/ the ps commmand).
+
+	the kernel still allocates them CPU time, but trusts them to relinquish 
+	control of the CPU.
+
+	Common causes of not relinquishing control
+	Software bugs can cause the process/code to not relinquish the control
+	of the CPU.  The code could be waiting on a lock, or may be running code which
+	continues in a infinite loop.
+
+	The other problem may be the scheduler has ignored the process and the process
+	has not been removed from the CPU for some timeframe.  there are a number
+	of kernel option that can isolate a cpu and run a single process on it.  As
+	the process "hogs" the CPU it may be seen as causing a soft lockup.
+
+crond - daemon to execute scheduled commands
+	/etc/crontab	<- config file
+		#
+		# config.crontab.kdeadman
+		#
+		*/1 * * * * root /ddr/bin/kdeadman.sh
+
+	/etc/rc.d/init.d/crond restart
+
+	lsmod | grep ipmi 
+
+kcs - keyboard control interface
+
+sms - Short Message Service
+
+watchdog - currently use for 2 purposes
+	IPMI
+	NMI
+
+uid - real ID
+euid - effective ID
+suid - Saved ID
+fsuid - file system ID
+
+	chmod 4755 <file>
+		trun on set uid bit
+		When an user executes a program that has the SET uid on,
+		the euid field in that user's credentials for that process,
+		is set equal to the uid of the owner of the program
+
+	chmod 4666 <file>
+		-rwSrw-rw- "Stupid bit" -> doesn't make sense
+
+	chmod 1755
+		-rwxr-xr-t "tricky bit" / sticky bit
+		when the owner sets the sticky bit, renames/remove
+		are only allowed by the filesowner, directory owner or root
+
+umask
+	max default file permission	666
+	umask						022
+	default permission			644
+
+find . -name *.c
+find /home -size +5m -atime +30 -print
+find . -type f | xargs grep xyz
+find /home -inum 387 print
+
+myprog > myprog.out 2>&1
+
+stat <file>
+
+strace - trace system calls and signals / man strace
+	strace ls
+	strace -o strace_ls_output.txt ls
+
+lsof - list open files / man lsof
+
+virtual console screen
+	Left 'Ctrl + Alt + F1~F6'
+		GUI => F7
+
+tail -f /var/log/messages
+
+process priority
+	real time - react latency is expected in certained time
+
+	0 is hightest
+	SCHED_RR
+	SCHED_FIFO
+	99
+	SCHED_NORMAL
+	SCHED_OTHER
+	139
+
+process state
+	TASK_RUNNING			R
+	Running					R
+	TASK_ZOMBIE				E
+	TASK_INTERRUPTIBLE		S	wait_event_interruptible
+	TASK_UNINTERRUPTIBLE	D	wait_event
+	TASK_STOPPED			T	suspend/sigcont
+
+	TASK_TRACED
+	TASK_NON_INTERACTIVE	The process is running w/ little user interaction
+	TASK_DEAD
+
+Linux log files
+	/var/log/message: General message and system related stuff
+	/var/log/auth.log: Authenication logs
+	/var/log/kern.log: kernel logs
+	/var/log/corn.log: Crond logs
+	/var/log/boot.log: System boot log
+
+	ps aux | grep [sk]*logd
+
+	syslogd/klogd	=> controlled by /etc/rc.d/init.d/syslog script
+	                                 /etc/syslogd.conf
+
+	/ddr/var/log/messages						local1.notice
+	/ddr/var/log/debug/messaages.support		local1.notice;local3.notice
+	/ddr/var/log/debug/messaages.engineering	local1.notice;local3.notice;local4.*
+	/ddr/var/log/debug/securre.log				authpriv.*
+	/var/log/cron								cron.*
+	|/ddr/dev/ems_pipe							*.alert;local3.none;local4.none
+	|/ddr/dev/kmsg_pipe							kern.alert
+	/dev/console								local2.notice
+	/ddr/var/log/debug/platfform/kern.info		kern.*
+	/ddr/var/log/debug/platfform/kern.error		kern.error
+	-/ddr/var/log/debug/cifss/cifs.log			local6.*
+
+syscall num:
+	/usr/include/asm/unistd.h
+	arch/i386/kernel/syscall_table.S
+
+	keyword 'asmlinkage' is used for sys_<procedure>
+		asmlinkage int sys_fork()
+
+Signals
+	most common entry point -
+		send_sig_info()
+		send_sig()
+
+	looking for pending signal
+		do_signal()
+			=> get_signal_to_deliver()
+
+	handling signal
+		handle_signal()
+
+	/*
+	 * Deliver the signal to listening signalfd.
+	 */
+	static inline void signalfd_notify(struct task_struct *tsk, int sig)
+	{
+		if (unlikely(waitqueue_active(&tsk->sighand->signalfd_wqh)))
+			wake_up(&tsk->sighand->signalfd_wqh);
+	}
+
+booting seq
+	BIOS
+	
+	grub
+		vmlinuxz
+		initrd
+					/etc/inittab
+					/etc/rc.d/rc.sysinit
+					/p4/main/platform/os/dd-source/dd_bootmodule/linuxrc
+
+					/etc/rc.0/<seq><module>
+					...
+
+	0	/etc/rc.d/rc0.d	Halt
+	1	/etc/rc.d/rc1.d	Single-user mode
+	2	/etc/rc.d/rc2.d	Not used (user-definable)
+	3	/etc/rc.d/rc3.d Full multi-user mode (no GUI)
+	4	/etc/rc.d/rc4.d	Not used (user-definable)
+	5	/etc/rc.d/rc5.d	Full multiuser mode (w/ GUI)
+	6	/etc/rc.d/rc6.d	Reboot
+
+	/linux-2.6.23/arch/i386/kernel/Head.S
+	startup_32
+
+	/linux-2.6.23/init/main.c
+	start_kernel()
+		lock_kernel();							<==========================
+		page_address_init();
+		printk(KERN_NOTICE);
+		printk(linux_banner);
+		setup_arch(&command_line);
+		setup_per_cpu_areas();
+		smp_prepare_boot_cpu();
+		sched_init();
+		preempt_disable();
+		build_all_zonelists();
+		page_alloc_init();
+		printk(KERN_NOTICE "Kernel command line: %s\n", saved_command_line);
+		parse_early_param();
+		parse_args("Booting kernel", command_line, __start___param,
+			   __stop___param - __start___param,
+			   &unknown_bootoption);
+		sort_main_extable();
+		trap_init();
+		rcu_init();
+		init_IRQ();
+		pidhash_init();
+		init_timers();
+		softirq_init();
+		time_init();
+
+		/*
+		 * HACK ALERT! This is early. We're enabling the console before
+		 * we've done PCI setups etc, and console_init() must be aware of
+		 * this. But we do want output early, in case something goes wrong.
+		 */
+		console_init();
+		if (panic_later)
+			panic(panic_later, panic_param);
+		profile_init();
+		local_irq_enable();
+
+		vfs_caches_init_early();
+		mem_init();
+		kmem_cache_init();
+		numa_policy_init();
+		if (late_time_init)
+			late_time_init();
+		calibrate_delay();
+		pidmap_init();
+		pgtable_cache_init();
+		prio_tree_init();
+		anon_vma_init();
+
+	#ifdef	CONFIG_KDB
+		kdb_init();						<====================
+		if (KDB_FLAG(EARLYKDB)) {
+			KDB_ENTER();
+		}
+	#endif	/* CONFIG_KDB */
+
+		fork_init(num_physpages);
+		proc_caches_init();
+		buffer_init();
+		unnamed_dev_init();
+		key_init();
+		security_init();
+		vfs_caches_init(num_physpages);
+		radix_tree_init();
+		signals_init();
+
+		page_writeback_init();
+
+		proc_root_init()
+			dd_trace_init()				<====================
+
+		cpuset_init();
+
+		check_bugs();
+
+		acpi_early_init();
+		rest_init();
+			kernel_init()
+				lock_kernel()							<================
+				set_cpus_allowed()
+				__set_special_pids()
+				smp_prepare_cpus()
+				do_pre_smp_initcalls()
+				smp_init()
+				sched_init_smp()
+				cpuset_init_smp()
+				do_basic_setup()
+				
+				run user space /init
+
+				init_post()
+					unlock_kernel()						<================
+					system_state = SYSTEM_RUNNING
+					numa_default_policy()
+					sys_open("/dev/console")
+					run_init_process(ramdisk_execute_command)
+					run_init_process(execute_command)
+					run_init_process("/sbin/init");
+					run_init_process("/etc/init");
+					run_init_process("/bin/init");
+					run_init_process("/bin/sh");
+
+			numa_default_policy();
+			kernel_thread();
+			find_task_by_pid()
+			unlock_kernel()								<================
+			
+			init_idle_bootup_task()
+			preempt_enable_no_resched()
+			schedule()
+			preempt_disable()
+			cpu_idle()
+			
+	The first user process is started w/ the function:
+		run_init_process()
+
+rmmod -f scsi_dump
+rmmod -f diskdump
+insmod ./diskdump.ko
+modprobe scsi_dump
+config_crashdump
+	tail -f /ddr/var/log/debug/platform/kern.info
+	cat /proc/diskdump
+echo crashdump > /proc/diskdump
+
+
+	> modinfo <module>
+	> grep <module> | grep ver
+
+su -
+gvim /etc/sudoers
+	hoj9    ALL=NOPASSWD: ALL
+
+
+grep jiffies /proc/kallsyms | more
+grep jiffies /boot/System.mp... | more 		<= similar to 'nm'
+	lower case is local, uppercase is global
+	A	absolute
+	B	uninitialized data section (BSS)
+	C	common (unitialized data)
+	D	initialized data section
+	G	initialized data section for small objects
+	I	indirect reference to another symbol
+	N	debugging symbol
+	R	read only data section
+	S	uninitialized data section for small objects
+	T	text section
+	U	underfined
+	V	weak object
+
+2.6 kernel global variables are default to static.  only known inside the module.
+	EXPORT_SYMBOL(var);
+
+	gotta include <linux/module.h>
+
+1. normal crash dump
+	echo crashdump > /proc/diskdump
+
+2. kdb
+	echo 1 > /proc/sys/kernel/kdb
+	or
+	ddsh -s reg set config.kernel.kdb=1
+
+	then console
+	ctrl+kdb
+
+	crashdump
+
+
+Verify disk volumn space
+	> df -k
+
+remount 
+	servicetab
+		autofs -> restart
+
+module
+	MODULE_LICENSE("GPL");
+	MODULE_AUTHOR("Peter Jay Salzman");
+
+	static short int myshort = 1;
+	static int myint = 420;
+	static long int mylong = 9999;
+	static char *mystring = "blah";
+	static int myintArray[2] = { -1, -1 };
+	static int arr_argc = 0;
+
+	/* 
+	 * module_param(foo, int, 0000)
+	 * The first param is the parameters name
+	 * The second param is it's data type
+	 * The final argument is the permissions bits, 
+	 * for exposing parameters in sysfs (if non-zero) at a later stage.
+	 */
+
+	module_param(myshort, short, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+	MODULE_PARM_DESC(myshort, "A short integer");
+	module_param(myint, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	MODULE_PARM_DESC(myint, "An integer");
+	module_param(mylong, long, S_IRUSR);
+	MODULE_PARM_DESC(mylong, "A long integer");
+	module_param(mystring, charp, 0000);
+	MODULE_PARM_DESC(mystring, "A character string");
+
+	/*
+	 * module_param_array(name, type, num, perm);
+	 * The first param is the parameter's (in this case the array's) name
+	 * The second param is the data type of the elements of the array
+	 * The third argument is a pointer to the variable that will store the number 
+	 * of elements of the array initialized by the user at module loading time
+	 * The fourth argument is the permission bits
+	 */
+	module_param_array(myintArray, int, &arr_argc, 0000);
+	MODULE_PARM_DESC(myintArray, "An array of integers");
+
+
+get motherboard info:
+lspci
+lshw
+cat /proc/cpuinfo
+cat /proc/devices
+cat /proc/meminfo
+dmesg
+ipmitool
+
+get shell exit status
+	>echo $?
+
+ps priority
+	> renice -10 9605
+	> ps -o pid,comm,nice,pri -p 11918
+
+read binary object info:
+	readelf -a <file>
+	size <file>
+	od <file>
+	
+	vi
+		:%!xxd
+		:%!xxd -r 		// go back to normal mode
+
+
+/lib/modules/2.6.23-ddr216763/kernel/drivers/char/ipmi/ipmi_msghandler.ko
+
+
+[kthreadd] - kernel thread daemon
+	The parent of all kernel threads.  kthreadd assumes PID 2 and is created by the
+	init proc. 
+
+[migration/0] - Per CPU threads to migrate processes between processors.
+
+[ksoftirqd/0] - Per CPU threads to execute softirqs & tasklets (bottom half 
+                mechanisms), if they are not executed upon return of interrupt.
+
+[kswapd0] - The swapper thread
+
+[scsi_eh_1] SCSI error handler thread
+
+Processor Affinity
+- This is done thourhg use of the 'cpus_allowed' field in task_struct.
+- 2 system calls:
+  int sched_getaffinity (pid_t pid, unsigned int len, unsigned long *old_mask);
+  int sched_setaffinity (pid_t pid, unsigned int len, unsigned long *new_mask);
+- for commandline one can use taskset
+  $ taskset 0x3 foobar		#use cpus 0,1 for foobar and start it
+  $ taskset -c 0,1 foobar	#use cpus 0,1 for foobar and start it
+  $ taskset -pc 0,1 7790	#use cpus 0,1 for running pid 7790
+  $ taskset -p 0x3 7790		#use cpus 0,1 for running pid 7790
+  $ taskset -p 7790		# show cpus for pid 7790
+
+CPUSETS
+
+
+Per-CPU / Per CPU Variables
+	#include <linux/percpu.h>
+
+	DEFINE_PER_CPU (type, cpuvar);
+	DEFINE_PER_CPU (long[3], cpuvar);
+
+	get_cpu_var (cpuvar);
+	put_cpu_var (cpuvar);
+	per_cpu (cpuvar, int cpu_id);
+
+	void *alloc_percpu (type); // involves kmalloc(GFP_KERNEL), may block
+	void free_percpu(const void *);
+
+	per_cpu_ptr (void *cpuvar, int cpu_id);
+
+	EXPORT_PER_CPU_SYMBOL (cpuvar);
+	EXPORT_PER_CPU_SYMBOL_GPL (cpuvar);
+	DECLARE_PER_CPU (type, cpuvar);
+
+The Proc Filesystem
+- Some features of proc have migrated over to the sysfs facility (mounted under
+  /sys).
+
+	Creating Entries
+	#include <linux/proc_fs.h>
+	struct proc_dir_entry *create_proc_entry (const char *name, mode_t mode,
+	                                          struct proc_dir_entry *parent);
+	void remove_proc_entry (const char *name, struct proc_dir_entry *parent);
+	struct proc_dir_entry *proc_symlink (const char *name,
+	                                     struct proc_dir_entry *parent,
+	                                     const char *dest);
+	struct proc_dir_entry *proc_mkdir (const char *name, 
+	                                   struct proc_dir_entry *parent);
+
+	Reading Entries
+	static struct proc_dir_entry *my_proc_entry;
+	...
+	my_proc_entry = create_proc_entry ("my_proc", 0, NULL);
+	my_proc_entry->read_proc = my_proc_read;
+	my_proc_entry->write_proc = my_proc_write;
+        
+uncompress tar.bz2
+tar -xjvf <file>.tar.bz2
+

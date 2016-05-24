@@ -1,0 +1,124 @@
+Definition
+A regular expression is a string of characters and metacharacters that describe
+a set of strings
+- A string is just a sequence of characters from the allowed character set, alphabet
+- A metacharacter is a character with special meaning to the interpreting environment
+  (i.e., the * in 'ls *.c' at a shell prompt)
+A string is a sequence of characters
+A newline is a line separator
+- The string "abcd\n" is two lines
+  * The string 'abcd'
+  * The string "", an empty string after the newline
+
+Characters
+Any character is a regular expression
+- a is the regular expression which matches the set of strings which contains only the string a
+- ab is the RE which matches the set of strings which contains only the string ab
+Escaped sequences are used for special characters
+- a\tb is the RE which matches the set containing only the string a followed by <tab> followed by b 
+
+The Escaped Sequences
+\a	bell
+\n	newline
+\r	carriage return
+\t	tab
+\f	formfeed
+\e	escape character
+\xxx	xxx is an octal number representing a character
+\xYY	YY is a hex number representing a character
+\cZ	Control-Z where Z is any letter
+
+character Classes
+a[xyz]is the RE matching the set of strings:ax, ay, and az
+[] defines a character class(set)
+- Choose one character from the set
+- [a-z] is the same as [abcdefghijklmnopqrstuvwxyz]
+- Similarly from [A-Z], [0-9] or any subset of these
+  * [A-z] is not the same as [A-Za-z]
+  * Do a man ASCII to discover the characters between Z and a
+- To add a '-' use '\-'
+[^] defines a character class (set)
+- Choose one character from alphabet not in character class
+
+Predefined Character Classes
+\d	[0-9]
+\D	[^0-9]
+\w	[a-zA-Z0-9] Called a word character
+\W	[^a-zA-Z0-9]
+\s	[ \t\n\r\f] Called whitespace
+\S	[^ \t\n\r\f]
+
+Match Any Character
+'a.' is a RE which matches a rather large set
+- Each member of the set is two characters in length
+- The first character must be a letter a
+- The second character can be any character in the alphabet
+Generally '.' does not match a newline '\n'
+- Can be made to match -later
+
+Maximal Quantifiers
+{n,m}	at least n, no more than m
+{n,}	at least n times
+*	0 or more; same as {0,}
++	1 or more; same as {1,}
+?	0 or 1; same as {0,1}
+
+Assertion Summary
+\A	Always at the beginning of the string
+\b	True at word boundary
+\B	True when not at word boundary
+\z	Always matches at the end of the string
+\Z	Matches at the end of the string if there is no newline at end of strings.
+	If ther is a newline, matches after newline
+$	The same as \Z except when the m modifier is applied. When m applied $
+	matches just before any embedded newline
+^	Matches at the beginning of the string and, if the m modifier is applied,
+	just after any embedded newlines
+
+Non-Greedy Quantifiers
+??	0 or 1 with a preference for 0 and still make the match
++?	1 or more but as few as possible and still make the match
+*?	0 or more but as few as possible and still make the match
+(MIN,MAX)?	at least min but not more than max with as few as possible and still make the match
+(MIN,)?	At least min or more with as few as possible and still make the match
+
+REs are greedy by default!
+
+More Assertions
+(? RE)
+- Assertion that the RE must follow the rest of the regular expression
+(?! RE)
+- Assertion that the RE must NOT follow the rest of the regular expression
+(?<=RE)
+- Assertion that the RE must precede the rest of the regular expressions
+(?<!RE)
+- Assertion that the RE must NOT precede the rest of the regular expression
+
+Package re
+p = compile(re)
+- This compiles the re into byte code which can be used with multiple methods
+m = p.match(stringToSearch [, searchOptions])
+- match re only at the beginning of stringToSearch
+- searchOptions
+  * re.IGNORECASE
+  * re.DOALL		.Matches newline
+  * re.MULTILINE	change ^ and $ to match multiple lines
+m.group() or m.group(0)
+- The total match
+m.group(n)
+- The nth () match
+m.start()
+- The offset (0 based) of the start of the match
+m.end()
+- The offset of the first character after the match
+m.span()
+- (m.start(), m.stop())
+p.search( stringToSearch [, searchOption] )
+- Find first match in stringToSearch
+p.findAll( stringToSearch [, searchOption] )
+- Returns a list of all matches
+- No group(), start(), end() or span() available
+iterator = p.finditer( stringToSearch [, searchOption] )
+For match in iterator:
+- group(), start(), end(), and span() available for each match
+

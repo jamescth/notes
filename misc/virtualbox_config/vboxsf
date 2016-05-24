@@ -1,0 +1,2 @@
+sudo mount -t vboxsf vbox host
+

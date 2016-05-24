@@ -1,0 +1,126 @@
+### copy from old
+after install ubuntu:
+1. sudo apt-get update
+2. sudo apt-get upgrade
+3. sudo apt-get install openssh-server
+
+# ubuntu server apt-get update IPv6 connecting issue
+#   change the priority of the type of connection to the destination 
+#   node from IPv6 to IPv4 in the /etc/gai.conf file (which controls 
+#   the destination address selection).
+
+#   uncomment the following in the document:
+#   precedence ::ffff:0:0/96 100
+
+
+# export UGIDLIMIT=500
+# awk -v LIMIT=$UGIDLIMIT -F: '($3>=LIMIT) && ($3!=65534)' /etc/passwd > ~/ubuntu_img_conf/passwd.mig
+# awk -v LIMIT=$UGIDLIMIT -F: '($3>=LIMIT) && ($3!=65534)' /etc/group > ~/ubuntu_img_conf/group.mig
+
+# shadow will probably fail due to permission even under sudo
+# awk -v LIMIT=$UGIDLIMIT -F: '($3>=LIMIT) && ($3!=65534) {print $1}' /etc/passwd | tee - |egrep -f - /etc/shadow > ~/ubuntu_img_conf/shadow.mig
+
+### set up new 
+# sudo apt-get install portmap nis
+# sudo apt-get install autofs
+# sudo cat ~/ubuntu_img_conf/hosts.allow.mig >> /etc/hosts.allow
+# sudo cat ~/ubuntu_img_conf/passwd.mig >> /etc/passwd
+# sudo cat ~/ubuntu_img_conf/group.mig >> /etc/group
+# sudo cat ~/ubuntu_img_conf/shadow.mig >> /etc/shadow
+
+# sudo cat ~/ubuntu_img_conf/dhclient.conf.mig >> /etc/dhcp/dhclient.conf
+# sudo cat ~/ubuntu_img_conf/head.mig >> /etc/resolvconf/resolv.conf.d/head
+
+# sudo cat ~/ubuntu_img_conf/yp.conf.mig >> /etc/yp.conf
+# sudo cat ~/ubuntu_img_conf/nsswitch.conf.mig >> /etc/nsswitch.conf
+
+# sudo service ypbind restart
+# sudo service autofs restart
+
+# sudo cat ~/ubuntu_img_conf/sudoers.mig >> /etc/sudoers
+
+# su - hoj9
+
+# mkdir /usr/tmp
+
+# export P4CONFIG=P4ENV
+# export P4DIFF=xxdiff64
+# export P4DIFF=kdiff3
+# export EDITOR=gvim
+
+# sudo apt-get install libtool libtool-doc
+# sudo apt-get install autotools-dev
+# sudo apt-get install autoconf
+# sudo apt-get install automake
+# sudo apt-get install ssh
+# sudo apt-get install build-essential
+# sudo apt-get install libxml2-utils
+# sudo apt-get install perl perl-base perl-debug perl-doc perl-modules perlmagick perltidy
+# sudo apt-get install libxml-perl libxml-dom-perl libxml-xql-perl libxml-checker-perl
+# sudo ln -s /usr/bin/basename /bin/basename
+# sudo apt-get install gawk gawk-doc
+# sudo ln -s /usr/bin/awk /bin/awk
+
+# cd /lib
+# cp ~/ubuntu_img_conf/ld-2.3.6.so.tar.gz /tmp
+# sudo tar -xvf /tmp/ld-2.3.6.so.tar.gz
+# cd -
+# sudo ln -s /lib/ld-2.3.6.so /lib64/ld-linux.so.2
+
+# sudo apt-get install nfs-common
+# sudo apt-get install nfs-kernel-server
+# sudo ln -s /bin/pidof /sbin/pidof
+# sudo apt-get install expect
+
+### ia32
+# sudo apt-get install libc6:i386
+# sudo -i
+# cd /etc/apt/sources.list.d
+# echo "deb http://old-releases.ubuntu.com/ubuntu/ raring main restricted universe multiverse" >ia32-libs-raring.list
+# apt-get update
+# apt-get install ia32-libs
+### use these alternatives
+# apt-get install lib32z1 lib32ncurses5 lib32bz2-1.0
+# rm /etc/apt/sources.list.d/ia32-libs-raring.list
+# apt-get update
+# exit
+### do we need it?
+# sudo apt-get install gcc-multilib
+
+# sudo -i
+# sudo apt-get install tkpng libpng12-0 libpng12-dev
+# perl -MCPAN -eshell
+# install YAML
+# install Tk::Event
+# exit
+
+# sudo apt-get install libmysqlclient-dev
+# perl -MCPAN -eshell
+# install DBI
+# install DBD::mysql
+
+# install Bundle::LWP
+# exit
+# exit
+
+
+# sudo apt-get install fabric
+# sudo apt-get install ipython
+# sudo apt-get install python-pip
+# sudo apt-get install kdiff3
+
+### install python package
+# sudo pip install pycallgraph
+
+# sudo apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
+# sudo apt-get install ubuntu-gnome-desktop -y
+# sudo apt-get install gnome-core xfce4 firefox
+# sudo apt-get install vnc4server
+# dpkg -l | grep vnc
+# sudo vncserver -kill :1
+# system tools -> dconf Editor
+	org -> gnome -> desktop -> wm -> keybindings
+		maximize
+		panel-main-menu
+		show-desktop
+		unmaximize

@@ -1,0 +1,19 @@
+/auto/home/yangh6/bin/gdb-kernel.py
+
+crash> show auto-load
+gdb-scripts:  Auto-loading of canned sequences of commands scripts is on.
+libthread-db:  Auto-loading of inferior specific libthread_db is on.
+local-gdbinit:  Auto-loading of .gdbinit script from current directory is on.
+python-scripts:  Auto-loading of Python scripts is on.
+safe-path:  List of directories from which it is safe to auto-load files is $debugdir:$datadir/a
+uto-load.
+scripts-directory:  List of directories from which to load auto-loaded scripts is $debugdir:$dat
+adir/auto-load.
+
+crash> info auto-load
+gdb-scripts:  No auto-load scripts.
+libthread-db:  No auto-loaded libthread-db.
+local-gdbinit:  Local .gdbinit file was not found.
+python-scripts:  No auto-load scripts.
+
+Can run python in crash.  However, not able to find gdb module.  python 2.7 required?

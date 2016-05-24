@@ -1,0 +1,207 @@
+0xffffffff8020be30 <system_call>:       invlpg %ax
+0xffffffff8020be33 <system_call+0x3>:   mov    %rsp,%gs:0x18
+0xffffffff8020be3c <system_call+0xc>:   mov    %gs:0x10,%rsp
+0xffffffff8020be45 <system_call+0x15>:  sti
+0xffffffff8020be46 <system_call+0x16>:  sub    $0x50,%rsp
+0xffffffff8020be4a <system_call+0x1a>:  mov    %rdi,0x40(%rsp)
+0xffffffff8020be4f <system_call+0x1f>:  mov    %rsi,0x38(%rsp)
+0xffffffff8020be54 <system_call+0x24>:  mov    %rdx,0x30(%rsp)
+0xffffffff8020be59 <system_call+0x29>:  mov    %rax,0x20(%rsp)
+0xffffffff8020be5e <system_call+0x2e>:  mov    %r8,0x18(%rsp)
+0xffffffff8020be63 <system_call+0x33>:  mov    %r9,0x10(%rsp)
+0xffffffff8020be68 <system_call+0x38>:  mov    %r10,0x8(%rsp)
+0xffffffff8020be6d <system_call+0x3d>:  mov    %r11,(%rsp)
+0xffffffff8020be71 <system_call+0x41>:  mov    %rax,0x48(%rsp)
+0xffffffff8020be76 <system_call+0x46>:  mov    %rcx,0x50(%rsp)
+0xffffffff8020be7b <system_call+0x4b>:  mov    %gs:0x10,%rcx
+0xffffffff8020be84 <system_call+0x54>:  sub    $0x1fd8,%rcx
+0xffffffff8020be8b <system_call+0x5b>:  testl  $0x181,0x10(%rcx)
+0xffffffff8020be92 <system_call+0x62>:  jne    0xffffffff8020bf50 <tracesys>
+0xffffffff8020be98 <system_call+0x68>:  cmp    $0x11e,%rax
+0xffffffff8020be9e <system_call+0x6e>:  ja     0xffffffff8020bf42 <badsys>
+0xffffffff8020bea4 <system_call+0x74>:  mov    %r10,%rcx
+0xffffffff8020bea7 <system_call+0x77>:  callq  *0xffffffff804f3bc0(,%rax,8)
+0xffffffff8020beae <system_call+0x7e>:  mov    %rax,0x20(%rsp)
+
+when a callq instruction is executed, the CPU pushes the reutn adress on the
+stack and then begins executing the function that was called.  This is 
+important because when the function you are calling executes a ret instruction,
+a quad-word is popped from the stack and put into the instruction pointer (RIP)
+
+Procedures
+	*Arguments (up to the 1st six) are passed to procedures via registers, rather
+	 than on the stack.  This eliminates the overhead of storing and retrieving
+	 values on the stack.
+	*The call instruction stores a 64-bit return pointer on the stack.
+	*Many functions do not require a stack frame.  Only functions that cannot
+	 keep all local vaiables in registers need to allocate space on the stack.
+	*Functions can access storage on the stack up to 128 bytes beyond (i.e.,
+	 at a lower address than) the current value of the stack pointer.  This
+	 allows some functions to store information on the stack without 
+	 incrementing or decrementing the stack pointer.
+	*There is no frame pointer.  Instead, references to stack locations are
+	 made relative to the stack pointer.  Typical functions allocate their
+	 total stack storage needs at the beginning of the call and keep the
+	 stack pointer at a fixed position.
+	*As with IA32, some registers are designated as callee-save registers.
+	 These must be saved and restored by any procedure that modifies them.
+
+Argument Passing
+	Arg			Operand Size (bits)
+	Num		64		32		16		8
+	 1		rdi		edi		di		dil
+	 2		rsi		esi		si		sil
+	 3		rdx		edx		dx		dl
+	 4		rcx		ecx		cx		cl
+	 5		r8		r8d		r8w		r8b
+	 6		r9		r9d		r9w		r9b
+
+Stack Frames
+there are several reasons a function may require a stack frame:
+	There are too many local variables to hold in registers
+	Some local variables are arrays or structures
+	The function uses the address-of operator (&) to compute the address
+	of a local variable
+	The function must pass some arguments on the stack to another function
+	The function needs to save the state of a callee-save register before 
+	modifying it.
+
+	Long int call_proc()
+	{
+		long x1 = 1; int x2 = 2;
+		short x3 = 3; char x4 = 4;
+		proc(x1, &x1, x2, &x2, x3, &x3, x4, &x4);
+		return (x1+x2)*(x3-x4);
+	}
+
+	call_proc:
+		subq	$32, %rsp		Allocate 32-byte stack frame
+		movl	$2, %edx		Pass 2 as arg 3
+		movl	$3, &r8d		pass 3 as arg 5
+		leaq	31(%rsp), %rax	compute &x4
+		leaq	24(%rsp), %rcx	pass &x2 as arg 4
+		leaq	28(%rsp), %r9	pass &x3 as arg 6
+		leqa	16(%rsp), %rsi	pass &x1 as arg 2
+		movl	$1, %edi		pass 1 as arg 1
+		movq	$1, 16(%rsp)	x1=1
+		movq	%rax, 8(%rsp)	pass &x4 as arg 8
+		movl	$2, 24(%esp)	x2 = 2
+		movw	$3, 28(%esp)	x3 = 3
+		movb	$4, 31(%esp)	x4 = 4
+		movl	$4, (%esp)		pass 4 as arg 7
+		call	proc
+		movswl	28(%rsp), %edx	get x3
+		movsbl	31(%rsp), %ecx	get x4
+		movslq	24(%rsp), %rax	get x2
+		addq	16(%esp), %rax	compute x1+x2
+		addq	$32, $rsp		Deallocate stack frame
+		subl	%ecx, %edx		compute (int) (x3-x4)
+		mvslq	%edx, %rdx		sign extend to long
+		imulq	%rdx, rax		return (x1+x2)*(x3-x4)
+		ret
+
+	Before call proc
+		x1 (bytes 16-23), x2 (bytes 24-27), x3 (bytes 28-29), x4 (31).
+
+		x4 oo x3 x3 x2 x2 x2 x2		24		<= local variables
+		x1 x1 x1 x1 x1 x1 x1 x1		16		<= local variables
+		         arg 8				 8
+		         arg 7				 0		<= %rsp
+
+	During call to proc
+		x4 oo x3 x3 x2 x2 x2 x2		32
+		x1 x1 x1 x1 x1 x1 x1 x1		24
+		         arg 8				16		<= 8th arg
+		         arg 7				 8		<= 7th arg
+		      Return pointer    	 0		<= %rsp
+
+Register Saving Conventions
+	Callee Saved: %rbx, %rbp, %r12-%r15
+
+	6 registers are designated for passing args
+	6 registers are designated for callee-saved
+	1 (%rax) holds the return for a function
+	1 (%rsp) serves as the stack pointer
+	%r10 has specifi c use to allow static scoping
+	only %r12 is left as a caller-saved temporary register, but
+	this is generally reserved for use by the linking code
+
+	void sfact_helper(long int x, long int *resultp)
+	{
+		if (x <= 0)
+			*resultp = 1;
+		else {
+			long int nresult;
+			sfact_helper(x-1, &nresult);
+			*resultp = x * nresult;
+		}
+	}
+
+	long int sfact(long int x)
+	{
+		long int result;
+		sfact_helper(x, &result);
+		return result;
+	}
+
+	before decrementing rsp (subq $24, %rsp)
+		%rsp
+		saved %rbp		-8
+		saved %rbx		-16
+
+	after decrementing rsp
+		saved %rbp		16
+		saved %rbx		8
+		nresult			0	<= rsp
+
+	sfact_helper:
+	movq	%rbx, -16(%rsp)		save %rbx (callee save)
+	movq	%rbp, -8(%rsp)		save %rbp (callee save)
+    subq	$24, %rsp			allocate 24 bytes on stack
+	testq	%rdi, %rdi			test x
+	movq	%rdi, %rbx			copy x to %rbx
+	movq	%rsi, %rbp			copy resultp to %rbp
+	jle		.L17				if x<=0 goto finish
+	leaq	-1(%rdi), %rdi		xm1 = x-1 (1st arg)
+	movq	%rsp, %rsi			&nresult (2nd arg)
+	call	sfact_helper		sfact_helper(xm1, &nresult)
+	imulq	(%rsp), %rbx		x*nresult
+	movq	%rbx, (%rbp)		*result = x*nresult
+	movq	8(%rsp), %rbx		restore %rbx
+	movq	16(%rsp), %rbp		restore %rbp
+	addq	$24, %rsp			Deallocate stack frame
+	ret
+    .L17:
+	movq	$1, (%rsi)			*resultp = 1
+	movq	8(%rsp), %rbx		restore %rbx
+	movq	16(%rsp), %rbp		restore %rbp
+	addq	$24, %rsp			Deallocate stack frame
+	ret
+
+	long int local_array(int i)
+	{
+		long int a[4] = {2L, 3L, 5L, 7L};
+		int idx = i & 3;
+		return a[idx];
+	}
+
+	local_array:
+	andl	$3, %edi
+	movq	$2, -40(%rsp)
+	movq	$3, -32(%rsp)
+	movq	$5, -24(%rsp)
+	movq	$7, -16(%rsp)
+	movq	-40($rsp, %rdi, 8), %eax
+	ret
+
+	0xffffffffffffffcc = -52
+	0xffffffffffffffd0 = -48
+	0xffffffffffffffd8 = -40
+	0xffffffffffffffe0 = -32
+	0xffffffffffffffe8 = -24
+	0xfffffffffffffff0 = -16
+	0xfffffffffffffff8 = -8
+	0xfffffffffffffffc = -4
+	0xfffffffffffffffd = -3
+	0xfffffffffffffffe = -2
+	0xffffffffffffffff = -1

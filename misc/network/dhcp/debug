@@ -1,0 +1,303 @@
+kill -s 34 `pidof dd_debug_daemon`
+
+strace -p `pidof xxx` -o output
+gcore <pid>
+
+# dhclient6 -S -f -r
+
+dhclient6 -6 -1 -cf /etc/dhcp/dhclient6.conf -sf /sbin/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient3 -e IF_METRIC=100 -pf /var/run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -1 eth0
+
+
+
+crash> p &(*(struct task_struct *)0xffff8101d8f86140)->sibling
+$4 = (struct list_head *) 0xffff8101d8f86340
+
+crash> p (*(struct task_struct *)0xffff8101d8f86140)->sibling.next
+$7 = (struct list_head *) 0xffff81040cc477c0
+  sibling = {
+    next = 0xffff81040cc477c0,
+    prev = 0xffff81040c2c4aa0
+  },
+
+(/usr/bin/crash -i ${ROOT_PREFIX}${CRASH_LIVE_SCRIPT} > ${KCORE_PREFIX}${LOG_FILE}) &
+gdb -x /root/gdb_script ${CORE_BIN} ${CORE_PID} > ${MINI_CORE_PREFIX}${LOG_FILE}) &
+
+# gdb /ddr/bin/sms `pidof sms`
+(gdb) b smu_net_get_dhcp_pid_for_iface
+(gdb) c
+
+
+DHCPv6 Server
+Jul/29/2014 09:00:15: copy_option: set client ID (len 14)
+Jul/29/2014 09:00:15: copy_option: set server ID (len 14)
+Jul/29/2014 09:00:15: copyout_option: set IA address
+Jul/29/2014 09:00:15: copyout_option: set identity association
+Jul/29/2014 09:00:15: copy_option: set DNS (len 32)
+Jul/29/2014 09:00:15: copy_option: set domain search list (len 14)
+Jul/29/2014 09:00:15: copy_option: set NIS servers (len 16)
+Jul/29/2014 09:00:15: copy_option: set NIS domain name (len 14)
+Jul/29/2014 09:00:15: server6_send: transmit reply to fe80::408d:d9f5:10ef:ffe7%eth0
+^Cjames@ddnetubuntu:~$
+james@ddnetubuntu:~$
+james@ddnetubuntu:~$ ps -eaf | grep dh
+james    17414 15279  0 09:05 pts/0    00:00:00 grep --color=auto dh
+
+ddr2 msg.eng:
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: key value   interface "eth0b";
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 5 eth0b
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: -----> eth0b
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: key value     renew 1800;
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 4 1800
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: -----> 1800
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: key value     rebind 2880;
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO:  ====  valuelen 4 2880
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: -----> 2880
+Jul 29 09:51:02 ipv6_ddr2 dhcp_translator: INFO: key value     iaaddr 2100:bad:cafe:f00d::deed:1001 {
+...
+Jul 29 09:51:03 ipv6_ddr2 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info
+Jul 29 09:51:03 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key ipaddr Putting 2100:bad:cafe:f00d::deed:1001/64 into dynamic.net.dhcp.eth0b.ipaddr
+Jul 29 09:51:03 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key domain Putting cherry.local. into dynamic.net.dhcp.eth0b.domain
+
+ddr2 kern.info:
+Jul 29 09:51:02 ipv6_ddr2 kernel: (E4)[    329366.332041] James dhclient6 3456 parent 1 init calling sys_clone()
+Jul 29 09:51:02 ipv6_ddr2 kernel: (E4)[    329366.332358] James dhclient6 3456 return 13968 from sys_clone()
+Jul 29 09:51:02 ipv6_ddr2 kernel: (E4)[    329366.332497] James dhclient6 13968 parent 3456 dhclient6 calling execve()
+Jul 29 09:51:03 ipv6_ddr2 kernel: (E4)[    329367.799954] James dhclient6 3456 parent 1 init calling sys_clone()
+Jul 29 09:51:03 ipv6_ddr2 kernel: (E4)[    329367.800289] James dhclient6 3456 return 13971 from sys_clone()
+Jul 29 09:51:03 ipv6_ddr2 kernel: (E4)[    329367.800428] James dhclient6 13971 parent 3456 dhclient6 calling execve()
+Jul 29 09:51:09 ipv6_ddr2 kernel: (E7)[    329374.211112] icmpv6_send: no reply to icmp error
+Jul 29 09:53:11 ipv6_ddr2 kernel: (E4)[    329495.811606] James dhclient6  3456 parent 1 init do_exit()
+
+
+////////////////////////////////////////////
+20140804
+////////////////////////////////////////////
+
+setup:
+	# net config eth0b:200 2100:bad:cafe:f00d:0:dd2:e0b:200/64
+
+	eth0b       yes       no     192.168.100.100                        255.255.255.0    n/a        
+	                             fe80::2a0:d1ff:feec:eeec**             /64                         
+	eth0b:200   yes       no     2100:bad:cafe:f00d:0:dd2:e0b:200       /64              n/a        
+
+run
+	# net ddns add eth0b interface-hostname test0b
+
+	eth0b       yes       no     192.168.100.100                        255.255.255.0     n/a       
+	                             2100:bad:cafe:f00d:0:dd2:e0b:200**     /64                         
+	                             fe80::2a0:d1ff:feec:eeec**             /64                         
+	eth0b:200   yes       no     (not specified)                        (not specified)   n/a       
+
+		# reg show config.net.eth0b
+		config.net.eth0b.enabled = true
+		config.net.eth0b.get_dhcp_ipv6 = true
+		config.net.eth0b.iface_host = test0b
+		config.net.eth0b.ip_address = 192.168.100.100
+		config.net.eth0b.ip_cur_address = 192.168.100.100
+		config.net.eth0b.use_dhcp = false
+		config.net.eth0b.use_dhcpv6 = true
+		config.net.eth0b:200.enabled = true
+		config.net.eth0b:200.ip_address = 0
+		config.net.eth0b:200.ip_cur_address = 192.168.100.140
+
+run
+	# net config eth0b down
+	# net config eth0b up
+
+	eth0b       yes       no     192.168.100.100                        255.255.255.0     n/a       
+	                             fe80::2a0:d1ff:feec:eeec**             /64                         
+	eth0b:200   yes       no     (not specified)                        (not specified)   n/a       
+
+
+_sms_net_load_iface_common_config
+
+sms_net_core_normalize_iface_config()
+
+(gdb) bt
+#0  sms_net_core_normalize_iface_config (cur_config=0x2b3bc6a47290, in_config=0x2b3bc44e96b0,
+    out_config=0x2b3bc44e6060) at ddr/sm/sms/sms_net_core.c:3631
+#1  0x000000000066e7ee in sms_net_set_iface_job (p=0x2b3bc44e9cb0, a=0x2b3bc44e9630)
+    at ddr/sm/sms/sms_net.c:726
+#2  0x0000000000675dad in sms_net_data_do_op_by_name (
+    func_name=0x2b3bc44e9cd0 "sms_net_set_iface", p=0x2b3bc44e9cb0)
+    at ddr/sm/sms/sms_net_data_switch.c:362
+#3  0x0000000002fc7bac in _smsi_do_job () at ddr/sm/sms/smsi_job.c:808
+#4  0x0000000002fc7ecf in job_thread_run (exitflag=0x43fb088) at ddr/sm/sms/smsi_job.c:854
+#5  0x0000000003137020 in _dd_thread_start_func (name=0x392576a "worker thread",
+    tid=0x542b280, thargs=0x542b1f0) at lib/dd_thread.c:1428
+#6  0x0000000003137629 in _dd_thread_base (void_tharg=0x542b1f0) at lib/dd_thread.c:1570
+#7  0x00002b3bbe8547bb in start_thread ()
+   from /auto/home/lsbuild/desktop-440032/lib64/libpthread.so.0
+#8  0x00002b3bbf724cdd in clone () from /auto/home/lsbuild/desktop-440032/lib64/libc.so.6
+#9  0x0000000000000000 in ?? ()
+
+
+(gdb) n
+3671    in ddr/sm/sms/sms_net_core.c
+(gdb) p tmp_config
+$2 = {_header = {magic = 0, free_func = 0x1cf6ef5 <smsgen_free_sms_net_iface_config_t>},
+  ifname = 0x5631890 "eth0b", isvirtual = FALSE, enabled = TRUE, use_dhcp = FALSE,
+  ip_addr = 0x567f990 "192.168.100.100", netmask = 0x567db50 "255.255.255.0", ip_type = 0,
+  mtu = 1500, link_mode = {_header = {magic = 0,
+      free_func = 0x1ce5455 <smsgen_free_sms_net_link_mode_t>}, auto_neg = TRUE, duplex = 0,
+    speed = 0}, bonding_mode = 0, slaves = {values = 0x0, count = 0}, cmd = 16, cmd_flag = 0,
+  primary = 0x566d8a0 "test0b", updelay = 0, downdelay = 0, rate = 0, ip_addr_cur = 0x0,
+  booting = FALSE, txqueuelen = 0, get_dhcp_ipv6 = TRUE, num_auto_addr = 1,
+  auto_ip_addrs = 0x564d5c0 "fe80::2a0:d1ff:feec:eeec/64", if_state = 4,
+  iface_host = 0x567fa50 "test0b"}
+
+_sms_net_bring_up_all_associated_enabled_ifaces
+
+            if (ifc_conf.ip_addr != NULL) {
+                e = _sms_net_check_for_duplicate_ip(ifc_conf.ip_addr, ifc_conf.ifname);
+            
+                if (DD_OK != e) {
+                    dd_log(logEng, sevWarn, NULL, "Unable to enable associated interface %s,"
+                                "as IP addr %s is currently used.", 
+                                ifc_list[i].dev_name, ifc_conf.ip_addr);
+                    // The interface is suppose to be brought up.  Bring it up but without the
+                    // IP address and also remove the address from the registry - it is a duplicate
+                    // Reporting error at this point will be confusing as the activity was on the
+                    // base interface and the associated interfaces bring up/down is a background
+                    // activity.
+
+                    ifc_conf.ip_addr[0] = '0';
+                    ifc_conf.ip_addr[1] = 0;
+                    dd_safe_snprintf(key, sizeof(key), K_config_net_PS_ip_address, ifc_conf.ifname);
+                    sml_reg_atomic_put_string(key, ifc_conf.ip_addr);
+                }
+
+(gdb) bt
+#0  _sms_net_bring_up_all_associated_enabled_ifaces (ifc_count=1, ifc_list=0x2ab1e10b1640)
+    at ddr/sm/sms/sms_net_core.c:1392
+#1  0x0000000001cdce16 in sms_net_core_config_iface (config=0x2ab1e10b0600)
+    at ddr/sm/sms/sms_net_core.c:3439
+#2  0x000000000066dbe9 in _sms_net_config_transaction () at ddr/sm/sms/sms_net.c:402
+#3  0x000000000066e3ba in _sms_net_commit_transaction () at ddr/sm/sms/sms_net.c:594
+#4  0x00000000007e07bf in sms_transaction_commit_job (p=0x2ab1dcd0dcb0, a=0x2ab1dcd0daa0)
+    at ddr/sm/sms/sms_transaction.c:300
+#5  0x00000000007e1274 in sms_transaction_data_do_op_by_name (
+    func_name=0x2ab1dcd0dcd0 "sms_transaction_commit", p=0x2ab1dcd0dcb0)
+    at ddr/sm/sms/sms_transaction_data_switch.c:107
+#6  0x0000000002fc8e74 in _smsi_do_job () at ddr/sm/sms/smsi_job.c:808
+#7  0x0000000002fc9197 in job_thread_run (exitflag=0x43fce08) at ddr/sm/sms/smsi_job.c:854
+#8  0x00000000031382e0 in _dd_thread_start_func (name=0x392704a "worker thread",
+    tid=0x54123e0, thargs=0x5412350) at lib/dd_thread.c:1428
+#9  0x00000000031388e9 in _dd_thread_base (void_tharg=0x5412350) at lib/dd_thread.c:1570
+#10 0x00002ab1d77657bb in start_thread ()
+   from /auto/home/lsbuild/desktop-440032/lib64/libpthread.so.0
+#11 0x00002ab1d8635cdd in clone () from /auto/home/lsbuild/desktop-440032/lib64/libc.so.6
+#12 0x0000000000000000 in ?? ()
+////////////////////////////////////////////
+20140806
+////////////////////////////////////////////
+
+SE@ipv6_ddr2## net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+** DDNS delete ; Communication with server failed: operation canceled 192.168.100.100/test0b to 192.168.100.1 forward zone
+** DDNS delete ; Communication with server failed: operation canceled 192.168.100.100/test0b to 192.168.100.1 reverse zone
+done.
+
+looping: on 1003 (probably obtained by someone else)
+
+Aug  6 13:07:09 ipv6_ddr2 dhcp_translator: INFO: key value     iaaddr 2100:bad:cafe:f00d::deed:1003 {
+Aug  6 13:07:10 ipv6_ddr2 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key ipaddr Putting 2100:bad:cafe:f00d::deed:1003/64 into dynamic.net.dhcp.eth0b.ipaddr
+
+# cat /tmp/dhcpcd-eth0b.info
+IPADDR=2100:bad:cafe:f00d::deed:1003/64
+DOMAIN=cherry.local.
+DNS=2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201
+DHCPSID=0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56
+LEASETIME=61
+RENEWALTIME=30
+REBINDTIME=48
+INTERFACE=eth0b
+CLIENTID=0:1:0:1:1b:72:7a:59:0:a0:d1:ec:ee:ec
+
+# net show se
+eth0b       yes       ipv6   2100:bad:cafe:f00d::deed:1003*         /64               n/a       
+                             2100:bad:cafe:f00d::deed:1000**        /64                         
+                             fe80::2a0:d1ff:feec:eeec**             /64                         
+
+# reg show config.net.eth0b
+config.net.eth0b.enabled = true
+config.net.eth0b.get_dhcp_ipv6 = true
+config.net.eth0b.iface_host = test0b
+config.net.eth0b.ip_address = 192.168.100.100
+config.net.eth0b.ip_cur_address = 192.168.100.100
+config.net.eth0b.mtusize = 1500
+config.net.eth0b.netmask = 255.255.255.0
+config.net.eth0b.noauto.enabled = false
+config.net.eth0b.use_dhcp = true
+config.net.eth0b.use_dhcpv6 = true
+config.net.eth0b:200.enabled = true
+config.net.eth0b:200.ip_address = 0
+config.net.eth0b:200.ip_cur_address = 0
+config.net.eth0b:200.netmask =
+
+# reg show dynamic.net.dhcp
+dynamic.net.dhcp.eth0b.clientid = 0:1:0:1:1b:72:7a:59:0:a0:d1:ec:ee:ec
+dynamic.net.dhcp.eth0b.dhcpsid = 0:1:0:1:1a:e9:ab:80:0:c:29:be:61:56
+dynamic.net.dhcp.eth0b.dns = 2100:bad:cafe:f00d::1:101,2100:bad:cafe:f00d::1:1201
+dynamic.net.dhcp.eth0b.domain = cherry.local.
+dynamic.net.dhcp.eth0b.interface = eth0b
+dynamic.net.dhcp.eth0b.ipaddr = 2100:bad:cafe:f00d::deed:1000/64
+dynamic.net.dhcp.eth0b.leasetime = 61
+dynamic.net.dhcp.eth0b.rebindtime = 48
+dynamic.net.dhcp.eth0b.renewaltime = 30
+
+# net show se
+eth0b       yes       ipv6   2100:bad:cafe:f00d::deed:1000*         /64               n/a       
+                             fe80::2a0:d1ff:feec:eeec**             /64                         
+
+
+
+SE@ipv6_ddr2## net config eth0b dhcp no
+Configuring interface...
+done.
+SE@ipv6_ddr2## net config eth0b dhcp no
+Configuring interface...
+                                                   
+
+
+
+When stopping DHCP server
+
+
+////////////////////////////////////////////
+20140808
+////////////////////////////////////////////
+Aug  8 14:09:10 ipv6_ddr2 ddsh: NOTICE: _cmd_net_ddns_send_request: System sending ddns update "/ddr/bin/update_dns.py add cherry.local  192.168.100.100"
+Aug  8 14:09:10 ipv6_ddr2 ddsh: NOTICE: _cmd_net_ddns_send_request: System error executing "/ddr/bin/update_dns.py add cherry.local  192.168.100.100/255.255.255.0 192.168.100.1 86400 rndc-key xsDJgO6KYgo7vVIArjsZ6Q==", return value: 256
+Aug  8 14:09:10 ipv6_ddr2 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/0, session=7624) root: command "net config eth0b 192.168.100.100"
+
+Aug  8 14:26:08 ipv6_ddr2 ddsh: NOTICE: _cmd_net_ddns_send_request: System sending ddns update "/ddr/bin/update_dns.py delete cherry.local test0b 192.168.100.100"
+Aug  8 14:26:08 ipv6_ddr2 sysadmin: update_dns.py: delete cherry.local test0b 192.168.100.100/24 192.168.100.1 86400
+Aug  8 14:26:09 ipv6_ddr2 sysadmin: update_dns forward zone setting tsig
+
+Aug  8 14:29:15 ipv6_ddr2 logger: dhclient6-ddr-linux 9088 reason: xRENEW6 iface: eth0b
+Aug  8 14:29:15 ipv6_ddr2 logger: dhclient6-ddr-linux old prefix: x new: x
+Aug  8 14:29:15 ipv6_ddr2 logger: dhclient6-ddr-linux new ip: 2100:bad:cafe:f00d::deed:1001 new ip prefixlen: 64
+Aug  8 14:29:15 ipv6_ddr2 logger: dhclient6-ddr-linux new dns: 2100:bad:cafe:f00d::1:101 2100:bad:cafe:f00d::1:1201 new domain search: cherry.local.
+Aug  8 14:29:18 ipv6_ddr2 sysadmin: ** DDNS delete ; Communication with server failed: operation canceled 192.168.100.100/test0b to 192.168.100.1 forward zone
+Aug  8 14:29:18 ipv6_ddr2 sysadmin: update_dns reverse zone setting tsig
+
+# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+!!!! ipv6_ddr2 YOUR DATA IS IN DANGER !!!! # ddsh -s net config eth0b 192.168.100.100
+Configuring interface...
+Traceback (most recent call last):
+  File "/ddr/bin/update_dns.py", line 272, in <module>
+    main()
+  File "/ddr/bin/update_dns.py", line 225, in main
+    secret = sys.argv[8]
+
+# ddsh -s net config eth0b dhcp yes ipversion ipv6
+Configuring interface...
+** DDNS delete ; Communication with server failed: operation canceled 192.168.100.100/test0b to 192.168.100.1 forward zone
+** DDNS delete ; Communication with server failed: operation canceled 192.168.100.100/test0b to 192.168.100.1 reverse zone
+done.
+
+
+

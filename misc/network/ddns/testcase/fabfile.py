@@ -1,0 +1,532 @@
+"""
+The test suite is to test ddns Unix mode functionality.
+
+Requirement:	Your linux workstation needs to install python & 
+		fabric (python package).  To install fabric,
+		run "sudo apt-get install fabric".
+
+Examples:
+	To list available cmds:
+		$ fab -l
+
+	To run on a pre-defined DDR:
+		$ fab -R ddr2 test_pos_ddns_tsig
+
+	To run on 'all' pre-defined DDRs:
+		$ fab -R all test_pos_ddns_tsig
+
+	Usage: fab [options] <command>[:arg1,arg2=val2,host=foo,hosts='h1;h2',...] ...
+"""
+# import the Fabric api
+from fabric.api import *
+import sys
+# import timeit to calculate test run time
+import timeit
+from multiprocessing import Process
+import threading
+
+env.user='root'
+# hosts requires a list instead of a string
+# env.hosts=['root@aclddw01.datadomain.com']
+env.roledefs = {
+	'ddr1': ['discover.datadomain.com'],
+	'ddr2': ['aclddw01.datadomain.com']
+}
+
+env.roledefs['all'] = [h for r in env.roledefs.values() for h in r]
+
+env.user='root'
+env.password='abc123'
+env.use_ssh_config = True
+# env.mirror_local_mode = True
+
+tsig_key = 'rndc-key'
+tsig_secret = '"xsDJgO6KYgo7vVIArjsZ6Q=="'
+
+MSG_ENG = '/ddr/var/log/debug/messages.engineering'
+
+def uptime():
+	"""
+	show local host uptime
+	"""
+	local('uptime')
+
+"""
+def net_ddns_enable():
+	try:
+		run('ddsh -s net ddns enable')
+
+	except SystemExit:
+		pass
+	else:
+		raise Exception('ExceptedException not throw')
+"""
+
+def get_remote_file_size(rfile):
+	"""
+	This func utilizes 'stat -c %s' cmd to get the file size
+	"""
+	return run('stat -c %%s %s' % rfile)
+
+def time_dec(func):
+	"""
+	A time decorator to calculate how much time it takes for a func to run
+	"""
+	def wrapper(*args, **kwargs):
+		start = timeit.default_timer()
+		ret = func(*args, **kwargs)
+		stop = timeit.default_timer()
+		print 'test spent %d second' % (stop - start)
+		return ret
+
+	return wrapper
+
+@roles('ddr2')
+@time_dec
+def hostname_check():
+	"""
+	show remote host name
+	"""
+	run('hostname')
+
+@roles('ddr1')
+def ddr1_set_dhcp6():
+	"""
+	set ddr1 eth0b to the default ipv6 addr
+	We don't need to use -R to select host since @roles indicates exclusive for ddr1
+	"""
+	run("ddsh -s net config eth5c dhcp yes ipversion ipv6")
+@roles('ddr1')
+def ddr1_set_dhcp4():
+	"""
+	set ddr1 eth0b to ipv4 dhcp
+	We don't need to use -R to select host since @roles indicates exclusive for ddr1
+	"""
+	run("ddsh -s net config eth5c dhcp yes ipversion ipv4")
+
+@roles('ddr2')
+def ddr2_set_dns():
+	"""
+	set ddr2 eth0b to ipv4 addr
+	add dns 192.168.100.1 to ddr2 dns list
+	"""
+	run('ddsh -s net config eth0b up')
+	run('ifconfig eth0b 192.168.100.100')
+	run('ddsh -s net set dns 192.168.100.1')
+
+@roles('ddr2')
+def ddr2_set_ipv6():
+	"""
+	set ddr2 eth0b to the default ipv6 addr
+	We don't need to use -R to select host since @roles indicates exclusive for ddr2
+	"""
+	run("ddsh -s net config eth0b 2100:bad:cafe:f00d::deed:2/64")
+
+@roles('ddr2')
+def ddr2_set_dhcp4():
+	"""
+	set ddr2 eth0b to ipv4 dhcp
+	We don't need to use -R to select host since @roles indicates exclusive for ddr2
+	"""
+	run("ddsh -s net config eth0b dhcp yes ipversion ipv4")
+
+def _exec_remote_cmd(cmd):
+	"""
+	This function is to replace 'run()'.  
+	It hides the output from run(), and disable exception as well.
+	return value:
+		.succeeded:
+			True: No error
+			False: error occurs
+	"""
+	with hide('output','running','warnings'), settings(warn_only=True):
+		return run(cmd)
+
+def ddns_enable():
+	"""
+	This function enables ddns in Unix mode on a DDR.
+	If will first check if the ddns is already enabled in the Unix mode.  
+	If not, it will disable the Windows mode first if needed, and enable the Unix mode.
+	"""
+	status = _exec_remote_cmd('ddsh -s net ddns status')
+	#print 'status: %s' % status
+	ret = status.find("disabled")
+
+	# ret is the location for 'disabled' found in status
+	# it's -1 if not found
+	if -1 != ret:
+		# if disabled, enable it
+		_exec_remote_cmd('ddsh -s net ddns enable unix')
+	else:
+		if -1 == status.find("unix"):
+			# if not enable in Unix mode, disable it and re-enable
+			_exec_remote_cmd('ddsh -s net ddns disable')
+			_exec_remote_cmd('ddsh -s net ddns enable unix')
+
+def ddns_disable():
+	"""
+	This function disables ddns on a DDR
+	It will check if the ddns is already disabled.
+	It performs disable operation only if the ddns is not disabled.
+	"""
+	status = _exec_remote_cmd('ddsh -s net ddns status')
+	#print 'status: %s' % status
+	ret = status.find("disabled")
+
+	# ret is the location for 'disabled' found in status
+	# it's -1 if not found
+	if -1 == ret:
+		# if not disabled, enable it
+		_exec_remote_cmd('ddsh -s net ddns disable')
+
+
+@roles('ddr2')
+def test_neg_ddns_enable():
+	"""
+	This test case verify negative results for ddns enable/disable.
+	1. enable ddns in unix mode
+	2. try to re-enable it in different mode again
+	   this should fail
+	3. disable ddns
+	4. try to re-disable it again
+	   this should fail
+	"""
+	with hide('output','running','warnings'):
+		ddns_enable()
+
+	# testcase 1: re-enable unix mode
+	# expected result:
+	#	1. exception SystemExit (ignored)
+	# 	2. output: **** DDNS is already enabled
+	output = _exec_remote_cmd('ddsh -s net ddns enable')
+	if output.succeeded:
+		raise Exception('The test expect to fail')
+	else:
+		if -1 == output.find("**** DDNS is already enabled"):
+			raise Exception('The error msg fmt is wrong')
+	pass
+
+	# testcase 2: re-enable windows mode
+	# expected result:
+	#	1. exception SystemExit (ignored)
+	# 	2. output: **** DDNS is already enabled
+	output = _exec_remote_cmd('ddsh -s net ddns enable windows')
+	if output.succeeded:
+		raise Exception('The test expect to fail')
+	else:
+		if -1 == output.find("**** DDNS is already enabled"):
+			raise Exception('The error msg fmt is wrong')
+	pass
+
+	# testcase 3: re-enable default(windows) mode
+	# expected result:
+	#	1. exception SystemExit (ignored)
+	# 	2. output: **** DDNS is already enabled
+	output = _exec_remote_cmd('ddsh -s net ddns enable')
+	if output.succeeded:
+		raise Exception('The test expect to fail')
+	else:
+		if -1 == output.find("**** DDNS is already enabled"):
+			raise Exception('The error msg fmt is wrong')
+	pass
+
+	with hide('output','running','warnings'):
+		ddns_disable()
+
+	# testcase 4: re-disable default(windows) mode
+	# expected result:
+	#	1. exception SystemExit (ignored)
+	# 	2. output: **** DDNS is already disabled
+	output = _exec_remote_cmd('ddsh -s net ddns disable')
+	if output.succeeded:
+		raise Exception('The test expect to fail')
+	else:
+		if -1 == output.find("**** DDNS is already disabled"):
+			raise Exception('The error msg fmt is wrong')
+	pass
+
+@time_dec
+def _ddns_set_key(key, secret):
+	"""
+	This function sets TSIG key and secret.
+	Error:
+		execption arised if it fails
+	"""
+	# print 'key %s, secret %s' % (key, secret)
+	output = _exec_remote_cmd('ddsh -s net ddns TSIG-key set %s TSIG-secret %r' % (key, secret))
+	#run('ddsh -s net ddns TSIG-key set %s TSIG-secret %s' % (key, secret))
+	#run('ddsh -s net ddns TSIG-key set rndc-key TSIG-secret %r' % '"xsDJgO6KYgo7vVIArjsZ6Q=="')
+	if not output.succeeded:
+		raise Exception('TSIG key set failed')
+
+@time_dec
+def _ddns_reset_key(hide=True):
+	"""
+	This function resets TSIG key and secret.
+	Error:
+		execption arised if it fails
+	"""
+	# print 'key %s, secret %s' % (key, secret)
+	if hide:
+		output = _exec_remote_cmd('ddsh -s net ddns reset')
+	else:
+		output = run('ddsh -s net ddns reset')
+
+	if not output.succeeded:
+		raise Exception('TSIG key set failed')
+
+def _ddns_show(target='None', hide=True):
+	"""
+	This function verify if ddns is enabled in the Unix mode, and show the config.
+	"""
+	if hide:
+		output = _exec_remote_cmd('ddsh -s net ddns show')
+	else:
+		output = run('ddsh -s net ddns show')
+
+	if not target=='None':
+		if -1 == output.find(target):
+			raise Exception('%s not found in net ddns show' % target)
+
+	return output
+
+@roles('ddr2')
+def test_pos_ddns_tsig():
+	"""
+	Test DDNS TSIG set & reset
+	"""
+	ddns_enable()
+
+	# testcase 1. test the key set
+	_ddns_set_key(tsig_key, tsig_secret)
+	#_ddns_set_key('rndc-key', "xsDJgO6KYgo7vVIArjsZ6Q==")
+	_ddns_show("The TSIG key is set")
+	#print 'output:', output
+
+	# verify the result
+	# we use tsig-secret[1:-1] to get rid of double quotes
+	# if (-1 == output.find(tsig_key)) or (-1 == output.find(tsig_secret[1:-1])):
+		# raise Exception('TSIG result not found')
+
+	# testcase 2. reset the key & secret
+	_ddns_reset_key()
+	output = _ddns_show()
+
+	if -1 != output.find('TSIG'):
+		raise Exception('TSIG does not reset')
+
+	ddns_disable()
+
+def _create_iface_vlan(iface, ifid):
+	"""
+	ddsh -s net create interface <physical-ifname> vlan <vlan-id>
+	"""
+	_exec_remote_cmd('ddsh -s net create interface %s vlan %s' % (iface, ifid))
+	#run('ddsh -s net create interface %s vlan %s' % (iface, ifid))
+
+def _create_iface_alias(iface, ifid):
+	"""
+	ddsh -s net create interface <physical-ifname> alias <alias-id>
+	"""
+	_exec_remote_cmd('ddsh -s net create interface %s alias %s' % (iface, ifid))
+
+def _destroy_iface(iface):
+	"""
+	ddsh -s net destroy {<virtual-ifname> | <vlan-ifname> | <ipalias-ifname> }
+	"""
+	_exec_remote_cmd('ddsh -s net destroy %s' % iface)
+
+def _config_iface(iface, ipaddr, netmask='None'):
+	"""
+	net config <ifname>
+		{[<ipaddr>] [netmask <mask>] | [<ipv6addr>] |
+		[dhcp {yes [ipversion {ipv4|ipv6}]|no}]}
+		{[autoneg] | [duplex {full | half} speed {10|100|1000|10000}]
+		[up | down] [mtu {<size> | default}]
+		[txqueuelen <size>]
+	net config <ifname> type {none | management | replication | cluster}   
+	"""
+	if netmask == 'None':
+		_exec_remote_cmd('ddsh -s net config %s %s' % (iface, ipaddr))
+	else:
+		_exec_remote_cmd('ddsh -s net config %s %s netmask %s' % (iface, ipaddr, netmask))
+		#run('ddsh -s net config %s %s netmask %s' % (iface, ipaddr, netmask))
+
+
+def _show_settings(target='None', pos=True):
+	"""
+	This function performs 'net show settings'
+
+	if target is provided, it searchs the output from  'net show settings'.  If the output 
+		if it's a positive test (pos==True)
+			return output
+		if it's a negative test (pos==False)
+			raise Exception
+	"""
+	output = _exec_remote_cmd('ddsh -s net show settings')
+	# print output
+
+	if not target=='None':
+		for line in output.split('\n'):
+			if -1 != line.find(target):
+				# if it's a positive test, we got the result, return output.
+				if pos:
+					return output
+				# if it's a negative test, we fail the test
+				else:
+					raise Exception('%s is found in net show settings' % target)
+
+		# if it's a positive test, since we don't get the result, we fail
+		if pos:
+			raise Exception('%s not found in net show settings' % target)
+		# if it's a negative test, pass through
+
+	# return output back to caller
+	return output
+
+def _ddns_add(ifname, hostname, pos=True):
+	"""
+	net ddns add {<ifname-list> | all | <ifname> interface-hostname <hostname>}]
+	"""
+	output = _exec_remote_cmd('ddsh -s net ddns add %s interface-hostname %s' % (ifname, hostname))
+	if pos:
+		if output.succeeded:
+			return
+		else:
+			print 'net ddns add %s interface-hostname %s' % (ifname, hostname)
+			raise Exception('Test Fail')
+	else:
+		if output.succeeded:
+			print 'net ddns add %s interface-hostname %s' % (ifname, hostname)
+			raise Exception("Test should Fail but didn't")
+		else:
+			return
+
+@roles('ddr2')
+def eng_msg_tail(hide=False):
+	"""
+	Get the output from messenge.engineering
+	"""
+	if hide:
+		output = _exec_remote_cmd('tail %s' % MSG_ENG)
+	else:
+		output = run('tail %s' % MSG_ENG)
+@roles('ddr2')
+def test_proc():
+	hide = True
+	proc = Process(target=eng_msg_tail, args=())
+	proc.start()
+	proc.join()
+
+@roles('ddr2')
+def test_thread():
+	hide = True
+	th = threading.Thread(target = eng_msg_tail)
+	th.start()
+	th.join()
+	
+@roles('ddr2')
+def test_pos_ddns_iface_create():
+	"""
+	Test ddns set on different types of interfaces:
+		physical, virtual, vlan, alias
+
+	1. test vlan ddns set
+	   => vlan is not pingable unless another DDR sets the same vlan id
+		net create interface <physical-ifname> vlan <vlan-id>
+			net show settings <= verification
+		net config <vlan> <ipaddr> netmask <mask>
+			net show settings <= verification
+		net ddns enable unix
+		net ddns add <vlan> interface-hostname <hostname>
+			net ddns show <= verification
+		net ddns register
+			??? <= verification
+
+		net destroy <vlan>
+			net show settings <= verification
+
+	2. test alias ddns set
+		net create interface <physical-ifname> alias <alias-id>
+			net show settings <= verification
+		net config <alias> <ipaddr> netmask <mask>
+			net show settings <= verification
+		net ddns enable unix
+		net ddns add <alias> interface-hostname <hostname>
+			net ddns show <= verification
+		net ddns register
+			??? <= verification
+
+		net destroy <alias>
+			net show settings <= verification
+	"""
+	phy_iface = 'eth0b'
+	ifvid = '100'
+	ifv = "%s.%s" % (phy_iface, ifvid)
+	ifv_addr = '192.168.100.120'
+
+	ifaid = '200'
+	ifa = "%s:%s" % (phy_iface, ifaid)
+	ifa_addr = '192.168.100.140'
+	mask = '255.255.255.0'
+
+	"""
+	print "setting up vlan %s" % ifv
+	time_start = timeit.default_timer()
+	# creating a vlan
+	_create_iface_vlan(phy_iface, ifvid)
+	time_vlan_create = timeit.default_timer()
+	print "vlan creation spent %d seconds" % (time_vlan_create - time_start)
+	# verify if the vlan has been create
+	_show_settings(ifv)
+
+	time_ip  = timeit.default_timer()
+	# assign an IP
+	_config_iface(ifv, ifv_addr, mask)
+	time_ip_assign = timeit.default_timer()
+	print "vlan ip assignment spent %d seconds" % (time_ip_assign - time_ip)
+	# verify if the IP has been assigned
+	_show_settings(ifv_addr)
+
+	# set ddns
+	time_ddns = timeit.default_timer()
+	_ddns_add(ifv, 'test1')
+	time_ddns_set = timeit.default_timer()
+	print "vlan ddns set spent %d seconds" % (time_ddns_set - time_ddns)
+	_ddns_show('test1', hide=False)
+	"""
+
+	# verify if the alias already exists
+	output = _show_settings()
+
+	if -1 != output.find(ifa):
+		# destroy the alias if already exists
+		_destroy_iface(ifa)
+
+
+	print "seting up alias %s" % ifa
+	# creating an alias
+	_create_iface_alias(phy_iface, ifaid)
+	_show_settings(ifa)
+	print "seting up alias ip"
+	_config_iface(ifa, ifa_addr, mask)
+	_show_settings(ifa_addr)
+	_ddns_show('None', hide=False)
+
+	print "seting up alias ddns"
+	ddns_enable()
+	_ddns_set_key(tsig_key, tsig_secret)
+	#_ddns_set_key('rndc-key', "xsDJgO6KYgo7vVIArjsZ6Q==")
+	output = _ddns_show()
+	#print 'output:', output
+	_ddns_add(ifa, 'test_alias')
+	_ddns_show('test_alias', hide=False)
+
+	
+	"""
+	# removing vlan & alias
+	_destroy_iface(ifv)
+	_show_settings(ifv, False)
+	_destroy_iface(ifa)
+	_show_settings(ifa, False)
+	"""

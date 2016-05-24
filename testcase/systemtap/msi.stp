@@ -1,0 +1,23 @@
+#tracing msi irq_affinty on yogi22
+
+probe kernel.function("do_IRQ")
+{
+	printf("do_IRQ\n");
+}
+
+probe kernel.function("handle_IRQ_event")
+{
+	if ( ($irq == 8396) || ($irq == 8360) ) {
+		printf("handle_IRQ_event: called with irq=%d \n", $irq);
+	}
+}
+
+probe 	kernel.statement("do_IRQ@arch/x86_64/kernel/irq.c:765")
+{
+	printf("device %p\n", $dev);
+	printf("scsi_dump_probe(%p)\n", $dev);
+	printf("sdev: %p host :%p hostt :%p dump_poll :%p\n", 
+			$sdev, $sdev->host, $sdev->host->hostt, $sdev->host->hostt->dump_poll);
+	
+}
+

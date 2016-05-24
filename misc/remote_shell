@@ -1,0 +1,26 @@
+	ssh -t <host> "bash --rcfile PATH_TO_RCFILE"
+	ssh -t <host> "bash --rcfile PATH_TO_RCFILE -i"
+
+	ssh -t 
+		Force pseudo-tty allocation.  This can be used to execute arbitrary
+		screen-based programs on a remote machine, which can be very useful,
+		e.g. when imple‐menting menu services.  Multiple -t options force
+		tty allocation, even if ssh has no local tty.
+
+	bash -i
+		If the -i option is present, the shell is interactive
+
+
+	Plink (part of PuTTY)
+	plink root@MachineB -m local_script.sh
+
+	Unix-based 
+	ssh root@MachineB 'bash -s' < local_script.sh
+
+	ssh -s   
+		May be used to request invocation of a subsystem on the remote
+		system.  Subsys‐tems are a feature of the SSH2 protocol which
+		facilitate the use of SSH as a secure transport for other
+		applications (eg. sftp(1)).  The subsystem is speci‐fied as
+		the remote command.
+

@@ -1,0 +1,7 @@
+mount /dev/dd_dg00p15 /sysroot
+mount /dev/dd_dg00p14 /sysroot/ddr
+mount /dev/dd_dg00p13 /sysroot/ddr/var
+
+umount
+umount
+umount

@@ -1,0 +1,147 @@
+10.25.222.48
+10.25.222.113
+10.25.223.212
+
+318977
+
+
+# cat kallsyms | grep do_filp_open
+ffffffff802827cd t do_filp_open
+# cat kallsyms | grep blkdev_open
+ffffffff802a64b6 t blkdev_open
+# cat kallsyms | grep do_sys_open
+ffffffff80282940 T do_sys_open
+# cat kallsyms | grep do_sync_write
+ffffffff80282b0b T do_sync_write
+
+insmod ddump_fs_probe.ko addr_1st=0xffffffff80282940 addr_2nd=0xffffffff80282b0b
+
+crash> struct -o inode
+
+struct inode {
+    [0x0] struct hlist_node i_hash;
+   [0x10] struct list_head i_list;
+   [0x20] struct list_head i_sb_list;
+   [0x30] struct list_head i_dentry;
+   [0x40] long unsigned int i_ino;
+   [0x48] atomic_t i_count;
+
+crash> inode ffff811f807f1cb8
+
+Cant probe i_count.  The addr is not exposed.
+
+
+crash> file_operations 0xffffffff804a97e0
+struct file_operations {
+  owner = 0x0,
+  llseek = 0xffffffff802a56df <block_llseek>,
+  read = 0xffffffff80282c16 <do_sync_read>,
+  write = 0xffffffff80282b0b <do_sync_write>,
+  aio_read = 0xffffffff8025bf16 <generic_file_aio_read>,
+  aio_write = 0xffffffff8025cd1e <generic_file_aio_write_nolock>,
+  readdir = 0,
+  poll = 0,
+  ioctl = 0,
+  unlocked_ioctl = 0xffffffff802a575b <block_ioctl>,
+  compat_ioctl = 0xffffffff803296b9 <compat_blkdev_ioctl>,
+  mmap = 0xffffffff8025aa9b <generic_file_mmap>,
+  open = 0xffffffff802a64b6 <blkdev_open>,
+  flush = 0,
+  release = 0xffffffff802a61b3 <blkdev_close>,
+  fsync = 0xffffffff802a5533 <block_fsync>,
+  aio_fsync = 0,
+  fasync = 0,
+  lock = 0,
+  sendpage = 0,
+  get_unmapped_area = 0,
+  check_flags = 0,
+  dir_notify = 0,
+  flock = 0,
+  splice_write = 0xffffffff8029f087 <generic_file_splice_write>,
+  splice_read = 0xffffffff8029f95b <generic_file_splice_read>,
+  setlease = 0
+}
+
+
+const struct file_operations def_blk_fops = {
+	.open		= blkdev_open,
+
+sys_open()
+	do_sys_open()
+		do_filp_open()
+			nameidata_to_filp
+				__dentry_open
+					f_op->open
+
+
+
+define ls_scsi_disk
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+	set $cdev_off_scsi_disk = (long)(&((struct scsi_disk*)0)->cdev)
+
+	# global 'struct class' object sd_disk_class has all class_device object
+        # in its linked list; these class_devices are embedded in scsi_disk
+	printf "scsi_disk's: (struct scsi_disk*)\n"
+	set $head = &(sd_disk_class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $scsi_disk = (struct scsi_disk*)(((long)$cur) - $node_off_class_device - $cdev_off_scsi_disk)
+		set $gendisk = $scsi_disk->disk
+		printf "%p: %s %s\n", $scsi_disk, $gendisk->kobj.k_name, $scsi_disk->cdev.kobj.k_name
+		set $cur = $cur->next
+	end
+end
+
+crash> ls_scsi_disk
+scsi_disk's: (struct scsi_disk*)
+0xffff811f82f9c600: sda 0:0:0:0
+0xffff811f8ff61a00: sdb 1:0:0:0
+0xffff811fb2bc7a00: sdc 2:0:0:0
+
+crash> sd_disk_class
+sd_disk_class = $7 = {
+  name = 0xffffffff8059c8f1 "scsi_disk",
+...
+  children = {
+    next = 0xffff811f82f9c610,
+    prev = 0xffff81146fab9410
+
+
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736578] hu_sda is ffff811f820b3200
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736603] 0800  234431064 sda
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736627]  driver: sd
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736652]   0801         63     819201 sda1
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736677]   0802     819264  188747685 sda2
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736703]   0803  189566949      16065 sda3
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736727]   0804  189583014          2 sda4
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736752]   0805  189583030    9687195 sda5
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736777]   0806  199270233  191157435 sda6
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736802]   0807  390427669     278208 sda7
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736826] hu_sdb is ffff811fb2b43600
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736851] 0810  234431064 sdb
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736876]  driver: sd
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736901]   0811         63     819201 sdb1
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736925]   0812     819264  188747685 sdb2
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736950]   0813  189566949      16065 sdb3
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.736976]   0814  189583014          2 sdb4
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737001]   0815  189583030    9687195 sdb5
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737026]   0816  199270233  191157435 sdb6
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737050]   0817  390427669     278208 sdb7
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737075] hu_sdc is ffff811f822dcc00
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737100] 0820  195360984 sdc
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737124]  driver: sd
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737154]   0821         63     819201 sdc1
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737179]   0822     819264  188747685 sdc2
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737204]   0823  189566949      16065 sdc3
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737230]   0824  189583014          2 sdc4
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737254]   0825  189583030    9687195 sdc5
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737279]   0826  199270233  191157435 sdc6
+Aug  1 10:02:12 artemis07 kernel: (E4)[    175000.737304]   0827  390427669     278208 sdc7
+
+Aug  1 09:22:01 artemis07 kernel: (E4)[    172591.646966] .1775 pdflush is modifying sect 3612241 head ffff811f822dcc00
+Aug  1 09:22:01 artemis07 kernel: (E4)[    172591.646970] .1775 pdflush is modifying sect 3612242 head ffff811f822dcc00
+...
+Aug  1 09:22:55 artemis07 kernel: (E4)[    172591.668149] .1775 pdflush is modifying sect 3620414 head ffff811f822dcc00
+Aug  1 09:22:55 artemis07 kernel: (E4)[    172591.668151] .1775 pdflush is modifying sect 3620415 head ffff811f822dcc00
+Aug  1 09:22:55 artemis07 kernel: (E4)[    172591.840881] .............................................................
+

@@ -1,0 +1,381 @@
+In the Linux kenrel, the device-mapper serves as a generic framework to map
+one block device onto another.  It forms the fundation of LVM2 & EVMS, 
+software RAIDs, dm-crypt disk encryption, and offers additional features
+such as file-system snapshots.
+
+Device-mapper works by processing data passed in from a virtual block device,
+that it itself provides, and then passing the resultant data on to another
+block device.
+
+http://linuxgazette.net/114/kapil.html
+Right to your own devices
+
+Introduction
+Linux 2.4.x had the logical Volume Manager (LVM) and other multi-disk/multi-partition
+block device constructs.  These have been enhanced by Device Mapper in Linux 2.6.x.
+Here is a one line summary:
+
+  You can choose any sequence of blocks on a sequence of block devices and create a 
+  new block device some of whose blocks are identified with the blocks you chose 
+  earlier.
+
+That'll take a while to chew on.  Meanwhile here are some ways you can use the 
+device mapper:
+
+  .What files will this program create? Get it to write them on a COW!
+  .Let the file-system not go on holiday while you take sanpshots.
+  .Dice it, slice it, and resize it - but don't reboot.
+  .If your data is more valuable than the hard disk - encrypt it.
+
+There is a catch, of course.  To do all this with the root device, some changes
+need to be made at boot time.  Rather than get diverted, we will concentrate on 
+learning how to use the device mapper - to do this we will use "dummy" loop devices
+instead of "real" disks.  After you have gained some confidence, you can move on to
+real disks and perhaps even the root device.
+
+How to Fake It With A Loop
+
+In Unix, everything is a file.  Evan a block device like /dev/hda2 which is meant
+to be read in "chucks" called blocks, can be read byte-by-byte like a file.  The
+loop device allows us to reverse this asymmetry and treat any file like a block
+device.  Activate loop devices for your Linux with modprobe loop (as root) if 
+necessary.
+
+To demonstrate this without risking serous damage to useful files, we will only
+use empty files.  First of all, create an empty file like so:
+  dd if=/dev/zero of=/tmp/storel bs=1024 seek=2047 count=1
+
+This creates a file full of nothing and 2 Megabytes in size.  Now we make it into
+a block device:
+  losetup /dev/loopl /tmp/storel
+
+We then operate with this block device just as we would with any other block device:
+1. Check its size in 512-byte blocks
+   blockdev --getsize /dev/loop1
+
+2. Make a file system on it
+   mke2fs /dev/loop1
+
+3. Mount this file system somewhere
+   mount /dev/loop1 /mnt
+
+After this you can use /mnt just as you would any other file-system - the changes
+will be written to /tmp/storel.  When you get tired of playing with the loop blocks,
+you put them away with commands like 'losetup -d /dev/loop1'.
+
+We will use loopo devices like /dev/loop1, /dev/ loop2 and so on as the building 
+block devices in what follows.
+
+Step Into My Parlor...
+
+... said the device mapper to the block device.  If it is not already activated, load
+the device mapper for your Linux with modprobe dm-mod (as root)  The device mapper can
+take any block device under its wing with a command like
+
+	echo 0 $(blockdev --getsize /dev/loop1) linear /dev/loop1 0 | \
+	dmsetup create new
+
+This creates a "new" block device /dev/mapper/new; but this is not really new data.
+Reading from this block device returns exactly the same result as reading directly
+from /dev/loop1; similarly with writing to this block device.  Looks a lot like the 
+same old blah in a new block device!  So you could get rid of this block device by
+'dmsetup remove new'.
+
+Of course, you can do things differently.  For example, you can take only half of
+/dev/loop1 as your block device:
+
+	SIZE1=$(blockdev --getsize /dev/loop1)
+	echo 0 $(($SIZE1 / 2)) linear /dev/loop1 0 | \
+	dmsetup create half
+
+The remaining half (which could be the bigger "half" if /dev/loop1 is odd-sized!) is
+then also available for use.  You could use it in combination with /dev/loop2 to
+create another block device:
+
+	REST1=$((SIZE1 - $SIZE1 / 2))
+	echo 0 $REST1 linear /dev/loop1 $((SIZE1 / 2)) > /tmp/table1
+	echo $REST1 $(blockdev --getsize /dev/loop2) \
+	linear /dev/loop2 0 >> /tmp/table1
+	dmsetup create onenahalf /tmp/table1
+
+Let us try to understand this example and what each of the three numbers on each
+line of /tmp/table mean.  The first number is the starting sector of the map described,
+the second number is the number of sectors in the map.  The word 'linear' is followed
+by the name of the original device that the map refers to; this is followed by the
+sector number of the first sector (of this original device) which is assigned by this
+map.  Read that again!
+
+So you can slice and splice your disks as you like - but there is a small cost, of
+course.  All operations to these new block devices go through the device mapper rather
+than directly to the underlying hardware.  With efficient table management in the kernel,
+this overhead should not slow down things perceptibly.
+
+Notice how I slipped in (clever me!) the use of "tables" that contain the mapped 
+device descriptions.  If you are planning to use mapped devices a lot and don't want
+to forget your settings, such tables are the way to go.  Don't worry - you can always
+get the table of any device like /dev/mapper/new by
+
+	dmsetup table new
+
+In the output, the original block device will appear as major:minor, so you will have
+to figure out what the device is actually called if you need the table in human 
+readable form. (Hint: Try
+
+	ls -l /dev | grep "$major, *$minor"
+
+or somthing very like it.) Don't forget to run
+
+	dmsetup remove half
+	dmsetup remove onenahalf
+
+when you are through.
+
+Perhaps you are one of those people who own multiple disks configured so that reading
+n bytes from one of them is slower than reading n/2 bytes from two of them; this may
+happen because your disk controller is capable of multi-disk operations in parallel
+or because you have multiple disk controllers.  The device mapper can help you to
+speed up your operations.
+
+	SIZE=$(( $(blockdev --getsize /dev/loop1) + \
+	$(blockdev --getsize /dev/loop2) ))
+
+	echo 0  $SIZE striped 2 16 /dev/loop1 0 /dev/loop2 0 | \
+	dmsetup create tiger
+
+Now reads/writes from /dev/mapper/tiger will alternate (in 16 sector chunks) between
+the two devices; you will also have combind the disks into one as in the linear case.
+
+Snapshots and COWs
+
+There may be a number of reasons why you may want to stop all writes to your block
+device but not want the system to come to a grinding halt.
+
+.Regualr backups
+	"Classically" machines were put in single-user mode to take backups.  
+	Backing-up a "live" system has the risk to incomplete or corrupted files and
+	erroneous time stamps.
+.Security
+	This jazzy new screen saver you want to install - what changes is it going to
+	make to your file-system? You want to find out.
+CDROMS
+	...or other read-only physical devices.  Say you want to set up your system 
+	on a CDROM but still want to allow local "ephemeral" changes that are discarded
+	when the system reboots.
+
+The solution is re-direction.  Effectively you tell the processes, "Look behind you!" 
+and in-a snap put a layer between the process and the device.  Activate the snapshot
+feature of the device mapper with modprobe dm-snapshot if necessary.
+
+Let us start then with a device which is managed by the device mapper.  For exmaple it
+could be created by
+
+	SIZE1=$(blockdev --getsize /dev/loop1)
+	SIZE2=$(blockdev --getsize /dev/llop2)
+
+	cat > /tmp/table2 <<EOF
+	0 $SIZE1 linear /dev/loop1 0
+	$SIZE1 $SIZE2 linear /dev/loop2 0
+	EOF
+
+	dmsetup create base /tmp/table2
+
+Now assume that you have put a file system on this device with a command like 'mke2fs
+/dev/mapper/base'; and suppose you have begun using this file system at /mnt with 
+the command 'mount /dev/mapper/base /mnt'.
+
+We will now take a "snapshot" of this file-system - in slow motion!  The following
+steps have to be run quite quickly (say with a script) on a running system where this
+file-system is being changed actively.
+
+First of all you create a duplicate of this device.  This is not just for safety - we
+will be changing the meaning of /dev/mapper/base without telling the file-system!
+
+	dmsetup table base | dmsetup create basedup
+
+Next we prepare our COW (copy-on-write) block device by making sure the first 8 (or
+whatever you decide is your chunk size) sectors are zeroed.
+
+	CHUNK=8
+	dd if=/dev/zero of-/dev/loop3 bs=512 count=$CHUNK
+
+Now we suspend all I/O (reads/writes) to the base device.  This is the critical step
+for a running system.  The kernel will have to put to sleep all processes that attemp
+to read from or write to this device; so we want to be sure we can resume soon.
+
+	dmsetup suspend base && TIME=$(date)
+
+The next step is to use the COW to clone the device:
+
+	echo 0 $(blockdev --getsize /dev/mapper/basedup) \
+	snapshot /dev/mapper/basedup /dev/loop3 p 8 | \
+	dmsetup create top
+
+What this says is that from now on reading from /dev/mapper/top will return the data
+from /dev/mapper/basedup unless you write "on top" of the original data.  Writes to 
+top will actually be written on /dev/loop3 in chunks of size 8 sectors.  If you have 
+used multiple transparent plastic sheets one on top of the other (or "Layers" in 
+GIMP) the effect is similar - what is written on top obscures what is below but
+wherever nothing is written on top you see clearly what is written on the lower layer.
+
+In particular, we can now make sure that all changes to the underlying block devices
+are "volatile."  If we execute the following commands (we'll bookmark this as
+"Point A" for later use) -
+
+	dmsetup table top | dmsetup load base
+	dmsetup resume base
+
+we will have replaced the file-system under /mnt with another one where all changes
+actually go to /dev/loop3.  When we dismantle this setup, /dev/loop1 and /dev/loop2
+will be in exactly the state that they were in at time $TIME.
+
+if /dev/loop1 and /dev/loop2 are on non-writable physical media (such as a CDROM),
+whereas /dev/loop3 is on a writable one (such as RAM or hard disk), then we have
+created a writable file-system out of a read-only one!
+
+This solves the last problem in our list above - but what aobut the first two? To
+tackle the second problem we must have some way of comparing the new file-system 
+with the older one.  If you try to mount /dev/mapper/basedup somewhere in order to
+do this, you will find that Linux (the kernel!) refuses to let you do this.  Instead
+we can create yet another device:
+
+	echo 0 $(blockdev --getsize /dev/mapper/basedup) \
+	snapshot-origin /dev/mapper/basedup | \
+	dmsetup create origin
+
+You can now mount /dev/mapper/origin somewhere (say /tmp/orig) and compare the
+original file system with the current one with a command like
+
+	diff -qur /tmp/orig /mnt
+
+what happens if you write to /tmp/orig? Check it out and you'll be mystified 
+for a moment.
+
+The analogy of plastic sheets breaks down here!  All writes to /tmp/orig go directly
+to the underlying device basedup but are negated on /dev/loop3 so as to become 
+invisible to reads from /mnt.  Similarly, reads from /tmp/orig ignore whatever
+changes were made by writing to /mnt.  In other words the original file system has
+been forked (and orthogonally at that!) and /dev/loop3 actually stores both negative
+and positive data in order to achieve this.  No plastic sheet can be made to work
+like this!
+
+To see why this is useful, let us see how it solves the problem of backups.  What we
+want is to get a "snapshot" view of the file-system but we want to continue using the
+original system.  So in this case we should not run the commands at point A above.
+Instead we run the commands here, at point B:
+
+	dmsetup table origin | dmsetup load base
+	dmsetup resume base
+
+Now all writes to /mnt will go onto the original device, but these changes are negated
+on /dev/mapper/top.  So if we mount the latter device at (say) /tmp/snap, then we can
+read snapshot of the files at time $TIME from this directory.  A command like
+
+	cd /tmp/snap
+	find . -xdev | cpio -o -H new > "backup-at-$TIME"
+
+will provide a snapshot backup of the file-system at time $TIME.
+
+We could also have taken such a snapshot at Point A with the commands
+
+	cd /tmp/orig
+	find . -xdev | cpio -o -H new > "backup-at-$TIME"
+
+The main difference is that the changes to /dev/mapper/top are volatile! There is no way
+to easily dismantle the structure created under (A) without all th echanges made.  In
+the backup context you want to retain the changes; at Point B you run
+
+	dmsetup suspend base
+	dmsetup remove top
+	dmsetup remove origin
+	dmsetup table basedup | dmsetup load base
+	dmsetup resume base
+
+and you are back to business as usual.  If you were to run this at Point A the results
+would be quite unpredictable!  What would be the status of all those open files on 
+/dev/mapper/top?  A number of hung process would be the most likely outcomes - even some
+kernel threads could hang - and then perhaps break!
+
+For Your Eyes Only
+
+Say you have a laptop or CD which carries some valuable data - valuable not just to you
+but to anyone who has it. (When, Oh! When will I ever get my hands on such data).  In 
+this case backups are no good.  What you want is to protect this data from theft.  
+Assuming you believe in the strength of current encryption techniques you could protect
+it by encrypting the relevant file.  This approach has some serious problems:
+
+.The file must be de/re-encrypted every time you want to use it.
+.The encrypted file is pin-pointed, thus narrowing down the search for anyone wanting
+ steal your stuff.
+.You may not know precisely which files contain secret stuff.  For example you prepare
+ a secret report and send it to the printer.  Unbeknownst to you a temporary PDF file
+ was created for this purpose and you din't encrypt that.
+
+For these and a possible host of other reasons you may to encrypt the entire block 
+device.  The device mapper offers a way to do this.  Activate the encryption service
+of the device mapper with 'modprobe dm-crypt' if necessary.  Also activate some 
+encryption and hashing mechanism by commands like 'modprobe md5' and 'modprobe aes'
+if necessary.
+
+First of all you need to generate and store your secret key.  If you use AES as 
+indicated above then you can use a key of length up to 32 bytes which can be generated
+by a command like
+
+	dd if=/dev/random bs=16 count=1 | \
+	od --width=16 -t x2 | head -l | \
+	cut -f2- -d' ' | tr -d ' ' > /tmp/my_secret_key
+
+Of course, you should probably not output your secret key to such a file - there are 
+safer ways of storing it:
+
+.Output it directly to the screen and memorize it!  It's only 32 characters after all!
+.Write it to a USB stick or some such device which never leavs your pocket.
+.Encrypt it using 'pgd' or 'openssl' and then store it on a USB stick or a device
+ that never leaves you.
+
+If you use the third option you will need to use a passphrase - you must remember this
+passphrase as well.  One way to do that is to use this passpharse often - use it... or
+lose it!
+
+You can now setup the encrypted device
+
+	echo 0 $(blockdev --getsize /dev/loop1) \
+	crypt aes-plain $(cat /tmp/my_secret_key) 0 /dev/loop1 0 | \
+	dmsetup create mydata
+
+You can then make a file-system 'mke2fs /dev/mapper/mydata' on this block device and
+store data on it after mounting it somewhere with 'mount /dev/mapper/mydata /mnt'. 
+All the data written to /mnt will then be transparently encrypted before storing it
+in /dev/loop1.  When you are through you unmount the device and dismantle it as before:
+
+	umount /mnt
+	dmsetup remove mydata
+
+The next time you want to use the device you can set it up with the smae command as
+above (providing you supply the secret key in /tmp/my_secret_key).  Of course, you 
+shouldn't rune mke2fs on the device a second time unless you want to erase all that
+valuable data!
+
+Getting To The Root Of The Problem
+
+All the steps given above can be carried out on any block device(s) in place of the
+loop devices that were used.  However, when the block device is the root device then
+life gets a little more complex.  (Roots generally are complex).
+
+First of all we need to put the root device under the control of the device mapper;
+this is best done with an initial RAM disk (or initrd).  Even after this is done, we
+need to be careful if we are trying to run some of the above commands for the root 
+file system on a "live" system.  In particular, it is not advisable to suspend I/O
+on the root file system without deep introspection!  After all this means that all
+processes that makes a read/write call to the root file system will be put to sleep.
+
+Here is one way around the problem.  Create a temporary file system
+
+	mount -t tmpfs tmpfs /mnt
+
+To this file system copy all the files that are necessary in order to perform the 
+changes - in particualr, you need /sbin/dmsetup, /bin/sh, the /dev files and all 
+shared libraries that these programs depend on.  Then you run chroot /mnt.  After
+this you can run a script or (if you type quickly and without errors!) a sequence
+of commands that will suspend the root device map and make relevant changes to it
+- for example, to take a snapshot.  Don't forget to resume the root device before
+exiting the chroot.

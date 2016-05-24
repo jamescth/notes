@@ -1,0 +1,14 @@
+crash>p *_cpu_pda[0] -15
+  irqstackptr = 0xffffffff806f6fc0 "",
+  irqstackptr = 0xffff810c285effc0 "",
+  irqstackptr = 0xffff810c2862ffc0 "",
+  irqstackptr = 0xffff810c2867ffc0 "",
+  irqstackptr = 0xffff810c286bffc0 "",
+  irqstackptr = 0xffff810c286fffc0 "",
+  irqstackptr = 0xffff810c2874ffc0 "",
+  irqstackptr = 0xffff810c2878ffc0 "",
+  irqstackptr = 0xffff810c287cffc0 "",
+  irqstackptr = 0xffff810c2801ffc0 "",
+  irqstackptr = 0xffff810c2807ffc0 "",
+  irqstackptr = 0xffff810c280bffc0 "",
+

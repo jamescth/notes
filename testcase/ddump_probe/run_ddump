@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# for debug
+# set -x
+
+param1=""
+
+# make sure the module exists
+if [ ! -f ./ddump_module.ko ]; then
+	echo "ddump_module.ko not found!"
+	exit
+fi
+
+# get the symbol address
+param1="`cat /proc/kallsyms | grep -i $1 | awk '{print $1}'`"
+
+# get the length of the address
+len=${#param1}
+
+if [ ! $len -eq 16 ]; then
+	echo "addr is not 16 digits"
+	exit
+fi
+
+# print the last 8 digits
+# echo ${param1:8}
+
+echo $1 is 0x$param1
+
+insmod ddump_module.ko addr_1st=0x$param1
+
+lsmod | grep ddump_module

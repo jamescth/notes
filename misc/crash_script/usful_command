@@ -1,0 +1,37 @@
+disassemble w/ file function info
+crash> dis -l <add/funcp>
+
+get struct offset
+crash> struct -o 
+
+
+get stack
+crash> bt -r
+crash> rd <addr> <size>
+
+any ddr machine
+/root/crashmacro
+or 
+/p4/main/platform/os/install/root/crashmacro
+
+trigger pre-defined macro
+crash> source /p4/main/platform/os/tools/crash/macro/crash_script
+crash> ls_block
+
+crash> whatis block_subsys
+struct kset block_subsys;
+crash> whatis block_subsys.list
+struct list_head
+crash> p &block_subsys.list
+$4 = (struct list_head *) 0xffffffff8061f988
+
+
+get console output level
+normal
+crash> rd console_printk 2
+ffffffff805dd350:  0000000400000001 0000000700000001   ................
+
+ps -c
+ps -s
+kmem -C
+vm -p <pid>

@@ -1,0 +1,6 @@
+if the NFS mount points are all current, restart the nscd process
+	/usr/sbin/nscd stop
+	/usr/sbin/nscd start
+
+delete busy filesystem 
+	umount -l <filesystem>

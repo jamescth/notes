@@ -1,0 +1,155 @@
+# ddsh -s sys show ver
+Data Domain OS 5.5.0.0-415499
+
+(gdb) thread apply all bt
+
+Thread 7 (Thread 47351886100832 (LWP 11327)):
+#0  0x00002b10f48fe896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#1  0x00002b10f2eace66 in dd_thread_event_wait (_event=
+      {_event_iface = 0x2b10f8598d00, _base_event = 0x2b10f8598d00, _thread_event = 0x2b10f8598d00}, arg=0x7746f0, abstime=0x0) at lib/dd_event.c:66
+#2  0x00002b10f2e86bd1 in dd_event_timedwait (_event=
+      {_event_iface = 0x2b10f8598d00, _base_event = 0x2b10f8598d00, _thread_event = 0x2b10f8598d00}, arg=0x7746f0, abstime=0x0) at include/dd_event.h:104
+#3  0x00002b10f2e86b58 in dd_event_wait (_event=
+      {_event_iface = 0x2b10f8598d00, _base_event = 0x2b10f8598d00, _thread_event = 0x2b10f8598d00}, arg=0x7746f0) at include/dd_event.h:110
+#4  0x00002b10f2e86a3a in dd_counter_reserve_async_wait (counter=0x7746f0,
+    event=0x2b10f8598d00) at lib/dd_counter.c:328
+#5  0x00002b10f2e86750 in dd_counter_reserve (counter=0x7746f0, count=1, threshold=0)
+    at lib/dd_counter.c:279
+#6  0x00002b10f2e654e0 in dd_semaphore_wait (semaphore=0x7746f0) at include/dd_thread.h:3368
+#7  0x00002b10f2e654a4 in dd_async_pthread_thread_run (arg=0x7746c0) at lib/dd_async.c:561
+#8  0x00002b10f2f374ec in _dd_thread_start_func (name=0x7741f8 "commlib async", tid=0x76ecb0,
+    thargs=0x76dcc0) at lib/dd_thread.c:1428
+#9  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x76dcc0) at lib/dd_thread.c:1570
+#10 0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#11 0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#12 0x0000000000000000 in ?? ()
+
+Thread 6 (Thread 47351887153504 (LWP 11328)):
+---Type <return> to continue, or q <return> to quit---
+#0  0x00002b10f48fe896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#1  0x00002b10f2eace66 in dd_thread_event_wait (_event=
+      {_event_iface = 0x2b10f8699d00, _base_event = 0x2b10f8699d00, _thread_event = 0x2b10f8699d00}, arg=0x7748a0, abstime=0x0) at lib/dd_event.c:66
+#2  0x00002b10f2e86bd1 in dd_event_timedwait (_event=
+      {_event_iface = 0x2b10f8699d00, _base_event = 0x2b10f8699d00, _thread_event = 0x2b10f8699d00}, arg=0x7748a0, abstime=0x0) at include/dd_event.h:104
+#3  0x00002b10f2e86b58 in dd_event_wait (_event=
+      {_event_iface = 0x2b10f8699d00, _base_event = 0x2b10f8699d00, _thread_event = 0x2b10f8699d00}, arg=0x7748a0) at include/dd_event.h:110
+#4  0x00002b10f2e86a3a in dd_counter_reserve_async_wait (counter=0x7748a0,
+    event=0x2b10f8699d00) at lib/dd_counter.c:328
+#5  0x00002b10f2e86750 in dd_counter_reserve (counter=0x7748a0, count=1, threshold=0)
+    at lib/dd_counter.c:279
+#6  0x00002b10f2e654e0 in dd_semaphore_wait (semaphore=0x7748a0) at include/dd_thread.h:3368
+#7  0x00002b10f2e654a4 in dd_async_pthread_thread_run (arg=0x774870) at lib/dd_async.c:561
+#8  0x00002b10f2f374ec in _dd_thread_start_func (name=0x7741f8 "commlib async", tid=0x7750c0,
+    thargs=0x775030) at lib/dd_thread.c:1428
+#9  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x775030) at lib/dd_thread.c:1570
+#10 0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#11 0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#12 0x0000000000000000 in ?? ()
+
+Thread 5 (Thread 47351897659744 (LWP 11329)):
+#0  0x00002b10f48fea87 in pthread_cond_timedwait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+---Type <return> to continue, or q <return> to quit---
+#1  0x00002b10f2f39c9d in dd_cond_timedwait (cond=0x2b10f45eb388, condlock=0x2b10f45eb3c8,
+    abstime=0x2b10f909eda0) at lib/dd_thread.c:2281
+#2  0x00002b10f2f3b36b in dd_timeout_handler (arg=0x0) at lib/dd_timeout.c:149
+#3  0x00002b10f2f374ec in _dd_thread_start_func (name=0x2b10f347f401 "timeout_handler_thread",
+    tid=0x76d190, thargs=0x76d100) at lib/dd_thread.c:1428
+#4  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x76d100) at lib/dd_thread.c:1570
+#5  0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#6  0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#7  0x0000000000000000 in ?? ()
+
+Thread 4 (Thread 47351901059424 (LWP 11330)):
+#0  0x00002b10f48fe896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#1  0x00002b10f2eace66 in dd_thread_event_wait (_event=
+      {_event_iface = 0x2b10f93dcd00, _base_event = 0x2b10f93dcd00, _thread_event = 0x2b10f93dcd00}, arg=0x2b10f916a550, abstime=0x0) at lib/dd_event.c:66
+#2  0x00002b10f2e86bd1 in dd_event_timedwait (_event=
+      {_event_iface = 0x2b10f93dcd00, _base_event = 0x2b10f93dcd00, _thread_event = 0x2b10f93dcd00}, arg=0x2b10f916a550, abstime=0x0) at include/dd_event.h:104
+#3  0x00002b10f2e86b58 in dd_event_wait (_event=
+      {_event_iface = 0x2b10f93dcd00, _base_event = 0x2b10f93dcd00, _thread_event = 0x2b10f93dcd00}, arg=0x2b10f916a550) at include/dd_event.h:110
+#4  0x00002b10f2e86a3a in dd_counter_reserve_async_wait (counter=0x2b10f916a550,
+    event=0x2b10f93dcd00) at lib/dd_counter.c:328
+#5  0x00002b10f2e86750 in dd_counter_reserve (counter=0x2b10f916a550, count=1, threshold=0)
+    at lib/dd_counter.c:279
+#6  0x00002b10f2e654e0 in dd_semaphore_wait (semaphore=0x2b10f916a550)
+---Type <return> to continue, or q <return> to quit---
+    at include/dd_thread.h:3368
+#7  0x00002b10f2e654a4 in dd_async_pthread_thread_run (arg=0x2b10f916a520)
+    at lib/dd_async.c:561
+#8  0x00002b10f2f374ec in _dd_thread_start_func (
+    name=0x2b10f916a058 "dd_rpc_registry async update co", tid=0x2b10f871d890,
+    thargs=0x2b10f871d800) at lib/dd_thread.c:1428
+#9  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x2b10f871d800) at lib/dd_thread.c:1570
+#10 0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#11 0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#12 0x0000000000000000 in ?? ()
+
+Thread 3 (Thread 47351902112096 (LWP 11331)):
+#0  0x00002b10f48fe896 in pthread_cond_wait@@GLIBC_2.3.2 ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#1  0x00002b10f2eace66 in dd_thread_event_wait (_event=
+      {_event_iface = 0x2b10f94ddd00, _base_event = 0x2b10f94ddd00, _thread_event = 0x2b10f94ddd00}, arg=0x2b10f916a700, abstime=0x0) at lib/dd_event.c:66
+#2  0x00002b10f2e86bd1 in dd_event_timedwait (_event=
+      {_event_iface = 0x2b10f94ddd00, _base_event = 0x2b10f94ddd00, _thread_event = 0x2b10f94ddd00}, arg=0x2b10f916a700, abstime=0x0) at include/dd_event.h:104
+#3  0x00002b10f2e86b58 in dd_event_wait (_event=
+      {_event_iface = 0x2b10f94ddd00, _base_event = 0x2b10f94ddd00, _thread_event = 0x2b10f94ddd00}, arg=0x2b10f916a700) at include/dd_event.h:110
+#4  0x00002b10f2e86a3a in dd_counter_reserve_async_wait (counter=0x2b10f916a700,
+    event=0x2b10f94ddd00) at lib/dd_counter.c:328
+#5  0x00002b10f2e86750 in dd_counter_reserve (counter=0x2b10f916a700, count=1, threshold=0)
+    at lib/dd_counter.c:279
+---Type <return> to continue, or q <return> to quit---
+#6  0x00002b10f2e654e0 in dd_semaphore_wait (semaphore=0x2b10f916a700)
+    at include/dd_thread.h:3368
+#7  0x00002b10f2e654a4 in dd_async_pthread_thread_run (arg=0x2b10f916a6d0)
+    at lib/dd_async.c:561
+#8  0x00002b10f2f374ec in _dd_thread_start_func (
+    name=0x2b10f916a058 "dd_rpc_registry async update co", tid=0x2b10f871daf0,
+    thargs=0x2b10f871da60) at lib/dd_thread.c:1428
+#9  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x2b10f871da60) at lib/dd_thread.c:1570
+#10 0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#11 0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#12 0x0000000000000000 in ?? ()
+
+Thread 2 (Thread 47351903164768 (LWP 11332)):
+#0  0x00002b10f590209a in epoll_wait () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#1  0x00002b10f2f0c821 in dd_poll_task (async=0x2b10f916a040, thread_num=2, arg=0x2b10f8720c40)
+    at lib/dd_poll.c:209
+#2  0x00002b10f2e6575d in dd_async_thread_run (thread=0x2b10f916a880) at lib/dd_async.c:660
+#3  0x00002b10f2e654b8 in dd_async_pthread_thread_run (arg=0x2b10f916a880)
+    at lib/dd_async.c:563
+#4  0x00002b10f2f374ec in _dd_thread_start_func (
+    name=0x2b10f916a058 "dd_rpc_registry async update co", tid=0x2b10f871dd50,
+    thargs=0x2b10f871dcc0) at lib/dd_thread.c:1428
+#5  0x00002b10f2f37af5 in _dd_thread_base (void_tharg=0x2b10f871dcc0) at lib/dd_thread.c:1570
+#6  0x00002b10f48fc7bb in start_thread ()
+   from /auto/home/lsbuild/desktop-398860/lib64/libpthread.so.0
+#7  0x00002b10f5901cdd in clone () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#8  0x0000000000000000 in ?? ()
+---Type <return> to continue, or q <return> to quit---
+
+Thread 1 (Thread 47351862760832 (LWP 11253)):
+#0  0x00002b10f5876f47 in sigprocmask () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#1  0x00002b10f5877fbd in abort () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+#2  0x00002b10f2f47623 in dd_panic_abort (
+    msgBuf=0x7fffbada9b20 "lib/dd_sysiface.c: close: 235: close(-1) returned with error Bad file descriptor\n") at lib/debug.c:890
+#3  0x00002b10f2f479e3 in dd_panic_intern (
+    fmt=0x2b10f347d4e8 "%s: %s: %d: close(%d) returned with error %s\n") at lib/debug.c:982
+#4  0x00002b10f2f3307e in close (fd=-1) at lib/dd_sysiface.c:235
+#5  0x00002b10f2f330d3 in dd_close (fd=-1) at lib/dd_sysiface.c:262
+#6  0x0000000000403eca in pm_hdc_process_is_running (pm_proc=0x5160e0)
+    at ddr/procmon/procmon.c:445
+#7  0x000000000040540c in pm_start_process_if_needed (pm_proc=0x5160e0)
+    at ddr/procmon/procmon.c:1264
+#8  0x0000000000407ab3 in pm_init_process (pm_proc=0x5160e0) at ddr/procmon/procmon.c:2827
+#9  0x000000000040802b in main (argc=1, argv=0x7fffbadaab18) at ddr/procmon/procmon.c:3000
+#0  0x00002b10f5876f47 in sigprocmask () from /auto/home/lsbuild/desktop-398860/lib64/libc.so.6
+

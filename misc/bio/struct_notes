@@ -1,0 +1,433 @@
+gendisk - an individual disk device.  the kernel also uses gendisk struct to represent partitions.
+
+
+int register_blkdev(unsigned int major, const char *name)
+
+struct gendisk *alloc_disk(int minors)
+void add_disk(struct gendisk %gd)
+
+**************************************************************************
+example:
+struct sbull_dev {
+	int			size;	// device size in sectors
+	u8			*data;	// the data array
+	short			users;	// how many users
+	short			media_change;	// flag a media change
+	spinlock_t		lock;
+	sturct request_queue	*queue;	// the device request queue
+	struct gendisk		*gd;	// the gendisk struct
+	struct timer_list	timer;	// for simulated media change
+};
+
+struct sbull_dev *dev;
+
+sbull_major = register_blkdev(sbull_major, "sbull");
+if (sbull_major <= 0) {
+	printk(KERN_WARNING "sbull: unable to get major number\n");
+	return -EBUSY;
+}
+
+dev = vmalloc(sizeof (struct sbull_dev));
+memset (dev, 0, sizeof (struct sbull_dev));
+dev->size = nsectors*hardsect_size;
+dev->data = vmalloc(dev->size);
+if (dev->data == NULL) {
+	printk(KERN_NOTICE "vmalloc failure\n");
+	return;
+}
+spin_lock_init(&dev->lock);
+
+dev->queue = blk_init_queue(sbull_request, &dev->lock);
+	sbull_request() is a funp.
+
+dev->gd = alloc_disk(SBULL_MINORS);
+if (! dev->gd) {
+	printk(KERN_NOTICE "alloc_disk failure");
+	goto out_vfree;
+}
+dev->gd->major 		= sbull_major;
+dev->gd->fist_minor 	= which*SBULL_MINORS;
+dev->gd->fops 		= &sbull_ops;
+dev->gd->queue		= dev->queue;
+dev->gd->private_data	= dev;
+snprintf(dev->gd->disk_name, 32, "sbull%c", which + 'a');
+set_capacity(dev->gd, nsectors*(hardsect_size/KERNEL_SECTOR_SIZE));
+add_disk(dev->gd);
+
+**************************************************************************
+
+ls_bdev
+
+	set $bd_list_off_block_device = (long)(&((struct block_device*)0)->bd_list)
+	set $head = &all_bdevs
+	set $cur = $head->next
+	set $num = 0
+	while $cur != $head
+		set $block_device = (struct block_device*)(((long)$cur) - $bd_list_off_block_device)
+		set $majmin = $block_device->bd_dev
+		printf "%p: dev:%d.%d", $block_device, ($majmin >> 20), ($majmin & ((1 << 20) - 1))
+		if $block_device->bd_disk
+			printf "  disk:%s", $block_device->bd_disk->kobj.k_name 
+		end
+		if $block_device->bd_part
+			printf "  partition:%d", $block_device->bd_part->partno
+		end
+
+	crash> ls_bdev
+	0xffff8133e66a6b00: dev:61.259  disk:dd_dg10  partition:3
+	0xffff8133bc29bac0: dev:61.258  disk:dd_dg10  partition:2
+	0xffff81346ff12180: dev:61.257  disk:dd_dg10  partition:1
+
+crash> struct -o block_device
+struct block_device {
+  ...
+  [0xc8] struct list_head bd_list;
+
+crash> all_bdevs
+all_bdevs = $9 = {
+  next = 0xffff8133e66a6bc8,
+  prev = 0xffff813fb4634b88
+}
+
+crash> p 0xffff8133e66a6bc8-0xc8
+$10 = 0xffff8133e66a6b00
+crash> block_device 0xffff8133e66a6b00
+struct block_device {
+  bd_dev = 0x3d00103,
+  ...
+  bd_disk = 0xffff8113dd448c00,			<= gendisk
+  ...
+  bd_part = 0xffff811f8ff65600,			<= hd_struct
+
+crash> gendisk 0xffff8113dd448c00
+struct gendisk {
+  major = 61,
+  first_minor = 256,
+  minors = 16,
+  disk_name = "dd_dg10\000
+  part = 0xffff8113f200c0c0,
+  part_uevent_suppress = 0,
+  fops = 0xffffffff883a7e70,
+  queue = 0xffff8113d8bdd1d0,
+
+crash> hd_struct 0xffff811f8ff65600
+struct hd_struct {
+  start_sect = 524289536,
+  nr_sects = 33554432,
+  kobj = {
+    k_name = 0xffff811f8ff65618 "dd_dg10p3",
+
+//////////////////
+all_bdevs
+	1. get global from all_bdevs (a list struct)
+	2. calculate the offset bd_list (0xc8)
+	3. the next pointer - 0xc8 is struct block_device => bd
+		major/minor => bd_dev
+		gendisk => bd_disk
+		partition(struct hd_struct) => bd_part
+//////////////////
+	set $node_off_class_device = (long)(&((struct class_device*)0)->node)
+	set $cdev_off_scsi_disk = (long)(&((struct scsi_disk*)0)->cdev)
+
+	# global 'struct class' object sd_disk_class has all class_device object
+        # in its linked list; these class_devices are embedded in scsi_disk
+	printf "scsi_disk's: (struct scsi_disk*)\n"
+	set $head = &(sd_disk_class->children)
+	set $cur = $head->next
+	while $cur != $head
+		set $scsi_disk = (struct scsi_disk*)(((long)$cur) - $node_off_class_device - $cdev_off_scsi_disk)
+		set $gendisk = $scsi_disk->disk
+		printf "%p: %s %s\n", $scsi_disk, $gendisk->kobj.k_name, $scsi_disk->cdev.kobj.k_name
+
+	crash> struct -o class
+	struct class {
+	    [0x0] const char *name;
+	    [0x8] struct module *owner;
+	   [0x10] struct kset subsys;
+	   [0xb0] struct list_head children;		<==============
+	   [0xc0] struct list_head devices;
+	   [0xd0] struct list_head interfaces;
+
+	crash> struct -o class_device
+	struct class_device {
+	   [0x0] struct list_head node;			<==============
+
+	crash> struct -o scsi_disk
+	struct scsi_disk {
+	    [0x0] struct scsi_driver *driver;
+	    [0x8] struct scsi_device *device;
+	   [0x10] struct class_device cdev;		<==============
+
+	scsi_disk->cdev->node inserts into children
+
+	crash> sd_disk_class
+	sd_disk_class = $14 = {
+	...
+	  children = {
+	    next = 0xffff811f82f9c610,
+	    prev = 0xffff81146fab9410
+
+	crash> p 0xffff811f82f9c610-0x0-0x10
+	$17 = 0xffff811f82f9c600
+
+	crash> scsi_disk 0xffff811f82f9c600
+	struct scsi_disk {
+	  driver = 0xffffffff80605780,
+	  device = 0xffff811f84b82000,
+	  cdev = {
+	    node = {
+	      next = 0xffff811f8ff61a10,
+	      prev = 0xffffffff80605630
+	    },
+	    kobj = {
+	      k_name = 0xffff811f82f9c628 "0:0:0:0",
+	      name = "0:0:0:0
+
+//////////////////
+sd_disk_class
+	1. get global sd_disk_class
+	2. the children filed is inserted w/ scsi_disk->cdev->node,
+	   so, scsi_disk is the pointer - 2 offsets.
+//////////////////
+
+	define ls_block
+		set $entry_off_kobject = (long)(&((struct kobject*)0)->entry)
+		set $list_off_kset = (long)(&((struct kset*)0)->list)
+		set $kobj_off_gendisk = (long)(&((struct gendisk*)0)->kobj)
+
+		# global kset 'block_subsys' have all registered gendisk
+		printf "registered gendisk's: (/sys/block/*)\n"
+		set $head = &(block_subsys.list)
+		set $cur = $head->next
+		while $cur != $head
+			set $gendisk = (struct gendisk*)(((long)$cur) - $entry_off_kobject - $kobj_off_gendisk)
+			set $request_queue = $gendisk->queue
+			set $elevator_name = 0
+			if ($request_queue != 0) && ($request_queue->elevator != 0)
+				set $elevator_name = $request_queue->elevator->elevator_type.elevator_name
+			end
+	                set $in_queue_r = $request_queue->rq.count[0]
+	                set $in_queue_w = $request_queue->rq.count[1]
+	                set $in_flight = $request_queue->in_flight
+			#printf "%p: %s request_queue=%p elevator=%s\n", $gendisk, $gendisk->kobj.k_name, $request_queue, ($elevator_name ? $elevator_name : "<none>")
+			printf "%p: %s request_queue=%p in_queue %d/%d in_flight %d", $gendisk, $gendisk->kobj.k_name, $request_queue, $in_queue_r, $in_queue_w, $in_flight
+
+			if $elevator_name != 0
+				printf " %s \n", $elevator_name
+
+*************************************************************************
+
+struct kset block_subsys;
+
+ *	struct kset - a set of kobjects of a specific type, belonging
+ *	to a specific subsystem.
+struct kset {
+	struct kobj_type	* ktype;
+	struct list_head	list;
+	spinlock_t		list_lock;
+	struct kobject		kobj;
+	struct kset_uevent_ops	* uevent_ops;
+};
+
+
+
+
+# dm_map -v
+07/27 07:05:09.255 (tid 0x2ad878010040): NOTICE: Soft 4293918720, Hard 4293918720, Parent 398
+07/27 07:05:09.301 (tid 0x2ad878010040): DEBUG: dd_plib_base_get_serial: class_name: dd-unuse, mac: 00:60:16:49:99:2d
+
+Enclosure 1  DD890R    FCNME114600050
+07/27 07:05:09.387 (tid 0x2ad878010040): NOTICE: SG_IO (dd_plib_sg_io) error: dev=2:0:0:0, status=2/0/8
+07/27 07:05:09.393 (tid 0x2ad878010040): NOTICE: SG_IO (dd_plib_sg_io) error: dev=1:0:0:0, status=2/0/8
+07/27 07:05:09.404 (tid 0x2ad878010040): NOTICE: SG_IO (dd_plib_sg_io) error: dev=0:0:0:0, status=2/0/8
+Enclosure 2  ES30      APM00111003205
+
+Disk  UUID                                  		  DM Dev Maj:Min   SD    Maj:Min  SG     HTCL       Path       State
+--------------------------------------------------------------------------------------------------------------
+ 1.1   TG32C10240GA3EMC_______________118033081_FG001C9S dm-1   253:16    sdc     8:32   sg2    2:0:0:0     hu:Active  ONLINE
+ 1.2   TG32C10240GA3EMC_______________118033081_FG001CX2 dm-2   253:32    sdb     8:16   sg1    1:0:0:0     hu:Active  ONLINE
+ 1.3   TG32C10240GA3EMC_______________118033081_FG001CNV dm-3   253:48    sda     8:0    sg0    0:0:0:0     hu:Active  ONLINE
+ 2.1   HUA722020ALA330_B9K9184F               		 dm-15  253:240   sdo     8:224  sg14   7:0:11:0    9a:Active  ONLINE
+ 2.2   HUA722020ALA330_B9K8A7WF               		 dm-17  253:272   sdq    65:0    sg16   7:0:13:0    9a:Active  ONLINE
+ 2.3   HUA722020ALA330_B9K8ZW8F               		 dm-18  253:288   sdr    65:16   sg17   7:0:14:0    9a:Active  ONLINE
+ 2.4   HUA722020ALA330_B9K900BF               		 dm-16  253:256   sdp     8:240  sg15   7:0:12:0    9a:Active  ONLINE
+ 2.5   HUA722020ALA330_B9K90BTF               		 dm-14  253:224   sdn     8:208  sg13   7:0:10:0    9a:Active  ONLINE
+ 2.6   HUA722020ALA330_B9K918UF               		 dm-13  253:208   sdm     8:192  sg12   7:0:9:0     9a:Active  ONLINE
+ 2.7   HUA722020ALA330_B9K90DPF               		 dm-12  253:192   sdl     8:176  sg11   7:0:8:0     9a:Active  ONLINE
+ 2.8   HUA722020ALA330_B9K8TSMF               		 dm-11  253:176   sdk     8:160  sg10   7:0:7:0     9a:Active  ONLINE
+ 2.9   HUA722020ALA330_B9K2DPGF               		 dm-10  253:160   sdj     8:144  sg9    7:0:6:0     9a:Active  ONLINE
+ 2.10  HUA722020ALA330_B9K920UF               		 dm-9   253:144   sdi     8:128  sg8    7:0:5:0     9a:Active  ONLINE
+ 2.11  HUA722020ALA330_B9K89LGF               		 dm-8   253:128   sdh     8:112  sg7    7:0:4:0     9a:Active  ONLINE
+ 2.12  HUA722020ALA330_B9K918MF               		 dm-7   253:112   sdg     8:96   sg6    7:0:3:0     9a:Active  ONLINE
+ 2.13  HUA722020ALA330_B9K8YV2F               		 dm-6   253:96    sdf     8:80   sg5    7:0:2:0     9a:Active  ONLINE
+ 2.14  HUA722020ALA330_B9K9152F               		 dm-5   253:80    sde     8:64   sg4    7:0:1:0     9a:Active  ONLINE
+ 2.15  HUA722020ALA330_B9K8W1RF               		 dm-4   253:64    sdd     8:48   sg3    7:0:0:0     9a:Active  SPARE
+
+
+crash> ls_bdev
+0xffff811f83be8c00: dev:253.54  disk:dm-3  partition:6
+0xffff811f82ee5140: dev:253.38  disk:dm-2  partition:6
+0xffff811f82ee54c0: dev:253.22  disk:dm-1  partition:6
+0xffff811f8139b440: dev:253.51  disk:dm-3  partition:3
+0xffff811f82ee5bc0: dev:253.35  disk:dm-2  partition:3
+0xffff811f82ee5840: dev:253.19  disk:dm-1  partition:3
+0xffff813f838df800: dev:8.18  disk:sdb  partition:2
+0xffff813f838df480: dev:8.2  disk:sda  partition:2
+0xffff813f838df100: dev:8.34  disk:sdc  partition:2
+0xffff811f8139b0c0: dev:254.2  disk:mvwamb0  partition:2
+0xffff813f838dfb80: dev:253.48  disk:dm-3
+0xffff811f8139b7c0: dev:253.32  disk:dm-2
+0xffff811f8139bb40: dev:253.16  disk:dm-1
+0xffff813f8504bb40: dev:8.0  disk:sda
+0xffff813f849e3b00: dev:8.16  disk:sdb
+0xffff813fb46343c0: dev:8.32  disk:sdc
+
+crash> ls_scsi_disk
+scsi_disk's: (struct scsi_disk*)
+0xffff811f82f9c600: sda 0:0:0:0
+0xffff811f8ff61a00: sdb 1:0:0:0
+0xffff811fb2bc7a00: sdc 2:0:0:0
+0xffff811fb249ae00: sdd 7:0:0:0
+
+crash> ls_block
+registered gendisk's: (/sys/block/*)
+0xffff811fb29bd000: sda request_queue=0xffff811f82fc5618 in_queue 0/0 in_flight 0 noop
+0xffff811f84777400: sdb request_queue=0xffff811fb25eb658 in_queue 0/0 in_flight 0 noop
+0xffff811fb2bc7c00: sdc request_queue=0xffff811fb25eaf90 in_queue 0/0 in_flight 0 noop
+0xffff813f844cd400: mvwamb0 request_queue=0xffff813f81b7d498 in_queue 0/0 in_flight 0
+0xffff813f8471ea00: dm-1 request_queue=0xffff813f81b7c040 in_queue 0/0 in_flight 0
+0xffff813f85187e00: dm-2 request_queue=0xffff813f832f74d8 in_queue 0/0 in_flight 0
+0xffff813f82a21200: dm-3 request_queue=0xffff813f81b7c708 in_queue 0/0 in_flight 0
+
+
+crash> file_operations 0xffffffff804a97e0
+struct file_operations {
+  owner = 0x0,
+  llseek = 0xffffffff802a56df <block_llseek>,
+  read = 0xffffffff80282c16 <do_sync_read>,
+  write = 0xffffffff80282b0b <do_sync_write>,
+  aio_read = 0xffffffff8025bf16 <generic_file_aio_read>,
+  aio_write = 0xffffffff8025cd1e <generic_file_aio_write_nolock>,
+  readdir = 0,
+  poll = 0,
+  ioctl = 0,
+  unlocked_ioctl = 0xffffffff802a575b <block_ioctl>,
+  compat_ioctl = 0xffffffff803296b9 <compat_blkdev_ioctl>,
+  mmap = 0xffffffff8025aa9b <generic_file_mmap>,
+  open = 0xffffffff802a64b6 <blkdev_open>,
+  flush = 0,
+  release = 0xffffffff802a61b3 <blkdev_close>,
+  fsync = 0xffffffff802a5533 <block_fsync>,
+  aio_fsync = 0,
+  fasync = 0,
+  lock = 0,
+  sendpage = 0,
+  get_unmapped_area = 0,
+  check_flags = 0,
+  dir_notify = 0,
+  flock = 0,
+  splice_write = 0xffffffff8029f087 <generic_file_splice_write>,
+  splice_read = 0xffffffff8029f95b <generic_file_splice_read>,
+  setlease = 0
+}
+
+crash> file ffff813f86582180 | grep f_mapping
+  f_mapping = 0xffff813fb4634ce0
+crash> address_space 0xffff813fb4634ce0
+...
+  a_ops = 0xffffffff804a9760,
+
+crash> address_space_operations 0xffffffff804a9760
+struct address_space_operations {
+  writepage = 0xffffffff802a584b <blkdev_writepage>,
+  readpage = 0xffffffff802a5834 <blkdev_readpage>,
+  sync_page = 0xffffffff802a0dbc <block_sync_page>,
+  writepages = 0xffffffff80260b4b <generic_writepages>,
+  set_page_dirty = 0,
+  readpages = 0,
+  prepare_write = 0xffffffff802a5819 <blkdev_prepare_write>,
+  commit_write = 0xffffffff802a5805 <blkdev_commit_write>,
+  bmap = 0,
+  invalidatepage = 0,
+  releasepage = 0,
+  direct_IO = 0xffffffff802a57bb <blkdev_direct_IO>,
+  get_xip_page = 0,
+  migratepage = 0,
+  launder_page = 0
+}
+
+generic_file_aio_read() =>
+	generic_file_direct_IO	<= O_DIRECT
+	do_generic_file_read
+		do_generic_mapping_read
+			find_get_page
+			page_cache_sync_readahead
+
+generic_file_aio_write_nolock()
+	 => __generic_file_aio_write_nolock()
+		=> generic_file_direct_write 
+			generic_file_direct_IO
+				filemap_write_and_wait
+				blkdev_direct_IO
+					blockdev_direct_IO_no_locking <= for raw block device
+						__blockdev_direct_IO
+		OR generic_file_buffered_write
+			__grab_cache_page
+			blkdev_prepare_write
+			flush_dcache_page
+			blkdev_commit_write
+				block_commit_write
+					set_buffer_uptodate
+					mark_buffer_dirty
+						__set_page_dirty
+
+
+
+
+
+/dev/sda
+ FD       FILE            DENTRY           INODE       TYPE PATH
+  5 ffff813f85efd980 ffff811f831b6c48 ffff811f82968490 BLK  /dev/sda	<= dummp
+  8 ffff813f847dfdc0 ffff811f831b6c48 ffff811f82968490 BLK  /dev/sda	<= multipathd
+
+hu_sda is ffff811f83af0400	<= gendisk
+
+crash> inode ffff811f82968490 | grep bdev
+    i_bdev = 0xffff813f84c0cb40,
+crash> block_device 0xffff813f84c0cb40
+struct block_device {
+  bd_disk = 0xffff811f83af0400,
+crash> gendisk 0xffff811f83af0400
+  kobj = {
+    k_name = 0xffff811f83af0478 "sda",
+
+/dev/sda1
+  5 ffff8114896b0080 ffff811f81d05d20 ffff811f82340b80 BLK  /dev/sda1
+
+crash> inode ffff811f82340b80 | grep bdev
+    i_bdev = 0xffff8114a9751500,
+crash> block_device 0xffff8114a9751500 | grep disk
+  bd_disk = 0xffff811f83af0400,
+
+from filp
+crash> file ffff8114896b0080
+  f_mapping = 0xffff8114a9751720
+crash> address_space 0xffff8114a9751720
+struct address_space {
+  host = 0xffff8114a97515e8,
+crash> inode 0xffff8114a97515e8 | grep bdev
+    i_bdev = 0xffff8114a9751500,
+crash> block_device 0xffff8114a9751500
+  bd_disk = 0xffff811f83af0400,
+
+
+  f_path = {
+    mnt = 0xffff813f847c91c0,
+    dentry = 0xffff811f81d05d20
+  },
+  d_name = {
+    hash = 29376688,
+    len = 4,
+    name = 0xffff811f81d05dd4 "sda1"
+  },
+

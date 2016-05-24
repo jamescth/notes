@@ -1,0 +1,54 @@
+Capture Packets from specific interface
+# tcpdump -i eth0
+
+Capture only N number of Packets
+# tcpdump -c 5 -i eth0
+
+Print Captured Packet in ASCII
+# tcpdump -A -i eth0
+
+Display Available interfaces
+# tcpdump -D
+
+Display Captured Packets in HEX and ASCII
+# tcpdump -xx -i eth0
+
+Capture & Save Packets in a File
+# tcpdump -w 0001.pcap -i eth0
+
+Read Captured Packets File
+# tcpdump -r 0001.pcap
+# tcpdump -tttt -r 0001.pcap
+
+Capture IP address Packets
+# tcpdump -n -i eth0
+# tcpdump -n -tttt -i eth0
+
+Capture packets longer than 1024
+# tcpdump greater 1024
+# tcpdump less 1024
+
+Capture only special Packets
+# tcpdump -i eth0 tcp
+# tcpdump -i eth0 arp
+# tcpdump -i eth0 not arp and not rarp
+
+Capture Packet fro Specific Port
+# tcpdump -i eth0 port 22
+
+Capture Packets fro source IP
+# tcpdump -i eth0 src 192.168.0.2
+
+Capture Packets from destination IP
+# tcpdump -i eth0 dst 50.116.66.139
+
+tcpdump -c -w
+
+1. show how many interface
+tcpdump -D
+2. use ifconfig for ip/interface mapping
+3. if iface is known & host is known
+tcpdump -i <iface> tcp and host <host ip>
+4. start sending traffic/ like open a browser
+5. refine <no hostname>
+tcpdump -i <iface> -nn -c 100 tcp and host <host ip>

@@ -1,0 +1,10 @@
+#docker build -t go-dev:1.5 --no-cache=true -f Dockerfile.go1.5.bin .
+#docker build -t nis -f Dockerfile.nis .
+
+FROM ubuntu:14.10
+
+MAINTAINER James Ho
+
+RUN groupadd -f -g 112747 hoj9
+RUN useradd -u 112747 -g hoj9 hoj9
+RUN echo 'hoj9 ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

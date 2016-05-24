@@ -1,0 +1,103 @@
+IPv6
+UDP
+	Src Port: dhcpv6-client (546)
+	Dst Port: dhcpv6-server (547)
+
+Example[edit]
+   server's link-local address is fe80::0011:22ff:fe33:5566 
+   client's link-local address is fe80::aabb:ccff:fedd:eeff.
+
+   1. DHCPv6 client sends a Solicit from [fe80::aabb:ccff:fedd:eeff]:546 for [ff02::1:2]:547.
+   2. DHCPv6 server replies with an Advertise from [fe80::0011:22ff:fe33:5566]:547 for [fe80::aabb:ccff:fedd:eeff]:546.
+   3. DHCPv6 client replies with a Request from [fe80::aabb:ccff:fedd:eeff]:546 for [ff02::1:2]:547.
+      (All client messages are sent to the multicast address, per section 13 of RFC 3315.)
+   4. DHCPv6 server finishes with a Reply from [fe80::0011:22ff:fe33:5566]:547 for [fe80::aabb:ccff:fedd:eeff]:546.
+
+
+server cmd for foreground/debug purpose
+sudo /usr/sbin/dhcp6s -dDf eth0
+$ sudo vim dhcp6s.conf
+
+client cmd
+# ./dhcpcd -6 eth5b
+# cat /etc/dhcpcd.conf
+
+/tmp/dhcpcd6-static -6 t 60 eth5b -d -c /libexec/dhcpcd-run-hooks 
+./dhcpcd -6 -f -cf /etc/dhcpcd.conf eth5b
+
+ddr
+./dhclient6 -6 -cf ./dhclient6.conf -sf linux -lf ./eth5b.lease eth5b -d
+ubuntu
+dhclient3 -e IF_METRIC=100 -pf /var/run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -1 eth0
+
+dhclient6
+May/02/2014 16:54:17: server6_recv: received confirm from fe80::21b:21ff:fe7f:b0b9%eth0
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option client ID, len 14
+May/02/2014 16:54:17:   DUID: 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option elapsed time, len 2
+May/02/2014 16:54:17:   elapsed time: 0
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option identity association, len 40
+May/02/2014 16:54:17:   IA_NA: ID=562016441, T1=0, T2=0
+May/02/2014 16:54:17: copyin_option: get DHCP option IA address, len 24
+May/02/2014 16:54:17: copyin_option:   IA_NA address: 2100:bad:cafe:f00d::deed:1002 pltime=0 vltime=0
+May/02/2014 16:54:17: react_confirm: found a host configuration named 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: make_iana_from_pool: called
+May/02/2014 16:54:17: find_pool: name=pool1
+May/02/2014 16:54:17: find_pool: found (name=pool1)
+May/02/2014 16:54:17: is_available_in_pool: pool=pool1, addr=2100:bad:cafe:f00d::deed:1002
+May/02/2014 16:54:17: is_available_in_pool: unavailable address (pool=pool1, addr=2100:bad:cafe:f00d::deed:1002)
+May/02/2014 16:54:17: make_iana_from_pool: returns (found=0)
+May/02/2014 16:54:17: make_iana_from_pool: called
+May/02/2014 16:54:17: find_pool: name=pool1
+May/02/2014 16:54:17: find_pool: found (name=pool1)
+May/02/2014 16:54:17: get_free_address_from_pool: called (pool=pool1)
+May/02/2014 16:54:17: get_free_address_from_pool: next address 2100:bad:cafe:f00d::deed:1000
+May/02/2014 16:54:17: get_free_address_from_pool: next address 2100:bad:cafe:f00d::deed:1001
+May/02/2014 16:54:17: get_free_address_from_pool: next address 2100:bad:cafe:f00d::deed:1002
+May/02/2014 16:54:17: get_free_address_from_pool: found 2100:bad:cafe:f00d::deed:1003
+May/02/2014 16:54:17: make_iana_from_pool: returns (found=1)
+May/02/2014 16:54:17: lease_address: addr=2100:bad:cafe:f00d::deed:1003
+May/02/2014 16:54:17: add_binding: add a new binding [IA: duid=00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9, type=NA, iaid=562016441, duration=3600]
+May/02/2014 16:54:17: copy_option: set client ID (len 14)
+May/02/2014 16:54:17: copy_option: set server ID (len 14)
+May/02/2014 16:54:17: copyout_option: set IA address
+May/02/2014 16:54:17: copyout_option: set identity association
+May/02/2014 16:54:17: copy_option: set status code (len 2)
+May/02/2014 16:54:17: server6_send: transmit reply to fe80::21b:21ff:fe7f:b0b9%eth0
+======= From here is the stateful =========
+May/02/2014 16:54:17: server6_recv: received solicit from fe80::21b:21ff:fe7f:b0b9%eth0
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option client ID, len 14
+May/02/2014 16:54:17:   DUID: 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option elapsed time, len 2
+May/02/2014 16:54:17:   elapsed time: 0
+May/02/2014 16:54:17: dhcp6_get_options: get DHCP option identity association, len 12
+May/02/2014 16:54:17:   IA_NA: ID=562016441, T1=3600, T2=5400
+May/02/2014 16:54:17: react_solicit: client ID 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: react_solicit: found a host configuration for 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: make_ia: we have a binding already: [IA: duid=00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9, type=NA, iaid=562016441, duration=3600]
+May/02/2014 16:54:17: update_binding: update binding [IA: duid=00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9, type=NA, iaid=562016441, duration=3600] for 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:17: copy_option: set client ID (len 14)
+May/02/2014 16:54:17: copy_option: set server ID (len 14)
+May/02/2014 16:54:17: copyout_option: set IA address
+May/02/2014 16:54:17: copyout_option: set identity association
+May/02/2014 16:54:17: server6_send: transmit advertise to fe80::21b:21ff:fe7f:b0b9%eth0
+May/02/2014 16:54:18: server6_recv: received request from fe80::21b:21ff:fe7f:b0b9%eth0
+May/02/2014 16:54:18: dhcp6_get_options: get DHCP option client ID, len 14
+May/02/2014 16:54:18:   DUID: 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:18: dhcp6_get_options: get DHCP option server ID, len 14
+May/02/2014 16:54:18:   DUID: 00:01:00:01:1a:e9:ab:80:00:0c:29:be:61:56
+May/02/2014 16:54:18: dhcp6_get_options: get DHCP option elapsed time, len 2
+May/02/2014 16:54:18:   elapsed time: 0
+May/02/2014 16:54:18: dhcp6_get_options: get DHCP option identity association, len 40
+May/02/2014 16:54:18:   IA_NA: ID=562016441, T1=3600, T2=5400
+May/02/2014 16:54:18: copyin_option: get DHCP option IA address, len 24
+May/02/2014 16:54:18: copyin_option:   IA_NA address: 2100:bad:cafe:f00d::deed:1003 pltime=7200 vltime=7500
+May/02/2014 16:54:18: react_request: found a host configuration named 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:18: make_ia: we have a binding already: [IA: duid=00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9, type=NA, iaid=562016441, duration=3600]
+May/02/2014 16:54:18: update_binding: update binding [IA: duid=00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9, type=NA, iaid=562016441, duration=3600] for 00:01:00:01:1a:f6:d1:cd:00:1b:21:7f:b0:b9
+May/02/2014 16:54:18: copy_option: set client ID (len 14)
+May/02/2014 16:54:18: copy_option: set server ID (len 14)
+May/02/2014 16:54:18: copyout_option: set IA address
+May/02/2014 16:54:18: copyout_option: set identity association
+May/02/2014 16:54:18: server6_send: transmit reply to fe80::21b:21ff:fe7f:b0b9%eth0
+

@@ -1,0 +1,11 @@
+# http://blog.differentpla.net/blog/2014/11/13/installing-vagrant-on-ubuntu/
+# https://coreos.com/docs/running-coreos/platforms/vagrant/
+
+# install virtualbox
+# wget http://download.virtualbox.org/virtualbox/4.3.18/virtualbox-4.3_4.3.18-96516~Ubuntu~raring_amd64.deb
+# sudo dpkg -i virtualbox-4.3_4.3.18-96516~Ubuntu~raring_amd64.deb
+
+# install vagrant
+# wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5_x86_64.deb
+# wget --no-check-certificate https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5_x86_64.deb
+# sudo dpkg -i vagrant_1.6.5_x86_64.deb

@@ -1,0 +1,23 @@
+// run w/out kprobe
+# ./loop
+# kill -sigabrt `pidof loop`
+
+
+// kretprobe
+# grep sigabrt_is_pending /proc/kallsyms
+ffffffff802246d4 t sigabrt_is_pending
+ffffffff802b19ef t sigabrt_is_pending
+
+# ./loop
+# insmod ./fake_sigabrt_module.ko long_1=0xffffffff802b19ef long_2=`pidof loop`
+# kill -sigabrt `pidof loop`
+
+// offset
+// without kretprobe, modify the offset of rax
+crash> x/i 0xffffffff802b1ade
+0xffffffff802b1ade <elf_core_dump>:     push   %r15
+x/800i 0xffffffff802b1ade
+# insmod ./fake_sigabrt_module.ko long_1=0xffffffff802b1b41 long_2=`pidof loop`
+# kill -sigabrt `pidof loop`
+
+

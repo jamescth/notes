@@ -1,0 +1,39 @@
+
+# netserver -6
+Starting netserver at port 12865
+Starting netserver at hostname ::0 port 12865 and family AF_INET6
+!!!! koala413 YOUR DATA IS IN DANGER !!!! # netperf -6
+TCP STREAM TEST from ::0 (::) port 0 AF_INET6 to ::1 (::1) port 0 AF_INET6
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Size   Size    Size     Time     Throughput
+bytes  bytes   bytes    secs.    10^6bits/sec
+
+262144 262144 262144    10.00    22200.98
+
+!!!! koala413 YOUR DATA IS IN DANGER !!!! # netserver
+Starting netserver at port 12865
+Starting netserver at hostname 0.0.0.0 port 12865 and family AF_UNSPEC
+!!!! koala412 YOUR DATA IS IN DANGER !!!! # netperf -H 192.168.50.200
+TCP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 192.168.50.200 (192.168.50.200) port 0 AF_INET
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Size   Size    Size     Time     Throughput
+bytes  bytes   bytes    secs.    10^6bits/sec
+
+262144 262144 262144    10.03     941.03
+
+!!!! koala413 YOUR DATA IS IN DANGER !!!! # kill -9 `pidof netserver`
+
+!!!! koala413 YOUR DATA IS IN DANGER !!!! # netserver -6
+Starting netserver at port 12865
+Starting netserver at hostname ::0 port 12865 and family AF_INET6
+!!!! koala412 YOUR DATA IS IN DANGER !!!! # netperf -6 -H 2001::202
+TCP STREAM TEST from ::0 (::) port 0 AF_INET6 to 2001::202 (2001::202) port 0 AF_INET6
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Size   Size    Size     Time     Throughput
+bytes  bytes   bytes    secs.    10^6bits/sec
+
+262144 262144 262144    10.02     928.55
+

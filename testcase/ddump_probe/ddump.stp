@@ -1,0 +1,11 @@
+#tracing msi irq_affinty on yogi22
+
+probe kernel.function("elf_core_dump")
+{
+	printf("stp elf_core_dump\n");
+}
+
+probe kernel.function("elf_core_dump").return
+{
+	printf("stp elf_core_dump return\n");
+}

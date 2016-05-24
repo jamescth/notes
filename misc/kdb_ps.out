@@ -1,0 +1,55 @@
+[15]kdb> ps
+5 idle processes (state I) and 84 sleeping system daemon (state M) processes suppressed
+Task Addr               Pid   Parent [*] cpu State Thread             Command
+0xffff81060fcbcca0      744      498  1    0   R  0xffff81060fcbd050  default.hotplug
+0xffff81060fcbd4c0      743      454  1    1   R  0xffff81060fcbd870  default.hotplug
+0xffff810f18fbc960      442      384  1    3   R  0xffff810f18fbcd10  default.hotplug
+0xffff8106102a4d60      582      561  1    5   R  0xffff8106102a5110  busybox
+0xffff810f18faa8e0      444      385  1    6   R  0xffff810f18faac90  default.hotplug
+0xffff81060fcab400      736      434  1    7   R  0xffff81060fcab7b0  busybox
+0xffff81060fcb5480      740      467  1    8   R  0xffff81060fcb5830  default.hotplug
+0xffff8106101baae0      498      422  1    9   R  0xffff8106101bae90  default.hotplug
+0xffff81060fc86ba0      742      435  1   11   R  0xffff81060fc86f50  default.hotplug
+0xffff81060fcc84c0      749       67  1   13   R  0xffff81060fcc8870  hotplug
+0xffff81060fc52300      741      462  1   15   R  0xffff81060fc526b0 *default.hotplug
+0xffff810623d1e040        1        0  0   13   D  0xffff810623d1e3f0  swapper
+0xffff810f18d82080       67        2  0   13   R  0xffff810f18d82430  khelper
+0xffff810f18fc49a0      380       67  0    4   S  0xffff810f18fc4d50  hotplug
+0xffff810f18e65200      382       67  0   12   S  0xffff810f18e655b0  hotplug
+0xffff810f18fbc140      384       67  0   10   S  0xffff810f18fbc4f0  hotplug
+0xffff810f1931caa0      385       67  0    4   S  0xffff810f1931ce50  hotplug
+0xffff810f1931c280      389       67  0    7   S  0xffff810f1931c630  hotplug
+0xffff810f18f89740      398       67  0    3   S  0xffff810f18f89af0  hotplug
+0xffff810f18ed6580      415       67  0    0   S  0xffff810f18ed6930  hotplug
+0xffff810f051dcae0      422       67  0    9   S  0xffff810f051dce90  hotplug
+0xffff810f05299380      434      382  0    7   S  0xffff810f05299730  default.hotplug
+0xffff810f18faa0c0      435      380  0    3   S  0xffff810f18faa470  default.hotplug
+0xffff810f0528eb20      441       67  0   13   S  0xffff810f0528eed0  hotplug
+0xffff810f18fbc960      442      384  1    3   R  0xffff810f18fbcd10  default.hotplug
+0xffff810f18faa8e0      444      385  1    6   R  0xffff810f18faac90  default.hotplug
+0xffff81061a8828e0      454      389  0    9   S  0xffff81061a882c90  default.hotplug
+0xffff81061aeba920      462      398  0   15   S  0xffff81061aebacd0  default.hotplug
+0xffff810f18e649e0      467      415  0   11   S  0xffff810f18e64d90  default.hotplug
+0xffff8106101baae0      498      422  1    9   R  0xffff8106101bae90  default.hotplug
+0xffff810f04cf0500      524       67  0    8   S  0xffff810f04cf08b0  hotplug
+0xffff810f18e82b60      532       67  0    8   S  0xffff810f18e82f10  hotplug
+0xffff810610232ba0      547      441  0   11   R  0xffff810610232f50  default.hotplug
+0xffff810f18eb4480      551       67  0    8   S  0xffff810f18eb4830  hotplug
+0xffff810f18ebf500      556       67  0    2   S  0xffff810f18ebf8b0  hotplug
+0xffff810610232380      561       67  0    7   S  0xffff810610232730  hotplug
+0xffff8106102a5580      569       67  0    1   S  0xffff8106102a5930  hotplug
+0xffff8106102a4d60      582      561  1    5   R  0xffff8106102a5110  busybox
+0xffff810f04e626c0      591      524  0    1   R  0xffff810f04e62a70  default.hotplug
+0xffff810f04f16920      608      551  0    6   D  0xffff810f04f16cd0  default.hotplug
+0xffff810f04f249a0      611      532  0    0   D  0xffff810f04f24d50  default.hotplug
+0xffff810f04f70b20      635      556  0    0   D  0xffff810f04f70ed0  default.hotplug
+0xffff810610363700      642      569  0    7   D  0xffff810610363ab0  default.hotplug
+0xffff81060fcab400      736      434  1    7   R  0xffff81060fcab7b0  busybox
+0xffff81060fcb5480      740      467  1    8   R  0xffff81060fcb5830  default.hotplug
+0xffff81060fc52300      741      462  1   15   R  0xffff81060fc526b0 *default.hotplug
+0xffff81060fc86ba0      742      435  1   11   R  0xffff81060fc86f50  default.hotplug
+0xffff81060fcbd4c0      743      454  1    1   R  0xffff81060fcbd870  default.hotplug
+0xffff81060fcbcca0      744      498  1    0   R  0xffff81060fcbd050  default.hotplug
+0xffff81060fc86380      745      442  0   10   Z  0xffff81060fc86730  busybox
+0xffff81060fcc84c0      749       67  1   13   R  0xffff81060fcc8870  hotplug
+

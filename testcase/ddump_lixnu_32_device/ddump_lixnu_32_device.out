@@ -1,0 +1,1014 @@
+
+ddump_lixnu_32_device.ko:     file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <my_class_dev_iter_next>:
+my_class_dev_iter_next():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:57
+struct e820map 		*my_e820;
+struct mm_struct 	*my_init_mm;
+
+struct device *my_class_dev_iter_next(struct class_dev_iter *iter)
+{
+   0:	55                   	push   %rbp
+   1:	48 89 e5             	mov    %rsp,%rbp
+   4:	53                   	push   %rbx
+   5:	48 89 fb             	mov    %rdi,%rbx
+   8:	48 83 ec 08          	sub    $0x8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:62
+	struct klist_node *knode;
+	struct device *dev;
+
+	while (1) {
+		knode = klist_next(&iter->ki);
+   c:	48 89 df             	mov    %rbx,%rdi
+   f:	e8 00 00 00 00       	callq  14 <my_class_dev_iter_next+0x14>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:66
+
+		// printk("\nknode %p ", knode);
+
+		if (!knode) {
+  14:	48 85 c0             	test   %rax,%rax
+  17:	74 1b                	je     34 <my_class_dev_iter_next+0x34>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:72
+		//	printk("\n");
+			return NULL;
+		}
+
+		dev = container_of(knode, struct device, knode_class);
+		if (!iter->type || iter->type == dev->type) {
+  19:	48 8b 4b 10          	mov    0x10(%rbx),%rcx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:71
+  1d:	48 8d 90 d8 fe ff ff 	lea    0xfffffffffffffed8(%rax),%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:72
+  24:	48 85 c9             	test   %rcx,%rcx
+  27:	74 0d                	je     36 <my_class_dev_iter_next+0x36>
+  29:	48 3b 88 30 ff ff ff 	cmp    0xffffffffffffff30(%rax),%rcx
+  30:	75 da                	jne    c <my_class_dev_iter_next+0xc>
+  32:	eb 02                	jmp    36 <my_class_dev_iter_next+0x36>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:68
+  34:	31 d2                	xor    %edx,%edx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:78
+		//	printk("\nf dev %p\n", dev);
+			return dev;
+		}
+	}
+	printk("nodev found\n");
+}
+  36:	48 89 d0             	mov    %rdx,%rax
+  39:	5a                   	pop    %rdx
+  3a:	5b                   	pop    %rbx
+  3b:	c9                   	leaveq 
+  3c:	c3                   	retq   
+
+000000000000003d <show_gend>:
+show_gend():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:93
+
+static char *bdevt_str(dev_t devt, char *buf)
+{
+	if (MAJOR(devt) <= 0xff && MINOR(devt) <= 0xff) {
+		char tbuf[BDEVT_SIZE];
+		snprintf(tbuf, BDEVT_SIZE, "%02x%02x", MAJOR(devt), MINOR(devt));
+		snprintf(buf, BDEVT_SIZE, "%-9s", tbuf);
+	} else
+		snprintf(buf, BDEVT_SIZE, "%03x:%05x", MAJOR(devt), MINOR(devt));
+
+	return buf;
+}
+
+void show_gend(void)
+{
+  3d:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:97
+	struct class_dev_iter iter;
+	struct device *dev;
+
+	class_dev_iter_init(&iter, my_block_class, NULL, my_disk_type);
+  3e:	31 d2                	xor    %edx,%edx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:93
+  40:	48 89 e5             	mov    %rsp,%rbp
+  43:	41 57                	push   %r15
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:134
+
+	// struct class_dev_iter {
+	//   [0] struct klist_iter ki;
+	//  [16] const struct device_type *type;
+	//}
+
+	//printk("iter %p iter.ki %p i_klist %p i_cur %p\n",
+	//	&iter, iter.ki, iter.ki.i_klist, iter.ki.i_cur);
+
+	while ((dev = my_class_dev_iter_next(&iter))) {
+		struct gendisk *disk = dev_to_disk(dev);
+		struct disk_part_iter piter;
+		struct hd_struct *part;
+		char name_buf[BDEVNAME_SIZE];
+		char devt_buf[BDEVT_SIZE];
+		char uuid_buf[PARTITION_META_INFO_UUIDLTH * 2 + 5];
+
+		// printk("gen %p name %s\n", disk, disk->disk_name);
+
+		/*
+		 * Don't show empty devices or things that have been
+		 * suppressed
+		 */
+		if (get_capacity(disk) == 0 ||
+		    (disk->flags & GENHD_FL_SUPPRESS_PARTITION_INFO))
+			continue;
+
+		// James: we only want to verify 'sda'
+		if (strcmp(disk->disk_name, "sda") != 0)
+			continue;
+
+		/*
+		 * Note, unlike /proc/partitions, I am showing the
+		 * numbers in hex - the same format as the root=
+		 * option takes.
+		 */
+		disk_part_iter_init(&piter, disk, DISK_PITER_INCL_PART0);
+  45:	4c 8d bd 70 ff ff ff 	lea    0xffffffffffffff70(%rbp),%r15
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:93
+  4c:	41 56                	push   %r14
+  4e:	41 55                	push   %r13
+  50:	41 54                	push   %r12
+  52:	53                   	push   %rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:97
+  53:	48 8d 5d 90          	lea    0xffffffffffffff90(%rbp),%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:93
+  57:	48 81 ec c8 00 00 00 	sub    $0xc8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:97
+  5e:	48 89 df             	mov    %rbx,%rdi
+  61:	48 8b 0d 00 00 00 00 	mov    0(%rip),%rcx        # 68 <show_gend+0x2b>
+  68:	48 8b 35 00 00 00 00 	mov    0(%rip),%rsi        # 6f <show_gend+0x32>
+  6f:	e8 00 00 00 00       	callq  74 <show_gend+0x37>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:107
+  74:	e9 f3 01 00 00       	jmpq   26c <show_gend+0x22f>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:108
+  79:	49 8d 5d 98          	lea    0xffffffffffffff98(%r13),%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:121
+  7d:	49 83 7d e8 00       	cmpq   $0x0,0xffffffffffffffe8(%r13)
+  82:	0f 84 e4 01 00 00    	je     26c <show_gend+0x22f>
+  88:	f6 83 28 02 00 00 20 	testb  $0x20,0x228(%rbx)
+  8f:	0f 85 d7 01 00 00    	jne    26c <show_gend+0x22f>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:126
+  95:	4c 8d 63 0c          	lea    0xc(%rbx),%r12
+  99:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi
+  a0:	4c 89 e7             	mov    %r12,%rdi
+  a3:	e8 00 00 00 00       	callq  a8 <show_gend+0x6b>
+  a8:	85 c0                	test   %eax,%eax
+  aa:	0f 85 bc 01 00 00    	jne    26c <show_gend+0x22f>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:134
+  b0:	ba 04 00 00 00       	mov    $0x4,%edx
+  b5:	48 89 de             	mov    %rbx,%rsi
+  b8:	4c 89 ff             	mov    %r15,%rdi
+  bb:	e8 00 00 00 00       	callq  c0 <show_gend+0x83>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:136
+
+		printk("gen %p name %s\n disk_part_tbl %p ",
+  c0:	49 8b 4d d8          	mov    0xffffffffffffffd8(%r13),%rcx
+  c4:	4c 89 e2             	mov    %r12,%rdx
+  c7:	48 89 de             	mov    %rbx,%rsi
+  ca:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+  d1:	31 c0                	xor    %eax,%eax
+  d3:	e8 00 00 00 00       	callq  d8 <show_gend+0x9b>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:140
+			disk, disk->disk_name, disk->part_tbl);
+
+		while ((part = disk_part_iter_next(&piter))) {
+			bool is_part0 = part == &disk->part0;
+  d8:	48 8d 43 48          	lea    0x48(%rbx),%rax
+  dc:	48 89 85 10 ff ff ff 	mov    %rax,0xffffffffffffff10(%rbp)
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:139
+  e3:	e9 68 01 00 00       	jmpq   250 <show_gend+0x213>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:140
+  e8:	4c 3b ad 10 ff ff ff 	cmp    0xffffffffffffff10(%rbp),%r13
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:142
+
+			printk("part %p\n", part);
+  ef:	4c 89 ee             	mov    %r13,%rsi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:140
+  f2:	41 0f 94 c6          	sete   %r14b
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:142
+  f6:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+  fd:	31 c0                	xor    %eax,%eax
+  ff:	e8 00 00 00 00       	callq  104 <show_gend+0xc7>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:144
+
+			uuid_buf[0] = '\0';
+ 104:	c6 85 20 ff ff ff 00 	movb   $0x0,0xffffffffffffff20(%rbp)
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:145
+			if (part->info)
+ 10b:	49 8b 8d 90 01 00 00 	mov    0x190(%r13),%rcx
+ 112:	48 85 c9             	test   %rcx,%rcx
+ 115:	74 1a                	je     131 <show_gend+0xf4>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:146
+				snprintf(uuid_buf, sizeof(uuid_buf), "%pU",
+ 117:	48 c7 c2 00 00 00 00 	mov    $0x0,%rdx
+ 11e:	be 25 00 00 00       	mov    $0x25,%esi
+ 123:	48 8d bd 20 ff ff ff 	lea    0xffffffffffffff20(%rbp),%rdi
+ 12a:	31 c0                	xor    %eax,%eax
+ 12c:	e8 00 00 00 00       	callq  131 <show_gend+0xf4>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:149
+					 part->info->uuid);
+
+			printk("%s%s %10llu %s %s", is_part0 ? "" : "  ",
+ 131:	41 8b b5 8c 01 00 00 	mov    0x18c(%r13),%esi
+ 138:	48 8d 95 50 ff ff ff 	lea    0xffffffffffffff50(%rbp),%rdx
+ 13f:	48 89 df             	mov    %rbx,%rdi
+ 142:	e8 00 00 00 00       	callq  147 <show_gend+0x10a>
+ 147:	4d 8b 65 08          	mov    0x8(%r13),%r12
+ 14b:	48 89 85 18 ff ff ff 	mov    %rax,0xffffffffffffff18(%rbp)
+ 152:	49 d1 ec             	shr    %r12
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:352
+			       bdevt_str(part_devt(part), devt_buf),
+			       (unsigned long long)part->nr_sects >> 1,
+			       disk_name(disk, part->partno, name_buf),
+			       uuid_buf);
+			if (is_part0) {
+				if (disk->driverfs_dev != NULL &&
+				    disk->driverfs_dev->driver != NULL)
+					printk(" driver: %s\n",
+					      disk->driverfs_dev->driver->name);
+				else
+					printk(" (driver?)\n");
+			} else
+				printk("\n");
+		}
+		disk_part_iter_exit(&piter);
+	}
+	class_dev_iter_exit(&iter);
+}
+
+void test_bdget(dev_t dev)
+{
+	struct block_device *bdev;
+
+	bdev = bdget(dev);
+
+	printk("test_bdget %d bdev %p\n", dev, bdev);
+}
+
+unsigned long my_next_ram_page(unsigned long pfn)
+{
+    int i;
+    unsigned long min_pageno = ULONG_MAX;
+
+    pfn++;
+
+    for (i = 0; i < my_e820->nr_map; i++) {
+    // for (i = 0; i < e820_saved.nr_map; i++) {
+        unsigned long addr, end;
+
+        if (my_e820->map[i].type != E820_RAM)	/* not usable memory */
+            continue;
+
+        addr = (my_e820->map[i].addr+PAGE_SIZE-1) >> PAGE_SHIFT;
+        end = (my_e820->map[i].addr+my_e820->map[i].size) >> PAGE_SHIFT;
+        // addr = (e820_saved.map[i].addr+PAGE_SIZE-1) >> PAGE_SHIFT;
+        // end = (e820_saved.map[i].addr+e820.map[i].size) >> PAGE_SHIFT;
+        if  ((pfn >= addr) && (pfn < end))
+            return pfn;
+        if ((pfn < addr) && (addr < min_pageno))
+            min_pageno = addr;
+    }
+    return min_pageno;
+}
+
+#define my_pgd_offset_k(address) pgd_offset(my_init_mm, (address))
+
+unsigned long my_pte_index(unsigned long address)
+{
+	if (address == 0xffffb20000200000)
+		printk("jackpot\n");
+
+	return (address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1);
+}
+
+pte_t *my_pte_offset_kernel(pmd_t *pmd, unsigned long address)
+{
+	if (address == 0xffffb20000200000)
+		printk("jackpot\n");
+
+	return (pte_t *)pmd_page_vaddr(*pmd) + my_pte_index(address);
+}
+
+int my_kern_addr_valid(unsigned long addr)
+{
+	unsigned long above = ((long)addr) >> __VIRTUAL_MASK_SHIFT;
+	pgd_t *pgd;
+	pud_t *pud;
+	pmd_t *pmd;
+	pte_t *pte;
+
+	if (addr == 0xffffb20000200000)
+		printk("jackpot\n");
+
+	if (above != 0 && above != -1UL)
+		return 0;
+
+	pgd = my_pgd_offset_k(addr);
+	if (pgd_none(*pgd))
+		return 0;
+
+	pud = pud_offset(pgd, addr);
+	if (pud_none(*pud))
+		return 0;
+
+	pmd = pmd_offset(pud, addr);
+	if (pmd_none(*pmd))
+		return 0;
+
+	if (pmd_large(*pmd))
+		return pfn_valid(pmd_pfn(*pmd));
+
+	pte = my_pte_offset_kernel(pmd, addr);
+	if (pte_none(*pte))
+		return 0;
+
+	return pfn_valid(pte_pfn(*pte));
+}
+
+static test_next_ram_page()
+{
+	unsigned long            nr;
+	struct page             *page;
+	int			i = 0;
+	unsigned long		tmp_addr;
+
+	printk("test_next_ram_page\n");
+	my_e820 = (void *)kallsyms_lookup_name("e820");
+	printk("my_e820 is %p\n", my_e820);
+	my_init_mm = (void *)kallsyms_lookup_name("init_mm");
+	printk("my_init_mm is %p\n", my_init_mm);
+
+	for (nr = my_next_ram_page(ULONG_MAX); nr < ULONG_MAX; 
+                nr = my_next_ram_page(nr)) 
+        {
+		if (!pfn_valid(nr))
+			continue;
+
+//		if (nr > max_pfn)
+//			continue;
+
+		page = pfn_to_page(nr);
+
+		if (nr != page_to_pfn(page)) {
+			printk("Bad page. PFN %lu flags %lx\n",
+				nr, (unsigned long)page->flags);
+		}
+
+		tmp_addr = (unsigned long)pfn_to_kaddr(nr);
+
+		if (tmp_addr == 0xffffb20000200000) {
+			printk("nr is %ld, page is %p\n", nr, page);
+			break;
+		}
+
+		if (!my_kern_addr_valid((unsigned long)pfn_to_kaddr(nr))) {
+//			printk("Unmapped page PFN %lu\n", nr);
+//			i++;
+//			if (i > 100) {
+//				break;
+//			}
+		}
+	}
+}
+
+static int
+kp1_pre_handler(struct kprobe *kp, struct pt_regs *regs)
+{
+	if (counter == 400) {
+		printk("kp1\n");
+		counter = 0;
+	}
+	counter++;
+	return 0;
+}
+
+// The probed addr is given by the user script
+// The user script scan /proc/kallsyms
+int init_module(void)
+{
+#if 0
+	my_block_class = (void *)kallsyms_lookup_name("block_class");
+	printk("my_block_class %p\n", my_block_class);
+
+	my_disk_type = (void *)kallsyms_lookup_name("disk_type");
+	printk("my_disk_type %p\n", my_disk_type);
+
+
+	kp1.pre_handler = kp1_pre_handler;
+	kp1.addr = (void *)kallsyms_lookup_name("mptsas_qcmd");
+
+	if (kp1.addr == NULL) {
+		printk("kallsyms_lookup_name failed\n");
+		return -1;
+	}
+
+	if (register_kprobe(&kp1) < 0) {
+		printk("kprobe register failed\n");
+		return -1;
+	}
+#endif
+//	show_gend();
+//	test_bdget(8388610);
+	test_next_ram_page();
+	return 0;
+}
+
+void cleanup_module(void)
+{
+//	unregister_kprobe(&kp1);
+	printk("kprobe unregistered\n");
+}
+
+MODULE_LICENSE("GPL");
+ 155:	41 8b 85 30 01 00 00 	mov    0x130(%r13),%eax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:82
+ 15c:	89 c1                	mov    %eax,%ecx
+ 15e:	c1 e9 14             	shr    $0x14,%ecx
+ 161:	81 f9 ff 00 00 00    	cmp    $0xff,%ecx
+ 167:	77 47                	ja     1b0 <show_gend+0x173>
+ 169:	41 89 c0             	mov    %eax,%r8d
+ 16c:	41 81 e0 ff ff 0f 00 	and    $0xfffff,%r8d
+ 173:	41 81 f8 ff 00 00 00 	cmp    $0xff,%r8d
+ 17a:	77 34                	ja     1b0 <show_gend+0x173>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:84
+ 17c:	48 8d 7d b0          	lea    0xffffffffffffffb0(%rbp),%rdi
+ 180:	48 c7 c2 00 00 00 00 	mov    $0x0,%rdx
+ 187:	be 0a 00 00 00       	mov    $0xa,%esi
+ 18c:	31 c0                	xor    %eax,%eax
+ 18e:	e8 00 00 00 00       	callq  193 <show_gend+0x156>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:85
+ 193:	48 8d 4d b0          	lea    0xffffffffffffffb0(%rbp),%rcx
+ 197:	48 c7 c2 00 00 00 00 	mov    $0x0,%rdx
+ 19e:	be 0a 00 00 00       	mov    $0xa,%esi
+ 1a3:	48 8d 7d c0          	lea    0xffffffffffffffc0(%rbp),%rdi
+ 1a7:	31 c0                	xor    %eax,%eax
+ 1a9:	e8 00 00 00 00       	callq  1ae <show_gend+0x171>
+ 1ae:	eb 21                	jmp    1d1 <show_gend+0x194>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:87
+ 1b0:	41 89 c0             	mov    %eax,%r8d
+ 1b3:	48 c7 c2 00 00 00 00 	mov    $0x0,%rdx
+ 1ba:	41 81 e0 ff ff 0f 00 	and    $0xfffff,%r8d
+ 1c1:	be 0a 00 00 00       	mov    $0xa,%esi
+ 1c6:	48 8d 7d c0          	lea    0xffffffffffffffc0(%rbp),%rdi
+ 1ca:	31 c0                	xor    %eax,%eax
+ 1cc:	e8 00 00 00 00       	callq  1d1 <show_gend+0x194>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:149
+ 1d1:	45 84 f6             	test   %r14b,%r14b
+ 1d4:	48 c7 c0 00 00 00 00 	mov    $0x0,%rax
+ 1db:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi
+ 1e2:	4c 8d 8d 20 ff ff ff 	lea    0xffffffffffffff20(%rbp),%r9
+ 1e9:	48 0f 44 f0          	cmove  %rax,%rsi
+ 1ed:	4c 8b 85 18 ff ff ff 	mov    0xffffffffffffff18(%rbp),%r8
+ 1f4:	31 c0                	xor    %eax,%eax
+ 1f6:	4c 89 e1             	mov    %r12,%rcx
+ 1f9:	48 8d 55 c0          	lea    0xffffffffffffffc0(%rbp),%rdx
+ 1fd:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 204:	e8 00 00 00 00       	callq  209 <show_gend+0x1cc>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:154
+ 209:	45 84 f6             	test   %r14b,%r14b
+ 20c:	74 34                	je     242 <show_gend+0x205>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:155
+ 20e:	48 8b 83 30 02 00 00 	mov    0x230(%rbx),%rax
+ 215:	48 85 c0             	test   %rax,%rax
+ 218:	74 1f                	je     239 <show_gend+0x1fc>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:156
+ 21a:	48 8b 80 88 00 00 00 	mov    0x88(%rax),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:155
+ 221:	48 85 c0             	test   %rax,%rax
+ 224:	74 13                	je     239 <show_gend+0x1fc>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:157
+ 226:	48 8b 30             	mov    (%rax),%rsi
+ 229:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 230:	31 c0                	xor    %eax,%eax
+ 232:	e8 00 00 00 00       	callq  237 <show_gend+0x1fa>
+ 237:	eb 17                	jmp    250 <show_gend+0x213>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:160
+ 239:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 240:	eb 07                	jmp    249 <show_gend+0x20c>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:162
+ 242:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 249:	31 c0                	xor    %eax,%eax
+ 24b:	e8 00 00 00 00       	callq  250 <show_gend+0x213>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:139
+ 250:	4c 89 ff             	mov    %r15,%rdi
+ 253:	e8 00 00 00 00       	callq  258 <show_gend+0x21b>
+ 258:	49 89 c5             	mov    %rax,%r13
+ 25b:	48 85 c0             	test   %rax,%rax
+ 25e:	0f 85 84 fe ff ff    	jne    e8 <show_gend+0xab>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:164
+ 264:	4c 89 ff             	mov    %r15,%rdi
+ 267:	e8 00 00 00 00       	callq  26c <show_gend+0x22f>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:107
+ 26c:	48 8d 7d 90          	lea    0xffffffffffffff90(%rbp),%rdi
+ 270:	e8 00 00 00 00       	callq  275 <show_gend+0x238>
+ 275:	49 89 c5             	mov    %rax,%r13
+ 278:	48 85 c0             	test   %rax,%rax
+ 27b:	0f 85 f8 fd ff ff    	jne    79 <show_gend+0x3c>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:166
+ 281:	48 8d 7d 90          	lea    0xffffffffffffff90(%rbp),%rdi
+ 285:	e8 00 00 00 00       	callq  28a <show_gend+0x24d>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:167
+ 28a:	48 81 c4 c8 00 00 00 	add    $0xc8,%rsp
+ 291:	5b                   	pop    %rbx
+ 292:	41 5c                	pop    %r12
+ 294:	41 5d                	pop    %r13
+ 296:	41 5e                	pop    %r14
+ 298:	41 5f                	pop    %r15
+ 29a:	c9                   	leaveq 
+ 29b:	c3                   	retq   
+
+000000000000029c <test_bdget>:
+test_bdget():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:170
+ 29c:	55                   	push   %rbp
+ 29d:	48 89 e5             	mov    %rsp,%rbp
+ 2a0:	53                   	push   %rbx
+ 2a1:	89 fb                	mov    %edi,%ebx
+ 2a3:	48 83 ec 08          	sub    $0x8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:173
+ 2a7:	e8 00 00 00 00       	callq  2ac <test_bdget+0x10>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:175
+ 2ac:	89 de                	mov    %ebx,%esi
+ 2ae:	48 89 c2             	mov    %rax,%rdx
+ 2b1:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 2b8:	31 c0                	xor    %eax,%eax
+ 2ba:	e8 00 00 00 00       	callq  2bf <test_bdget+0x23>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:176
+ 2bf:	59                   	pop    %rcx
+ 2c0:	5b                   	pop    %rbx
+ 2c1:	c9                   	leaveq 
+ 2c2:	c3                   	retq   
+
+00000000000002c3 <my_next_ram_page>:
+my_next_ram_page():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:179
+ 2c3:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:185
+ 2c4:	4c 8b 0d 00 00 00 00 	mov    0(%rip),%r9        # 2cb <my_next_ram_page+0x8>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:179
+ 2cb:	48 89 e5             	mov    %rsp,%rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:183
+ 2ce:	48 8d 47 01          	lea    0x1(%rdi),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:185
+ 2d2:	45 8b 11             	mov    (%r9),%r10d
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:181
+ 2d5:	48 83 c9 ff          	or     $0xffffffffffffffff,%rcx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:185
+ 2d9:	31 f6                	xor    %esi,%esi
+ 2db:	eb 41                	jmp    31e <my_next_ram_page+0x5b>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:189
+ 2dd:	4c 63 c6             	movslq %esi,%r8
+ 2e0:	4d 6b c0 14          	imul   $0x14,%r8,%r8
+ 2e4:	4f 8d 04 01          	lea    (%r9,%r8,1),%r8
+ 2e8:	41 83 78 14 01       	cmpl   $0x1,0x14(%r8)
+ 2ed:	75 2d                	jne    31c <my_next_ram_page+0x59>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:192
+ 2ef:	49 8b 78 04          	mov    0x4(%r8),%rdi
+ 2f3:	48 8d 97 ff 0f 00 00 	lea    0xfff(%rdi),%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:193
+ 2fa:	49 03 78 0c          	add    0xc(%r8),%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:192
+ 2fe:	48 c1 ea 0c          	shr    $0xc,%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:193
+ 302:	48 c1 ef 0c          	shr    $0xc,%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:196
+ 306:	48 39 f8             	cmp    %rdi,%rax
+ 309:	73 05                	jae    310 <my_next_ram_page+0x4d>
+ 30b:	48 39 d0             	cmp    %rdx,%rax
+ 30e:	73 16                	jae    326 <my_next_ram_page+0x63>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:198
+ 310:	48 39 ca             	cmp    %rcx,%rdx
+ 313:	73 07                	jae    31c <my_next_ram_page+0x59>
+ 315:	48 39 d0             	cmp    %rdx,%rax
+ 318:	48 0f 42 ca          	cmovb  %rdx,%rcx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:185
+ 31c:	ff c6                	inc    %esi
+ 31e:	44 39 d6             	cmp    %r10d,%esi
+ 321:	72 ba                	jb     2dd <my_next_ram_page+0x1a>
+ 323:	48 89 c8             	mov    %rcx,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:202
+ 326:	c9                   	leaveq 
+ 327:	c3                   	retq   
+
+0000000000000328 <my_pte_index>:
+my_pte_index():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:207
+ 328:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:208
+ 329:	48 b8 00 00 20 00 00 	mov    $0xffffb20000200000,%rax
+ 330:	b2 ff ff 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:207
+ 333:	48 89 e5             	mov    %rsp,%rbp
+ 336:	53                   	push   %rbx
+ 337:	48 89 fb             	mov    %rdi,%rbx
+ 33a:	48 83 ec 08          	sub    $0x8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:208
+ 33e:	48 39 c7             	cmp    %rax,%rdi
+ 341:	75 0e                	jne    351 <my_pte_index+0x29>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:209
+ 343:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 34a:	31 c0                	xor    %eax,%eax
+ 34c:	e8 00 00 00 00       	callq  351 <my_pte_index+0x29>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:211
+ 351:	48 89 d8             	mov    %rbx,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:212
+ 354:	5b                   	pop    %rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:211
+ 355:	48 c1 e8 0c          	shr    $0xc,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:212
+ 359:	5b                   	pop    %rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:211
+ 35a:	25 ff 01 00 00       	and    $0x1ff,%eax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:212
+ 35f:	c9                   	leaveq 
+ 360:	c3                   	retq   
+
+0000000000000361 <my_pte_offset_kernel>:
+my_pte_offset_kernel():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:215
+ 361:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:216
+ 362:	48 b8 00 00 20 00 00 	mov    $0xffffb20000200000,%rax
+ 369:	b2 ff ff 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:215
+ 36c:	48 89 e5             	mov    %rsp,%rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:216
+ 36f:	48 39 c6             	cmp    %rax,%rsi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:215
+ 372:	41 54                	push   %r12
+ 374:	49 89 f4             	mov    %rsi,%r12
+ 377:	53                   	push   %rbx
+ 378:	48 89 fb             	mov    %rdi,%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:216
+ 37b:	75 0e                	jne    38b <my_pte_offset_kernel+0x2a>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:217
+ 37d:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 384:	31 c0                	xor    %eax,%eax
+ 386:	e8 00 00 00 00       	callq  38b <my_pte_offset_kernel+0x2a>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:219
+ 38b:	4c 89 e7             	mov    %r12,%rdi
+ 38e:	e8 00 00 00 00       	callq  393 <my_pte_offset_kernel+0x32>
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:435
+}
+
+static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+{
+	return (unsigned long)__va(pmd_val(pmd) & PTE_PFN_MASK);
+ 393:	48 ba 00 f0 ff ff ff 	mov    $0x3ffffffff000,%rdx
+ 39a:	3f 00 00 
+ 39d:	48 b9 00 00 00 00 00 	mov    $0xffff880000000000,%rcx
+ 3a4:	88 ff ff 
+ 3a7:	48 23 13             	and    (%rbx),%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:220
+ 3aa:	5b                   	pop    %rbx
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:435
+}
+
+static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+{
+	return (unsigned long)__va(pmd_val(pmd) & PTE_PFN_MASK);
+ 3ab:	48 01 ca             	add    %rcx,%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:220
+ 3ae:	41 5c                	pop    %r12
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:219
+ 3b0:	48 8d 04 c2          	lea    (%rdx,%rax,8),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:220
+ 3b4:	c9                   	leaveq 
+ 3b5:	c3                   	retq   
+
+00000000000003b6 <my_kern_addr_valid>:
+my_kern_addr_valid():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:223
+ 3b6:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:230
+ 3b7:	48 b8 00 00 20 00 00 	mov    $0xffffb20000200000,%rax
+ 3be:	b2 ff ff 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:223
+ 3c1:	48 89 e5             	mov    %rsp,%rbp
+ 3c4:	41 55                	push   %r13
+ 3c6:	49 89 fd             	mov    %rdi,%r13
+ 3c9:	41 54                	push   %r12
+ 3cb:	53                   	push   %rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:224
+ 3cc:	48 89 fb             	mov    %rdi,%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:223
+ 3cf:	48 83 ec 08          	sub    $0x8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:224
+ 3d3:	48 c1 fb 2f          	sar    $0x2f,%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:230
+ 3d7:	48 39 c7             	cmp    %rax,%rdi
+ 3da:	75 0e                	jne    3ea <my_kern_addr_valid+0x34>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:231
+ 3dc:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 3e3:	31 c0                	xor    %eax,%eax
+ 3e5:	e8 00 00 00 00       	callq  3ea <my_kern_addr_valid+0x34>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:233
+ 3ea:	48 ff cb             	dec    %rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:234
+ 3ed:	45 31 e4             	xor    %r12d,%r12d
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:233
+ 3f0:	48 83 fb fd          	cmp    $0xfffffffffffffffd,%rbx
+ 3f4:	0f 86 dc 00 00 00    	jbe    4d6 <my_kern_addr_valid+0x120>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:236
+ 3fa:	4c 89 e8             	mov    %r13,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:237
+ 3fd:	48 8b 15 00 00 00 00 	mov    0(%rip),%rdx        # 404 <my_kern_addr_valid+0x4e>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:236
+ 404:	48 c1 e8 27          	shr    $0x27,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:237
+ 408:	48 8b 52 48          	mov    0x48(%rdx),%rdx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:236
+ 40c:	25 ff 01 00 00       	and    $0x1ff,%eax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:233
+ 411:	48 8b 04 c2          	mov    (%rdx,%rax,8),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:237
+ 415:	48 85 c0             	test   %rax,%rax
+ 418:	0f 84 b8 00 00 00    	je     4d6 <my_kern_addr_valid+0x120>
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:546
+}
+
+static inline unsigned long pgd_page_vaddr(pgd_t pgd)
+{
+	return (unsigned long)__va((unsigned long)pgd_val(pgd) & PTE_PFN_MASK);
+ 41e:	48 89 c2             	mov    %rax,%rdx
+ 421:	48 bb 00 f0 ff ff ff 	mov    $0x3ffffffff000,%rbx
+ 428:	3f 00 00 
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:558
+}
+
+/*
+ * Currently stuck as a macro due to indirect forward reference to
+ * linux/mmzone.h's __section_mem_map_addr() definition:
+ */
+#define pgd_page(pgd)		pfn_to_page(pgd_val(pgd) >> PAGE_SHIFT)
+
+/* to find an entry in a page-table-directory. */
+static inline unsigned long pud_index(unsigned long address)
+{
+	return (address >> PUD_SHIFT) & (PTRS_PER_PUD - 1);
+ 42b:	4c 89 e8             	mov    %r13,%rax
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:546
+ 42e:	48 21 da             	and    %rbx,%rdx
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:558
+ 431:	48 c1 e8 1b          	shr    $0x1b,%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:241
+ 435:	25 f8 0f 00 00       	and    $0xff8,%eax
+ 43a:	48 01 d0             	add    %rdx,%rax
+ 43d:	48 ba 00 00 00 00 00 	mov    $0xffff880000000000,%rdx
+ 444:	88 ff ff 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:237
+ 447:	48 8b 3c 10          	mov    (%rax,%rdx,1),%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:241
+ 44b:	48 85 ff             	test   %rdi,%rdi
+ 44e:	0f 84 82 00 00 00    	je     4d6 <my_kern_addr_valid+0x120>
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:506
+}
+
+static inline unsigned long pud_page_vaddr(pud_t pud)
+{
+	return (unsigned long)__va((unsigned long)pud_val(pud) & PTE_PFN_MASK);
+ 454:	48 21 df             	and    %rbx,%rdi
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:452
+ 457:	4c 89 e8             	mov    %r13,%rax
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:506
+ 45a:	48 01 d7             	add    %rdx,%rdi
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:452
+ 45d:	48 c1 e8 12          	shr    $0x12,%rax
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:518
+}
+
+/*
+ * Currently stuck as a macro due to indirect forward reference to
+ * linux/mmzone.h's __section_mem_map_addr() definition:
+ */
+#define pud_page(pud)		pfn_to_page(pud_val(pud) >> PAGE_SHIFT)
+
+/* Find an entry in the second-level page table.. */
+static inline pmd_t *pmd_offset(pud_t *pud, unsigned long address)
+{
+	return (pmd_t *)pud_page_vaddr(*pud) + pmd_index(address);
+ 461:	25 f8 0f 00 00       	and    $0xff8,%eax
+ 466:	48 01 c7             	add    %rax,%rdi
+ 469:	48 8b 07             	mov    (%rdi),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:245
+ 46c:	48 85 c0             	test   %rax,%rax
+ 46f:	74 65                	je     4d6 <my_kern_addr_valid+0x120>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:248
+ 471:	a8 80                	test   $0x80,%al
+ 473:	74 20                	je     495 <my_kern_addr_valid+0xdf>
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:142
+}
+
+static inline unsigned long pmd_pfn(pmd_t pmd)
+{
+	return (pmd_val(pmd) & PTE_PFN_MASK) >> PAGE_SHIFT;
+ 475:	48 21 c3             	and    %rax,%rbx
+include/linux/mmzone.h:1085
+ 478:	48 89 d9             	mov    %rbx,%rcx
+include/linux/mmzone.h:1032
+ 47b:	48 c1 eb 22          	shr    $0x22,%rbx
+include/linux/mmzone.h:1085
+ 47f:	48 c1 e9 1b          	shr    $0x1b,%rcx
+include/linux/mmzone.h:1032
+ 483:	48 8b 14 dd 00 00 00 	mov    0x0(,%rbx,8),%rdx
+ 48a:	00 
+include/linux/mmzone.h:1034
+ 48b:	48 89 c8             	mov    %rcx,%rax
+include/linux/mmzone.h:1032
+ 48e:	48 85 d2             	test   %rdx,%rdx
+ 491:	75 2d                	jne    4c0 <my_kern_addr_valid+0x10a>
+ 493:	eb 41                	jmp    4d6 <my_kern_addr_valid+0x120>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:251
+ 495:	4c 89 ee             	mov    %r13,%rsi
+ 498:	e8 00 00 00 00       	callq  49d <my_kern_addr_valid+0xe7>
+ 49d:	48 8b 00             	mov    (%rax),%rax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:252
+ 4a0:	48 85 c0             	test   %rax,%rax
+ 4a3:	74 31                	je     4d6 <my_kern_addr_valid+0x120>
+/p4/nk32_port_dd/platform/os/linux-3.2/arch/x86/include/asm/pgtable.h:137
+}
+
+static inline unsigned long pte_pfn(pte_t pte)
+{
+	return (pte_val(pte) & PTE_PFN_MASK) >> PAGE_SHIFT;
+ 4a5:	48 21 c3             	and    %rax,%rbx
+include/linux/mmzone.h:1085
+ 4a8:	48 89 d8             	mov    %rbx,%rax
+include/linux/mmzone.h:1032
+ 4ab:	48 c1 eb 22          	shr    $0x22,%rbx
+include/linux/mmzone.h:1085
+ 4af:	48 c1 e8 1b          	shr    $0x1b,%rax
+include/linux/mmzone.h:1032
+ 4b3:	48 8b 14 dd 00 00 00 	mov    0x0(,%rbx,8),%rdx
+ 4ba:	00 
+ 4bb:	48 85 d2             	test   %rdx,%rdx
+ 4be:	74 16                	je     4d6 <my_kern_addr_valid+0x120>
+include/linux/mmzone.h:1034
+ 4c0:	83 e0 7f             	and    $0x7f,%eax
+ 4c3:	48 c1 e0 05          	shl    $0x5,%rax
+include/linux/mmzone.h:1069
+ 4c7:	48 01 d0             	add    %rdx,%rax
+ 4ca:	74 0a                	je     4d6 <my_kern_addr_valid+0x120>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:234
+ 4cc:	45 31 e4             	xor    %r12d,%r12d
+ 4cf:	f6 00 02             	testb  $0x2,(%rax)
+ 4d2:	41 0f 95 c4          	setne  %r12b
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:256
+ 4d6:	5e                   	pop    %rsi
+ 4d7:	44 89 e0             	mov    %r12d,%eax
+ 4da:	5b                   	pop    %rbx
+ 4db:	41 5c                	pop    %r12
+ 4dd:	41 5d                	pop    %r13
+ 4df:	c9                   	leaveq 
+ 4e0:	c3                   	retq   
+
+00000000000004e1 <init_module>:
+init_module():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 4e1:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:265
+ 4e2:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 4e9:	48 89 e5             	mov    %rsp,%rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:265
+ 4ec:	31 c0                	xor    %eax,%eax
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 4ee:	41 57                	push   %r15
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:282
+ 4f0:	49 bf b7 6d db b6 6d 	mov    $0x6db6db6db6db6db7,%r15
+ 4f7:	db b6 6d 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 4fa:	41 56                	push   %r14
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:289
+ 4fc:	49 be 00 00 20 00 00 	mov    $0x2a0000200000,%r14
+ 503:	2a 00 00 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 506:	41 55                	push   %r13
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:294
+ 508:	49 bd 00 00 00 00 00 	mov    $0xffff880000000000,%r13
+ 50f:	88 ff ff 
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:318
+ 512:	41 54                	push   %r12
+ 514:	53                   	push   %rbx
+ 515:	48 83 ec 08          	sub    $0x8,%rsp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:265
+ 519:	e8 00 00 00 00       	callq  51e <init_module+0x3d>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:266
+ 51e:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 525:	e8 00 00 00 00       	callq  52a <init_module+0x49>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:267
+ 52a:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 531:	48 89 c6             	mov    %rax,%rsi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:266
+ 534:	48 89 05 00 00 00 00 	mov    %rax,0(%rip)        # 53b <init_module+0x5a>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:267
+ 53b:	31 c0                	xor    %eax,%eax
+ 53d:	e8 00 00 00 00       	callq  542 <init_module+0x61>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:268
+ 542:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 549:	e8 00 00 00 00       	callq  54e <init_module+0x6d>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:269
+ 54e:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 555:	48 89 c6             	mov    %rax,%rsi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:268
+ 558:	48 89 05 00 00 00 00 	mov    %rax,0(%rip)        # 55f <init_module+0x7e>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:269
+ 55f:	31 c0                	xor    %eax,%eax
+ 561:	e8 00 00 00 00       	callq  566 <init_module+0x85>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:271
+ 566:	48 83 cf ff          	or     $0xffffffffffffffff,%rdi
+ 56a:	e8 00 00 00 00       	callq  56f <init_module+0x8e>
+ 56f:	48 89 c3             	mov    %rax,%rbx
+ 572:	e9 80 00 00 00       	jmpq   5f7 <init_module+0x116>
+include/linux/mmzone.h:1085
+ 577:	48 89 d8             	mov    %rbx,%rax
+ 57a:	48 c1 e8 0f          	shr    $0xf,%rax
+ 57e:	48 3d ff ff 07 00    	cmp    $0x7ffff,%rax
+ 584:	77 66                	ja     5ec <init_module+0x10b>
+include/linux/mmzone.h:1032
+ 586:	48 89 da             	mov    %rbx,%rdx
+ 589:	48 c1 ea 16          	shr    $0x16,%rdx
+ 58d:	48 8b 14 d5 00 00 00 	mov    0x0(,%rdx,8),%rdx
+ 594:	00 
+ 595:	48 85 d2             	test   %rdx,%rdx
+ 598:	74 52                	je     5ec <init_module+0x10b>
+include/linux/mmzone.h:1034
+ 59a:	83 e0 7f             	and    $0x7f,%eax
+ 59d:	48 c1 e0 05          	shl    $0x5,%rax
+include/linux/mmzone.h:1069
+ 5a1:	48 01 d0             	add    %rdx,%rax
+ 5a4:	74 46                	je     5ec <init_module+0x10b>
+ 5a6:	f6 00 02             	testb  $0x2,(%rax)
+ 5a9:	75 64                	jne    60f <init_module+0x12e>
+ 5ab:	eb 3f                	jmp    5ec <init_module+0x10b>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:283
+ 5ad:	49 8b 14 24          	mov    (%r12),%rdx
+ 5b1:	48 89 de             	mov    %rbx,%rsi
+ 5b4:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 5bb:	31 c0                	xor    %eax,%eax
+ 5bd:	e8 00 00 00 00       	callq  5c2 <init_module+0xe1>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:287
+ 5c2:	48 89 df             	mov    %rbx,%rdi
+ 5c5:	48 c1 e7 0c          	shl    $0xc,%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:289
+ 5c9:	4c 39 f7             	cmp    %r14,%rdi
+ 5cc:	75 16                	jne    5e4 <init_module+0x103>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:290
+ 5ce:	4c 89 e2             	mov    %r12,%rdx
+ 5d1:	48 89 de             	mov    %rbx,%rsi
+ 5d4:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+ 5db:	31 c0                	xor    %eax,%eax
+ 5dd:	e8 00 00 00 00       	callq  5e2 <init_module+0x101>
+ 5e2:	eb 1d                	jmp    601 <init_module+0x120>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:294
+ 5e4:	4c 01 ef             	add    %r13,%rdi
+ 5e7:	e8 00 00 00 00       	callq  5ec <init_module+0x10b>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:272
+ 5ec:	48 89 df             	mov    %rbx,%rdi
+ 5ef:	e8 00 00 00 00       	callq  5f4 <init_module+0x113>
+ 5f4:	48 89 c3             	mov    %rax,%rbx
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:271
+ 5f7:	48 83 fb ff          	cmp    $0xffffffffffffffff,%rbx
+ 5fb:	0f 85 76 ff ff ff    	jne    577 <init_module+0x96>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:344
+ 601:	5f                   	pop    %rdi
+ 602:	31 c0                	xor    %eax,%eax
+ 604:	5b                   	pop    %rbx
+ 605:	41 5c                	pop    %r12
+ 607:	41 5d                	pop    %r13
+ 609:	41 5e                	pop    %r14
+ 60b:	41 5f                	pop    %r15
+ 60d:	c9                   	leaveq 
+ 60e:	c3                   	retq   
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:280
+ 60f:	48 6b c3 38          	imul   $0x38,%rbx,%rax
+ 613:	49 bc 00 00 00 00 00 	mov    $0xffffea0000000000,%r12
+ 61a:	ea ff ff 
+ 61d:	4e 8d 24 20          	lea    (%rax,%r12,1),%r12
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:282
+ 621:	48 c1 f8 03          	sar    $0x3,%rax
+ 625:	49 0f af c7          	imul   %r15,%rax
+ 629:	48 39 c3             	cmp    %rax,%rbx
+ 62c:	74 94                	je     5c2 <init_module+0xe1>
+ 62e:	e9 7a ff ff ff       	jmpq   5ad <init_module+0xcc>
+
+0000000000000633 <cleanup_module>:
+cleanup_module():
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:347
+ 633:	55                   	push   %rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:349
+ 634:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:347
+ 63b:	48 89 e5             	mov    %rsp,%rbp
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:349
+ 63e:	31 c0                	xor    %eax,%eax
+ 640:	e8 00 00 00 00       	callq  645 <cleanup_module+0x12>
+/auto/home5/hoj9/testcase/ddump_lixnu_32_device/ddump_lixnu_32_device.c:350
+ 645:	c9                   	leaveq 
+ 646:	c3                   	retq   
+	...

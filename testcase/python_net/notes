@@ -1,0 +1,125 @@
+DPKT
+	advantages
+		Works
+		ans.1 decoder
+	disadvnatages
+		lacks features
+		too verbose
+		development stopped
+		No documentation
+
+	#see dpkt_example.py
+
+SCAPY
+	advantages
+		simple to use
+		Tons of features
+		widely used
+		Good documentation
+	disadvantages
+		Not really actively developed
+
+
+SCAPY
+Packet Designing
+	Packet are built layer by layer
+		Ether, IP, UDP, TCP
+	each layer can be stacked on another
+		Ether/IP/TCP
+	each layer or packet can be manipulated
+		Ether MAC address
+	each field has default valuse
+		Checksum, source MAC and IP
+	each field can contain a value or a set of values
+		TCP ports
+
+	Two TCP packets:
+		one to port 80
+		another to port 443
+
+		ip = IP(dst="www.target.com", id=0x42)
+		ip.ttl=12
+		tcp = TCP(dport=[80,443])
+		p = ip/tcp
+
+		UDP ping 2 IP addresses and 5 ports
+		Ether(dst="ff:ff:ff:ff:ff:ff")/
+			IP(dst=["target.com","victim.com"],ttl=(1,9))/UDP()
+
+Scapy API
+	ls() 		show the supported protocols
+	ls(ARP)		show details and default values for a specific protocol
+	lsc()		list of available commands
+
+Send and Receive
+	packet = IP(dst='www.cnn.com')/TCP(dport=80, sport=RandShort(), seq=RandShort())
+
+	send(packet)		sends a packet
+	response = srl(packet)	sends a packet and receive one response
+	answered, unanswered = sr(packet)
+		Sends 	 packet and receive all responses
+
+ARP Ping Example
+	Ping using ARP broadcast
+
+	def ArpPing(host):
+		answered, unanswered = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/
+			ARP(pdst=hosts))
+		for sent, rcvd in answered:
+			print sent, pdst
+
+	ArpPing("192.168.72.0/24")
+
+ICMP Ping Example
+	Ping using ICMP Echo
+
+	def IcmpPing(host, repeat=3):
+		packet = IP(dst=host)/ICMP()
+
+		for i in range(repeat):
+			response = srl(packet)
+			response.show()
+
+TCP Ping Example
+	Ping using SYN to port 80
+
+	def TCPPing(host, repeat=3):
+		packet = IP(dst=host)/TCP(dport=80, flags="S",
+				sport=RandShort(),seq=RandShort())
+
+		for i in range(repeat):
+			response = srl(packet)
+			response.show()
+
+ICMP TraceRoute Example
+	Incremental ICMP Ping
+
+	def IcmpTraceRoute(host, maxttl=10):
+		packets = IP(dst=host,ttl=(1,maxttl))/ICMP()
+		answered, unanswered = sr(packets)
+		for sent, rcvd in answered:
+			print sent.ttl, rcvd.src
+
+Sniffing
+	Sniffing packets with filters
+
+	packets = sniff(count=10, filter='tcp')
+	packets.show
+
+Port Scan
+	TCP SYN port scan
+		res,unans = sr(IP(dst=host)/TCP(flags="S",dport=(1,1000)))
+
+	TCP FIN port scan
+		res,unans = sr(IP(dst=host)/TCP(flags="F",dport=(1,1000)))
+
+		for sent,rcvd in res:
+			print sent.dport
+
+SCAPY
+	and much more...
+		spoofing
+		Poisoning
+		Buffer overflows
+		Leaking
+		Pen tests

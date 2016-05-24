@@ -1,0 +1,829 @@
+Youtube: Wireshare Section 1: TCP/IP Functionality Overview (Hristo Stefanov)
+
+Analyzer Placement: Hubs
+	Anything goes everywhere in a Hub network
+
+Analyzer Placement: Switches
+	For switch, we can only see traffic comes down from the local switch to local analyzer
+
+	4 types of traffic:
+	boardcase
+	multicast
+	any traffic to and from our mac address
+	any traffic going to an unknown address (should be rare)
+
+Solution: Hub Out the switch
+	have a hub in between the switch and the local machine, and connect the analyzer @ hub
+Or Switch Port Analysis (SPAN): copy the server traffic down to the anaylzer port, or call it port mirrowing
+
+Turn off network name resolution to stop WireShark sending inverse DNS queries
+
+TCP/IP Resolution Process
+	When Everything Goes Right
+		User are happy with performance
+		No retransmissions
+		No delays
+		no errors
+		No service refusals
+		Minimal background traffic
+		direct routes
+
+	Port and Name Resolution
+		for example, ftp
+			1. port # should be 21, or app may re-write it
+			2. Get host IP addr.	Is it in Cache? if no, in local host file? if no, go network (DNS)
+				This may be the first tx go to the network, if no 
+					user provides the ip
+					in cache
+					in the local host file
+					No DNS, and the process stops
+			3. Once have the IP, verify it its local or remote
+				If it's local, then get the MAC addr (ARP)
+					Is the MAC in cache? if NO
+					boardcast to discover the hw address (MAC)
+				If it's not local, then we have to lookup route information (in the following order)
+					a specific path to the host?
+					a specific path to the network?
+					or a default Gateway
+
+					then get the MAC resolution (same as local)
+
+	Building the Packet
+		Eth
+			*Destination Mac:
+			Source Mac:
+			EtherType:		0x0800
+		IP
+			Protocol:		6(TCP)
+			Source IP:		x.x.x.x
+			*Destination IP:	x.x.x.x
+		TCP
+			*Source Port:		1024
+			*Destination Port:	21
+
+			*: pay attention
+
+					
+Analyze Domain Name System (DNS) Traffic
+	Source		Destination	Protocol	Info
+	71.198.243.158	68.87.76.178	DNS		Standard query A www.iana.org
+		Flag: resursion desired. (so other DNS server can respond)
+	68.87.76.178	71.198.243.158	DNS		Standard query response A 192.0.34.162
+		Flag: recursion desired AND recursion available
+		Answers: will have the ip for 'www.iana.org'
+			 The answer name field: 'www.iana.org' has binary 'c0 0c', this is the offset of the real host addr in queries
+	71.198.243.158	192.0.34.162	TCP		4350 > http [SYN] Seq=0 Len=0 MSS=1460
+	192.0.34.162	71.198.243.158	TCP		http > 4350 [SYN,ACK] Seq=0 Ack=1
+	71.198.243.158	192.0.34.162	TCP		4350 > http [ACK]
+
+	nslookup
+	Source		Destination	Protocol	Info
+	24.6.126.218	216.148.227.68	DNS		Standard query A novell.com
+	216.148.227.68	24.6.126.218	DNS		Standard response A 130.57.4.70
+		This may include 
+		Authoritative nameservers section
+			name: novell.com
+			type: NS (authoritative name server)
+			class: IN (0x0001)
+			Name server: ns.novell.com
+		novell.com: type NS, class IN, ns ns.utah.edu
+			name novell.com
+			Type: NS (authoritative name server)
+			class: IN (0x0001)
+			Name server: ns.utah.edu
+		Additional recoreds
+			ns.novell.com: type A, Class IN, addr 137.65.1.1
+				Name: ns.novell.com
+				Addr: 137.65.1.1
+			ns.utah.edu: type A, class IN, addr 128.110.124.120
+				Name: ns.utah.edu
+				Addr: 128.110.124.120
+	24.6.126.218	216.148.227.68	DNS		Standard PTR 1.1.65.137.in-addr.arp
+		pointer query.  Looking for ip->hostname
+	216.148.227.68	24.6.126.218	DNS		standard query response PTR ns.Novell.com
+
+	24.6.126.218	137.65.1.1	TCP		3719 > domain [SYN] seq=0 Len=0 MSS=1460
+	137.65.1.1	24.6.126.218	TCP		domain > 3719 [SYN, ACK] Seq=0 Ack=1
+	24.6.126.218	137.65.1.1	TCP		3719 > domain [ACK] Seq=1 Ack=1
+	...
+	24.6.126.218	137.65.1.1	TCP		3719 > domain [FIN, ACK] Seq=31 Ack=31
+	137.65.1.1	24.6.126.218	TCP		domain > 3719 [ACK] Seq=31 Ack=32
+	137.65.1.1	24.6.126.218	TCP		domain > 3719 [FIN, ACK] Seq=31 Ack=32
+	24.6.126.218	137.65.1.1	TCP		3719 > domain [ACK] Seq=32 Ack=32
+
+Analyze Address Resolution Protocol (ARP) Traffic
+	No IP, TCP, UDP headers (no TCP/UDP ports).  Since no IP headers, ARP is not routable; only for local network communication.
+
+	Source			Destination	Protocol	Info
+	3com_ca:0f:33		Broadcast	ARP		Who has 10.64.0.1? Tell 10.64.0.164
+		Broadcast (ff:ff:ff:ff:ff:ff), Normal ARP should go Broadcast
+
+		Ethernet II
+			Source: 3com_ca:0f:33
+				Type: ARP (0x0806)
+		Address Resolution Protocol (request)
+			Hardware type: Ethernet (0x00001)
+			Protocol type: IP (0x0800)
+			Hardware zide: 6
+			Protocol size: 4
+			opcode: request (0x0001)
+			Sender MAC address: 3com_ca:0f:33 (00:50:da:ca:0f:33)
+			Sender IP address: 10.64.0.164
+			Target MAC address: 00:00:00_00:00:00
+			Target IP address: 10.64.0.1
+	Synernet_4b:3e:ce	3com_ca:0f:33	ARP		10.64.0.1 is at 00:80:3e:4b:3e:ce
+		Address Resolution Protocol (request)
+			Hardware type: Ethernet (0x00001)
+			Protocol type: IP (0x0800)
+			Hardware zide: 6
+			Protocol size: 4
+			opcode: reply (0x0002)
+			Sender MAC address: Synernet_4b:3e:ce (00:80:3e:4b:3e:ce)
+			Sender IP address: 10.64.0.1
+			Target MAC address: 3com_ca:0f:33 (00:50:da:ca:0f:33)
+			Target IP address: 10.64.0.164
+			------- Padding -------------
+=>			should be 0 here
+
+	Source		Destination	Protocol	Info
+	0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction to ID 0x702852a
+	10.64.0.1	10.64.0.164	DHCP		DHCP ACK	- Transaction ID 0x702852a
+		DHCP has IP headers
+
+	3com_ca:0f:33	Broadcast	ARP		Gratuitous ARP for 10.64.0.164 (Request)
+	3com_ca:0f:33	Broadcast	ARP		Gratuitous ARP for 10.64.0.164 (Request)
+	3com_ca:0f:33	Broadcast	ARP		Gratuitous ARP for 10.64.0.164 (Request)
+		Gratuitous ARP is seen after DHCP addr assigned.  3 requests, time interval is ~1 second.
+		I am 10.64.0.164.  Who else out there is using 10.64.0.164 as well.
+		Address Resolution Protocol (request)
+			Sender MAC address: 3com_ca:0f:33 (00:50:da:ca:0f:33)
+			Sender IP address: 10.64.0.164
+			Target MAC address: 00:00:00_00:00:00
+			Target IP address: 10.64.0.164
+	3com_ca:0f:33	Broadcast	ARP		Who has 10.64.0.1? Tell 10.64.0.164
+	Synernet_4b:3e:ce 3com_ca:0f:33	ARP		10.64.0.1 is at 00:80:3e:4b:3e:ce
+
+=>	unusual/poison
+		1. no request packets, only response
+		2. Destination is not Broadcast		<= usually used by poisoner w/ its MAC but fake IP
+		3. Padding is not 0
+	
+Analyze Internet Protocol Version 4 (IPv4) Traffic
+	Source		Destination	Protocol	Info
+	67.180.72.76	128.121.136.217	FTP		Request: Type I
+	128.121.136.217	67.180.72.76	FTP		Response: 200 Type set to I
+		Internet Protocol, Src:  Dst:
+			Version: 4
+			Header length: 20 bytes
+			Differentiated Services Field:
+=>			Total Length:
+			Identification:
+			Flags:
+			Fragment Offset:
+			Time to Live:
+			Protocol: TCP (0x06)
+			header checksum:
+			source:
+			Destination:
+		Transmission Control Protocol, Src Port: Dst Port: ftp (21), Seq: , Ack:
+		File Transfer Protocol (FTP)
+
+	normal:
+		unicast to unicast
+		unicast to multicast
+		unicast to brocdcast
+		nothing after padding (total lenght)
+		unique identification
+
+	abnormal:
+		multicast to unicast
+		brocdcast to unicast
+
+	1. ping-frag
+		Source		Destination	Protocol	Info
+		10.0.99.2	10.0.0.1	IP		Fragmented IP protocol (proto=ICMP 0x01, off=0)
+			Flags: 0x02 (More Fragments)
+			1st packet of fragment is always: 2 (More fragments) AND 0 (Fragment offset)
+		10.0.99.2	10.0.0.1	IP		Fragmented IP protocol (proto=ICMP 0x01, off=1480
+			Flags: 0x02 (More Fragments)
+			Fragment offset: 1480
+		10.0.99.2	10.0.0.1	ICMP		Echo (ping) request
+			Flags: 0x00
+			Fragment offset: 2960
+
+			The last fragmented packet is 0 (Flags) AND non-zero (Fragment offset)
+
+		10.0.0.1	10.0.99.2	IP		Fragmented IP protocol (proto=ICMP 0x01, off=0)
+		10.0.0.1	10.0.99.2	IP		Fragmented IP protocol (proto=ICMP 0x01, off=1480
+		10.0.0.1	10.0.99.2	ICMP		Echo (ping) reply
+	2. 127 guy
+		Source		Destination	Protocol	Info
+		127.0.0.1	255.255.255.255	UDP		Source port: 2301 Destination port: 2301
+		127.0.0.1	255.255.255.255	UDP		Source port: 2301 Destination port: 2301
+		127.0.0.1	255.255.255.255	UDP		Source port: 2301 Destination port: 2301
+		127.0.0.1	255.255.255.255	UDP		Source port: 2301 Destination port: 2301
+		127.0.0.1	255.255.255.255	UDP		Source port: 2301 Destination port: 2301
+
+		No one is allowed to talk on 127.0.0.1 <=  Loopback addr
+		Each packet Src MAC is different
+
+	3. ftp download good/ bad
+	good
+		Source		Destination	Protocol	Info
+		67.180.72.76	128.121.136.217	FTP		Request: TYPE I
+			Identification: 0x85b9 (34233)
+		128.121.136.217	67.180.72.76	FTP		Response: 200 Type set to I
+			Identification: 0xa4a1 (42145)
+		67.180.72.76	128.121.136.217	FTP		Request: PASV
+			Identification: 0x85ba (34234)
+		28.121.136.217	67.180.72.76	FTP		Response: 227 Entering Passive Mode
+			Identification: 0xa4a2 (42146)
+		67.180.72.76	128.121.136.217	TCP		4076 > 30012 [SYN] seq=0 len=0 MSS=1460
+			Identification: 0x85bb (34235)
+		28.121.136.217	67.180.72.76	TCP		30012 > 4076 [SYN, ACK] seq=0 ack=1 win=32764
+			Identification: 0xa4a3 (42147)
+		67.180.72.76	128.121.136.217	TCP		4076 > 30012 [ACK] seq=1 ack=1 win=17520
+
+		Not all id should increament by 1, but, it should go higher, not lower
+	bad/ 0xe77e is etter cap/ ettercap is a tool for network protocol analysis and security auditing
+		Source		Destination	Protocol	Info
+		12.234.13.202	12.234.12.3	ICMP		Echo (ping) request
+			Identification: 0xe77e (59262)
+		10.150.160.1	12.234.13.202	ICMP		Redirect (Redirect for host)
+			
+		12.234.13.202	12.234.12.4	ICMP		Echo (ping) request
+			Identification: 0xe77e (59262)
+		12.234.13.202	12.234.12.5	ICMP		Echo (ping) request
+			Identification: 0xe77e (59262)
+
+	ttl-counting/trace route
+		Source		Destination	Protocol	Info
+		10.0.0.29	10.0.0.2	ICMP		Echo (ping) request
+			Time to live: 1
+		10.0.0.2	10.0.0.29	ICMP		Echo (ping) reply
+		10.0.0.29	10.0.0.2	ICMP		Echo (ping) request
+			Time to live: 2
+		10.0.0.2	10.0.0.29	ICMP		Echo (ping) reply
+		10.0.0.29	10.0.0.2	ICMP		Echo (ping) request
+			Time to live: 3
+		10.0.0.2	10.0.0.29	ICMP		Echo (ping) reply
+
+	ugly trace
+		Source		Destination	Protocol	Info
+		12.234.13.89	12.234.14.63	TCP		47063 > http [ACK] seq=0 ack=0 win=4096
+		12.234.13.89	12.234.14.63	TCP		[TCP Dup ACK 1#1] 47063 > http [ACK] seq=0 ack=0 win=4096
+		12.234.14.63	12.234.13.89	TCP		http > 47063 [RST] Seq=0 len=0
+		12.234.14.63	12.234.13.89	TCP		http > 47063 [RST] Seq=0 len=0
+		12.234.13.89	12.234.14.63	TCP		1093 > 424 [SYN] seq=0 len=0 MSS=1460
+			Ethernet II, SRC:AmbitMic_aa:af:80, Dst: Cisco_3c:3f:54
+			Identification: 0x043f(1087)
+			Time to live: 128
+		12.234.13.89	12.234.14.63	TCP		1093 > 424 [SYN] seq=0 len=0 MSS=1460
+			Ethernet II, SRC:Cisco_3c:3f:a8, Dst: Runtop_e1:5a:80
+			Identification: 0x043f(1087)
+			Time to live: 127
+
+		Local routing. send it to a router, and route to a local network
+
+	nmap ip scan/ what protocol sitting on top of IP
+		Source		Destination	Protocol	Info
+		192.168.1.118	192.168.1.117	IP		Multiplex (0x12)
+		192.168.1.118	192.168.1.117	IP		EGP (0x08)
+		192.168.1.118	192.168.1.117	IP		Unknow (0x92)
+		192.168.1.118	192.168.1.117	IP		Unknow (0xc1)
+		192.168.1.118	192.168.1.117	IP		Unknow (0xb2)
+		192.168.1.118	192.168.1.117	IP		Secure Packet (0x82)
+
+Analyze Internet Control Message Protocol (ICMP) Traffic
+	Source		Destination	Protocol	Info
+	10.2.10.2	10.2.99.99	ICMP		Echo (ping) request
+		Internet Prococol, Src: Dst:
+		Internet Control Message Protocol
+			Type: 8 (Echo (ping) request)
+			Code: 0
+			Checksum:
+			Identifier:
+			Sequence number:
+	10.2.99.99	10.2.10.2	ICMP		Echo (ping) reply
+
+
+	icmp-destination-unreachable
+		Source		Destination	Protocol	Info
+		10.2.10.2	10.4.88.88	ICMP		Echo (ping) request
+		10.2.99.99	10.2.10.2	ICMP		Destination unreachable (Host unreachable)
+			Internet Prococol src: 10.2.99.99 Dst: 10.2.10.2
+			Internet Control Message Protocol
+				Type: 3 (Destination unreachable)
+				Code: 1 (host unreachable)
+				Internet Protocal, Src: 10.2.10.2 Dst: 10.4.88.88
+				Internet Control Message Protocol
+
+	icmp traceroute (each implementation may have different TTL value/repeat)
+		Source		Destination	Protocol	Info
+		71.198.243.158	128.241.194.25	ICMP		Echo (ping) Request
+			IP
+				Time to live: 1
+		71.198.243.158	128.241.194.25	ICMP		Echo (ping) Request
+				Time to live: 1
+		71.198.243.158	128.241.194.25	ICMP		Echo (ping) Request
+				Time to live: 1
+		71.198.243.158	128.241.194.25	ICMP		Echo (ping) Request
+				Time to live: 2
+		68.87.198.109	71.198.243.158	ICMP		Time-to-live exceeded
+			since TTL cant go beyond 2nd router, the 2nd router responds
+			Internet Control Message Protocol
+				Type: 11 (Time-to-live exceeded)
+				Code: 0 (Time to live exceeded in transit)
+
+	icmp redirect
+		Source		Destination	Protocol	Info
+		10.2.10.2	10.3.71.7	ICMP		Echo (ping) request
+			Ethernet II, Src: Runtop_e1:5a:80 Dst: Cisco_81:43:e3
+		10.2.99.99	10.2.10.2	ICMP		Redirect (Redirect for host)
+			Ethernet II, Src: Cisco_81:43:e3 Dst: Runtop_e1:5a:80
+			ICMP
+			Type: 5 (Redirect)
+			Code: 1 (Redirect for host)
+			Gateway address: 10.2.99.98
+		10.2.10.2	10.3.71.7	ICMP		Echo (ping) request
+			Ethernet II, Src: Cisco_81:43:e3 Dst: Cisco_81:3c:66
+		10.3.71.7	10.2.10.2	ICMP		Echo (ping) replay
+			Ethernet II, Src: Cisco_81:3c:66 Dst: Runtop_e1:5a:80 
+
+	icmp router solicitation
+		Source		Destination	Protocol	Info
+		10.1.0.3	10.1.0.1	DHCP		DHCP Request	- Transaction ID 0x54d15
+			Ethernet II, Src: NetworkG_10:22:1b Dst: 3com_30:c4:4a
+			User Datagram Protocol Src port: bootpc (68), Dst Port: bootps (67)
+ 		10.1.0.3	10.1.0.1	DHCP		DHCP Request	- Transaction ID 0x54d15
+			no respond from DHCP server, so broadcast
+ 		10.1.0.3	255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x31693
+ 			Ethernet II, Src: NetworkG_10:22:1b Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+			User Datagram Protocol Src port: bootpc (68), Dst Port: bootps (67)
+		10.1.0.3	255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x31693
+ 		10.1.0.3	255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x11011
+ 		10.1.0.3	255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x11011
+			no respond, give up its address & become 0
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0xf5980
+			Ethernet II, Src: NetworkG_10:22:1b Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+			Internet Protocol, Src: 0.0.0.0, Dst: 255.255.255.255
+			User Datagram Protocol Src port: bootpc (68), Dst Port: bootps (67)
+			Bootstrap Protocol
+				Message type: Boot Request (1)
+				Hardware type: Ethernet
+				Hardware address length: 6
+		10.1.0.1	10.1.22.2	DHCP		DHCP offer	- Transaction ID 0xf5980
+			Ethernet II, Src: 3com_30:c4:4a Dst: NetworkG_10:22:1b
+			Internet Protocol, Src: 10.1.0.1, Dst: 10.1.22.2
+			User Datagram Protocol Src port: bootps (67), Dst Port: bootpc (68)
+			Bootstrap Protocol
+				Message type: Boot Request (2)
+				Hardware type: Ethernet
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0xf5980
+			The client doesn't like 10.1.22.2, has another request
+			Ethernet II, Src: NetworkG_10:22:1b Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+			Internet Protocol, Src: 0.0.0.0, Dst: 255.255.255.255
+			User Datagram Protocol Src port: bootpc (68), Dst Port: bootps (67)
+			Bootstrap Protocol
+				option: Requested IP Address = 10.1.0.3
+		10.1.0.1	10.1.22.2	DHCP		DHCP offer	- Transaction ID 0xf5980
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 10.1.22.2
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0xf5980
+			Bootstrap Protocol
+				option: Requested IP Address = 10.1.0.3
+		10.1.0.1	10.1.22.2	DHCP		DHCP offer	- Transaction ID 0xf5980
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 10.1.22.2
+
+		last offer (3 times), the client accepts
+		0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0xf5980
+			Bootstrap Protocol
+				option: Requested IP Address = 10.1.22.2
+		10.1.0.1	10.1.22.2	DHCP		DHCP ACK	- Transaction ID 0xf5980
+
+		The client sends Gratuitous ARP
+		NetworkG10:22:	Broadcast	ARP		Gratuitous ARP for 10.1.22.2 (Request)		
+
+	OS finger printing
+		Source		Destination	Protocol	Info
+		10.0.0.29	10.0.0.2	ICMP		Echo (ping) Request
+		10.0.0.2	10.0.0.29	ICMP		Echo (ping) reply
+
+		10.0.0.29	10.0.0.2	ICMP		Timestamp request
+		10.0.0.2	10.0.0.29	ICMP		Timestamp reply
+		10.0.0.29	10.0.0.2	ICMP		Timestamp request
+		10.0.0.2	10.0.0.29	ICMP		Timestamp reply
+		10.0.0.29	10.0.0.2	ICMP		Address mask request
+		10.0.0.29	10.0.0.2	ICMP		Address mask request
+		10.0.0.29	10.0.0.2	ICMP		Information request
+		10.0.0.29	10.0.0.2	ICMP		Information request
+
+Analyze User Datagram Protocol (UDP) Traffic
+	Mostly used for DHCP & DNS SNMP connections
+	Re-Transmission / Re-try / Timeout is all done by Applilcations
+	If a client wants to multicast, it uses UDP instead of TCP
+	UDP header is 8 byte long
+		Source port: bootpc (68)
+		Destination port: bootps (67)
+		Length: 308
+		checksum
+	Source		Destination	Protocol	Info
+	0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0xde03de03
+	10.0.0.1	10.0.99.2	DHCP		DHCP Offer	- Transaction ID 0xde03de03
+	0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0xde03de03
+	10.0.0.1	10.0.99.2	DHCP		DHCP ACK	- Transaction ID 0xde03de03
+
+	icmp is also used for errors
+	wrong
+		Source		Destination	Protocol	Info
+		192.168.1.141	192.168.1.123	DNS		Standard query response A 205.206.231.13
+		192.168.1.123	192.168.1.141	ICMP		Destination unreachable
+		192.168.1.141	192.168.1.123	UDP		Source port: 32784 Destination port: 9101
+		192.168.1.123	192.168.1.141	ICMP		Destination unreachable (Port unreachable)
+
+WSU02 07 tcp
+=>	TCP (header?) is 4 bytes alignment
+	Options
+	SACK permitted		=>	Selective ACK
+
+	Source		Destination	Protocol	Info
+	10.3.71.7	10.3.30.1	TCP		1025 > ftp [SYN] Seq=0 len=0 MSS=1460
+		Transmission Control Protocol
+			Sorce port: 1025
+			Destination port: ftp (21)
+			Sequence number: 0 (relative sequence number)
+			Header length: 24
+			Flags: 0x02 (SYN)
+			Window size: 8192
+			checksum: this can be done by checksum offloading, which will be invalid
+			options
+	10.3.30.1	10.3.71.7	TCP		ftp > 1025 [SYN, ACK] seq=0 ack=1 win=8760
+			Sequence number: 0 (relative sequence number)
+			Acknowledgement number: 1 (relative ack number)		<= I will expect the next seq # form the other side
+			Header length:
+			Flags: 0x012 (SYN, ACK)
+			Window size: 8760
+	10.3.71.7	10.3.30.1	TCP		1025 > ftp [ACK] seq=1 ack=1 win=8760 len=0
+			Sequence number: 1 (relative sequence number)		<= It's 1.
+			Acknowledgement number: 1 				<= I will expect 10.3.30.1 next seq to be 1
+			Header length: 20
+			Flags: 0x10 (ACK)
+			Window size: 8760
+	10.3.30.1	10.3.71.7	FTP		Response: 220 Chad's FTP server - Authorized
+			Sequence number: 1 (relative sequence number)
+			[Next sequence number: 69 (relative sequence number)]
+			Acknowledgement number: 1 (relative ack number)	
+			header length: 20 bytes
+			Flags: 0x18 (PSH, ACK)
+		File Transfer Protocol (FTP)
+			220 Chad's FTP Server - Authorized Access Only.Technical Revierer \r\n
+	10.3.71.7	10.3.30.1	FTP		Request: USER fred
+			Sequence number: 1 (relative sequence number)
+			[Next sequence number: 12 (relative sequence number)]
+			Acknowledgement number: 69
+		File Transfer Protocol (FTP)
+			User fred\r\n
+	10.3.30.1	10.3.71.7	FTP		Response: 331 User name OK - need password.
+			Sequence number: 69 (relative sequence number)
+			[Next sequence number: 104 (relative sequence number)]
+			Acknowledgement number: 12 (relative ack number)	
+			header length: 20 bytes
+			Flags: 0x18 (PSH, ACK)
+		File Transfer Protocol (FTP)
+			331 User name OK - need password.\r\n
+	10.3.71.7	10.3.30.1	TCP		1025 > ftp [ACK] seq=12 Ack=104 WIn=8657
+			Sequence number: 12 (relative sequence number)
+			Acknowledgement number: 104
+	...
+	10.3.71.7	10.3.30.1	TCP		1025 > ftp [FIN,ACK] Seq=75 Ack=661
+	10.3.30.1	10.3.71.7	TCP		ftp > 1025 [FIN,ACK] Seq=661, Ack=76
+	10.3.71.7	10.3.30.1	TCP		1025 > ftp [ACK] Seq=76 Ack=662
+
+
+	port scan / we can inject a packet from 1 system supports echo to another echo and spoof the src of the packet
+		Source		Destination	Protocol	Info
+		10.1.0.2	10.1.0.1	TCP		2294 > 1 [SYN] Seq=0 Len=0
+		10.1.0.1	10.1.0.2	TCP		1 > 2294 [Rst, ACK] Seq=0 Ack=1 Len=0
+		10.1.0.2	10.1.0.1	TCP		2296 > 2 [SYN] Seq=0 Len=0
+		10.1.0.1	10.1.0.2	TCP		2 > 2296 [Rst, ACK] Seq=0 Ack=1 Len=0
+		10.1.0.2	10.1.0.1	TCP		2298 > 3 [SYN] Seq=0 Len=0
+		10.1.0.1	10.1.0.2	TCP		3 > 2298 [Rst, ACK] Seq=0 Ack=1 Len=0
+		...
+		echo is port 7
+		10.1.0.2	10.1.0.1	TCP		2306 > echo [SYN] Seq=0 Len=0
+		10.1.0.1	10.1.0.2	TCP		echo > 2306 [SYN, ACK] Seq=0 Ack=1 Len=0
+		10.1.0.2	10.1.0.1	TCP		2306 > echo [ACK] Seq=1 Ack=1
+
+	strange scan
+		Source		Destination	Protocol	Info
+		12.234.6.99	12.234.14.63	TCP		59407 > telnet [FIN, SYN, PSH, URG]
+		12.234.14.63	12.234.6.99	TCP		[TCP ACKed lost segment] telnet > 59407
+		12.234.6.99	12.234.14.63	TCP		[TCP Previous segment lost] 59407 > telnet
+		12.234.14.63	12.234.6.99	TCP		[TCP ACKed lost segment] telnet > 59407
+
+	ftp-tcp segment => only sending 1 byte of data.  This is not the same as fragment by hw; this is ftp purposely segments.
+
+	tcp hand shake problem (the server never seen client ACK in 3 way hand shack)
+		Source		Destination	Protocol	Info
+		67.161.32.69	65.201.175.19	TCP		2534 > 4321 [SYN] Seq=0
+		65.201.175.19	67.161.32.69	TCP		4321 > 2534 [SYN,ACK] Seq=0 Ack=1
+		67.161.32.69	65.201.175.19	TCP		2534 > 4321 [ACK] Seq=1 Ack=1		<= Seq is the same
+		67.161.32.69	65.201.175.19	TCP		2534 > 4321 [PSH,ACK] Seq=1 Ack=1	<= Seq is the same
+		67.161.32.69	65.201.175.19	TCP		2534 > 4321 [TCP Retransmission] 2534 > 4321 [PSH,ACK] Seq=1 Ack=1
+		65.201.175.19	67.161.32.69	TCP		4321 > 2534 [SYN,ACK] Seq=0 Ack=1
+		67.161.32.69	65.201.175.19	TCP		[TCP Dup ACK] 2534 > 4321 [ACK] Seq=15 Ack=1
+		67.161.32.69	65.201.175.19	TCP		[TCP Retransmission] 2534 > 4321 [PSH,ACK]
+
+	tcp recovery process
+		Source		Destination	Protocol	Info
+		61.8.0.17	10.0.52.164	TCP		[TCP segment of a reassembled PDU]
+			Sequence number: 111290
+			[Next sequence number: 112750]
+			Acknowledgement number: 446
+		61.8.0.17	10.0.52.164	TCP		[TCP Previous segment lost] [TCP segment of a reassembled PDU]
+			Sequence number: 114210
+			[Next sequence number: 115670]
+			Acknowledgement number: 446
+		10.0.52.164	61.8.0.17	TCP		2550 > http [ACK] seq=446 Ack=112750	<= ack of the last expected #
+			Sequence number: 446
+			Acknowledgement number: 112750
+		61.8.0.17	10.0.52.164	TCP		[TCP segment of a reassembled PDU]	<= server keeps moving on
+			Sequence number: 115670
+			[Next sequence number: 117130]
+			Acknowledgement number: 446
+		10.0.52.164	61.8.0.17	TCP		[TCP Dup of ACK <the last ack> #1] 2550 > http [ACK] seq=446 Ack=112750
+			Sequence number: 446
+			Acknowledgement number: 112750
+		...
+		10.0.52.164	61.8.0.17	TCP		[TCP Dup of ACK <the last ack> #40] 2550 > http [ACK] seq=446 Ack=112750
+			Sequence number: 446
+			Acknowledgement number: 112750
+		61.8.0.17	10.0.52.164	TCP		[TCP Fast Retransmission] [TCP segment of a reassembled PDU]
+			Sequence number: 112750
+			[Next sequence number: 114210]
+			Acknowledgement number: 446
+
+		(The server cant handle select ACK)
+		Source		Destination	Protocol	Info
+		67.161.19.78	128.121.136.217	TCP		2693 > 30012 [SYN]
+			options
+				Maximum segment size: 1460
+				nop
+				nop
+				SACK
+		128.121.136.217	67.161.19.78	TCP		30012 > 2693 [SYN, ACK] Seq=0 Ack=1
+			options
+				Maximum segment size: 1460
+		67.161.19.78	128.121.136.217	TCP		2693 > 30012 [ACK] Seq=1 Ack=1
+		67.161.19.78	128.121.136.217	TCP		2693 > 30012 [ACK] Seq=1461 Ack=1
+	6	128.121.136.217	67.161.19.78	TCP		30012 > 2963 [ACK] Seq=1 Ack=1461
+		67.161.19.78	128.121.136.217	TCP		[PSH, ACK] Seq=2921 Ack=1
+		67.161.19.78	128.121.136.217	TCP		[ACK] Seq=4381 Ack=1
+		128.121.136.217	67.161.19.78	TCP		[TCP Dup Ack 6#1] 30012 > 2963 [ACK] Seq=1 Ack=1461
+		67.161.19.78	128.121.136.217	TCP		[ACK] Seq=5841 Ack=1
+		128.121.136.217	67.161.19.78	TCP		[TCP Dup Ack 6#2] 30012 > 2963 [ACK] Seq=1 Ack=1461
+		67.161.19.78	128.121.136.217	TCP		[TCP Fast Retransmission] 2693 > 30112 [ACK] Seq=1461 Ack=1
+		128.121.136.217	67.161.19.78	TCP		30012 > 2963 [ACK] Seq=1 Ack=2921
+		67.161.19.78	128.121.136.217	TCP		[TCP Retransmission] 2693 > 30012 [PSH, ACK] Seq=2921 Ack=1
+		128.121.136.217	67.161.19.78	TCP		30012 > 2963 [ACK] Seq=1 Ack=4381
+		67.161.19.78	128.121.136.217	TCP		[TCP Retransmission] 2693 > 30012 [ACK] Seq=4381 Ack=1
+
+	out-of-order
+		Source		Destination	Protocol	Info
+		204.152.184.134	10.0.52.164	TCP		[TCP segment of a reassembled PDU]
+			Sequence number: 1461
+			[Next sequence number: 2921]
+			Acknowledgement number: 444
+		204.152.184.134	10.0.52.164	TCP		[TCP Previous segment lost] [TCP segment of a reassembled PDU]
+			Sequence number: 4381
+			[Next sequence number: 4384]
+			Acknowledgement number: 444
+		10.0.52.164	204.152.184.134	TCP		2646 > http [ACK] Seq=444 Ack=2921
+		10.0.52.164	204.152.184.134	TCP		[TCP Window update] 2646 > http [ACK] Seq=444 Ack=2921
+		204.152.184.134	10.0.52.164	TCP		[TCP Out-of-Order][TCP segment of a reassembled PDU]
+			Sequence number: 2921
+			[Next sequence number: 4381]
+			Acknowledgement number: 444
+
+	Congestion Traffic
+		Source		Destination	Protocol	Info
+		10.0.52.164	61.8.0.17	TCP		2550 > http [SYN]
+			Window size: 65535
+			Options:
+				Maximum segment size: 1460
+				NOP
+				Window scale: 2 (multiply by 4)		======> Window size * 4 256KB
+				NOP
+				NOP
+				SACK permitted
+
+		10.0.52.164	61.8.0.17	TCP		http > 2550 [SYN, ACK]
+			Window size: 5840
+			Options:
+				Maximum segment size: 1460
+				NOP
+				Window scale: 7 (multiply by 128)				NOP
+				NOP
+				SACK permitted
+
+		10.0.52.164	61.8.0.17	TCP		2550 > http [ACK]
+		...
+		10.0.52.164	61.8.0.17	TCP		2550 > http [ACK] Seq=446 Ack=295250 Win=2920
+			Sequence number: 446
+			Acknowledgement number: 295250
+			Window size: 2920 (scaled)
+		61.8.0.17	10.0.52.164	TCP		[TCP segment of a reassembled PDU]
+			Sequence number: 295250
+			[Next sequence number: 296710]
+			Acknowledgement number: 446
+		61.8.0.17	10.0.52.164	TCP		[TCP Window Full] [TCP segment of a reassembled PDU]
+			Sequence number: 296710
+			[Next sequence number: 298170]
+			Acknowledgement number: 446
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+			Sequence number: 446
+			Acknowledgement number: 298170
+			Window size: 0
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+			Sequence number: 298169
+			Acknowledgement number: 446
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		61.8.0.17	10.0.52.164	TCP		[TCP Keep-Alive] http > 2550 [ACK] Seq=2981
+		10.0.52.164	61.8.0.17	TCP		[TCP ZeroWindow] 2550 > http [ACK] seq=446
+		10.0.52.164	61.8.0.17	TCP		[TCP Window update] 2550 > http [ACK] seq=446
+			Sequence number: 446
+			Acknowledgement number: 298170
+			Window size: 3760
+		10.0.52.164	61.8.0.17	TCP		[TCP Window update] 2550 > http [ACK] seq=446
+			Sequence number: 446
+			Acknowledgement number: 298170
+			Window size: 256960
+		61.8.0.17	10.0.52.164	TCP		[TCP segment of a reassembled PDU]
+
+WSU02 08 dhcp
+	Source		Destination	Protocol	Info
+	0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0xde03de03
+		User Datagram Protocol
+			Source port: bootpc (68)
+			Destination port: bootps (67)
+			Length: 308
+		Bootstrap Protocol
+			Message Type: Boot Request (1)
+			Hardware type: Ethernet
+			Hardware address length: 6
+			Hops: 0
+			Transaction ID: 0xde03de03
+			Seconds elapsed: 0
+			Bootp flags: 0x0000 (unicast)
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 0.0.0.0
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 0.0.0.0
+			Client MAC address:
+			Server host name not given
+			Boot file name not given
+			Magic cookie: (OK)
+			option(t=53, l=1): DHCP Message Type = DHCP Discover
+				Option: (53) DHCP Message Type
+				Length: 1
+				Value: 01
+
+					Type 1: Discover
+					Type 1: Offer
+					Type 1: Request
+					Type 1: Decline
+					Type 1: ACK
+					Type 1: Negative ACK
+					Type 1: Release
+					Type 1: DHCP Inform
+
+			Option(t=61, l=7): Client identifier
+			Option(t=50, l=4): Requested IPAddress = 10.0.99.2	<= what client would like to have
+				option: (50) Requested IP Address
+				Length: 4
+				Value: 0A006302
+			Option(t=12, l=9): Host Name = ""
+
+	10.0.0.1	10.0.99.2	DHCP		DHCP Offer	- Transaction ID 0xde03de03
+			Message Type: Boot Reply (2)
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 10.0.99.2
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 0.0.0.0
+			option(t=53, l=1): DHCP Message Type = DHCP Offer
+			Option(t=54, l=4): Server identifier = 10.0.0.1
+			Option(t=51, l=4): IP Address Lease Time = 5 minutes
+				Option: (51) IP Address Lease Time
+				Length: 4
+				Value: 0000012C
+			Option(t=1, l=4): Subnet Mask =255.0.0.0
+
+	0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0xde03de03
+	^^^^^^^
+=>	client is allowed to use the new ip after Gratuitous process
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 0.0.0.0
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 0.0.0.0
+			option(t=53, l=1): DHCP Message Type = DHCP Request
+			Option(t=61, l=7): Client identifier
+			Option(t=50, l=4): Requested IPAddress = 10.0.99.2
+			Option(t=54, l=4): Server identifier = 10.0.0.1
+			Option(t=12, l=9): Host Name = ""
+
+	10.0.0.1	10.0.99.2	DHCP		DHCP ACK	- Transaction ID 0xde03de03
+			Message Type: Boot Reply (2)
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 10.0.99.2
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 0.0.0.0
+			option(t=53, l=1): DHCP Message Type = DHCP ACK
+			Option(t=54, l=4): Server identifier = 10.0.0.1
+			Option(t=51, l=4): IP Address Lease Time = 5 minutes
+			Option(t=1, l=4): Subnet Mask =255.0.0.0
+			Option(t=3, l=4): Router = 10.0.0.1
+			Option(t=6, l=4): Domain Name Server = 10.0.0.1
+			Option(t=15, l=16): Domain Name = "hello.org"
+
+
+	dhcp relay
+		Source		Destination	Protocol	Info
+		0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x27032703
+			Internet Protocol
+				Time to live: 128
+			Option: Requested IP Address = 10.2.0.1
+		10.1.0.1	10.2.0.1	DHCP		DHCP ACK	- Transaction ID 0x27032703
+			Internet Protocol
+				Time to live: 127
+			Client IP address: 0.0.0.0
+			Your (client) IP address: 10.2.0.1
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 10.2.99.99
+			option(t=53, l=1): DHCP Message Type = DHCP ACK
+			Option(t=54, l=4): Server identifier = 10.1.0.1		<==== this info comes from relay agent
+			Option(t=51, l=4): IP Address Lease Time = 3 days
+			Option(t=1, l=4): Subnet Mask =255.255.0.0
+			Option(t=3, l=4): Router = 10.2.99.99
+			Option(t=6, l=4): Domain Name Server = 10.1.99.99
+		10.1.0.1	10.2.0.1	DHCP		DHCP ACK	- Transaction ID 0x27032703
+		10.2.0.1	255.255.255.255	DHCP		DHCP Inform	- Transaction ID 0x27032703
+		^^^^^^^^
+		The client uses the new IP, and requests additional info
+		10.1.0.1	255.255.255.255	DHCP		DHCP ACK	- Transaction ID 0x27032703
+		server sends back the requested info
+
+	dhcp jerk take addr no permission
+		Source		Destination	Protocol	Info
+		0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x44034403
+			Option: Requested IP Address = 10.1.0.2
+		0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x44034403
+		No reply from server, ask again
+			Seconds elapsed: 1536
+		00:a0:cc:30:	ff:ff:ff:ff:ff	ARP		Gratuitous ARP for 10.1.0.2 (Request)
+			Still no answer, process Gratuitous 
+			Address Resolution Protocol
+				Sender MAC: its own MAC
+				Sender IP: 10.1.0.2
+				Target MAC: 00:00:00:00:00:00
+				Target IP: 10.1.0.2
+		10.1.0.2	244.0.0.2	IGMP		V2 Membership Report
+			starts using the new IP
+		10.1.0.2	255.255.255.255	DHCP		DHCP Inform	- Transaction ID 0xcdabcdab
+		10.1.0.1	10.1.0.2	DHCP		DHCP ACK	- Transaction ID 0xcdabcdab
+		All the sudden, the server answers
+			Client IP address: 10.1.0.2
+			Your (client) IP address: 0.0.0.0
+			Next server IP address: 0.0.0.0
+			Relay agent IP address: 0.0.0.0
+
+	dhcp server slow
+		Source		Destination	Protocol	Info
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0x1f1622be
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0x1f1622be
+			Seconds elapsed: 2304
+		73.68.136.1	255.255.255.255	DHCP		DHCP Offer	- Transaction ID 0x1f1622be
+		0.0.0.0		255.255.255.255	DHCP		DHCP Discover	- Transaction ID 0x201622be
+		new transaction id
+		73.68.136.1	255.255.255.255	DHCP		DHCP Offer	- Transaction ID 0x201622be
+		0.0.0.0		255.255.255.255	DHCP		DHCP Request	- Transaction ID 0x211622be
+		73.68.136.1	10.0.99.2	DHCP		DHCP ACK	- Transaction ID 0x211622be
+
+wsu02 09 http
+
+wsu02 10 telnet
+
+wsu02 11 ftp
+
+wsu02 12 pop
+
+wsu02 13 smtp
+

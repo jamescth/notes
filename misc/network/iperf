@@ -1,0 +1,82 @@
+iperf -r
+iperf -X	<=== verify corruption, DD only
+
+server:
+SE@artemis13## se iperf -s -X
+
+SE@artemis13## se iperf -s -X
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  4] local 10.25.131.40 port 5001 connected with 10.25.143.62 port 35706
+[  4]  0.0-10.0 sec    525 MBytes    440 Mbits/sec
+
+client:
+SE@koala12## se iperf -c 10.25.131.40
+------------------------------------------------------------
+Client connecting to 10.25.131.40, TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  3] local 10.25.143.62 port 35706 connected with 10.25.131.40 port 5001
+[  3]  0.0-10.0 sec    525 MBytes    440 Mbits/sec
+
+SE@koala12## se iperf -c 10.25.131.40 -X -t 60 -i 10
+# iperf -c 10.25.131.40 -P 12 -t 60 -i 10
+
+koala413 # iperf -s
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  9] local 192.168.50.200 port 5001 connected with 192.168.50.100 port 49015
+[  9]  0.0- 7.5 sec    840 MBytes    941 Mbits/sec
+
+koala412 # iperf -c 192.168.50.200
+------------------------------------------------------------
+Client connecting to 192.168.50.200, TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  7] local 192.168.50.100 port 49015 connected with 192.168.50.200 port 5001
+[  7]  0.0- 7.5 sec    840 MBytes    944 Mbits/sec
+
+
+# ping6 -c 4 fe80:0000:0000:0000:0260:48ff:fe1e:2f18 -I eth1a
+PING fe80:0000:0000:0000:0260:48ff:fe1e:2f18(fe80::260:48ff:fe1e:2f18) from fe80::260:48ff:fe1c:5ea4 eth1a: 56 data bytes
+64 bytes from fe80::260:48ff:fe1e:2f18: icmp_seq=0 ttl=64 time=0.976 ms
+64 bytes from fe80::260:48ff:fe1e:2f18: icmp_seq=1 ttl=64 time=0.182 ms
+64 bytes from fe80::260:48ff:fe1e:2f18: icmp_seq=2 ttl=64 time=0.194 ms
+64 bytes from fe80::260:48ff:fe1e:2f18: icmp_seq=3 ttl=64 time=0.185 ms
+
+--- fe80:0000:0000:0000:0260:48ff:fe1e:2f18 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 2999ms
+
+
+
+!!!! koala413 YOUR DATA IS IN DANGER !!!! # iperf -s -V
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  9] local 2001::202 port 5001 connected with 2001::201 port 45878
+[  9]  0.0-10.0 sec  1.08 GBytes    928 Mbits/sec
+[ 11] local ::ffff:192.168.50.200 port 5001 connected with ::ffff:192.168.50.100 port 33235
+[ 11]  0.0-10.0 sec  1.10 GBytes    941 Mbits/sec
+
+!!!! koala412 YOUR DATA IS IN DANGER !!!! # iperf -c 2001::202 -V
+multicast ttl failed (PerfSocket.cpp:101): Invalid argument (22)
+------------------------------------------------------------
+Client connecting to 2001::202, TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  7] local 2001::201 port 45878 connected with 2001::202 port 5001
+[  7]  0.0-10.0 sec  1.08 GBytes    930 Mbits/sec
+!!!! koala412 YOUR DATA IS IN DANGER !!!! # iperf -c 192.168.50.200
+------------------------------------------------------------
+Client connecting to 192.168.50.200, TCP port 5001
+TCP window size:   256 KByte (default)
+------------------------------------------------------------
+[  7] local 192.168.50.100 port 33235 connected with 192.168.50.200 port 5001
+[  7]  0.0-10.0 sec  1.10 GBytes    943 Mbits/sec
+

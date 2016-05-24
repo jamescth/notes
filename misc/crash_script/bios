@@ -1,0 +1,70 @@
+Epoch unix timestamp
+
+in autosupport
+GENERATED: 2012-05-16 06:13:25 CDT	<=========
+config.timezone = US/Central
+
+[hoj9@jho1-dl crash_script]$ perl -e 'print scalar(localtime(1335973697.853389)), "\n"'
+Wed May  2 08:48:17 2012
+
+[hoj9@jho1-dl crash_script]$ EPOCH=1335936772
+[hoj9@jho1-dl crash_script]$ echo $EPOCH | awk '{print strftime("%F %T %z", $1)}'
+2012-05-01 22:32:52 -0700
+
+[hoj9@jho1-dl crash_script]$ date -d "May  2 10:35:28 EST 2012" +%s
+1335972928
+[hoj9@jho1-dl crash_script]$ date -d "May  2 10:35:28 CST 2012" +%s
+1335976528
+[hoj9@jho1-dl crash_script]$ date -d "May  2 10:35:28 PDT 2012" +%s
+1335980128
+
+
+  40 | 05/02/2012 | 15:26:36 | System Event #0x83 | Timestamp Clock Sync | Asserted
+  54 | 05/02/2012 | 15:36:17 | System Event #0x83 | Timestamp Clock Sync | Asserted
+  68 | 05/02/2012 | 15:38:15 | System Event #0x01 | OEM System boot event | Asserted
+  7c | 05/02/2012 | 15:39:57 | System ACPI Power State ACPI Pwr State | S0/G0: working | Asserted
+  90 | 05/02/2012 | 19:21:31 | Power Unit Pwr Unit Status | Power off/down | Asserted
+       ^^^^^^^^^^^^^^^^^^^^^
+GMT time
+get the timezone CDT -5 ===> 19:21:31 => 14:21:31
+
+EST
+CST
+PST - pacific standard time
+PDT - pacific daylight time
+
+     Hours From Greenwich Mean Time (GMT) Value            
+                                                            
+      0 GMT Greenwich Mean Time                             
+      +1   ECT   European Central Time                      
+      +2   EET   European Eastern Time                      
+      +2   ART                                              
+      +3   EAT   Saudi Arabia                               
+      +3.5 MET   Iran                                       
+      +4   NET                                              
+      +5   PLT   West Asia                                  
+      +5.5 IST   India                                      
+      +6   BST   Central Asia                               
+      +7   VST   Bangkok                                    
+      +8   CTT   China                                      
+      +9   JST   Japan                                      
+      +9.5 ACT   Central Australia                          
+      +10  AET   Eastern Australia                          
+      +11  SST   Central Pacific                            
+      +12  NST   New Zealand                                
+      -11  MIT   Samoa                                      
+      -10  HST   Hawaii                                     
+      -9   AST   Alaska                                     
+      -8   PST   Pacific Standard Time PST
+      -7   PDT                     
+      -7   PNT   Arizona                                    
+      -7   MST   Mountain Standard Time                     
+      -6   CST   Central Standard Time                      
+      -5   EST   Eastern Standard Time                      
+      -5   IET   Indiana East                               
+      -4   PRT   Atlantic Standard Time                     
+      -3.5 CNT   Newfoundland                               
+      -3   AGT   Eastern South America                      
+      -3   BET   Eastern South America                      
+      -1   CAT   Azores 
+

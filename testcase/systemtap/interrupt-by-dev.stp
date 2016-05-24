@@ -1,0 +1,12 @@
+global devices
+
+probe irq_handler.entry {
+	device[dev_name]++;
+}
+
+probe timer.ms(100) {
+	printf("\t DEVICE \t Number of Interrupts \n");
+	foreach ( devname in devices )
+		printf(" %20s : %5d\n", kernel_string(devname),devices[devname]);
+	delete devices
+}

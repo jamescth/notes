@@ -1,0 +1,21 @@
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Size   Size    Size     Time     Throughput
+bytes  bytes   bytes    secs.    10^6bits/sec
+
+262144 262144 262144    10.03     941.26
+
+Mar  7 15:53:51 koala412 kernel: (E4)[    578121.355754] James: counter 4507 ave 4433939
+Mar  7 15:54:16 koala412 kernel: (E4)[    578146.734957] James: counter 4508 ave 4439403
+
+Recv   Send    Send
+Socket Socket  Message  Elapsed
+Size   Size    Size     Time     Throughput
+bytes  bytes   bytes    secs.    10^6bits/sec
+
+262144 262144 262144    10.02     928.55
+Mar  7 15:52:16 koala412 kernel: (E4)[    578026.536467] James: counter 4441 ave 4498272
+Mar  7 15:52:54 koala412 kernel: (E4)[    578064.279950] James: counter 4443 ave 4500673
+

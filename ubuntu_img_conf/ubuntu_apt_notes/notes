@@ -1,0 +1,52 @@
+# http://askubuntu.com/questions/17823/how-to-list-all-installed-packages
+
+# To get a list of packages installed locally:
+dpkg --get-selections | grep -v deinstall
+apt list
+
+# to get a list of a specific package installed:
+dpkg --get-selections | grep ssh
+apt show ssh 
+
+# To list all packages intentionally installed (not as dependencies) by apt commands, run the following :
+( zcat $( ls -tr /var/log/apt/history.log*.gz ) ; cat /var/log/apt/history.log ) | egrep '^(Start-Date:|Commandline:)' | grep -v aptdaemon | egrep '^Commandline:'
+
+	Commandline: apt-get upgrade
+	Commandline: apt-get -y install openssh-server
+	Commandline: apt-get -y install vim-gnome
+	Commandline: apt-get -y install portmap nis
+	Commandline: apt-get -y install autofs
+	Commandline: apt-get upgrade
+	Commandline: apt-get install docker.io
+	Commandline: apt-get upgrade
+
+# Installation data also showing synaptic usage, but without details (the same with installation date) :
+
+apt-mark showmanual
+
+( zcat $( ls -tr /var/log/apt/history.log*.gz ) ; \
+cat /var/log/apt/history.log ) | egrep '^(Start-Date:|Commandline:)' | grep -v aptdaemon | egrep -B1 '^Commandline:'
+
+	Start-Date: 2016-02-29  10:41:41
+	Commandline: apt-get upgrade
+	Start-Date: 2016-02-29  10:48:23
+	Commandline: apt-get -y install openssh-server
+	Start-Date: 2016-02-29  13:12:20
+	Commandline: apt-get -y install vim-gnome
+	Start-Date: 2016-02-29  13:13:20
+	Commandline: apt-get -y install portmap nis
+	Start-Date: 2016-02-29  13:16:27
+	Commandline: apt-get -y install autofs
+	Start-Date: 2016-03-02  10:38:18
+	Commandline: apt-get upgrade
+	Start-Date: 2016-03-02  10:41:30
+	Commandline: apt-get install docker.io
+	Start-Date: 2016-03-03  13:03:16
+	Commandline: apt-get upgrade
+
+
+# To see all the files the package installed onto your system
+dpkg-query -L openssh-server
+
+# To see the files a .deb file will install
+dpkg-deb -c <package_name.deb>

@@ -1,0 +1,1 @@
+./C_RFC3646_5_DnsSvrOpt_After_Confirm.seq -pkt ./C_RFC3646_5_DnsSvrOpt_After_Confirm.def -log 10.html -ti "Part C &#58; Option Request Option status after confirm message without any reply (DNS Recursive Name Server option)"

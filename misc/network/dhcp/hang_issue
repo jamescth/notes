@@ -1,0 +1,2252 @@
+[3]kdb> bt
+Stack traceback for pid 889
+0xffff81052ab04d60      889      448  1    3   R  0xffff81052ab05110 *gzip
+Stack is not in kernel space, backtrace not available
+[3]kdb> set LINES 10000
+[3]kdb> dmesg
+<5>(E5)[         0.000000] Linux version 2.6.23-ddr443488 (root@build64bm.datadomain.com) (gcc version 4.5.1 (GCC) ) #1 SMP Wed Jul 30 18:27:49 PDT 2014
+<6>(E6)[         0.000000] Command line: ro root=/dev/root-p1 console=umemlog console=tty0 console=ttyS1 console=ttyS0 showopts
+<6>(E6)[         0.000000] BIOS-provided physical RAM map:
+<6>(E6)[         0.000000]  BIOS-e820: 0000000000000000 - 0000000000099400 (usable)
+<6>(E6)[         0.000000]  BIOS-e820: 0000000000099400 - 00000000000a0000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000000e0000 - 0000000000100000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 0000000000100000 - 00000000bf780000 (usable)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000bf780000 - 00000000bf78e000 (ACPI data)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000bf78e000 - 00000000bf7d0000 (ACPI NVS)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000bf7d0000 - 00000000bf7e0000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000bf7ec000 - 00000000c0000000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000e0000000 - 00000000f0000000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000fee00000 - 00000000fee01000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 00000000ffa00000 - 0000000100000000 (reserved)
+<6>(E6)[         0.000000]  BIOS-e820: 0000000100000000 - 0000000940000000 (usable)
+<7>(E7)[         0.000000] Entering add_active_range(0, 0, 153) 0 entries of 3200 used
+<7>(E7)[         0.000000] Entering add_active_range(0, 256, 784256) 1 entries of 3200 used
+<7>(E7)[         0.000000] Entering add_active_range(0, 1048576, 9699328) 2 entries of 3200 used
+<4>(E4)[         0.000000] end_pfn_map = 9699328
+<6>(E6)[         0.000000] DMI present.
+<4>(E4)[         0.000000] ACPI: RSDP 000FA710, 0024 (r2 ACPIAM)
+<4>(E4)[         0.000000] ACPI: XSDT BF780100, 005C (r1 041510 XSDT1824 20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: FACP BF780290, 00F4 (r4 041510 FACP1824 20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: DSDT BF780500, 5BEE (r2  5241D 5241D105      105 INTL 20051117)
+<4>(E4)[         0.000000] ACPI: FACS BF78E000, 0040
+<4>(E4)[         0.000000] ACPI: APIC BF780390, 00D8 (r2 041510 APIC1824 20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: SPCR BF780470, 0050 (r1 041510 SPCR1824 20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: MCFG BF7804C0, 003C (r1 041510 OEMMCFG  20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: OEMB BF78E040, 007A (r1 041510 OEMB1824 20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: HPET BF78A500, 0038 (r1 041510 OEMHPET  20100415 MSFT       97)
+<4>(E4)[         0.000000] ACPI: SSDT BF78EB00, 0363 (r1 DpgPmm    CpuPm       12 INTL 20051117)
+<6>(E6)[         0.000000] No NUMA configuration found
+<6>(E6)[         0.000000] Faking a node at 0000000000000000-0000000940000000
+<7>(E7)[         0.000000] Entering add_active_range(0, 0, 153) 0 entries of 3200 used
+<7>(E7)[         0.000000] Entering add_active_range(0, 256, 784256) 1 entries of 3200 used
+<7>(E7)[         0.000000] Entering add_active_range(0, 1048576, 9699328) 2 entries of 3200 used
+<6>(E6)[         0.000000] Bootmem setup node 0 0000000000000000-0000000940000000
+<4>(E4)[         0.000000] Zone PFN ranges:
+<4>(E4)[         0.000000]   DMA             0 ->     4096
+<4>(E4)[         0.000000]   DMA32        4096 ->  1048576
+<4>(E4)[         0.000000]   Normal    1048576 ->  9699328
+<4>(E4)[         0.000000] Movable zone start PFN for each node
+<4>(E4)[         0.000000] early_node_map[3] active PFN ranges
+<4>(E4)[         0.000000]     0:        0 ->      153
+<4>(E4)[         0.000000]     0:      256 ->   784256
+<4>(E4)[         0.000000]     0:  1048576 ->  9699328
+<7>(E7)[         0.000000] On node 0 totalpages: 9434905
+<7>(E7)[         0.000000]   DMA zone: 64 pages used for memmap
+<7>(E7)[         0.000000]   DMA zone: 2569 pages reserved
+<7>(E7)[         0.000000]   DMA zone: 1360 pages, LIFO batch:0
+<7>(E7)[         0.000000]   DMA32 zone: 16320 pages used for memmap
+<7>(E7)[         0.000000]   DMA32 zone: 763840 pages, LIFO batch:31
+<7>(E7)[         0.000000]   Normal zone: 135168 pages used for memmap
+<7>(E7)[         0.000000]   Normal zone: 8515584 pages, LIFO batch:31
+<7>(E7)[         0.000000]   Movable zone: 0 pages used for memmap
+<6>(E6)[         0.000000] ACPI: PM-Timer IO Port: 0x808
+<7>(E7)[         0.000000] ACPI: Local APIC address 0xfee00000
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x01] lapic_id[0x10] enabled)
+<6>(E6)[         0.000000] Processor #16 (Bootup-CPU)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x02] lapic_id[0x12] enabled)
+<6>(E6)[         0.000000] Processor #18
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x03] lapic_id[0x14] enabled)
+<6>(E6)[         0.000000] Processor #20
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x04] lapic_id[0x16] enabled)
+<6>(E6)[         0.000000] Processor #22
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x05] lapic_id[0x11] enabled)
+<6>(E6)[         0.000000] Processor #17
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x06] lapic_id[0x13] enabled)
+<6>(E6)[         0.000000] Processor #19
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x07] lapic_id[0x15] enabled)
+<6>(E6)[         0.000000] Processor #21
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x08] lapic_id[0x17] enabled)
+<6>(E6)[         0.000000] Processor #23
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x09] lapic_id[0x88] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0a] lapic_id[0x89] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0b] lapic_id[0x8a] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0c] lapic_id[0x8b] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0d] lapic_id[0x8c] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0e] lapic_id[0x8d] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x0f] lapic_id[0x8e] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC (acpi_id[0x10] lapic_id[0x8f] disabled)
+<6>(E6)[         0.000000] ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+<6>(E6)[         0.000000] ACPI: LAPIC_NMI (acpi_id[0xff] high dfl lint[0x1])
+<6>(E6)[         0.000000] ACPI: IOAPIC (id[0x08] address[0xfec00000] gsi_base[0])
+<6>(E6)[         0.000000] IOAPIC[0]: apic_id 8, address 0xfec00000, GSI 0-23
+<6>(E6)[         0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+<6>(E6)[         0.000000] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+<7>(E7)[         0.000000] ACPI: IRQ0 used by override.
+<7>(E7)[         0.000000] ACPI: IRQ2 used by override.
+<7>(E7)[         0.000000] ACPI: IRQ9 used by override.
+<6>(E6)[         0.000000] Setting APIC routing to flat
+<6>(E6)[         0.000000] ACPI: HPET id: 0xffffffff base: 0xfed00000
+<6>(E6)[         0.000000] Using ACPI (MADT) for SMP configuration information
+<6>(E6)[         0.000000] Allocating PCI resources starting at c2000000 (gap: c0000000:20000000)
+<6>(E6)[         0.000000] PERCPU: Allocating 65968 bytes of per cpu data
+<4>(E4)[         0.000000] Built 1 zonelists in Zone order.  Total pages: 9280784
+<4>(E4)[         0.000000] Policy zone: Normal
+<5>(E5)[         0.000000] Kernel command line: ro root=/dev/root-p1 console=umemlog console=tty0 console=ttyS1 console=ttyS0 showopts
+<4>(E4)[         0.000000] Initializing CPU#0
+<4>(E4)[         0.000000] PID hash table entries: 4096 (order: 12, 32768 bytes)
+<6>(E6)[         0.000000] Extended CMOS year: 2000
+<6>(E6)[       328.675352] time.c: Detected 2533.424 MHz processor.
+<4>(E4)[       328.681793] Console: colour VGA+ 80x25
+<6>(E6)[       328.681796] console [tty0] enabled
+<6>(E6)[       328.681797] console [tty0] will be used as /dev/console
+<6>(E6)[       328.706399] console [ttyS0] enabled
+<6>(E6)[       328.706631] console [ttyS0] will be used as /dev/console
+<6>(E6)[       335.321411] Checking aperture...
+<6>(E6)[       335.369641] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+<6>(E6)[       335.463042] Placing software IO TLB between 0x1113000 - 0x5113000
+<4>(E4)[       335.701602] Memory: 36952068k/38797312k available (2684k kernel code, 787552k reserved, 1684k data, 388k init)
+<4>(E4)[       335.890289] Calibrating delay using timer specific routine.. 5069.77 BogoMIPS (lpj=2534889)
+<6>(E6)[       336.165005] cpu 0 vmalloc_sync_all
+<4>(E4)[       336.215265] kdb version 4.4 by Keith Owens, Scott Lurndal. Copyright SGI, All Rights Reserved
+<6>(E6)[       336.607235] Dentry cache hash table entries: 8388608 (order: 14, 67108864 bytes)
+<6>(E6)[       336.717502] Inode-cache hash table entries: 4194304 (order: 13, 33554432 bytes)
+<4>(E4)[       336.819949] Mount-cache hash table entries: 256
+<5>(E5)[       336.883844] dd_trace_init: begin
+<5>(E5)[       336.932036] dd_trace_init: end
+<6>(E6)[       336.978154] pagecache_cgroup_create:Creating MRG for cgroup <0xffffffff80b226b8> subsys <0xffffffff805f5d50>
+<6>(E6)[       337.105584] PageCache <0xffff810914db8000> : CSS <0xffff810914db8000>
+<6>(E6)[       337.192580] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       337.258596] CPU: L2 cache: 256K
+<6>(E6)[       337.305694] CPU: L3 cache: 8192K
+<6>(E6)[       337.353825] CPU 0/10 -> Node 0
+<6>(E6)[       337.399976] using mwait in idle threads.
+<6>(E6)[       337.456424] CPU: Physical Processor ID: 1
+<6>(E6)[       337.514012] CPU: Processor Core ID: 0
+<6>(E6)[       337.567443] mce: CPU supports 9 MCE banks
+<6>(E6)[       337.625037] CPU0: Thermal monitoring enabled (TM1)
+<6>(E6)[       337.692753] x86 PAT enabled: cpu 0, old 0x7040600070406, new 0x7010600070106
+<6>(E6)[       337.788330] Freeing SMP alternatives: 28k freed
+<6>(E6)[       337.852343] Relocating irqstack for boot CPU 0: to 0xffffc200060f9f80
+<6>(E6)[       337.939350] ACPI: Core revision 20070126
+<6>(E6)[       338.077568] Using local APIC timer interrupts.
+<4>(E4)[       338.200597] result 2622950
+<3>(E3)[       338.242586] Detected slow APIC timer freq: 2622950, correct to 8333875
+<6>(E6)[       338.330404] Detected 8.333 MHz APIC timer.
+<6>(E6)[       338.389113] Booting processor 1/8 APIC 0x12
+<6>(E6)[       338.459239] CPU 1: irqstack 0xffffc20006118000
+<4>(E4)[       338.459241] Initializing CPU#1
+<4>(E4)[       338.518975] Calibrating delay using timer specific routine.. 5067.03 BogoMIPS (lpj=2533517)
+<6>(E6)[       338.518980] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       338.518982] CPU: L2 cache: 256K
+<6>(E6)[       338.518983] CPU: L3 cache: 8192K
+<6>(E6)[       338.518984] CPU 1/12 -> Node 0
+<6>(E6)[       338.518986] CPU: Physical Processor ID: 1
+<6>(E6)[       338.518986] CPU: Processor Core ID: 1
+<6>(E6)[       338.519623] x86 PAT enabled: cpu 1, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       338.520226] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       338.520289] checking TSC synchronization [CPU#0 -> CPU#1]: passed.
+<7>(E7)[       339.343564] APIC error on CPU1: 00(40)
+<6>(E6)[       339.343724] Booting processor 2/8 APIC 0x14
+<6>(E6)[       339.413665] CPU 2: irqstack 0xffffc20006129000
+<4>(E4)[       339.413668] Initializing CPU#2
+<4>(E4)[       339.473499] Calibrating delay using timer specific routine.. 5039.23 BogoMIPS (lpj=2519615)
+<6>(E6)[       339.473505] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       339.473506] CPU: L2 cache: 256K
+<6>(E6)[       339.473507] CPU: L3 cache: 8192K
+<6>(E6)[       339.473509] CPU 2/14 -> Node 0
+<6>(E6)[       339.473510] CPU: Physical Processor ID: 1
+<6>(E6)[       339.473511] CPU: Processor Core ID: 2
+<6>(E6)[       339.474203] x86 PAT enabled: cpu 2, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       339.474752] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       339.474784] checking TSC synchronization [CPU#1 -> CPU#2]: passed.
+<7>(E7)[       340.298088] APIC error on CPU2: 00(40)
+<6>(E6)[       340.298254] Booting processor 3/8 APIC 0x16
+<6>(E6)[       340.368184] CPU 3: irqstack 0xffffc2000613a000
+<4>(E4)[       340.368186] Initializing CPU#3
+<4>(E4)[       340.428023] Calibrating delay using timer specific routine.. 5066.74 BogoMIPS (lpj=2533371)
+<6>(E6)[       340.428029] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       340.428030] CPU: L2 cache: 256K
+<6>(E6)[       340.428031] CPU: L3 cache: 8192K
+<6>(E6)[       340.428033] CPU 3/16 -> Node 0
+<6>(E6)[       340.428034] CPU: Physical Processor ID: 1
+<6>(E6)[       340.428035] CPU: Processor Core ID: 3
+<6>(E6)[       340.428672] x86 PAT enabled: cpu 3, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       340.429278] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       340.429364] checking TSC synchronization [CPU#2 -> CPU#3]: passed.
+<7>(E7)[       341.252612] APIC error on CPU3: 00(40)
+<6>(E6)[       341.252775] Booting processor 4/8 APIC 0x11
+<6>(E6)[       341.322805] CPU 4: irqstack 0xffffc2000614b000
+<4>(E4)[       341.322807] Initializing CPU#4
+<4>(E4)[       341.382548] Calibrating delay using timer specific routine.. 5066.73 BogoMIPS (lpj=2533366)
+<6>(E6)[       341.382554] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       341.382555] CPU: L2 cache: 256K
+<6>(E6)[       341.382556] CPU: L3 cache: 8192K
+<6>(E6)[       341.382558] CPU 4/11 -> Node 0
+<6>(E6)[       341.382559] CPU: Physical Processor ID: 1
+<6>(E6)[       341.382560] CPU: Processor Core ID: 0
+<6>(E6)[       341.383365] x86 PAT enabled: cpu 4, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       341.384202] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       341.384225] checking TSC synchronization [CPU#3 -> CPU#4]: passed.
+<7>(E7)[       342.208136] APIC error on CPU4: 00(40)
+<6>(E6)[       342.208295] Booting processor 5/8 APIC 0x13
+<6>(E6)[       342.278310] CPU 5: irqstack 0xffffc2000615c000
+<4>(E4)[       342.278312] Initializing CPU#5
+<4>(E4)[       342.338071] Calibrating delay using timer specific routine.. 5066.73 BogoMIPS (lpj=2533369)
+<6>(E6)[       342.338077] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       342.338078] CPU: L2 cache: 256K
+<6>(E6)[       342.338079] CPU: L3 cache: 8192K
+<6>(E6)[       342.338081] CPU 5/13 -> Node 0
+<6>(E6)[       342.338082] CPU: Physical Processor ID: 1
+<6>(E6)[       342.338083] CPU: Processor Core ID: 1
+<6>(E6)[       342.338888] x86 PAT enabled: cpu 5, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       342.339718] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       342.339734] checking TSC synchronization [CPU#4 -> CPU#5]: passed.
+<7>(E7)[       343.164660] APIC error on CPU5: 00(40)
+<6>(E6)[       343.164822] Booting processor 6/8 APIC 0x15
+<6>(E6)[       343.234854] CPU 6: irqstack 0xffffc2000616d000
+<4>(E4)[       343.234855] Initializing CPU#6
+<4>(E4)[       343.294595] Calibrating delay using timer specific routine.. 5066.74 BogoMIPS (lpj=2533370)
+<6>(E6)[       343.294601] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       343.294602] CPU: L2 cache: 256K
+<6>(E6)[       343.294603] CPU: L3 cache: 8192K
+<6>(E6)[       343.294604] CPU 6/15 -> Node 0
+<6>(E6)[       343.294605] CPU: Physical Processor ID: 1
+<6>(E6)[       343.294606] CPU: Processor Core ID: 2
+<6>(E6)[       343.295487] x86 PAT enabled: cpu 6, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       343.296320] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       343.296324] checking TSC synchronization [CPU#5 -> CPU#6]: passed.
+<7>(E7)[       344.124181] APIC error on CPU6: 00(40)
+<6>(E6)[       344.124339] Booting processor 7/8 APIC 0x17
+<6>(E6)[       344.194308] CPU 7: irqstack 0xffffc2000617e000
+<4>(E4)[       344.194310] Initializing CPU#7
+<4>(E4)[       344.254117] Calibrating delay using timer specific routine.. 5066.73 BogoMIPS (lpj=2533368)
+<6>(E6)[       344.254123] CPU: L1 I cache: 32K, L1 D cache: 32K
+<6>(E6)[       344.254124] CPU: L2 cache: 256K
+<6>(E6)[       344.254125] CPU: L3 cache: 8192K
+<6>(E6)[       344.254126] CPU 7/17 -> Node 0
+<6>(E6)[       344.254127] CPU: Physical Processor ID: 1
+<6>(E6)[       344.254128] CPU: Processor Core ID: 3
+<6>(E6)[       344.254937] x86 PAT enabled: cpu 7, old 0x7040600070406, new 0x7010600070106
+<4>(E4)[       344.255770] Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz stepping 05
+<6>(E6)[       344.255827] checking TSC synchronization [CPU#6 -> CPU#7]: passed.
+<7>(E7)[       345.080705] APIC error on CPU7: 00(40)
+<6>(E6)[       345.080792] Brought up 8 CPUs
+<6>(E6)[       345.125860] testing NMI watchdog ... OK.
+<6>(E6)[       345.203234] NET: Registered protocol family 16
+<6>(E6)[       345.266037] ACPI: bus type pci registered
+<6>(E6)[       345.328975] PCI: Using MMCONFIG at e0000000 - efffffff
+<7>(E7)[       345.403899] ACPI: EC: Look up EC in DSDT
+<6>(E6)[       345.407592] ACPI: Interpreter enabled
+<6>(E6)[       345.460950] ACPI: (supports S0 S5)
+<6>(E6)[       345.511557] ACPI: Using IOAPIC for interrupt routing
+<6>(E6)[       345.587418] ACPI: PCI Root Bridge [PCI0] (0000:00)
+<6>(E6)[       345.656693] PCI: Transparent bridge - 0000:00:1e.0
+<7>(E7)[       345.723684] ACPI: PCI Interrupt Routing Table [\_SB_.PCI0._PRT]
+<7>(E7)[       345.723911] ACPI: PCI Interrupt Routing Table [\_SB_.PCI0.P0P1._PRT]
+<7>(E7)[       345.724000] ACPI: PCI Interrupt Routing Table [\_SB_.PCI0.NPE1._PRT]
+<7>(E7)[       345.724085] ACPI: PCI Interrupt Routing Table [\_SB_.PCI0.NPE5._PRT]
+<7>(E7)[       345.724163] ACPI: PCI Interrupt Routing Table [\_SB_.PCI0.NPE9._PRT]
+<6>(E6)[       345.751126] ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 6 7 *10 11 12 14 15)
+<6>(E6)[       345.845430] ACPI: PCI Interrupt Link [LNKB] (IRQs *5)
+<6>(E6)[       345.916114] ACPI: PCI Interrupt Link [LNKC] (IRQs 3 4 6 7 10 *11 12 14 15)
+<6>(E6)[       346.010397] ACPI: PCI Interrupt Link [LNKD] (IRQs 3 4 6 7 10 11 12 14 *15)
+<6>(E6)[       346.104679] ACPI: PCI Interrupt Link [LNKE] (IRQs 3 4 6 7 10 11 12 14 15) *0, disabled.
+<6>(E6)[       346.212889] ACPI: PCI Interrupt Link [LNKF] (IRQs 3 4 6 7 10 11 12 *14 15)
+<6>(E6)[       346.307172] ACPI: PCI Interrupt Link [LNKG] (IRQs 3 4 6 7 10 11 12 14 15) *0, disabled.
+<6>(E6)[       346.415383] ACPI: PCI Interrupt Link [LNKH] (IRQs *3 4 6 7 10 11 12 14 15)
+<4>(E4)[       346.509654] ACPI Warning (tbutils-0217): Incorrect checksum in table [OEMB] -  8F, should be 8E [20070126]
+<6>(E6)[       346.635258] Linux Plug and Play Support v0.97 (c) Adam Belay
+<6>(E6)[       346.712525] pnp: PnP ACPI init
+<6>(E6)[       346.758656] ACPI: bus type pnp registered
+<6>(E6)[       346.818297] pnp: PnP ACPI: found 14 devices
+<6>(E6)[       346.877888] ACPI: ACPI bus type pnp unregistered
+<5>(E5)[       346.942888] SCSI subsystem initialized
+<7>(E7)[       346.997392] libata version 2.21 loaded.
+<6>(E6)[       346.997457] PCI: Using ACPI for IRQ routing
+<6>(E6)[       347.057096] PCI: If a device doesn't work, try "pci=routeirq".  If it helps, post a report
+<6>(E6)[       347.169302] PCI-GART: No AMD northbridge found.
+<6>(E6)[       347.233087] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0
+<6>(E6)[       347.305206] hpet0: 4 64-bit timers, 14318180 Hz
+<6>(E6)[       347.370565] Time: tsc clocksource has been installed.
+<6>(E6)[       347.441143] pnp: 00:01: iomem range 0xfbf00000-0xfbffffff has been reserved
+<6>(E6)[       347.534200] pnp: 00:01: iomem range 0xfc000000-0xfcffffff has been reserved
+<6>(E6)[       347.628230] pnp: 00:01: iomem range 0xfd000000-0xfdffffff has been reserved
+<6>(E6)[       347.721310] pnp: 00:01: iomem range 0xfe000000-0xfebfffff has been reserved
+<6>(E6)[       347.814347] pnp: 00:07: ioport range 0x290-0x29f has been reserved
+<6>(E6)[       347.897849] pnp: 00:08: iomem range 0xfed1c000-0xfed1ffff has been reserved
+<6>(E6)[       347.990954] pnp: 00:08: iomem range 0xfed20000-0xfed3ffff has been reserved
+<6>(E6)[       348.083990] pnp: 00:08: iomem range 0xfed40000-0xfed8ffff has been reserved
+<6>(E6)[       348.177026] pnp: 00:0b: iomem range 0xfec00000-0xfec00fff has been reserved
+<6>(E6)[       348.270060] pnp: 00:0b: iomem range 0xfee00000-0xfee00fff could not be reserved
+<6>(E6)[       348.367254] pnp: 00:0c: iomem range 0xe0000000-0xefffffff could not be reserved
+<6>(E6)[       348.464551] pnp: 00:0d: iomem range 0x0-0x9ffff could not be reserved
+<6>(E6)[       348.551345] pnp: 00:0d: iomem range 0xc0000-0xcffff has been reserved
+<6>(E6)[       348.638143] pnp: 00:0d: iomem range 0xe0000-0xfffff could not be reserved
+<6>(E6)[       348.729100] pnp: 00:0d: iomem range 0x100000-0xbfffffff could not be reserved
+<6>(E6)[       348.824400] PCI: Bridge: 0000:00:01.0
+<6>(E6)[       348.877771]   IO window: 8000-8fff
+<6>(E6)[       348.927979]   MEM window: 0xf7c00000-0xf7cfffff
+<6>(E6)[       348.991702]   PREFETCH window: disabled.
+<6>(E6)[       349.048250] PCI: Bridge: 0000:00:02.0
+<6>(E6)[       349.101676]   IO window: disabled.
+<6>(E6)[       349.151885]   MEM window: disabled.
+<6>(E6)[       349.203132]   PREFETCH window: disabled.
+<6>(E6)[       349.259578] PCI: Bridge: 0000:04:00.0
+<6>(E6)[       349.312903]   IO window: 9000-9fff
+<6>(E6)[       349.363112]   MEM window: 0xf7e00000-0xf7ffffff
+<6>(E6)[       349.426836]   PREFETCH window: disabled.
+<6>(E6)[       349.483383] PCI: Bridge: 0000:04:01.0
+<6>(E6)[       349.536811]   IO window: disabled.
+<6>(E6)[       349.587018]   MEM window: 0xf8000000-0xf81fffff
+<6>(E6)[       349.650743]   PREFETCH window: 0x00000000f6000000-0x00000000f6ffffff
+<6>(E6)[       349.736508] PCI: Bridge: 0000:04:04.0
+<6>(E6)[       349.789927]   IO window: a000-afff
+<6>(E6)[       349.840135]   MEM window: 0xf8200000-0xf83fffff
+<6>(E6)[       349.903858]   PREFETCH window: disabled.
+<6>(E6)[       349.960407] PCI: Bridge: 0000:03:00.0
+<6>(E6)[       350.013835]   IO window: 9000-afff
+<6>(E6)[       350.064042]   MEM window: 0xf7e00000-0xf83fffff
+<6>(E6)[       350.127768]   PREFETCH window: 0x00000000f6000000-0x00000000f6ffffff
+<6>(E6)[       350.213429] PCI: Bridge: 0000:00:03.0
+<6>(E6)[       350.266849]   IO window: 9000-afff
+<6>(E6)[       350.317054]   MEM window: 0xf7d00000-0xf83fffff
+<6>(E6)[       350.380780]   PREFETCH window: 0x00000000f6000000-0x00000000f6ffffff
+<6>(E6)[       350.466442] PCI: Bridge: 0000:00:05.0
+<6>(E6)[       350.519860]   IO window: b000-bfff
+<6>(E6)[       350.570069]   MEM window: 0xf8400000-0xf86fffff
+<6>(E6)[       350.633794]   PREFETCH window: disabled.
+<6>(E6)[       350.690341] PCI: Bridge: 0000:0a:00.0
+<6>(E6)[       350.743767]   IO window: disabled.
+<6>(E6)[       350.793978]   MEM window: disabled.
+<6>(E6)[       350.845223]   PREFETCH window: disabled.
+<6>(E6)[       350.901669] PCI: Bridge: 0000:0a:04.0
+<6>(E6)[       350.954993]   IO window: disabled.
+<6>(E6)[       351.005202]   MEM window: disabled.
+<6>(E6)[       351.056448]   PREFETCH window: disabled.
+<6>(E6)[       351.112897] PCI: Bridge: 0000:0a:05.0
+<6>(E6)[       351.166323]   IO window: disabled.
+<6>(E6)[       351.216633]   MEM window: disabled.
+<6>(E6)[       351.267883]   PREFETCH window: disabled.
+<6>(E6)[       351.324328] PCI: Bridge: 0000:09:00.0
+<6>(E6)[       351.377757]   IO window: disabled.
+<6>(E6)[       351.427965]   MEM window: disabled.
+<6>(E6)[       351.479210]   PREFETCH window: disabled.
+<6>(E6)[       351.535659] PCI: Bridge: 0000:00:07.0
+<6>(E6)[       351.589084]   IO window: disabled.
+<6>(E6)[       351.639294]   MEM window: 0xf8700000-0xf87fffff
+<6>(E6)[       351.703017]   PREFETCH window: disabled.
+<6>(E6)[       351.759565] PCI: Bridge: 0000:0f:02.0
+<6>(E6)[       351.812995]   IO window: c000-cfff
+<6>(E6)[       351.863202]   MEM window: 0xf8800000-0xf93fffff
+<6>(E6)[       351.926928]   PREFETCH window: disabled.
+<6>(E6)[       351.983474] PCI: Bridge: 0000:0f:04.0
+<6>(E6)[       352.036900]   IO window: d000-dfff
+<6>(E6)[       352.087108]   MEM window: 0xf9400000-0xf9ffffff
+<6>(E6)[       352.150833]   PREFETCH window: disabled.
+<6>(E6)[       352.207382] PCI: Bridge: 0000:0e:00.0
+<6>(E6)[       352.260912]   IO window: c000-dfff
+<6>(E6)[       352.311121]   MEM window: 0xf8800000-0xf9ffffff
+<6>(E6)[       352.374948]   PREFETCH window: disabled.
+<6>(E6)[       352.431497] PCI: Bridge: 0000:00:09.0
+<6>(E6)[       352.484923]   IO window: c000-dfff
+<6>(E6)[       352.535131]   MEM window: 0xf8800000-0xf9ffffff
+<6>(E6)[       352.598854]   PREFETCH window: disabled.
+<6>(E6)[       352.655403] PCI: Bridge: 0000:00:1e.0
+<6>(E6)[       352.708830]   IO window: e000-efff
+<6>(E6)[       352.759141]   MEM window: 0xfa000000-0xfbefffff
+<6>(E6)[       352.822867]   PREFETCH window: disabled.
+<7>(E7)[       352.879423] PCI: Setting latency timer of device 0000:00:01.0 to 64
+<7>(E7)[       352.879432] PCI: Setting latency timer of device 0000:00:02.0 to 64
+<7>(E7)[       352.879441] PCI: Setting latency timer of device 0000:00:03.0 to 64
+<6>(E6)[       352.879450] ACPI: PCI Interrupt 0000:03:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       352.977918] PCI: Setting latency timer of device 0000:03:00.0 to 64
+<6>(E6)[       352.977926] ACPI: PCI Interrupt 0000:04:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       353.076356] PCI: Setting latency timer of device 0000:04:00.0 to 64
+<6>(E6)[       353.076365] ACPI: PCI Interrupt 0000:04:01.0[A] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       353.174796] PCI: Setting latency timer of device 0000:04:01.0 to 64
+<6>(E6)[       353.174803] ACPI: PCI Interrupt 0000:04:04.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       353.273237] PCI: Setting latency timer of device 0000:04:04.0 to 64
+<7>(E7)[       353.273246] PCI: Setting latency timer of device 0000:00:05.0 to 64
+<7>(E7)[       353.273255] PCI: Setting latency timer of device 0000:00:07.0 to 64
+<6>(E6)[       353.273262] ACPI: PCI Interrupt 0000:09:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       353.371677] PCI: Setting latency timer of device 0000:09:00.0 to 64
+<6>(E6)[       353.371684] ACPI: PCI Interrupt 0000:0a:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       353.470119] PCI: Setting latency timer of device 0000:0a:00.0 to 64
+<6>(E6)[       353.470125] ACPI: PCI Interrupt 0000:0a:04.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       353.568765] PCI: Setting latency timer of device 0000:0a:04.0 to 64
+<6>(E6)[       353.568773] ACPI: PCI Interrupt 0000:0a:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       353.667205] PCI: Setting latency timer of device 0000:0a:05.0 to 64
+<7>(E7)[       353.667214] PCI: Setting latency timer of device 0000:00:09.0 to 64
+<7>(E7)[       353.667226] PCI: Setting latency timer of device 0000:0e:00.0 to 64
+<7>(E7)[       353.667239] PCI: Setting latency timer of device 0000:0f:02.0 to 64
+<7>(E7)[       353.667251] PCI: Setting latency timer of device 0000:0f:04.0 to 64
+<7>(E7)[       353.667258] PCI: Setting latency timer of device 0000:00:1e.0 to 64
+<6>(E6)[       353.667286] NET: Registered protocol family 2
+<6>(E6)[       353.739749] IP route cache hash table entries: 2097152 (order: 12, 16777216 bytes)
+<4>(E4)[       353.841636] Ddr: src_ip based route is disabled
+<6>(E6)[       353.923091] TCP established hash table entries: 8388608 (order: 16, 268435456 bytes)
+<6>(E6)[       354.063648] TCP bind hash table entries: 65536 (order: 8, 1572864 bytes)
+<6>(E6)[       354.153829] TCP: Hash tables configured (established 8388608 bind 65536)
+<6>(E6)[       354.243724] TCP reno registered
+<6>(E6)[       354.293573] checking if image is initramfs... it is
+<6>(E6)[       361.923665] Freeing initrd memory: 103991k freed
+<6>(E6)[       362.007706] Machine check injector initialized
+<6>(E6)[       362.070428] cpu 4 vmalloc_sync_all
+<6>(E6)[       362.120737] v_pgd_ref 91ac4d067 pgd_page_vaddr_ref ffff81091ac4d000
+<6>(E6)[       362.221762] cpu 7 vmalloc_sync_all
+<6>(E6)[       362.272001] v_pgd_ref 91ac4d067 pgd_page_vaddr_ref ffff81091ac4d000
+<4>(E4)[       362.357745] Total HugeTLB memory allocated, 0
+<6>(E6)[       362.420539] Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+<6>(E6)[       362.506323] io scheduler noop registered
+<6>(E6)[       362.562831] io scheduler deadline registered (default)
+<6>(E6)[       362.633949] io scheduler cfq registered
+<7>(E7)[       362.741423] Boot video device is 0000:12:04.0
+<7>(E7)[       362.741606] PCI: Setting latency timer of device 0000:00:01.0 to 64
+<4>(E4)[       362.741631] assign_interrupt_mode Found MSI capability
+<7>(E7)[       362.812754] Allocate Port Service[0000:00:01.0:pcie00]
+<7>(E7)[       362.812796] Allocate Port Service[0000:00:01.0:pcie01]
+<7>(E7)[       362.812860] PCI: Setting latency timer of device 0000:00:02.0 to 64
+<4>(E4)[       362.812886] assign_interrupt_mode Found MSI capability
+<7>(E7)[       362.883970] Allocate Port Service[0000:00:02.0:pcie00]
+<7>(E7)[       362.884016] Allocate Port Service[0000:00:02.0:pcie01]
+<7>(E7)[       362.884100] PCI: Setting latency timer of device 0000:00:03.0 to 64
+<4>(E4)[       362.884128] assign_interrupt_mode Found MSI capability
+<7>(E7)[       362.955158] Allocate Port Service[0000:00:03.0:pcie00]
+<7>(E7)[       362.955205] Allocate Port Service[0000:00:03.0:pcie01]
+<7>(E7)[       362.955281] PCI: Setting latency timer of device 0000:00:05.0 to 64
+<4>(E4)[       362.955310] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.026364] Allocate Port Service[0000:00:05.0:pcie00]
+<7>(E7)[       363.026410] Allocate Port Service[0000:00:05.0:pcie01]
+<7>(E7)[       363.026495] PCI: Setting latency timer of device 0000:00:07.0 to 64
+<4>(E4)[       363.026524] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.097569] Allocate Port Service[0000:00:07.0:pcie00]
+<7>(E7)[       363.097621] Allocate Port Service[0000:00:07.0:pcie01]
+<7>(E7)[       363.097705] PCI: Setting latency timer of device 0000:00:09.0 to 64
+<4>(E4)[       363.097735] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.168781] Allocate Port Service[0000:00:09.0:pcie00]
+<7>(E7)[       363.168826] Allocate Port Service[0000:00:09.0:pcie01]
+<7>(E7)[       363.168924] PCI: Setting latency timer of device 0000:03:00.0 to 64
+<4>(E4)[       363.168955] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.239984] Allocate Port Service[0000:03:00.0:pcie10]
+<7>(E7)[       363.240070] PCI: Setting latency timer of device 0000:04:00.0 to 64
+<4>(E4)[       363.240101] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.311188] Allocate Port Service[0000:04:00.0:pcie20]
+<7>(E7)[       363.311267] PCI: Setting latency timer of device 0000:04:01.0 to 64
+<4>(E4)[       363.311296] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.382404] Allocate Port Service[0000:04:01.0:pcie20]
+<7>(E7)[       363.382444] Allocate Port Service[0000:04:01.0:pcie22]
+<7>(E7)[       363.382527] PCI: Setting latency timer of device 0000:04:04.0 to 64
+<4>(E4)[       363.382560] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.453601] Allocate Port Service[0000:04:04.0:pcie20]
+<7>(E7)[       363.453688] PCI: Setting latency timer of device 0000:09:00.0 to 64
+<4>(E4)[       363.453716] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.524812] Allocate Port Service[0000:09:00.0:pcie10]
+<7>(E7)[       363.524903] PCI: Setting latency timer of device 0000:0a:00.0 to 64
+<4>(E4)[       363.524935] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.596009] Allocate Port Service[0000:0a:00.0:pcie20]
+<7>(E7)[       363.596053] Allocate Port Service[0000:0a:00.0:pcie22]
+<7>(E7)[       363.596137] PCI: Setting latency timer of device 0000:0a:04.0 to 64
+<4>(E4)[       363.596169] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.667224] Allocate Port Service[0000:0a:04.0:pcie20]
+<7>(E7)[       363.667304] PCI: Setting latency timer of device 0000:0a:05.0 to 64
+<4>(E4)[       363.667336] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.738422] Allocate Port Service[0000:0a:05.0:pcie20]
+<7>(E7)[       363.738463] Allocate Port Service[0000:0a:05.0:pcie22]
+<7>(E7)[       363.738546] PCI: Setting latency timer of device 0000:0e:00.0 to 64
+<7>(E7)[       363.738582] Allocate Port Service[0000:0e:00.0:pcie10]
+<7>(E7)[       363.738634] Allocate Port Service[0000:0e:00.0:pcie11]
+<7>(E7)[       363.738831] Allocate Port Service[0000:0e:00.0:pcie13]
+<7>(E7)[       363.739003] PCI: Setting latency timer of device 0000:0f:02.0 to 64
+<4>(E4)[       363.739040] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.810168] Allocate Port Service[0000:0f:02.0:pcie20]
+<7>(E7)[       363.810233] Allocate Port Service[0000:0f:02.0:pcie21]
+<7>(E7)[       363.810338] Allocate Port Service[0000:0f:02.0:pcie23]
+<7>(E7)[       363.810561] PCI: Setting latency timer of device 0000:0f:04.0 to 64
+<4>(E4)[       363.810599] assign_interrupt_mode Found MSI capability
+<7>(E7)[       363.881687] Allocate Port Service[0000:0f:04.0:pcie20]
+<7>(E7)[       363.881740] Allocate Port Service[0000:0f:04.0:pcie21]
+<7>(E7)[       363.881790] Allocate Port Service[0000:0f:04.0:pcie23]
+<7>(E7)[       363.881984] AER service couldn't init device 0000:00:01.0:pcie01 - no _OSC support
+<7>(E7)[       363.882003] AER service couldn't init device 0000:00:02.0:pcie01 - no _OSC support
+<7>(E7)[       363.882021] AER service couldn't init device 0000:00:03.0:pcie01 - no _OSC support
+<7>(E7)[       363.882037] AER service couldn't init device 0000:00:05.0:pcie01 - no _OSC support
+<7>(E7)[       363.882054] AER service couldn't init device 0000:00:07.0:pcie01 - no _OSC support
+<7>(E7)[       363.882071] AER service couldn't init device 0000:00:09.0:pcie01 - no _OSC support
+<6>(E6)[       363.882181] pci_hotplug: PCI Hot Plug PCI Core version: 0.5
+<6>(E6)[       363.958959] input: Power Button (FF) as /class/input/input0
+<6>(E6)[       364.035180] ACPI: Power Button (FF) [PWRF]
+<6>(E6)[       364.093879] input: Power Button (CM) as /class/input/input1
+<6>(E6)[       364.170108] ACPI: Power Button (CM) [PWRB]
+<4>(E4)[       364.229567] ACPI: SSDT BF78E0C0, 0678 (r1  PmRef  P001Cst     3001 INTL 20051117)
+<7>(E7)[       364.330688] Monitor-Mwait will be used to enter C-1 state
+<7>(E7)[       364.330691] Monitor-Mwait will be used to enter C-2 state
+<7>(E7)[       364.330693] Monitor-Mwait will be used to enter C-3 state
+<6>(E6)[       364.330697] ACPI: CPU0 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.408947] ACPI: CPU1 (power states:Marking TSC unstable due to possible TSC halt in C2
+<6>(E6)[       364.419071] Time: hpet clocksource has been installed.
+<4>(E4)[       364.586752]  C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.638898] ACPI: CPU2 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.717166] ACPI: CPU3 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.795444] ACPI: CPU4 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.873689] ACPI: CPU5 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       364.952029] ACPI: CPU6 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       365.030451] ACPI: CPU7 (power states: C1[C1] C2[C2] C3[C3])
+<6>(E6)[       365.323926] Real Time Clock Driver v1.12ac
+<7>(E7)[       365.383625] hpet_resources: 0xfed00000 is busy
+<6>(E6)[       365.383682] Linux agpgart interface v0.102
+<6>(E6)[       365.442239] Serial: 8250/16550 driver $Revision: #1 $ 4 ports, IRQ sharing disabled
+<6>(E6)[       365.543872] serial8250: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+<6>(E6)[       365.627743] 00:06: ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
+<4>(E4)[       365.717713] RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+<6>(E6)[       365.819413] loop: module loaded
+<6>(E6)[       365.868207] device-mapper: ioctl: 4.11.0-ioctl (2006-10-12) (DDR) initialised: dm-devel@redhat.com
+<6>(E6)[       365.986281] device-mapper: multipath: version 1.0.5-DDR loaded
+<6>(E6)[       366.065632] device-mapper: multipath round-robin: version 1.0.0 loaded
+<6>(E6)[       366.153634] device-mapper: multipath emc: version 0.0.3 loaded
+<6>(E6)[       366.233053] device-mapper: multipath rdac: rdac: version 0.4 loaded
+<6>(E6)[       366.317599] Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
+<6>(E6)[       366.403360] ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=xx
+<7>(E7)[       366.509194] Probing IDE interface ide0...
+<7>(E7)[       367.021973] Probing IDE interface ide1...
+<6>(E6)[       367.536825] PNP: No PS/2 controller found. Probing ports directly.
+<6>(E6)[       367.628752] serio: i8042 KBD port at 0x60,0x64 irq 1
+<6>(E6)[       367.697758] serio: i8042 AUX port at 0x60,0x64 irq 12
+<6>(E6)[       367.768538] mice: PS/2 mouse device common for all mice
+<6>(E6)[       368.191356] i2c /dev entries driver
+<4>(E4)[       368.243371] GACT probability on
+<4>(E4)[       368.290552] Mirror/redirect action on
+<4>(E4)[       368.343878] Simple TC action Loaded
+<4>(E4)[       368.395198] u32 classifier
+<4>(E4)[       368.437210]     Performance counters on
+<4>(E4)[       368.492630]     input device check on
+<4>(E4)[       368.546997]     Actions configured
+<4>(E4)[       368.598327] Netfilter messages via NETLINK v0.30.
+<6>(E6)[       368.664273] TCP bic registered
+<6>(E6)[       368.710402] TCP cubic registered
+<6>(E6)[       368.758531] TCP westwood registered
+<6>(E6)[       368.809777] TCP vegas registered
+<6>(E6)[       368.857984] TCP illinois registered
+<6>(E6)[       368.909357] NET: Registered protocol family 1
+<6>(E6)[       368.971105] NET: Registered protocol family 17
+<6>(E6)[       369.034144] dd_dad_init successfully
+<6>(E6)[       369.086497] TCP logging: successfully initialized.
+<6>(E6)[       369.153439] DD_SRC_RT: loaded
+<6>(E6)[       369.199052] Freeing unused kernel memory: 388k freed
+<4>(E4)[       370.562148] proc exe(14361) changed console loglevel via /proc to 4
+<6>(E6)[       370.667849] ipmi message handler version 39.2
+<6>(E6)[       370.670371] ipmi device interface
+<6>(E6)[       370.673672] IPMI System Interface driver.
+<6>(E6)[       370.673677] ipmi_si: Trying SMBIOS-specified kcs state machine at i/o address 0xca2, slave address 0x20, irq 0
+<6>(E6)[       371.072861] ipmi: Found new BMC (man_id: 0x005059,  prod_id: 0x0036, dev_id: 0x25)
+<6>(E6)[       371.073064] IPMI kcs interface initialized
+<6>(E6)[       372.210356] v2.3 : Micro Memory(tm) PCI memory board block driver
+<6>(E6)[       372.210630] ACPI: PCI Interrupt 0000:06:00.0[A] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       372.210642] PCI: Setting latency timer of device 0000:06:00.0 to 64
+<6>(E6)[       372.210645] Micro Memory(tm) controller #0 found at 06:00 (PCI Mem Module (Battery Backup))
+<6>(E6)[       372.212627] MM0: CSR 0xf81ffc00 -> 0xffffc200061b2c00 (0x100)
+<6>(E6)[       372.212649] MM0: MEM 0xf6000000 -> 0xffffc20027480000 (0x1000000)
+<6>(E6)[       372.218664] MM0: Size 1048576 KB, Battery 1 Enabled (OK), Battery 2 Enabled (OK), Battery 3 Enabled (OK)
+<6>(E6)[       372.221678] MM0: Window size 16777216 bytes, IRQ 17
+<6>(E6)[       372.221679] MM0: DMA threshold size 64 bytes
+<6>(E6)[       372.221685] MM0: memory already initialized
+<6>(E6)[       372.221728]  umema: umema1 umema2 umema3 umema4
+<5>(E5)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<5>(E5)+++++++++++++++++ LOG REPLAY START +++++++++++++++++++++++++
+<5>(E5)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<5>(E5)NVRAM: Replaying 200 lines of NVRAM log from card 0 (2411 lines total [190147]): START
+<5>(E5)[REPLAY](E6)[      1898.677147] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      1898.677219] do_minidump
+<5>(E5)[REPLAY](E4)[      1898.677289] reg_async (27715) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      1898.677561] elf_core_dump: pid reg_async(27715) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      1898.768248] elf_core_dump: pid reg_async(27715) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      1925.824714] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      1925.824785] do_minidump
+<5>(E5)[REPLAY](E4)[      1925.824855] reg_async (27736) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      1925.825025] elf_core_dump: pid reg_async(27736) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      1925.886430] elf_core_dump: pid reg_async(27736) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      1952.943298] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      1952.943370] do_minidump
+<5>(E5)[REPLAY](E4)[      1952.943443] reg_async (27749) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      1952.943767] elf_core_dump: pid reg_async(27749) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      1953.004176] elf_core_dump: pid reg_async(27749) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      1980.060754] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      1980.060826] do_minidump
+<5>(E5)[REPLAY](E4)[      1980.060901] reg_async (27762) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      1980.061162] elf_core_dump: pid reg_async(27762) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      1980.131964] elf_core_dump: pid reg_async(27762) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2007.189242] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2007.189313] do_minidump
+<5>(E5)[REPLAY](E4)[      2007.189387] reg_async (27969) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2007.189802] elf_core_dump: pid reg_async(27969) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2007.250171] elf_core_dump: pid reg_async(27969) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2034.307745] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2034.307817] do_minidump
+<5>(E5)[REPLAY](E4)[      2034.307890] reg_async (27976) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2034.308247] elf_core_dump: pid reg_async(27976) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2034.369244] elf_core_dump: pid reg_async(27976) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2061.426327] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2061.426398] do_minidump
+<5>(E5)[REPLAY](E4)[      2061.426560] reg_async (28009) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2061.426769] elf_core_dump: pid reg_async(28009) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2061.500591] elf_core_dump: pid reg_async(28009) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2088.557617] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2088.557689] do_minidump
+<5>(E5)[REPLAY](E4)[      2088.557758] reg_async (28022) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2088.557934] elf_core_dump: pid reg_async(28022) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2088.618965] elf_core_dump: pid reg_async(28022) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2115.676208] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2115.676279] do_minidump
+<5>(E5)[REPLAY](E4)[      2115.676353] reg_async (28039) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2115.676681] elf_core_dump: pid reg_async(28039) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2115.736897] elf_core_dump: pid reg_async(28039) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2142.794688] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2142.794759] do_minidump
+<5>(E5)[REPLAY](E4)[      2142.794829] reg_async (28052) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2142.795328] elf_core_dump: pid reg_async(28052) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2142.880070] elf_core_dump: pid reg_async(28052) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2169.938218] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2169.938290] do_minidump
+<5>(E5)[REPLAY](E4)[      2169.938364] reg_async (28075) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2169.938674] elf_core_dump: pid reg_async(28075) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2169.998242] elf_core_dump: pid reg_async(28075) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2197.055602] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2197.055674] do_minidump
+<5>(E5)[REPLAY](E4)[      2197.055743] reg_async (28082) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2197.055925] elf_core_dump: pid reg_async(28082) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2197.117976] elf_core_dump: pid reg_async(28082) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2224.175125] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2224.175196] do_minidump
+<5>(E5)[REPLAY](E4)[      2224.175266] reg_async (28107) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2224.175438] elf_core_dump: pid reg_async(28107) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2224.247370] elf_core_dump: pid reg_async(28107) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2251.304569] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2251.304641] do_minidump
+<5>(E5)[REPLAY](E4)[      2251.304710] reg_async (28120) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2251.304874] elf_core_dump: pid reg_async(28120) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2251.365806] elf_core_dump: pid reg_async(28120) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2278.423184] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2278.423259] do_minidump
+<5>(E5)[REPLAY](E4)[      2278.423330] reg_async (28127) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2278.423631] elf_core_dump: pid reg_async(28127) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2278.484140] elf_core_dump: pid reg_async(28127) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2305.540587] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2305.540659] do_minidump
+<5>(E5)[REPLAY](E4)[      2305.540728] reg_async (28367) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2305.541350] elf_core_dump: pid reg_async(28367) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2305.617762] elf_core_dump: pid reg_async(28367) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2332.675155] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2332.675231] do_minidump
+<5>(E5)[REPLAY](E4)[      2332.675301] reg_async (28380) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2332.675733] elf_core_dump: pid reg_async(28380) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2332.737405] elf_core_dump: pid reg_async(28380) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2359.794544] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2359.794616] do_minidump
+<5>(E5)[REPLAY](E4)[      2359.794685] reg_async (28417) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2359.794882] elf_core_dump: pid reg_async(28417) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2359.856368] elf_core_dump: pid reg_async(28417) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2386.913961] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2386.914033] do_minidump
+<5>(E5)[REPLAY](E4)[      2386.914102] reg_async (28424) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2386.914329] elf_core_dump: pid reg_async(28424) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2386.998882] elf_core_dump: pid reg_async(28424) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2414.056507] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2414.056578] do_minidump
+<5>(E5)[REPLAY](E4)[      2414.056648] reg_async (28447) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2414.056925] elf_core_dump: pid reg_async(28447) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2414.117258] elf_core_dump: pid reg_async(28447) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2441.174902] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2441.174973] do_minidump
+<5>(E5)[REPLAY](E4)[      2441.175042] reg_async (28460) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2441.175210] elf_core_dump: pid reg_async(28460) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2441.236211] elf_core_dump: pid reg_async(28460) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2468.294521] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2468.294592] do_minidump
+<5>(E5)[REPLAY](E4)[      2468.294667] reg_async (28477) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2468.295052] elf_core_dump: pid reg_async(28477) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2468.366522] elf_core_dump: pid reg_async(28477) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2495.423877] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2495.423948] do_minidump
+<5>(E5)[REPLAY](E4)[      2495.424017] reg_async (28490) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2495.424201] elf_core_dump: pid reg_async(28490) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2495.485635] elf_core_dump: pid reg_async(28490) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2522.542473] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2522.542545] do_minidump
+<5>(E5)[REPLAY](E4)[      2522.542625] reg_async (28517) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2522.542830] elf_core_dump: pid reg_async(28517) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2522.604052] elf_core_dump: pid reg_async(28517) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2549.662148] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2549.662219] do_minidump
+<5>(E5)[REPLAY](E4)[      2549.662289] reg_async (28524) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2549.662546] elf_core_dump: pid reg_async(28524) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2549.746478] elf_core_dump: pid reg_async(28524) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2576.803425] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2576.803497] do_minidump
+<5>(E5)[REPLAY](E4)[      2576.803572] reg_async (28537) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2576.803782] elf_core_dump: pid reg_async(28537) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2576.865011] elf_core_dump: pid reg_async(28537) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2603.921977] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2603.922048] do_minidump
+<5>(E5)[REPLAY](E4)[      2603.922121] reg_async (28810) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2603.922440] elf_core_dump: pid reg_async(28810) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2603.984151] elf_core_dump: pid reg_async(28810) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2631.041321] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2631.041392] do_minidump
+<5>(E5)[REPLAY](E4)[      2631.041462] reg_async (28823) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2631.041602] elf_core_dump: pid reg_async(28823) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2631.121659] elf_core_dump: pid reg_async(28823) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2658.178947] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2658.179018] do_minidump
+<5>(E5)[REPLAY](E4)[      2658.179091] reg_async (28850) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2658.179321] elf_core_dump: pid reg_async(28850) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2658.240501] elf_core_dump: pid reg_async(28850) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2685.298364] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2685.298436] do_minidump
+<5>(E5)[REPLAY](E4)[      2685.298505] reg_async (28863) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2685.298779] elf_core_dump: pid reg_async(28863) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2685.360812] elf_core_dump: pid reg_async(28863) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2712.418804] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2712.418876] do_minidump
+<5>(E5)[REPLAY](E4)[      2712.418945] reg_async (28886) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2712.419130] elf_core_dump: pid reg_async(28886) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2712.486208] elf_core_dump: pid reg_async(28886) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2739.543213] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2739.543285] do_minidump
+<5>(E5)[REPLAY](E4)[      2739.543354] reg_async (28893) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2739.543567] elf_core_dump: pid reg_async(28893) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2739.603953] elf_core_dump: pid reg_async(28893) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2766.661835] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2766.661907] do_minidump
+<5>(E5)[REPLAY](E4)[      2766.661977] reg_async (28916) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2766.662189] elf_core_dump: pid reg_async(28916) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2766.722458] elf_core_dump: pid reg_async(28916) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2793.780269] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2793.780341] do_minidump
+<5>(E5)[REPLAY](E4)[      2793.780410] reg_async (28929) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2793.780714] elf_core_dump: pid reg_async(28929) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2793.863231] elf_core_dump: pid reg_async(28929) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2820.919754] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2820.919825] do_minidump
+<5>(E5)[REPLAY](E4)[      2820.919894] reg_async (28954) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2820.968840] elf_core_dump: pid reg_async(28954) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2821.041633] elf_core_dump: pid reg_async(28954) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2848.098308] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2848.098380] do_minidump
+<5>(E5)[REPLAY](E4)[      2848.098503] reg_async (28967) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2848.098775] elf_core_dump: pid reg_async(28967) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2848.160650] elf_core_dump: pid reg_async(28967) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2875.217769] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2875.217840] do_minidump
+<5>(E5)[REPLAY](E4)[      2875.217914] reg_async (28980) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2875.218277] elf_core_dump: pid reg_async(28980) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2875.279438] elf_core_dump: pid reg_async(28980) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2902.336163] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2902.336234] do_minidump
+<5>(E5)[REPLAY](E4)[      2902.336304] reg_async (29280) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2902.336604] elf_core_dump: pid reg_async(29280) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2902.420110] elf_core_dump: pid reg_async(29280) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2929.476663] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2929.476734] do_minidump
+<5>(E5)[REPLAY](E4)[      2929.476804] reg_async (29293) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2929.499942] elf_core_dump: pid reg_async(29293) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2929.561366] elf_core_dump: pid reg_async(29293) leader reg_async core is finished
+<5>(E5)[REPLAY](E6)[      2956.618160] disk_dump: starting a minidump by user request...
+<5>(E5)[REPLAY](E4)[      2956.618232] do_minidump
+<5>(E5)[REPLAY](E4)[      2956.618302] reg_async (29335) reg_async is not ddfs
+<5>(E5)[REPLAY](E4)[      2956.618507] elf_core_dump: pid reg_async(29335) leader reg_async is taking core
+<5>(E5)[REPLAY](E4)[      2956.699024] elf_core_dump: pid reg_async(29335) leader reg_async core is finished
+<5>(E5)
+<5>(E5)NVRAM: Replaying 200 lines of NVRAM log from card 0: END
+<5>(E5)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<5>(E5)+++++++++++++++++ LOG REPLAY END +++++++++++++++++++++++++++
+<5>(E5)++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<4>(E4)[       372.841193] timeofday at boot 1407855864 seconds 760047 usecs
+<5>(E5)[       372.841195] NVRAM: Enabling NVRAM logging
+<6>(E6)[       372.841197] console [umemlog0] enabled
+<4>(E4)[       372.841200] MM: desc_per_page = 128
+<4>(E4)[       372.902534] dd_qoskcm: module license 'unspecified' taints kernel.
+<5>(E5)[       372.903525] dd_qosctl_init: max_ctxs_memfactor: 3 MAX_CTXS :1536
+<5>(E5)[       372.903675] DD_QOSKCM: dd_qoskcm os module loaded
+<5>(E5)[       372.903745] DD_QOSKCM:
+<5>(E5)[       372.906147] DD_IOS: Loading dd_iosched
+<5>(E5)[       372.906239] DD_IOS: Scheduler dd_iosched registered
+<5>(E5)[       372.906312] DD_IOS: Scheduler dd_iosched_gw registered
+<5>(E5)[       372.906386] DD_IOS: dd_iosched loaded, compiled @ Jul 30 2014 18:38:39
+<6>(E6)[       372.909781] dd_iTCO_wdt: Intel TCO SMI Generator Driver v0.01 (26-Jan-2012)
+<6>(E6)[       372.909946] dd_iTCO_wdt: No card detected
+<4>(E4)[       372.925549] Loading NVRAM driver
+<6>(E6)[       374.032094] usbcore: registered new interface driver usbfs
+<6>(E6)[       374.032236] usbcore: registered new interface driver hub
+<6>(E6)[       374.032416] usbcore: registered new device driver usb
+<6>(E6)[       374.034685] Initializing USB Mass Storage driver...
+<6>(E6)[       374.036418] usbcore: registered new interface driver usb-storage
+<6>(E6)[       374.036492] USB Mass Storage support registered.
+<6>(E6)[       374.040739] ACPI: PCI Interrupt 0000:00:1a.7[C] -> GSI 18 (level, low) -> IRQ 18
+<7>(E7)[       374.042887] PCI: Setting latency timer of device 0000:00:1a.7 to 64
+<6>(E6)[       374.042961] ehci_hcd 0000:00:1a.7: EHCI Host Controller
+<6>(E6)[       374.043336] ehci_hcd 0000:00:1a.7: new USB bus registered, assigned bus number 1
+<6>(E6)[       374.043428] ehci_hcd 0000:00:1a.7: debug port 1
+<7>(E7)[       374.043501] PCI: cache line size of 32 is not supported by device 0000:00:1a.7
+<6>(E6)[       374.043577] ehci_hcd 0000:00:1a.7: irq 18, io mem 0xf7bde000
+<6>(E6)[       374.053328] ehci_hcd 0000:00:1a.7: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
+<6>(E6)[       374.053742] usb usb1: configuration #1 chosen from 1 choice
+<6>(E6)[       374.053880] hub 1-0:1.0: USB hub found
+<6>(E6)[       374.053961] hub 1-0:1.0: 6 ports detected
+<6>(E6)[       374.154635] ACPI: PCI Interrupt 0000:00:1d.7[A] -> GSI 23 (level, low) -> IRQ 23
+<7>(E7)[       374.156743] PCI: Setting latency timer of device 0000:00:1d.7 to 64
+<6>(E6)[       374.156816] ehci_hcd 0000:00:1d.7: EHCI Host Controller
+<6>(E6)[       374.157197] ehci_hcd 0000:00:1d.7: new USB bus registered, assigned bus number 2
+<6>(E6)[       374.157299] ehci_hcd 0000:00:1d.7: debug port 1
+<7>(E7)[       374.157373] PCI: cache line size of 32 is not supported by device 0000:00:1d.7
+<6>(E6)[       374.157449] ehci_hcd 0000:00:1d.7: irq 23, io mem 0xf7bdc000
+<6>(E6)[       374.167378] ehci_hcd 0000:00:1d.7: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
+<6>(E6)[       374.168159] usb usb2: configuration #1 chosen from 1 choice
+<6>(E6)[       374.168447] hub 2-0:1.0: USB hub found
+<6>(E6)[       374.168525] hub 2-0:1.0: 6 ports detected
+<6>(E6)[       374.272602] USB Universal Host Controller Interface driver v3.0
+<6>(E6)[       374.272882] ACPI: PCI Interrupt 0000:00:1a.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       374.273028] PCI: Setting latency timer of device 0000:00:1a.0 to 64
+<6>(E6)[       374.273100] uhci_hcd 0000:00:1a.0: UHCI Host Controller
+<6>(E6)[       374.273297] uhci_hcd 0000:00:1a.0: new USB bus registered, assigned bus number 3
+<6>(E6)[       374.273390] uhci_hcd 0000:00:1a.0: irq 16, io base 0x00007c00
+<6>(E6)[       374.273742] usb usb3: configuration #1 chosen from 1 choice
+<6>(E6)[       374.273950] hub 3-0:1.0: USB hub found
+<6>(E6)[       374.274030] hub 3-0:1.0: 2 ports detected
+<6>(E6)[       374.361264] usb 1-3: new high speed USB device using ehci_hcd and address 2
+<6>(E6)[       374.374617] ACPI: PCI Interrupt 0000:00:1a.1[B] -> GSI 21 (level, low) -> IRQ 21
+<7>(E7)[       374.374795] PCI: Setting latency timer of device 0000:00:1a.1 to 64
+<6>(E6)[       374.374866] uhci_hcd 0000:00:1a.1: UHCI Host Controller
+<6>(E6)[       374.375241] uhci_hcd 0000:00:1a.1: new USB bus registered, assigned bus number 4
+<6>(E6)[       374.375334] uhci_hcd 0000:00:1a.1: irq 21, io base 0x00007880
+<6>(E6)[       374.375820] usb usb4: configuration #1 chosen from 1 choice
+<6>(E6)[       374.376037] hub 4-0:1.0: USB hub found
+<6>(E6)[       374.376117] hub 4-0:1.0: 2 ports detected
+<6>(E6)[       374.477472] ACPI: PCI Interrupt 0000:00:1a.2[D] -> GSI 19 (level, low) -> IRQ 19
+<7>(E7)[       374.477616] PCI: Setting latency timer of device 0000:00:1a.2 to 64
+<6>(E6)[       374.477688] uhci_hcd 0000:00:1a.2: UHCI Host Controller
+<6>(E6)[       374.477850] uhci_hcd 0000:00:1a.2: new USB bus registered, assigned bus number 5
+<6>(E6)[       374.477941] uhci_hcd 0000:00:1a.2: irq 19, io base 0x00007800
+<6>(E6)[       374.478213] usb usb5: configuration #1 chosen from 1 choice
+<6>(E6)[       374.478372] hub 5-0:1.0: USB hub found
+<6>(E6)[       374.478450] hub 5-0:1.0: 2 ports detected
+<4>(E4)[       374.497758] usb 1-3: config 1 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 255, changing to 11
+<6>(E6)[       374.498884] usb 1-3: configuration #1 chosen from 1 choice
+<6>(E6)[       374.499481] hub 1-3:1.0: USB hub found
+<6>(E6)[       374.499708] hub 1-3:1.0: 3 ports detected
+<6>(E6)[       374.579339] ACPI: PCI Interrupt 0000:00:1d.0[A] -> GSI 23 (level, low) -> IRQ 23
+<7>(E7)[       374.579494] PCI: Setting latency timer of device 0000:00:1d.0 to 64
+<6>(E6)[       374.579569] uhci_hcd 0000:00:1d.0: UHCI Host Controller
+<6>(E6)[       374.579830] uhci_hcd 0000:00:1d.0: new USB bus registered, assigned bus number 6
+<6>(E6)[       374.579924] uhci_hcd 0000:00:1d.0: irq 23, io base 0x00007480
+<6>(E6)[       374.580418] usb usb6: configuration #1 chosen from 1 choice
+<6>(E6)[       374.580575] hub 6-0:1.0: USB hub found
+<6>(E6)[       374.580654] hub 6-0:1.0: 2 ports detected
+<6>(E6)[       374.681440] ACPI: PCI Interrupt 0000:00:1d.1[B] -> GSI 19 (level, low) -> IRQ 19
+<7>(E7)[       374.681590] PCI: Setting latency timer of device 0000:00:1d.1 to 64
+<6>(E6)[       374.681664] uhci_hcd 0000:00:1d.1: UHCI Host Controller
+<6>(E6)[       374.682089] uhci_hcd 0000:00:1d.1: new USB bus registered, assigned bus number 7
+<6>(E6)[       374.682184] uhci_hcd 0000:00:1d.1: irq 19, io base 0x00007400
+<6>(E6)[       374.682746] usb usb7: configuration #1 chosen from 1 choice
+<6>(E6)[       374.682895] hub 7-0:1.0: USB hub found
+<6>(E6)[       374.682974] hub 7-0:1.0: 2 ports detected
+<6>(E6)[       374.784352] ACPI: PCI Interrupt 0000:00:1d.2[C] -> GSI 18 (level, low) -> IRQ 18
+<7>(E7)[       374.784500] PCI: Setting latency timer of device 0000:00:1d.2 to 64
+<6>(E6)[       374.784571] uhci_hcd 0000:00:1d.2: UHCI Host Controller
+<6>(E6)[       374.784815] uhci_hcd 0000:00:1d.2: new USB bus registered, assigned bus number 8
+<6>(E6)[       374.784979] uhci_hcd 0000:00:1d.2: irq 18, io base 0x00007080
+<6>(E6)[       374.785467] usb usb8: configuration #1 chosen from 1 choice
+<6>(E6)[       374.785622] hub 8-0:1.0: USB hub found
+<6>(E6)[       374.785702] hub 8-0:1.0: 2 ports detected
+<6>(E6)[       374.807055] usb 2-3: new high speed USB device using ehci_hcd and address 2
+<6>(E6)[       374.923544] usb 2-3: configuration #1 chosen from 1 choice
+<6>(E6)[       374.924264] scsi0 : SCSI emulation for USB Mass Storage devices
+<7>(E7)[       374.924425] usb-storage: device found at 2
+<7>(E7)[       374.924499] usb-storage: waiting for device to settle before scanning
+<6>(E6)[       375.348949] usb 1-3.1: new high speed USB device using ehci_hcd and address 3
+<6>(E6)[       375.436341] usb 1-3.1: configuration #1 chosen from 1 choice
+<6>(E6)[       375.798586] usb 8-1: new low speed USB device using uhci_hcd and address 2
+<6>(E6)[       375.964966] usb 8-1: configuration #1 chosen from 1 choice
+<6>(E6)[       375.994850] input: American Megatrends Inc. Virtual Keyboard and Mouse as /class/input/input2
+<6>(E6)[       376.005745] input: USB HID v1.10 Keyboard [American Megatrends Inc. Virtual Keyboard and Mouse] on usb-0000:00:1a.7-3.1
+<6>(E6)[       376.006890] input: American Megatrends Inc. Virtual Keyboard and Mouse as /class/input/input3
+<6>(E6)[       376.019554] input: USB HID v1.10 Mouse [American Megatrends Inc. Virtual Keyboard and Mouse] on usb-0000:00:1a.7-3.1
+<6>(E6)[       376.033903] input: Avocent USB DSRIQ as /class/input/input4
+<6>(E6)[       376.042631] input: USB HID v1.10 Keyboard [Avocent USB DSRIQ] on usb-0000:00:1d.2-1
+<6>(E6)[       376.062951] input: Avocent USB DSRIQ as /class/input/input5
+<6>(E6)[       376.077578] input: USB HID v1.10 Mouse [Avocent USB DSRIQ] on usb-0000:00:1d.2-1
+<6>(E6)[       376.077797] usbcore: registered new interface driver usbhid
+<6>(E6)[       376.077868] /auto/builds/5.5/443488/os/linux-2.6.23/drivers/hid/usbhid/hid-core.c: v2.6:USB HID core driver
+<6>(E6)[       376.086958] Fusion MPT base driver 4.00.21.00
+<6>(E6)[       376.087064] Copyright (c) 1999-2007 LSI Corporation
+<6>(E6)[       376.091321] Fusion MPT SAS Host driver 4.00.21.00
+<6>(E6)[       376.091527] ACPI: PCI Interrupt 0000:08:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<4>(E4)[       376.091705] mpt_debug_level=180h
+<6>(E6)[       376.091811] ioc0: Start of bring up
+<7>(E7)[       376.091882] mptbase: ioc0: Initiating bringup
+<6>(E6)[       376.373287] ioc0: LSISAS1068E B3: Capabilities={Initiator}
+<7>(E7)[       376.373645] PCI: Setting latency timer of device 0000:08:00.0 to 64
+<4>(E4)[       379.922321] scsi 0:0:0:0 SerialNo:
+<5>(E5)[       379.923855] scsi 0:0:0:0: Direct-Access     USB TO I DE/SATA Device   0041 PQ: 0 ANSI: 0
+<4>(E4)[       379.925410] scsi0: (ffff810903344080) (0/5/10000) chnl/tgt/lun 0/0/0 result 0x2, cdb 0x00, sense 2/0x3a/0x0 Retry-able
+<6>(E6)[       379.925586] Disk:sda switching elevator to dd_iosched!
+<4>(E4)[       379.925662] dd_ios_init_queue_common: request_queue :ffff8108e8408038
+<5>(E5)[       379.925776] dd_qosctl: Registering resource instance sda
+<5>(E5)[       379.925851] DD_IOS: dd_ios enabled for device sda
+<5>(E5)[       379.925937] sd 0:0:0:0: [sda] Attached scsi disk sda at scsi0, channel 0, id 0, lun 0 TO 10s ffff8108e7323000
+<4>(E4)[       379.926012] device-mapper: ioctl: sd 0:0:0:0 has no UUID
+<5>(E5)[       379.926273] sd 0:0:0:0: Attached scsi generic sg0 type 0
+<7>(E7)[       379.926596] usb-storage: device scan complete
+<6>(E6)[       391.974200] ioc0: End of bring up
+<6>(E6)[       391.974274] ioc0: Adding scsi host
+<6>(E6)[       391.974598] scsi1 : ioc0: LSISAS1068E B3, FwRev=011b0400h, Ports=1, MaxQ=483, Slot=0, IRQ=16
+<4>(E4)[       391.975054] MPT SAS Host can't handle SMP requests
+<6>(E6)[       391.975426] ioc0: scsi host added
+<6>(E6)[       391.975497] ioc0: Start scan
+<6>(E6)[       391.976621] ioc0: Postpone sata init set in sas io unit pg1 flags = 101
+<6>(E6)[       391.977444] ioc0: Cleared IDs that are not present
+<6>(E6)[       391.979103] Max 128 used 13 status 0x0 flag 0x0
+<6>(E6)[       391.979177] ioc0: Target mapping left as 0.
+<6>(E6)[       393.934817] Changed persistent mapping
+<6>(E6)[       393.937226] ioc0: IO Unit Page 1 Flags 0x203
+<6>(E6)[       393.939509] ioc0: IO Unit Page 1 Flags 0x203
+<6>(E6)[       393.939583] ioc0: Resetting adapter after IO Unit Page 1 OR SAS IO UNIT Page 2 OR 1 change
+<6>(E6)[       393.939658] mptbase: ioc0: HardResetHandler Entered: DRIVE_REQ
+<7>(E7)[       393.939729] mptbase: ioc0: mpt_ioc_reset: MPT_IOC_SETUP_RESET
+<7>(E7)[       393.939799] mptscsih: ioc0: mptscsih_ioc_reset: MPT_IOC_SETUP_RESET
+<7>(E7)[       393.939870] mptsas: ioc0: mptsas_ioc_reset: MPT_IOC_SETUP_RESET
+<7>(E7)[       393.939940] mptbase: ioc0: Initiating recovery
+<7>(E7)[       394.041480] mptbase: ioc0: mpt_ioc_reset: MPT_IOC_PRE_RESET
+<7>(E7)[       394.041552] mptscsih: ioc0: mptscsih_ioc_reset: MPT_IOC_PRE_RESET
+<7>(E7)[       394.041635] mptsas: ioc0: mptsas_ioc_reset: MPT_IOC_PRE_RESET
+<7>(E7)[       414.810096] mptbase: ioc0: mpt_ioc_reset: MPT_IOC_POST_RESET
+<7>(E7)[       414.810171] mptscsih: ioc0: mptscsih_ioc_reset: MPT_IOC_POST_RESET
+<7>(E7)[       414.810246] mptsas: ioc0: mptsas_ioc_reset: MPT_IOC_POST_RESET
+<7>(E7)[       414.810317] mptbase: ioc0: HardResetHandler: completed (20 seconds): SUCCESS
+<4>(E4)[       414.839550] MPT SAS Host can't handle SMP requests
+<6>(E6)[       414.943083] mptsas: ioc0: add expander: num_phys 25, sas_addr (0x500a0d1000085e20)
+<4>(E4)[       415.163926] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       415.185412] mptsas: ioc0: WARNING - discovery STOP [21/21 msec]
+<4>(E4)[       415.185491] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       415.414753] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 0, phy 0, sas_addr 0x500a0d1000085e21
+<4>(E4)[       415.415373] MPT SAS Host can't handle SMP requests
+<6>(E6)[       415.415452]  target1:0:0: mptsas: ioc0: add device: fw_channel 0, fw_id 0, phy 0, sas_addr 0x500a0d1000085e21
+<4>(E4)[       415.419318] scsi 1:0:0:0 SerialNo:      WD-WMATV1678328
+<5>(E5)[       415.420882] scsi 1:0:0:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       415.421517] scsi1: (ffff810903344940) (0/3/30000) chnl/tgt/lun 0/0/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       415.422967] setting OS mapping: sdev ffff8108e4416000 starget ffff8108e5bdb800 0x500A0D1000085E21 fw_id 0 os_id 0
+<6>(E6)[       415.423046] scsi 1:0:0:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       415.446238]  sdb: sdb1 sdb2 sdb3 sdb4 < sdb5 sdb6 sdb7 sdb8 >
+<6>(E6)[       415.497238] Disk:sdb switching elevator to dd_iosched!
+<4>(E4)[       415.497316] dd_ios_init_queue_common: request_queue :ffff8108dfc30810
+<5>(E5)[       415.497426] dd_qosctl: Registering resource instance sdb
+<5>(E5)[       415.497501] DD_IOS: dd_ios enabled for device sdb
+<5>(E5)[       415.497588] sd 1:0:0:0: [sdb] Attached scsi disk sdb at scsi1, channel 0, id 0, lun 0 TO 10s ffff8108e17faa00
+<6>(E6)[       415.501011] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:16 1000)
+<6>(E6)[       415.501112] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1678328)
+<4>(E4)[       415.501191] device-mapper: md @ ffff8108e3ac7c00 dm-1 -> sdb[8:16]
+<5>(E5)[       415.501546] sd 1:0:0:0: Attached scsi generic sg1 type 0
+<4>(E4)[       415.663688] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       415.685070] mptsas: ioc0: WARNING - discovery STOP [21/42 msec]
+<6>(E6)[       415.914215] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 1, phy 1, sas_addr 0x500a0d1000085e22
+<4>(E4)[       415.914813] MPT SAS Host can't handle SMP requests
+<6>(E6)[       415.914895]  target1:0:1: mptsas: ioc0: add device: fw_channel 0, fw_id 1, phy 1, sas_addr 0x500a0d1000085e22
+<4>(E4)[       415.918763] scsi 1:0:1:0 SerialNo:      WD-WMATV1740245
+<5>(E5)[       415.920320] scsi 1:0:1:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       415.920977] scsi1: (ffff8108e3b0fd80) (0/3/30000) chnl/tgt/lun 0/1/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       415.922527] setting OS mapping: sdev ffff8108e4510000 starget ffff8108e479c800 0x500A0D1000085E22 fw_id 1 os_id 1
+<6>(E6)[       415.922609] scsi 1:0:1:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       415.945677]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 sdc7 sdc8 >
+<6>(E6)[       416.000090] Disk:sdc switching elevator to dd_iosched!
+<4>(E4)[       416.000166] dd_ios_init_queue_common: request_queue :ffff8108dfc300b8
+<5>(E5)[       416.000279] dd_qosctl: Registering resource instance sdc
+<5>(E5)[       416.000352] DD_IOS: dd_ios enabled for device sdc
+<5>(E5)[       416.000439] sd 1:0:1:0: [sdc] Attached scsi disk sdc at scsi1, channel 0, id 1, lun 0 TO 10s ffff8108e675a800
+<6>(E6)[       416.001171] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:32 1000)
+<6>(E6)[       416.001272] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1740245)
+<4>(E4)[       416.001349] device-mapper: md @ ffff8108e266f000 dm-2 -> sdc[8:32]
+<5>(E5)[       416.003309] sd 1:0:1:0: Attached scsi generic sg2 type 0
+<4>(E4)[       416.163712] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       416.185038] mptsas: ioc0: WARNING - discovery STOP [21/63 msec]
+<6>(E6)[       416.414002] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 2, phy 2, sas_addr 0x500a0d1000085e23
+<4>(E4)[       416.414422] MPT SAS Host can't handle SMP requests
+<6>(E6)[       416.414501]  target1:0:2: mptsas: ioc0: add device: fw_channel 0, fw_id 2, phy 2, sas_addr 0x500a0d1000085e23
+<4>(E4)[       416.418577] scsi 1:0:2:0 SerialNo:      WD-WMATV1744008
+<5>(E5)[       416.420138] scsi 1:0:2:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       416.420724] scsi1: (ffff8108e3b0fa00) (0/3/30000) chnl/tgt/lun 0/2/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       416.422074] setting OS mapping: sdev ffff8108e70b6000 starget ffff8108e1c70800 0x500A0D1000085E23 fw_id 2 os_id 2
+<6>(E6)[       416.422151] scsi 1:0:2:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       416.444590]  sdd: sdd1 sdd2 sdd3 sdd4 < sdd5 sdd6 sdd7 sdd8 >
+<6>(E6)[       416.498860] Disk:sdd switching elevator to dd_iosched!
+<4>(E4)[       416.498938] dd_ios_init_queue_common: request_queue :ffff8108e4fd77d0
+<5>(E5)[       416.499050] dd_qosctl: Registering resource instance sdd
+<5>(E5)[       416.499133] DD_IOS: dd_ios enabled for device sdd
+<5>(E5)[       416.499220] sd 1:0:2:0: [sdd] Attached scsi disk sdd at scsi1, channel 0, id 2, lun 0 TO 10s ffff8108e34f9200
+<6>(E6)[       416.500962] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:48 1000)
+<6>(E6)[       416.501069] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1744008)
+<4>(E4)[       416.501153] device-mapper: md @ ffff8108e3ac7400 dm-3 -> sdd[8:48]
+<5>(E5)[       416.503509] sd 1:0:2:0: Attached scsi generic sg3 type 0
+<4>(E4)[       416.663217] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       416.684491] mptsas: ioc0: WARNING - discovery STOP [21/84 msec]
+<6>(E6)[       416.914058] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 3, phy 3, sas_addr 0x500a0d1000085e24
+<4>(E4)[       416.914321] MPT SAS Host can't handle SMP requests
+<6>(E6)[       416.914399]  target1:0:3: mptsas: ioc0: add device: fw_channel 0, fw_id 3, phy 3, sas_addr 0x500a0d1000085e24
+<4>(E4)[       416.918133] scsi 1:0:3:0 SerialNo:      WD-WMATV1740467
+<5>(E5)[       416.919657] scsi 1:0:3:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       416.920234] scsi1: (ffff810902246dc0) (0/3/30000) chnl/tgt/lun 0/3/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       416.921616] setting OS mapping: sdev ffff8108e2ca0000 starget ffff8108e849f400 0x500A0D1000085E24 fw_id 3 os_id 3
+<6>(E6)[       416.921693] scsi 1:0:3:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       416.945113]  sde: sde1 sde2 sde3 sde4 < sde5 sde6 sde7 sde8 >
+<6>(E6)[       417.007392] Disk:sde switching elevator to dd_iosched!
+<4>(E4)[       417.007469] dd_ios_init_queue_common: request_queue :ffff8108e8ba0810
+<5>(E5)[       417.007575] dd_qosctl: Registering resource instance sde
+<5>(E5)[       417.007683] DD_IOS: dd_ios enabled for device sde
+<5>(E5)[       417.007771] sd 1:0:3:0: [sde] Attached scsi disk sde at scsi1, channel 0, id 3, lun 0 TO 10s ffff8108e3cb4e00
+<6>(E6)[       417.011256] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:64 1000)
+<6>(E6)[       417.011362] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1740467)
+<4>(E4)[       417.011446] device-mapper: md @ ffff8108e69f6c00 dm-4 -> sde[8:64]
+<5>(E5)[       417.013527] sd 1:0:3:0: Attached scsi generic sg4 type 0
+<4>(E4)[       417.162974] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       417.184196] mptsas: ioc0: WARNING - discovery STOP [21/105 msec]
+<6>(E6)[       417.413506] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 4, phy 4, sas_addr 0x500a0d1000085e25
+<4>(E4)[       417.413863] MPT SAS Host can't handle SMP requests
+<6>(E6)[       417.413979]  target1:0:4: mptsas: ioc0: add device: fw_channel 0, fw_id 4, phy 4, sas_addr 0x500a0d1000085e25
+<4>(E4)[       417.417942] scsi 1:0:4:0 SerialNo:      WD-WMATV1678691
+<5>(E5)[       417.419471] scsi 1:0:4:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       417.420125] scsi1: (ffff8108e6f4ae00) (0/3/30000) chnl/tgt/lun 0/4/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       417.421563] setting OS mapping: sdev ffff8108e1e7a000 starget ffff8108e1d1e800 0x500A0D1000085E25 fw_id 4 os_id 4
+<6>(E6)[       417.421639] scsi 1:0:4:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       417.443782]  sdf: sdf1 sdf2 sdf3 sdf4 < sdf5 sdf6 sdf7 sdf8 >
+<6>(E6)[       417.507890] Disk:sdf switching elevator to dd_iosched!
+<4>(E4)[       417.507967] dd_ios_init_queue_common: request_queue :ffff8108e29bb790
+<5>(E5)[       417.508076] dd_qosctl: Registering resource instance sdf
+<5>(E5)[       417.508150] DD_IOS: dd_ios enabled for device sdf
+<5>(E5)[       417.508237] sd 1:0:4:0: [sdf] Attached scsi disk sdf at scsi1, channel 0, id 4, lun 0 TO 10s ffff8108e3cb4800
+<6>(E6)[       417.510966] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:80 1000)
+<6>(E6)[       417.511067] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1678691)
+<4>(E4)[       417.511143] device-mapper: md @ ffff8108e588fc00 dm-5 -> sdf[8:80]
+<5>(E5)[       417.511453] sd 1:0:4:0: Attached scsi generic sg5 type 0
+<4>(E4)[       417.663012] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       417.684112] mptsas: ioc0: WARNING - discovery STOP [21/126 msec]
+<6>(E6)[       417.913266] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 5, phy 5, sas_addr 0x500a0d1000085e26
+<4>(E4)[       417.913647] MPT SAS Host can't handle SMP requests
+<6>(E6)[       417.913728]  target1:0:5: mptsas: ioc0: add device: fw_channel 0, fw_id 5, phy 5, sas_addr 0x500a0d1000085e26
+<4>(E4)[       417.917637] scsi 1:0:5:0 SerialNo:      WD-WMATV1677153
+<5>(E5)[       417.919198] scsi 1:0:5:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       417.919775] scsi1: (ffff8108e76d4780) (0/3/30000) chnl/tgt/lun 0/5/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       417.921118] setting OS mapping: sdev ffff8108e2a26000 starget ffff810902eaec00 0x500A0D1000085E26 fw_id 5 os_id 5
+<6>(E6)[       417.921195] scsi 1:0:5:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       417.943612]  sdg: sdg1 sdg2 sdg3 sdg4 < sdg5 sdg6 sdg7 sdg8 >
+<6>(E6)[       417.997977] Disk:sdg switching elevator to dd_iosched!
+<4>(E4)[       417.998053] dd_ios_init_queue_common: request_queue :ffff8108e4fd7078
+<5>(E5)[       417.998165] dd_qosctl: Registering resource instance sdg
+<5>(E5)[       417.998239] DD_IOS: dd_ios enabled for device sdg
+<5>(E5)[       417.998326] sd 1:0:5:0: [sdg] Attached scsi disk sdg at scsi1, channel 0, id 5, lun 0 TO 10s ffff8108e8606800
+<6>(E6)[       418.001843] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:96 1000)
+<6>(E6)[       418.001953] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1677153)
+<4>(E4)[       418.002034] device-mapper: md @ ffff8108e76b5c00 dm-6 -> sdg[8:96]
+<5>(E5)[       418.004343] sd 1:0:5:0: Attached scsi generic sg6 type 0
+<4>(E4)[       418.162512] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       418.183652] mptsas: ioc0: WARNING - discovery STOP [21/147 msec]
+<6>(E6)[       418.413243] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 6, phy 6, sas_addr 0x500a0d1000085e27
+<4>(E4)[       418.413806] MPT SAS Host can't handle SMP requests
+<6>(E6)[       418.413885]  target1:0:6: mptsas: ioc0: add device: fw_channel 0, fw_id 6, phy 6, sas_addr 0x500a0d1000085e27
+<4>(E4)[       418.417890] scsi 1:0:6:0 SerialNo:      WD-WMATV1740127
+<5>(E5)[       418.419424] scsi 1:0:6:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       418.420048] scsi1: (ffff8108e76d4400) (0/3/30000) chnl/tgt/lun 0/6/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       418.421544] setting OS mapping: sdev ffff8108e0a0c000 starget ffff810902eae400 0x500A0D1000085E27 fw_id 6 os_id 6
+<6>(E6)[       418.421621] scsi 1:0:6:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       418.444100]  sdh: sdh1 sdh2 sdh3 sdh4 < sdh5 sdh6 sdh7 sdh8 >
+<6>(E6)[       418.499695] Disk:sdh switching elevator to dd_iosched!
+<4>(E4)[       418.499772] dd_ios_init_queue_common: request_queue :ffff8108e36787d0
+<5>(E5)[       418.499882] dd_qosctl: Registering resource instance sdh
+<5>(E5)[       418.499956] DD_IOS: dd_ios enabled for device sdh
+<5>(E5)[       418.500043] sd 1:0:6:0: [sdh] Attached scsi disk sdh at scsi1, channel 0, id 6, lun 0 TO 10s ffff8108e8606000
+<6>(E6)[       418.503523] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:112 1000)
+<6>(E6)[       418.503630] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1740127)
+<4>(E4)[       418.503711] device-mapper: md @ ffff8108e76b5400 dm-7 -> sdh[8:112]
+<5>(E5)[       418.504693] sd 1:0:6:0: Attached scsi generic sg7 type 0
+<4>(E4)[       418.662250] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       418.683236] mptsas: ioc0: WARNING - discovery STOP [21/168 msec]
+<6>(E6)[       418.912802] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 7, phy 7, sas_addr 0x500a0d1000085e28
+<4>(E4)[       418.913416] MPT SAS Host can't handle SMP requests
+<6>(E6)[       418.913501]  target1:0:7: mptsas: ioc0: add device: fw_channel 0, fw_id 7, phy 7, sas_addr 0x500a0d1000085e28
+<4>(E4)[       418.917356] scsi 1:0:7:0 SerialNo:      WD-WMATV1675029
+<5>(E5)[       418.918884] scsi 1:0:7:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       418.919492] scsi1: (ffff8108e151fd40) (0/3/30000) chnl/tgt/lun 0/7/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       418.921028] setting OS mapping: sdev ffff810902a2e000 starget ffff8108e1d1e400 0x500A0D1000085E28 fw_id 7 os_id 7
+<6>(E6)[       418.921110] scsi 1:0:7:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       418.943639]  sdi: sdi1 sdi2 sdi3 sdi4 < sdi5 sdi6 sdi7 sdi8 >
+<6>(E6)[       418.991555] Disk:sdi switching elevator to dd_iosched!
+<4>(E4)[       418.991633] dd_ios_init_queue_common: request_queue :ffff8108e29bb038
+<5>(E5)[       418.991743] dd_qosctl: Registering resource instance sdi
+<5>(E5)[       418.991817] DD_IOS: dd_ios enabled for device sdi
+<5>(E5)[       418.991905] sd 1:0:7:0: [sdi] Attached scsi disk sdi at scsi1, channel 0, id 7, lun 0 TO 10s ffff8108e66ac600
+<6>(E6)[       418.994084] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:128 1000)
+<6>(E6)[       418.994191] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1675029)
+<4>(E4)[       418.994271] device-mapper: md @ ffff8108e8361c00 dm-8 -> sdi[8:128]
+<5>(E5)[       418.994618] sd 1:0:7:0: Attached scsi generic sg8 type 0
+<4>(E4)[       419.162300] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       419.183194] mptsas: ioc0: WARNING - discovery STOP [21/189 msec]
+<6>(E6)[       419.412539] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 8, phy 8, sas_addr 0x500a0d1000085e29
+<4>(E4)[       419.413131] MPT SAS Host can't handle SMP requests
+<6>(E6)[       419.413215]  target1:0:8: mptsas: ioc0: add device: fw_channel 0, fw_id 8, phy 8, sas_addr 0x500a0d1000085e29
+<4>(E4)[       419.417082] scsi 1:0:8:0 SerialNo:      WD-WMATV1740741
+<5>(E5)[       419.418609] scsi 1:0:8:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       419.419266] scsi1: (ffff8108e6f4aa80) (0/3/30000) chnl/tgt/lun 0/8/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       419.420760] setting OS mapping: sdev ffff8108e3fd2000 starget ffff8108e1d1e000 0x500A0D1000085E29 fw_id 8 os_id 8
+<6>(E6)[       419.420838] scsi 1:0:8:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       419.443453]  sdj: sdj1 sdj2 sdj3 sdj4 < sdj5 sdj6 sdj7 sdj8 >
+<6>(E6)[       419.497940] Disk:sdj switching elevator to dd_iosched!
+<4>(E4)[       419.498017] dd_ios_init_queue_common: request_queue :ffff8108e6b69038
+<5>(E5)[       419.498128] dd_qosctl: Registering resource instance sdj
+<5>(E5)[       419.498203] DD_IOS: dd_ios enabled for device sdj
+<5>(E5)[       419.498290] sd 1:0:8:0: [sdj] Attached scsi disk sdj at scsi1, channel 0, id 8, lun 0 TO 10s ffff8108e6026c00
+<6>(E6)[       419.500142] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:144 1000)
+<6>(E6)[       419.500252] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1740741)
+<4>(E4)[       419.500333] device-mapper: md @ ffff8108e278f400 dm-9 -> sdj[8:144]
+<5>(E5)[       419.503478] sd 1:0:8:0: Attached scsi generic sg9 type 0
+<4>(E4)[       419.661810] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       419.682658] mptsas: ioc0: WARNING - discovery STOP [21/210 msec]
+<6>(E6)[       419.912544] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 9, phy 9, sas_addr 0x500a0d1000085e2a
+<4>(E4)[       419.912932] MPT SAS Host can't handle SMP requests
+<6>(E6)[       419.913010]  target1:0:9: mptsas: ioc0: add device: fw_channel 0, fw_id 9, phy 9, sas_addr 0x500a0d1000085e2a
+<4>(E4)[       419.916791] scsi 1:0:9:0 SerialNo:      WD-WMATV1678363
+<5>(E5)[       419.918360] scsi 1:0:9:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       419.918986] scsi1: (ffff8108e76d4080) (0/3/30000) chnl/tgt/lun 0/9/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       419.920414] setting OS mapping: sdev ffff8108e5278000 starget ffff8108e5e2e400 0x500A0D1000085E2A fw_id 9 os_id 9
+<6>(E6)[       419.920489] scsi 1:0:9:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       419.942687]  sdk: sdk1 sdk2 sdk3 sdk4 < sdk5 sdk6 sdk7 sdk8 >
+<6>(E6)[       420.001317] Disk:sdk switching elevator to dd_iosched!
+<4>(E4)[       420.001399] dd_ios_init_queue_common: request_queue :ffff8108e3678078
+<5>(E5)[       420.001508] dd_qosctl: Registering resource instance sdk
+<5>(E5)[       420.001582] DD_IOS: dd_ios enabled for device sdk
+<5>(E5)[       420.001670] sd 1:0:9:0: [sdk] Attached scsi disk sdk at scsi1, channel 0, id 9, lun 0 TO 10s ffff8108e6026400
+<6>(E6)[       420.003518] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:160 1000)
+<6>(E6)[       420.003624] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1678363)
+<4>(E4)[       420.003704] device-mapper: md @ ffff8108e4e88800 dm-10 -> sdk[8:160]
+<5>(E5)[       420.006448] sd 1:0:9:0: Attached scsi generic sg10 type 0
+<4>(E4)[       420.161551] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       420.182376] mptsas: ioc0: WARNING - discovery STOP [21/231 msec]
+<6>(E6)[       420.412097] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 10, phy 10, sas_addr 0x500a0d1000085e2b
+<4>(E4)[       420.412685] MPT SAS Host can't handle SMP requests
+<6>(E6)[       420.412769]  target1:0:10: mptsas: ioc0: add device: fw_channel 0, fw_id 10, phy 10, sas_addr 0x500a0d1000085e2b
+<4>(E4)[       420.416600] scsi 1:0:10:0 SerialNo:      WD-WMATV1740112
+<5>(E5)[       420.418129] scsi 1:0:10:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       420.418784] scsi1: (ffff8108e151fb80) (0/3/30000) chnl/tgt/lun 0/10/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       420.420298] setting OS mapping: sdev ffff8108e79e2000 starget ffff8108e3999c00 0x500A0D1000085E2B fw_id 10 os_id 10
+<6>(E6)[       420.420374] scsi 1:0:10:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       420.443793]  sdl: sdl1 sdl2 sdl3 sdl4 < sdl5 sdl6 sdl7 sdl8 >
+<6>(E6)[       420.511583] Disk:sdl switching elevator to dd_iosched!
+<4>(E4)[       420.511657] dd_ios_init_queue_common: request_queue :ffff8108e1f217d0
+<5>(E5)[       420.511753] dd_qosctl: Registering resource instance sdl
+<5>(E5)[       420.511825] DD_IOS: dd_ios enabled for device sdl
+<5>(E5)[       420.511904] sd 1:0:10:0: [sdl] Attached scsi disk sdl at scsi1, channel 0, id 10, lun 0 TO 10s ffff8108e2781600
+<6>(E6)[       420.512164] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:176 1000)
+<6>(E6)[       420.512272] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1740112)
+<4>(E4)[       420.512352] device-mapper: md @ ffff8108e528dc00 dm-11 -> sdl[8:176]
+<5>(E5)[       420.512801] sd 1:0:10:0: Attached scsi generic sg11 type 0
+<4>(E4)[       420.661575] mptsas: ioc0: WARNING - discovery START
+<4>(E4)[       420.682316] mptsas: ioc0: WARNING - discovery STOP [21/252 msec]
+<6>(E6)[       420.911846] mptsas: ioc0: attaching sata device: fw_channel 0, fw_id 11, phy 11, sas_addr 0x500a0d1000085e2c
+<4>(E4)[       420.912549] MPT SAS Host can't handle SMP requests
+<6>(E6)[       420.912629]  target1:0:11: mptsas: ioc0: add device: fw_channel 0, fw_id 11, phy 11, sas_addr 0x500a0d1000085e2c
+<4>(E4)[       420.916466] scsi 1:0:11:0 SerialNo:      WD-WMATV1678133
+<5>(E5)[       420.918027] scsi 1:0:11:0: Direct-Access     ATA      WDC WD1002FBYS-0 0C06 PQ: 0 ANSI: 5
+<4>(E4)[       420.918658] scsi1: (ffff810902246340) (0/3/30000) chnl/tgt/lun 0/11/0 result 0x2, cdb 0x1a, sense 5/0x24/0x0 Retry-able
+<6>(E6)[       420.920075] setting OS mapping: sdev ffff8108e0dd6000 starget ffff810902f22800 0x500A0D1000085E2C fw_id 11 os_id 11
+<6>(E6)[       420.920155] scsi 1:0:11:0: mptscsih: ioc0: qdepth=64, tagged=1, simple=1, ordered=0, scsi_level=6, cmd_que=1
+<6>(E6)[       420.942716]  sdm: sdm1 sdm2 sdm3 sdm4 < sdm5 sdm6 sdm7 sdm8 >
+<6>(E6)[       421.000555] Disk:sdm switching elevator to dd_iosched!
+<4>(E4)[       421.000630] dd_ios_init_queue_common: request_queue :ffff8108e4ca5850
+<5>(E5)[       421.000739] dd_qosctl: Registering resource instance sdm
+<5>(E5)[       421.000813] DD_IOS: dd_ios enabled for device sdm
+<5>(E5)[       421.000902] sd 1:0:11:0: [sdm] Attached scsi disk sdm at scsi1, channel 0, id 11, lun 0 TO 10s ffff8108e5335c00
+<6>(E6)[       421.003154] device-mapper: ioctl: PARAM (0 0 1 1 round-robin 0 1 1 8:192 1000)
+<6>(E6)[       421.003262] device-mapper: ioctl: TABLE_LOAD=0, (WDCWD1002FBYS-02A6B0WD-WMATV1678133)
+<4>(E4)[       421.003346] device-mapper: md @ ffff8108e601a400 dm-12 -> sdm[8:192]
+<5>(E5)[       421.005119] sd 1:0:11:0: Attached scsi generic sg12 type 0
+<6>(E6)[       421.018921] mptsas: ioc0: attaching ssp device: fw_channel 0, fw_id 12, phy 24, sas_addr 0x500a0d1000085e39
+<4>(E4)[       421.019144] MPT SAS Host can't handle SMP requests
+<6>(E6)[       421.019227]  target1:0:12: mptsas: ioc0: add device: fw_channel 0, fw_id 12, phy 24, sas_addr 0x500a0d1000085e39
+<5>(E5)[       421.019961] scsi 1:0:12:0: Enclosure         INVENTEC IB21C2 Bkplane   1.00 PQ: 0 ANSI: 3
+<4>(E4)[       421.022591] scsi1: (ffff8108e8aee800) (0/3/30000) chnl/tgt/lun 0/12/0 result 0x2, cdb 0x1a, sense 5/0x20/0x0 Retry-able
+<6>(E6)[       421.024020] setting OS mapping: sdev ffff8108e4f8e000 starget ffff8108e2047800 0x500A0D1000085E39 fw_id 12 os_id 12
+<6>(E6)[       421.024093] scsi 1:0:12:0: mptscsih: ioc0: qdepth=1, tagged=0, simple=0, ordered=0, scsi_level=4, cmd_que=0
+<5>(E5)[       421.024482] scsi 1:0:12:0: Attached scsi generic sg13 type 13
+<6>(E6)[       421.026679] ioc0: End scan
+<6>(E6)[       421.033019] mpt2sas version 09.00.00.00 loaded
+<4>(E4)[       421.166006] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<4>(E4)[       421.298387] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<4>(E4)[       421.429609] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       421.456671] disk_dump: total blocks required: 3662664 (header 3 + bitmap 296 + printk_log_blocks 256 + memory 9434905 max mm 3662109)
+<6>(E6)[       421.456745] disk_dump: Appdump block size: 524288 7
+<6>(E6)[       421.456816] disk_dump: Crashdump block size: 65536
+<6>(E6)[       421.546931] device-mapper: multipath: switched to sdb
+<4>(E4)[       421.567072] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       421.577053] mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<6>(E6)[       421.579779]  dm-1: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.644655] device-mapper: multipath: switched to sdk
+<6>(E6)[       421.648128]  dm-10: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.661603] device-mapper: multipath: switched to sdl
+<6>(E6)[       421.672833]  dm-11: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.684028] device-mapper: multipath: switched to sdm
+<6>(E6)[       421.691065]  dm-12: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.700853] device-mapper: multipath: switched to sdc
+<4>(E4)[       421.709614] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       421.719659] mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<6>(E6)[       421.743053]  dm-2: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.803505] device-mapper: multipath: switched to sdd
+<6>(E6)[       421.832593]  dm-3: p1 p2 p3 p4 <<4>mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<4>(E4)[       421.857646]  p5<6>mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<4>(E4)[       421.875847]  p6 p7 p8 >
+<6>(E6)[       421.903197] device-mapper: multipath: switched to sde
+<6>(E6)[       421.935170]  dm-4: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       421.989303] device-mapper: multipath: switched to sdf
+<4>(E4)[       421.989814] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       421.999704] mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<6>(E6)[       422.023491]  dm-5: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       422.091174] device-mapper: multipath: switched to sdg
+<6>(E6)[       422.124531]  dm-6: p1 p2 p3 p4 <<4>mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       422.140001] mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<4>(E4)[       422.145427]  p5 p6 p7 p8 >
+<6>(E6)[       422.192018] device-mapper: multipath: switched to sdh
+<6>(E6)[       422.220451]  dm-7: p1 p2 p3 p4 < p5 p6<4>mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<4>(E4)[       422.278134]  p7<6>mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<4>(E4)[       422.286386]  p8 >
+<6>(E6)[       422.293609] device-mapper: multipath: switched to sdi
+<6>(E6)[       422.320473]  dm-8: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<6>(E6)[       422.384700] device-mapper: multipath: switched to sdj
+<4>(E4)[       422.409641] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       422.419807] mptsas: ioc0: delete expander: commands pending for ioc do not delete
+<6>(E6)[       422.422529]  dm-9: p1 p2 p3 p4 < p5 p6 p7 p8 >
+<4>(E4)[       422.550199] mptsas: ioc0: WARNING - MPTSAS_DISCOVERY
+<6>(E6)[       423.260295] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       423.260308] EXT3-fs: mounted filesystem with ordered data mode.
+<5>(E5)[       423.361369] dd_pltfm: module loaded
+<4>(E4)[       423.456655] proc echo(18328) changed console loglevel via /proc to 1
+<6>(E6)[       423.461722] PRAM: no device found
+<5>(E5)[       423.480503] DD_RAID: no_spare_logic_alert=0, gateway=0
+<5>(E5)[       423.480582] DD_RAID: Initialize IOCTL log subsystem successfully.
+<5>(E5)[       423.484261] DD_RAID: Discovered 12 new SCSI devs: [dm-1 dm-2 dm-3 dm-4 dm-5 dm-6 dm-7 dm-8 dm-9 dm-10 dm-11 dm-12 ]
+<5>(E5)[       423.504259] DD_RAID: NVRAM card (116:2) (UMEM) alive.
+<5>(E5)[       423.512177] DD_RAID: Found 1 nvram cards. (1 n, 0 o, 0 na, 0 oa, 0 da)
+<5>(E5)[       423.512257] DD_RAID: dd_raid module loaded
+<5>(E5)[       423.512327] DD_RAID:
+<6>(E6)[       423.740661]  sdi: sdi1 sdi2 sdi3 sdi4 < sdi5 sdi6 sdi7 sdi8 >
+<6>(E6)[       423.764078]  sdg: sdg1 sdg2 sdg3 sdg4 < sdg5 sdg6 sdg7 sdg8 >
+<6>(E6)[       423.881553]  sdm: sdm1 sdm2 sdm3 sdm4 < sdm5 sdm6 sdm7 sdm8 >
+<6>(E6)[       423.960217]  sdb: sdb1 sdb2 sdb3 sdb4 < sdb5 sdb6 sdb7 sdb8 >
+<6>(E6)[       424.009900]  sdk: sdk1 sdk2 sdk3 sdk4 < sdk5 sdk6 sdk7 sdk8 >
+<6>(E6)[       424.092485]  sdf: sdf1 sdf2 sdf3 sdf4 < sdf5 sdf6 sdf7 sdf8 >
+<6>(E6)[       424.142982]  sdl: sdl1 sdl2 sdl3 sdl4 < sdl5 sdl6 sdl7 sdl8 >
+<6>(E6)[       424.224087]  sdh: sdh1 sdh2 sdh3 sdh4 < sdh5 sdh6 sdh7 sdh8 >
+<6>(E6)[       424.272172]  sdc: sdc1 sdc2 sdc3 sdc4 < sdc5 sdc6 sdc7 sdc8 >
+<6>(E6)[       424.371269]  sde: sde1 sde2 sde3 sde4 < sde5 sde6 sde7 sde8 >
+<6>(E6)[       424.446972]  sdj: sdj1 sdj2 sdj3 sdj4 < sdj5 sdj6 sdj7 sdj8 >
+<6>(E6)[       424.493944]  sdd: sdd1 sdd2 sdd3 sdd4 < sdd5 sdd6 sdd7 sdd8 >
+<4>(E4)[       424.876600] proc_scsidump_write: str <0
+<4>(E4)[       424.876601] > length <2l>
+<6>(E6)[       424.876753] scsi_dump: Removing all dump devices!
+<4>(E4)[       424.877038] proc_scsidump_write: str <6 6 /dev/sdi2 /dev/sdg2 /dev/sdm2 /dev/sdb2 /dev/sdk2 /dev/sdf2 /dev/sdl2 /dev/sdh2 /dev/sdc2 /dev/sde2 /dev/sdj2 /dev/sdd2
+<4>(E4)[       424.877040] > length <124l>
+<6>(E6)[       424.877370] scsi_dump: Adding dump device /dev/sdi2 (devnum 800082) as primary
+<6>(E6)[       424.877616] scsi_dump: Adding dump device /dev/sdg2 (devnum 800062) as primary
+<6>(E6)[       424.877860] scsi_dump: Adding dump device /dev/sdm2 (devnum 8000c2) as primary
+<6>(E6)[       424.878108] scsi_dump: Adding dump device /dev/sdb2 (devnum 800012) as primary
+<6>(E6)[       424.878354] scsi_dump: Adding dump device /dev/sdk2 (devnum 8000a2) as primary
+<6>(E6)[       424.878598] scsi_dump: Adding dump device /dev/sdf2 (devnum 800052) as primary
+<6>(E6)[       424.878842] scsi_dump: Adding dump device /dev/sdl2 (devnum 8000b2) as mirror
+<6>(E6)[       424.879090] scsi_dump: Adding dump device /dev/sdh2 (devnum 800072) as mirror
+<6>(E6)[       424.879335] scsi_dump: Adding dump device /dev/sdc2 (devnum 800022) as mirror
+<6>(E6)[       424.879580] scsi_dump: Adding dump device /dev/sde2 (devnum 800042) as mirror
+<6>(E6)[       424.879824] scsi_dump: Adding dump device /dev/sdj2 (devnum 800092) as mirror
+<6>(E6)[       424.880071] scsi_dump: Adding dump device /dev/sdd2 (devnum 800032) as mirror
+<6>(E6)[       424.881795] kdb configured to keyboard-only mode
+<5>(E5)[       425.006304] DD_RAID: SCAN[ty:0x3d][cd:0x3][dir:2][sz:5476][arg:0x7fff244ba8a0][pid:15249(dd_bootmodule) ppid:14536(rc.dd_boot)]
+<5>(E5)[       425.105747] DD_RAID: SCAN[ty:0x3d][cd:0x4][dir:3][sz:10396][arg:0x7fff244b8000][pid:15249(dd_bootmodule) ppid:14536(rc.dd_boot)]
+<5>(E5)[       425.205268] DD_RAID: Reassembly requested for 0xbfcca47517d1697d
+<5>(E5)[       425.271572] DD_RAID: Adding disk [57.57 dm-8p3 ath-WDCWD1002FBYS-02A6B0WD-WMATV1675029 254:131], id [faf271de4f63886c] state[2] to the spares-pool.
+<5>(E5)[       425.278559] DD_RAID:
+<5>(E5)[       425.278633] DD_RAID: Array [dg0/ppart]  [ 16486677504 sectors ]: Reassembled
+<5>(E5)[       425.278707] DD_RAID: raid_level=6, level_options=3, config_disks=11, working_disks=11
+<5>(E5)[       425.278782] DD_RAID: [dm-1p5] [dm-2p5] [dm-3p5] [dm-4p5] [dm-5p5] [dm-6p5] [dm-7p5] [dm-9p5] [dm-10p5] [dm-11p5] [dm-12p5]
+<5>(E5)[       425.279026] DD_RAID:
+<5>(E5)[       425.279098] DD_RAID: Array [dg0/ext3_1]  [ 83209544 sectors ]: Reassembled
+<5>(E5)[       425.279171] DD_RAID: raid_level=6, level_options=3, config_disks=3, working_disks=3
+<5>(E5)[       425.279243] DD_RAID: [dm-1p6] [dm-2p6] [dm-3p6]
+<5>(E5)[       425.279495] DD_RAID:
+<5>(E5)[       425.279569] DD_RAID: Array [dg0/ext3_2]  [ 83209544 sectors ]: Reassembled
+<5>(E5)[       425.279642] DD_RAID: raid_level=6, level_options=3, config_disks=3, working_disks=3
+<5>(E5)[       425.279715] DD_RAID: [dm-4p6] [dm-5p6] [dm-6p6]
+<5>(E5)[       425.279918] DD_RAID:
+<5>(E5)[       425.279989] DD_RAID: Array [dg0/ext3_3]  [ 83209544 sectors ]: Reassembled
+<5>(E5)[       425.280060] DD_RAID: raid_level=6, level_options=3, config_disks=3, working_disks=3
+<5>(E5)[       425.280131] DD_RAID: [dm-9p6] [dm-10p6] [dm-11p6]
+<5>(E5)[       425.392942] DD_RAID: Array [dg0/ppart]: recovering log stripes...
+<4>(E4)[       425.406942] WARN: dd_perf.c:240 dd_perf_register_name:: PErf name [dd_sys_vfy_all_rigid_nofix_graph] is too long, truncated
+<5>(E5)[       425.408034] DD_RAID: Array [dg0/ppart]: done recovering log stripes [valid = 0].
+<5>(E5)[       425.492841] DD_RAID: Array [dg0/ppart]: Started [maj=61,grp=0,arr=1] active.
+<5>(E5)[       425.493664] DD_RAID: Array [dg0/ext3_1]: recovering log stripes...
+<5>(E5)[       425.493969] DD_RAID: Array [dg0/ext3_1]: done recovering log stripes [valid = 0].
+<5>(E5)[       425.593745] DD_RAID: Array [dg0/ext3_1]: Started [maj=61,grp=0,arr=2] active.
+<5>(E5)[       425.594467] DD_RAID: Array [dg0/ext3_2]: recovering log stripes...
+<5>(E5)[       425.594766] DD_RAID: Array [dg0/ext3_2]: done recovering log stripes [valid = 0].
+<5>(E5)[       425.693739] DD_RAID: Array [dg0/ext3_2]: Started [maj=61,grp=0,arr=3] active.
+<5>(E5)[       425.694614] DD_RAID: Array [dg0/ext3_3]: recovering log stripes...
+<5>(E5)[       425.694904] DD_RAID: Array [dg0/ext3_3]: done recovering log stripes [valid = 0].
+<5>(E5)[       425.794637] DD_RAID: Array [dg0/ext3_3]: Started [maj=61,grp=0,arr=4] active.
+<5>(E5)[       425.795631] DD_RAID:
+<5>(E5)[       425.795705] DD_RAID: Array [dg0/ext3]  [ 249628416 sectors ]: Reassembled
+<5>(E5)[       425.795779] DD_RAID: raid_level=0, level_options=0, config_disks=3, working_disks=3
+<5>(E5)[       425.795853] DD_RAID: [dd_dg0_2] [dd_dg0_3] [dd_dg0_4]
+<5>(E5)[       426.009535] DD_RAID: Array [dg0/ext3]: Started [maj=61,grp=0,arr=0] active.
+<6>(E6)[       426.009637]  dd_dg0_0: p1 < p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 > p4
+<5>(E5)[       426.165128] DD_RAID: Looking for area with UUID 0xbfcca47517d1697d, seq from 0 to 281
+<5>(E5)[       426.187294] DD_RAID: Found 1 nvram cards. (0 n, 1 o, 0 na, 0 oa, 0 da)
+<4>(E4)[       426.187372] WARN: dd_nvlog.c:834 dd_nvlog_replay:: NVLOG area not found for dgrp uuid 0xbfcca47517d1697d, seq_nr between 0 and 281
+<5>(E5)[       426.187493] DD_RAID: Diskgroup [dg0] nvlog replay return status [0x3c0d0c02]
+<5>(E5)[       426.187565] DEBUG: dd_dgrp.c:7906 dd_dgrp_sync_timer_start:: dg0 sync timer started.
+<5>(E5)[       426.316397] DD_RAID:
+<5>(E5)[       426.316469] DD_RAID: DiskGroup [dg0]: Reassembled
+<5>(E5)[       426.316539] DD_RAID: max_allowed_failures=2, config_disks=11, working_disks=11
+<5>(E5)[       426.316611] DD_RAID: [[dm-1p3] [dm-2p3] [dm-3p3] [dm-4p3] [dm-5p3] [dm-6p3] [dm-7p3] [dm-9p3] [dm-10p3] [dm-11p3] [dm-12p3] ]
+<5>(E5)[       426.317297] DD_RAID:
+<5>(E5)[       426.317371] DD_RAID: Array [mg0/ppart]  [ 16486677504 sectors ]: Created
+<5>(E5)[       426.317444] DD_RAID: raid_level=100, level_options=0, config_disks=1, working_disks=1
+<5>(E5)[       426.317517] DD_RAID: [dd_dg0_1]
+<5>(E5)[       426.317599] DD_RAID: Array [mg0/ppart]: Started [maj=61,grp=1,arr=0] active.
+<5>(E5)[       426.318124] DD_RAID:
+<5>(E5)[       426.318198] DD_RAID: MetaGroup [mg0]: is fully functional
+<5>(E5)[       426.318273] DD_RAID:
+<5>(E5)[       426.318344] DD_RAID: MetaGroup [mg0][0xbfcca47517d1697d] Created
+<5>(E5)[       426.318415] DD_RAID:
+<5>(E5)[       426.435548] DD_RAID: Dgrp dg0 is not using nvlog.
+<5>(E5)[       426.435623] DEBUG: dd_dgrp.c:7899 dd_dgrp_sync_timer_start:: dg0 already enabled.
+<6>(E6)[       431.605794] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       431.619016] EXT3 FS on dd_dg0_0p13, internal journal
+<6>(E6)[       431.619162] EXT3-fs: recovery complete.
+<6>(E6)[       431.627739] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       431.852659] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       431.860590] EXT3 FS on dd_dg0_0p13, internal journal
+<6>(E6)[       431.860770] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       432.008571] ehci_hcd 0000:00:1d.7: remove, state 1
+<6>(E6)[       432.008648] usb usb2: USB disconnect, address 1
+<6>(E6)[       432.008752] usb 2-3: USB disconnect, address 2
+<5>(E5)[       432.009322] sd 0:0:0:0: [sda] Removing scsi disk sda mp=0000000000000000
+<5>(E5)[       432.009686] DD_IOS: dd_ios disabled for device sda
+<6>(E6)[       432.021227] ehci_hcd 0000:00:1d.7: USB bus 2 deregistered
+<6>(E6)[       432.023412] ACPI: PCI interrupt for device 0000:00:1d.7 disabled
+<6>(E6)[       432.023495] ehci_hcd 0000:00:1a.7: remove, state 1
+<6>(E6)[       432.023568] usb usb1: USB disconnect, address 1
+<6>(E6)[       432.023638] usb 1-3: USB disconnect, address 2
+<6>(E6)[       432.023708] usb 1-3.1: USB disconnect, address 3
+<6>(E6)[       432.065029] ehci_hcd 0000:00:1a.7: USB bus 1 deregistered
+<6>(E6)[       432.067198] ACPI: PCI interrupt for device 0000:00:1a.7 disabled
+<6>(E6)[       432.068769] uhci_hcd 0000:00:1d.2: remove, state 1
+<6>(E6)[       432.068842] usb usb8: USB disconnect, address 1
+<6>(E6)[       432.068912] usb 8-1: USB disconnect, address 2
+<6>(E6)[       432.101561] uhci_hcd 0000:00:1d.2: USB bus 8 deregistered
+<6>(E6)[       432.102115] ACPI: PCI interrupt for device 0000:00:1d.2 disabled
+<6>(E6)[       432.102197] uhci_hcd 0000:00:1d.1: remove, state 1
+<6>(E6)[       432.102271] usb usb7: USB disconnect, address 1
+<6>(E6)[       432.107089] uhci_hcd 0000:00:1d.1: USB bus 7 deregistered
+<6>(E6)[       432.109123] ACPI: PCI interrupt for device 0000:00:1d.1 disabled
+<6>(E6)[       432.109205] uhci_hcd 0000:00:1d.0: remove, state 1
+<6>(E6)[       432.109279] usb usb6: USB disconnect, address 1
+<6>(E6)[       432.110975] uhci_hcd 0000:00:1d.0: USB bus 6 deregistered
+<6>(E6)[       432.111123] ACPI: PCI interrupt for device 0000:00:1d.0 disabled
+<6>(E6)[       432.111203] uhci_hcd 0000:00:1a.2: remove, state 1
+<6>(E6)[       432.111276] usb usb5: USB disconnect, address 1
+<6>(E6)[       432.115137] uhci_hcd 0000:00:1a.2: USB bus 5 deregistered
+<6>(E6)[       432.115268] ACPI: PCI interrupt for device 0000:00:1a.2 disabled
+<6>(E6)[       432.115355] uhci_hcd 0000:00:1a.1: remove, state 1
+<6>(E6)[       432.115428] usb usb4: USB disconnect, address 1
+<6>(E6)[       432.118627] uhci_hcd 0000:00:1a.1: USB bus 4 deregistered
+<6>(E6)[       432.119092] ACPI: PCI interrupt for device 0000:00:1a.1 disabled
+<6>(E6)[       432.119172] uhci_hcd 0000:00:1a.0: remove, state 1
+<6>(E6)[       432.119246] usb usb3: USB disconnect, address 1
+<6>(E6)[       432.124228] uhci_hcd 0000:00:1a.0: USB bus 3 deregistered
+<6>(E6)[       432.124443] ACPI: PCI interrupt for device 0000:00:1a.0 disabled
+<6>(E6)[       432.127372] usbcore: deregistering interface driver usbhid
+<6>(E6)[       432.129690] usbcore: deregistering interface driver usb-storage
+<6>(E6)[       432.130137] usbcore: deregistering device driver usb
+<6>(E6)[       432.130275] usbcore: deregistering interface driver usbfs
+<6>(E6)[       432.130410] usbcore: deregistering interface driver hub
+<6>(E6)[       432.245551] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       432.255445] EXT3 FS on dd_dg0_0p13, internal journal
+<6>(E6)[       432.255592] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       432.462754] EXT3-fs: INFO: recovery required on readonly filesystem.
+<6>(E6)[       432.462828] EXT3-fs: write access will be enabled during recovery.
+<6>(E6)[       432.645340] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       432.645353] EXT3-fs: recovery complete.
+<6>(E6)[       432.663307] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       435.726307] usbcore: registered new interface driver usbfs
+<6>(E6)[       435.726462] usbcore: registered new interface driver hub
+<6>(E6)[       435.726642] usbcore: registered new device driver usb
+<4>(E4)[       435.848840] proc dmesg(20176) changed console loglevel to 3 via syslog()
+<6>(E6)[       438.259215] USB Universal Host Controller Interface driver v3.0
+<6>(E6)[       438.259358] ACPI: PCI Interrupt 0000:00:1a.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       438.259510] PCI: Setting latency timer of device 0000:00:1a.0 to 64
+<6>(E6)[       438.259584] uhci_hcd 0000:00:1a.0: UHCI Host Controller
+<6>(E6)[       438.259994] uhci_hcd 0000:00:1a.0: new USB bus registered, assigned bus number 1
+<6>(E6)[       438.260091] uhci_hcd 0000:00:1a.0: irq 16, io base 0x00007c00
+<6>(E6)[       438.260273] usb usb1: configuration #1 chosen from 1 choice
+<6>(E6)[       438.260375] hub 1-0:1.0: USB hub found
+<6>(E6)[       438.260456] hub 1-0:1.0: 2 ports detected
+<6>(E6)[       438.361374] ACPI: PCI Interrupt 0000:00:1a.1[B] -> GSI 21 (level, low) -> IRQ 21
+<7>(E7)[       438.361522] PCI: Setting latency timer of device 0000:00:1a.1 to 64
+<6>(E6)[       438.361594] uhci_hcd 0000:00:1a.1: UHCI Host Controller
+<6>(E6)[       438.361681] uhci_hcd 0000:00:1a.1: new USB bus registered, assigned bus number 2
+<6>(E6)[       438.361772] uhci_hcd 0000:00:1a.1: irq 21, io base 0x00007880
+<6>(E6)[       438.361906] usb usb2: configuration #1 chosen from 1 choice
+<6>(E6)[       438.361991] hub 2-0:1.0: USB hub found
+<6>(E6)[       438.362064] hub 2-0:1.0: 2 ports detected
+<6>(E6)[       438.462344] ACPI: PCI Interrupt 0000:00:1a.2[D] -> GSI 19 (level, low) -> IRQ 19
+<7>(E7)[       438.462490] PCI: Setting latency timer of device 0000:00:1a.2 to 64
+<6>(E6)[       438.462561] uhci_hcd 0000:00:1a.2: UHCI Host Controller
+<6>(E6)[       438.462645] uhci_hcd 0000:00:1a.2: new USB bus registered, assigned bus number 3
+<6>(E6)[       438.462736] uhci_hcd 0000:00:1a.2: irq 19, io base 0x00007800
+<6>(E6)[       438.462865] usb usb3: configuration #1 chosen from 1 choice
+<6>(E6)[       438.462949] hub 3-0:1.0: USB hub found
+<6>(E6)[       438.463021] hub 3-0:1.0: 2 ports detected
+<6>(E6)[       438.563264] ACPI: PCI Interrupt 0000:00:1d.0[A] -> GSI 23 (level, low) -> IRQ 23
+<7>(E7)[       438.563410] PCI: Setting latency timer of device 0000:00:1d.0 to 64
+<6>(E6)[       438.563481] uhci_hcd 0000:00:1d.0: UHCI Host Controller
+<6>(E6)[       438.563565] uhci_hcd 0000:00:1d.0: new USB bus registered, assigned bus number 4
+<6>(E6)[       438.563655] uhci_hcd 0000:00:1d.0: irq 23, io base 0x00007480
+<6>(E6)[       438.563785] usb usb4: configuration #1 chosen from 1 choice
+<6>(E6)[       438.563869] hub 4-0:1.0: USB hub found
+<6>(E6)[       438.563941] hub 4-0:1.0: 2 ports detected
+<6>(E6)[       438.664284] ACPI: PCI Interrupt 0000:00:1d.1[B] -> GSI 19 (level, low) -> IRQ 19
+<7>(E7)[       438.664444] PCI: Setting latency timer of device 0000:00:1d.1 to 64
+<6>(E6)[       438.664516] uhci_hcd 0000:00:1d.1: UHCI Host Controller
+<6>(E6)[       438.664599] uhci_hcd 0000:00:1d.1: new USB bus registered, assigned bus number 5
+<6>(E6)[       438.664687] uhci_hcd 0000:00:1d.1: irq 19, io base 0x00007400
+<6>(E6)[       438.664815] usb usb5: configuration #1 chosen from 1 choice
+<6>(E6)[       438.664899] hub 5-0:1.0: USB hub found
+<6>(E6)[       438.664971] hub 5-0:1.0: 2 ports detected
+<6>(E6)[       438.668239] usb 2-1: new full speed USB device using uhci_hcd and address 2
+<6>(E6)[       438.765259] ACPI: PCI Interrupt 0000:00:1d.2[C] -> GSI 18 (level, low) -> IRQ 18
+<7>(E7)[       438.765408] PCI: Setting latency timer of device 0000:00:1d.2 to 64
+<6>(E6)[       438.765479] uhci_hcd 0000:00:1d.2: UHCI Host Controller
+<6>(E6)[       438.765563] uhci_hcd 0000:00:1d.2: new USB bus registered, assigned bus number 6
+<6>(E6)[       438.765653] uhci_hcd 0000:00:1d.2: irq 18, io base 0x00007080
+<6>(E6)[       438.765780] usb usb6: configuration #1 chosen from 1 choice
+<6>(E6)[       438.765865] hub 6-0:1.0: USB hub found
+<6>(E6)[       438.765937] hub 6-0:1.0: 2 ports detected
+<6>(E6)[       438.866240] ACPI: PCI Interrupt 0000:00:1a.7[C] -> GSI 18 (level, low) -> IRQ 18
+<6>(E6)[       438.868176] usb 2-1: configuration #1 chosen from 1 choice
+<7>(E7)[       438.868383] PCI: Setting latency timer of device 0000:00:1a.7 to 64
+<6>(E6)[       438.868459] ehci_hcd 0000:00:1a.7: EHCI Host Controller
+<6>(E6)[       438.868561] ehci_hcd 0000:00:1a.7: new USB bus registered, assigned bus number 7
+<6>(E6)[       438.868650] ehci_hcd 0000:00:1a.7: debug port 1
+<7>(E7)[       438.868723] PCI: cache line size of 32 is not supported by device 0000:00:1a.7
+<6>(E6)[       438.868797] ehci_hcd 0000:00:1a.7: irq 18, io mem 0xf7bde000
+<6>(E6)[       438.870662] hub 2-1:1.0: USB hub found
+<6>(E6)[       438.872630] hub 2-1:1.0: 3 ports detected
+<3>(E3)[       438.873632] hub 2-1:1.0: config failed, can't get hub status (err -75)
+<6>(E6)[       438.875675] usb 2-1: USB disconnect, address 2
+<6>(E6)[       438.878043] ehci_hcd 0000:00:1a.7: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
+<6>(E6)[       438.878189] usb usb7: configuration #1 chosen from 1 choice
+<6>(E6)[       438.878281] hub 7-0:1.0: USB hub found
+<6>(E6)[       438.878356] hub 7-0:1.0: 6 ports detected
+<6>(E6)[       438.979129] ACPI: PCI Interrupt 0000:00:1d.7[A] -> GSI 23 (level, low) -> IRQ 23
+<7>(E7)[       438.981225] PCI: Setting latency timer of device 0000:00:1d.7 to 64
+<6>(E6)[       438.981301] ehci_hcd 0000:00:1d.7: EHCI Host Controller
+<6>(E6)[       438.981400] ehci_hcd 0000:00:1d.7: new USB bus registered, assigned bus number 8
+<6>(E6)[       438.981490] ehci_hcd 0000:00:1d.7: debug port 1
+<7>(E7)[       438.981563] PCI: cache line size of 32 is not supported by device 0000:00:1d.7
+<6>(E6)[       438.981637] ehci_hcd 0000:00:1d.7: irq 23, io mem 0xf7bdc000
+<6>(E6)[       438.990984] ehci_hcd 0000:00:1d.7: USB 2.0 started, EHCI 1.00, driver 10 Dec 2004
+<6>(E6)[       438.991126] usb usb8: configuration #1 chosen from 1 choice
+<6>(E6)[       438.991212] hub 8-0:1.0: USB hub found
+<6>(E6)[       438.991286] hub 8-0:1.0: 6 ports detected
+<6>(E6)[       439.420827] usb 7-3: new high speed USB device using ehci_hcd and address 2
+<3>(E3)[       439.534789] usb 7-3: device descriptor read/64, error -71
+<4>(E4)[       439.772245] usb 7-3: config 1 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 255, changing to 11
+<6>(E6)[       439.773132] usb 7-3: configuration #1 chosen from 1 choice
+<6>(E6)[       439.773635] hub 7-3:1.0: USB hub found
+<6>(E6)[       439.773874] hub 7-3:1.0: 3 ports detected
+<6>(E6)[       440.081497] usb 8-3: new high speed USB device using ehci_hcd and address 2
+<6>(E6)[       440.197544] usb 8-3: configuration #1 chosen from 1 choice
+<6>(E6)[       440.243862] Initializing USB Mass Storage driver...
+<6>(E6)[       440.518529] usb 7-3.1: new high speed USB device using ehci_hcd and address 3
+<6>(E6)[       440.605547] usb 7-3.1: configuration #1 chosen from 1 choice
+<6>(E6)[       440.607271] scsi2 : SCSI emulation for USB Mass Storage devices
+<7>(E7)[       440.607502] usb-storage: device found at 2
+<6>(E6)[       440.607509] usbcore: registered new interface driver usb-storage
+<6>(E6)[       440.607511] USB Mass Storage support registered.
+<7>(E7)[       440.607713] usb-storage: waiting for device to settle before scanning
+<6>(E6)[       440.813165] usb 6-1: new low speed USB device using uhci_hcd and address 2
+<6>(E6)[       440.976495] usb 6-1: configuration #1 chosen from 1 choice
+<6>(E6)[       441.006456] input: American Megatrends Inc. Virtual Keyboard and Mouse as /class/input/input6
+<6>(E6)[       441.019048] input: USB HID v1.10 Keyboard [American Megatrends Inc. Virtual Keyboard and Mouse] on usb-0000:00:1a.7-3.1
+<6>(E6)[       441.020030] input: American Megatrends Inc. Virtual Keyboard and Mouse as /class/input/input7
+<6>(E6)[       441.030041] input: USB HID v1.10 Mouse [American Megatrends Inc. Virtual Keyboard and Mouse] on usb-0000:00:1a.7-3.1
+<6>(E6)[       441.044492] input: Avocent USB DSRIQ as /class/input/input8
+<6>(E6)[       441.055062] input: USB HID v1.10 Keyboard [Avocent USB DSRIQ] on usb-0000:00:1d.2-1
+<6>(E6)[       441.075509] input: Avocent USB DSRIQ as /class/input/input9
+<6>(E6)[       441.088984] input: USB HID v1.10 Mouse [Avocent USB DSRIQ] on usb-0000:00:1d.2-1
+<6>(E6)[       441.089204] usbcore: registered new interface driver usbhid
+<6>(E6)[       441.089214] usbcore: registered new interface driver usbkbd
+<6>(E6)[       441.089218] /auto/builds/5.5/443488/os/linux-2.6.23/drivers/hid/usbhid/usbkbd.c: :USB HID Boot Protocol keyboard driver
+<6>(E6)[       441.089449] /auto/builds/5.5/443488/os/linux-2.6.23/drivers/hid/usbhid/hid-core.c: v2.6:USB HID core driver
+<4>(E4)[       445.605347] scsi 2:0:0:0 SerialNo:
+<5>(E5)[       445.606883] scsi 2:0:0:0: Direct-Access     USB TO I DE/SATA Device   0041 PQ: 0 ANSI: 0
+<4>(E4)[       445.607918] scsi2: (ffff8108e38c3100) (0/5/10000) chnl/tgt/lun 0/0/0 result 0x2, cdb 0x00, sense 2/0x3a/0x0 Retry-able
+<6>(E6)[       445.608030] Disk:sda switching elevator to dd_iosched!
+<4>(E4)[       445.608102] dd_ios_init_queue_common: request_queue :ffff8108e8408038
+<5>(E5)[       445.608196] dd_qosctl: Registering resource instance sda
+<5>(E5)[       445.608267] DD_IOS: dd_ios enabled for device sda
+<5>(E5)[       445.608347] sd 2:0:0:0: [sda] Attached scsi disk sda at scsi2, channel 0, id 0, lun 0 TO 10s ffff8108e66fa800
+<4>(E4)[       445.608418] device-mapper: ioctl: sd 2:0:0:0 has no UUID
+<5>(E5)[       445.608514] sd 2:0:0:0: Attached scsi generic sg0 type 0
+<7>(E7)[       445.608893] usb-storage: device scan complete
+<6>(E6)[       514.876258] EXT3 FS on dd_dg0_0p15, internal journal
+<6>(E6)[       514.927895] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       514.932061] EXT3 FS on dd_dg0_0p14, internal journal
+<6>(E6)[       514.932212] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       514.986857] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       514.997748] EXT3 FS on dd_dg0_0p13, internal journal
+<6>(E6)[       514.997928] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       521.712875] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       521.720859] EXT3 FS on dd_dg0_0p7, internal journal
+<6>(E6)[       521.721001] EXT3-fs: recovery complete.
+<6>(E6)[       521.730825] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       522.414808] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       522.449323] EXT3 FS on dm-10p1, internal journal
+<6>(E6)[       522.449472] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       540.158739] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       540.190175] EXT3 FS on dm-9p1, internal journal
+<6>(E6)[       540.190322] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       541.601008] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       541.607478] EXT3 FS on dm-8p1, internal journal
+<6>(E6)[       541.607625] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       542.980913] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       542.990886] EXT3 FS on dm-7p1, internal journal
+<6>(E6)[       542.991033] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       544.324307] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       544.330119] EXT3 FS on dm-6p1, internal journal
+<6>(E6)[       544.330266] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       545.728581] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       545.739155] EXT3 FS on dm-5p1, internal journal
+<6>(E6)[       545.739302] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       547.184683] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       547.194597] EXT3 FS on dm-4p1, internal journal
+<6>(E6)[       547.194744] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       548.562304] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       548.566618] EXT3 FS on dm-3p1, internal journal
+<6>(E6)[       548.566797] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       550.028880] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       550.038472] EXT3 FS on dm-2p1, internal journal
+<6>(E6)[       550.038617] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       551.420027] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       551.430691] EXT3 FS on dm-12p1, internal journal
+<6>(E6)[       551.430837] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       552.801400] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       552.805122] EXT3 FS on dm-11p1, internal journal
+<6>(E6)[       552.805267] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       554.210195] kjournald starting.  Commit interval 5 seconds
+<6>(E6)[       554.215828] EXT3 FS on dm-1p1, internal journal
+<6>(E6)[       554.215975] EXT3-fs: mounted filesystem with ordered data mode.
+<6>(E6)[       560.761671] 802.1Q VLAN Support v1.8 Ben Greear <greearb@candelatech.com>
+<6>(E6)[       560.761743] All bugs added by David S. Miller <davem@redhat.com>
+<6>(E6)[       569.371180] NET: Registered protocol family 10
+<6>(E6)[       569.371430] lo: Disabled Privacy Extensions
+<6>(E6)[       569.508190] Adding 12582904k swap on /dev/dd_dg0_0p6.  Priority:-1 extents:1 across:12582904k
+<7>(E7)[       569.566111] Set less_throttle on syslogd, flags=0x500000
+<4>(E4)[       569.624203] proc klogd(24949) changed console loglevel to 1 via syslog()
+<4>(E4)[       569.624363] proc klogd(24949) changed console loglevel to minimum
+<6>(E6)[       571.656860] Intel(R) Gigabit Ethernet Network Driver - version 2.4.12
+<6>(E6)[       571.656932] Copyright (c) 2007-2010 Intel Corporation.
+<6>(E6)[       571.657064] ACPI: PCI Interrupt 0000:01:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       571.657223] PCI: Setting latency timer of device 0000:01:00.0 to 64
+<6>(E6)[       571.830246] igb 0000:01:00.0: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       571.830320] igb 0000:01:00.0: eth0: (PCIe:2.5Gb/s:Width x2) 00:a0:d1:e3:df:24
+<6>(E6)[       571.830880] igb 0000:01:00.0: eth0: PBA No: A22240-001
+<6>(E6)[       571.830950] igb 0000:01:00.0: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       571.831040] ACPI: PCI Interrupt 0000:01:00.1[B] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       571.831198] PCI: Setting latency timer of device 0000:01:00.1 to 64
+<6>(E6)[       572.005951] igb 0000:01:00.1: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       572.006024] igb 0000:01:00.1: eth1: (PCIe:2.5Gb/s:Width x2) 00:a0:d1:e3:df:25
+<6>(E6)[       572.006617] igb 0000:01:00.1: eth1: PBA No: A22240-001
+<6>(E6)[       572.006687] igb 0000:01:00.1: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       572.006785] ACPI: PCI Interrupt 0000:10:00.0[A] -> GSI 18 (level, low) -> IRQ 18
+<7>(E7)[       572.006945] PCI: Setting latency timer of device 0000:10:00.0 to 64
+<6>(E6)[       572.199815] igb 0000:10:00.0: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       572.199888] igb 0000:10:00.0: eth2: (PCIe:2.5Gb/s:Width x4) 00:1b:21:7f:d7:fc
+<6>(E6)[       572.200448] igb 0000:10:00.0: eth2: PBA No: E91609-003
+<6>(E6)[       572.200518] igb 0000:10:00.0: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       572.200611] ACPI: PCI Interrupt 0000:10:00.1[B] -> GSI 19 (level, low) -> IRQ 19
+<7>(E7)[       572.200773] PCI: Setting latency timer of device 0000:10:00.1 to 64
+<6>(E6)[       572.393771] igb 0000:10:00.1: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       572.393844] igb 0000:10:00.1: eth3: (PCIe:2.5Gb/s:Width x4) 00:1b:21:7f:d7:fd
+<6>(E6)[       572.394404] igb 0000:10:00.1: eth3: PBA No: E91609-003
+<6>(E6)[       572.394475] igb 0000:10:00.1: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       572.394566] ACPI: PCI Interrupt 0000:11:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       572.394726] PCI: Setting latency timer of device 0000:11:00.0 to 64
+<6>(E6)[       572.587678] igb 0000:11:00.0: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       572.587752] igb 0000:11:00.0: eth4: (PCIe:2.5Gb/s:Width x4) 00:1b:21:7f:d7:fe
+<6>(E6)[       572.588344] igb 0000:11:00.0: eth4: PBA No: E91609-003
+<6>(E6)[       572.588418] igb 0000:11:00.0: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       572.588508] ACPI: PCI Interrupt 0000:11:00.1[B] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       572.588668] PCI: Setting latency timer of device 0000:11:00.1 to 64
+<6>(E6)[       572.781598] igb 0000:11:00.1: Intel(R) Gigabit Ethernet Network Connection
+<6>(E6)[       572.781671] igb 0000:11:00.1: eth5: (PCIe:2.5Gb/s:Width x4) 00:1b:21:7f:d7:ff
+<6>(E6)[       572.782231] igb 0000:11:00.1: eth5: PBA No: E91609-003
+<6>(E6)[       572.782301] igb 0000:11:00.1: Using MSI-X interrupts. 1 rx queue(s), 1 tx queue(s)
+<6>(E6)[       572.817241] DD_LRO: DataDomain Large Receiving Offload, v0.0.1 loaded
+<6>(E6)[       573.197548] Intel(R) 10 Gigabit PCI Express Network Driver - version 3.2.9-NAPI
+<6>(E6)[       573.197622] Copyright (c) 1999-2010 Intel Corporation.
+<6>(E6)[       573.197734] ACPI: PCI Interrupt 0000:05:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       573.197986] PCI: Setting latency timer of device 0000:05:00.0 to 64
+<6>(E6)[       573.314378] ixgbe: 0000:05:00.0: ixgbe_check_options: Flow Director hash filtering enabled
+<6>(E6)[       573.314450] ixgbe: 0000:05:00.0: ixgbe_check_options: Flow Director allocated 64kB of packet buffer
+<6>(E6)[       573.314521] ixgbe: 0000:05:00.0: ixgbe_check_options: ATR Tx Packet sample rate set to default of 20
+<6>(E6)[       573.341222] ixgbe: 0000:05:00.0: ixgbe_init_interrupt_scheme: Multiqueue Enabled: Rx Queue count = 8, Tx Queue count = 8
+<6>(E6)[       573.342134] ixgbe: eth6: ixgbe_probe: (PCI Express:5.0Gb/s:Width x8) 00:1b:21:44:04:58
+<6>(E6)[       573.342699] ixgbe: eth6: ixgbe_probe: MAC: 2, PHY: 15, SFP+: 5, PBA No: E70854-004
+<6>(E6)[       573.342770] ixgbe: eth6: ixgbe_probe: LRO is disabled
+<6>(E6)[       573.342840] ixgbe: eth6: ixgbe_probe: HW RSC is enabled
+<6>(E6)[       573.342910] ixgbe: eth6: ixgbe_probe: Intel(R) 10 Gigabit Network Connection
+<6>(E6)[       573.342996] ACPI: PCI Interrupt 0000:05:00.1[B] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       573.343239] PCI: Setting latency timer of device 0000:05:00.1 to 64
+<6>(E6)[       573.453341] ixgbe: 0000:05:00.1: ixgbe_check_options: Flow Director hash filtering enabled
+<6>(E6)[       573.453413] ixgbe: 0000:05:00.1: ixgbe_check_options: Flow Director allocated 64kB of packet buffer
+<6>(E6)[       573.453484] ixgbe: 0000:05:00.1: ixgbe_check_options: ATR Tx Packet sample rate set to default of 20
+<6>(E6)[       573.480077] ixgbe: 0000:05:00.1: ixgbe_init_interrupt_scheme: Multiqueue Enabled: Rx Queue count = 8, Tx Queue count = 8
+<6>(E6)[       573.480976] ixgbe: eth7: ixgbe_probe: (PCI Express:5.0Gb/s:Width x8) 00:1b:21:44:04:59
+<6>(E6)[       573.481542] ixgbe: eth7: ixgbe_probe: MAC: 2, PHY: 15, SFP+: 6, PBA No: E70854-004
+<6>(E6)[       573.481613] ixgbe: eth7: ixgbe_probe: LRO is disabled
+<6>(E6)[       573.481683] ixgbe: eth7: ixgbe_probe: HW RSC is enabled
+<6>(E6)[       573.481786] ixgbe: eth7: ixgbe_probe: Intel(R) 10 Gigabit Network Connection
+<6>(E6)[       573.481873] ACPI: PCI Interrupt 0000:07:00.0[A] -> GSI 16 (level, low) -> IRQ 16
+<7>(E7)[       573.482096] PCI: Setting latency timer of device 0000:07:00.0 to 64
+<6>(E6)[       573.592356] ixgbe: 0000:07:00.0: ixgbe_check_options: Flow Director hash filtering enabled
+<6>(E6)[       573.592428] ixgbe: 0000:07:00.0: ixgbe_check_options: Flow Director allocated 64kB of packet buffer
+<6>(E6)[       573.592500] ixgbe: 0000:07:00.0: ixgbe_check_options: ATR Tx Packet sample rate set to default of 20
+<6>(E6)[       573.619259] ixgbe: 0000:07:00.0: ixgbe_init_interrupt_scheme: Multiqueue Enabled: Rx Queue count = 8, Tx Queue count = 8
+<6>(E6)[       573.620093] ixgbe: eth8: ixgbe_probe: (PCI Express:5.0Gb/s:Width x8) 00:1b:21:44:04:e4
+<6>(E6)[       573.620691] ixgbe: eth8: ixgbe_probe: MAC: 2, PHY: 15, SFP+: 5, PBA No: E70854-004
+<6>(E6)[       573.620762] ixgbe: eth8: ixgbe_probe: LRO is disabled
+<6>(E6)[       573.620832] ixgbe: eth8: ixgbe_probe: HW RSC is enabled
+<6>(E6)[       573.620938] ixgbe: eth8: ixgbe_probe: Intel(R) 10 Gigabit Network Connection
+<6>(E6)[       573.621025] ACPI: PCI Interrupt 0000:07:00.1[B] -> GSI 17 (level, low) -> IRQ 17
+<7>(E7)[       573.621261] PCI: Setting latency timer of device 0000:07:00.1 to 64
+<6>(E6)[       573.731273] ixgbe: 0000:07:00.1: ixgbe_check_options: Flow Director hash filtering enabled
+<6>(E6)[       573.731345] ixgbe: 0000:07:00.1: ixgbe_check_options: Flow Director allocated 64kB of packet buffer
+<6>(E6)[       573.731417] ixgbe: 0000:07:00.1: ixgbe_check_options: ATR Tx Packet sample rate set to default of 20
+<6>(E6)[       573.758307] ixgbe: 0000:07:00.1: ixgbe_init_interrupt_scheme: Multiqueue Enabled: Rx Queue count = 8, Tx Queue count = 8
+<6>(E6)[       573.759141] ixgbe: eth9: ixgbe_probe: (PCI Express:5.0Gb/s:Width x8) 00:1b:21:44:04:e5
+<6>(E6)[       573.759811] ixgbe: eth9: ixgbe_probe: MAC: 2, PHY: 15, SFP+: 6, PBA No: E70854-004
+<6>(E6)[       573.759884] ixgbe: eth9: ixgbe_probe: LRO is disabled
+<6>(E6)[       573.759955] ixgbe: eth9: ixgbe_probe: HW RSC is enabled
+<6>(E6)[       573.760025] ixgbe: eth9: ixgbe_probe: Intel(R) 10 Gigabit Network Connection
+<4>(E4)[       573.941086] proc sh(25127) changed console loglevel via /proc to 1
+<4>(E4)[       574.459471] proc sh(25140) changed console loglevel via /proc to 1
+<4>(E4)[       574.486815] proc sh(25142) changed console loglevel via /proc to 1
+<4>(E4)[       574.919104] proc sh(25155) changed console loglevel via /proc to 1
+<4>(E4)[       574.923029] proc sh(25157) changed console loglevel via /proc to 1
+<4>(E4)[       575.386369] proc sh(25170) changed console loglevel via /proc to 1
+<6>(E6)[       577.797619] Fusion MPT misc device (ioctl) driver 4.00.21.00
+<6>(E6)[       577.797710] mptctl: Registered with Fusion MPT base driver
+<6>(E6)[       577.797780] mptctl: /dev/mptctl @ (major,minor=10,220)
+<4>(E4)[       585.273546] proc S99local(26288) changed console loglevel via /proc to 3
+<4>(E4)[       585.353673] MCE:Disabling CMCI
+<6>(E6)[       613.100770] disk_dump: starting a minidump by user request...
+<4>(E4)[       613.100842] do_minidump
+<4>(E4)[       613.100912] reg_async (26305) reg_async is not ddfs
+<4>(E4)[       613.115660] elf_core_dump: pid reg_async(26305) leader reg_async is taking core
+<4>(E4)[       613.180134] elf_core_dump: pid reg_async(26305) leader reg_async core is finished
+<6>(E6)[       640.293974] disk_dump: starting a minidump by user request...
+<4>(E4)[       640.294047] do_minidump
+<4>(E4)[       640.294117] reg_async (26379) reg_async is not ddfs
+<4>(E4)[       640.294355] elf_core_dump: pid reg_async(26379) leader reg_async is taking core
+<4>(E4)[       640.365083] elf_core_dump: pid reg_async(26379) leader reg_async core is finished
+<6>(E6)[       667.420456] disk_dump: starting a minidump by user request...
+<4>(E4)[       667.420528] do_minidump
+<4>(E4)[       667.420598] reg_async (26409) reg_async is not ddfs
+<4>(E4)[       667.421091] elf_core_dump: pid reg_async(26409) leader reg_async is taking core
+<4>(E4)[       667.481765] elf_core_dump: pid reg_async(26409) leader reg_async core is finished
+<6>(E6)[       694.537055] disk_dump: starting a minidump by user request...
+<4>(E4)[       694.537160] do_minidump
+<4>(E4)[       694.537230] reg_async (26426) reg_async is not ddfs
+<4>(E4)[       694.537444] elf_core_dump: pid reg_async(26426) leader reg_async is taking core
+<4>(E4)[       694.596611] elf_core_dump: pid reg_async(26426) leader reg_async core is finished
+<6>(E6)[       721.652570] disk_dump: starting a minidump by user request...
+<4>(E4)[       721.652642] do_minidump
+<4>(E4)[       721.652712] reg_async (26439) reg_async is not ddfs
+<4>(E4)[       721.652951] elf_core_dump: pid reg_async(26439) leader reg_async is taking core
+<4>(E4)[       721.714846] elf_core_dump: pid reg_async(26439) leader reg_async core is finished
+<6>(E6)[       748.769982] disk_dump: starting a minidump by user request...
+<4>(E4)[       748.770054] do_minidump
+<4>(E4)[       748.770124] reg_async (26466) reg_async is not ddfs
+<4>(E4)[       748.770382] elf_core_dump: pid reg_async(26466) leader reg_async is taking core
+<4>(E4)[       748.843630] elf_core_dump: pid reg_async(26466) leader reg_async core is finished
+<6>(E6)[       775.898626] disk_dump: starting a minidump by user request...
+<4>(E4)[       775.898698] do_minidump
+<4>(E4)[       775.898768] reg_async (26473) reg_async is not ddfs
+<4>(E4)[       775.899173] elf_core_dump: pid reg_async(26473) leader reg_async is taking core
+<4>(E4)[       775.959528] elf_core_dump: pid reg_async(26473) leader reg_async core is finished
+<6>(E6)[       803.015190] disk_dump: starting a minidump by user request...
+<4>(E4)[       803.015262] do_minidump
+<4>(E4)[       803.015332] reg_async (26809) reg_async is not ddfs
+<4>(E4)[       803.015671] elf_core_dump: pid reg_async(26809) leader reg_async is taking core
+<4>(E4)[       803.075465] elf_core_dump: pid reg_async(26809) leader reg_async core is finished
+<6>(E6)[       830.130557] disk_dump: starting a minidump by user request...
+<4>(E4)[       830.130629] do_minidump
+<4>(E4)[       830.130700] reg_async (26822) reg_async is not ddfs
+<4>(E4)[       830.130938] elf_core_dump: pid reg_async(26822) leader reg_async is taking core
+<4>(E4)[       830.209760] elf_core_dump: pid reg_async(26822) leader reg_async core is finished
+<6>(E6)[       857.265196] disk_dump: starting a minidump by user request...
+<4>(E4)[       857.265268] do_minidump
+<4>(E4)[       857.265338] reg_async (26855) reg_async is not ddfs
+<4>(E4)[       857.265695] elf_core_dump: pid reg_async(26855) leader reg_async is taking core
+<4>(E4)[       857.325599] elf_core_dump: pid reg_async(26855) leader reg_async core is finished
+<6>(E6)[       884.381606] disk_dump: starting a minidump by user request...
+<4>(E4)[       884.381711] do_minidump
+<4>(E4)[       884.381781] reg_async (26862) reg_async is not ddfs
+<4>(E4)[       884.404679] elf_core_dump: pid reg_async(26862) leader reg_async is taking core
+<4>(E4)[       884.465493] elf_core_dump: pid reg_async(26862) leader reg_async core is finished
+<6>(E6)[       911.521079] disk_dump: starting a minidump by user request...
+<4>(E4)[       911.521151] do_minidump
+<4>(E4)[       911.521221] reg_async (26875) reg_async is not ddfs
+<4>(E4)[       911.521785] elf_core_dump: pid reg_async(26875) leader reg_async is taking core
+<4>(E4)[       911.597270] elf_core_dump: pid reg_async(26875) leader reg_async core is finished
+<6>(E6)[       938.653683] disk_dump: starting a minidump by user request...
+<4>(E4)[       938.653755] do_minidump
+<4>(E4)[       938.653825] reg_async (26898) reg_async is not ddfs
+<4>(E4)[       938.654131] elf_core_dump: pid reg_async(26898) leader reg_async is taking core
+<4>(E4)[       938.714026] elf_core_dump: pid reg_async(26898) leader reg_async core is finished
+<6>(E6)[       965.769905] disk_dump: starting a minidump by user request...
+<4>(E4)[       965.769977] do_minidump
+<4>(E4)[       965.770047] reg_async (26905) reg_async is not ddfs
+<4>(E4)[       965.770437] elf_core_dump: pid reg_async(26905) leader reg_async is taking core
+<4>(E4)[       965.830853] elf_core_dump: pid reg_async(26905) leader reg_async core is finished
+<6>(E6)[       992.887691] disk_dump: starting a minidump by user request...
+<4>(E4)[       992.887763] do_minidump
+<4>(E4)[       992.887833] reg_async (26928) reg_async is not ddfs
+<4>(E4)[       992.888096] elf_core_dump: pid reg_async(26928) leader reg_async is taking core
+<4>(E4)[       992.971785] elf_core_dump: pid reg_async(26928) leader reg_async core is finished
+<6>(E6)[      1020.027977] disk_dump: starting a minidump by user request...
+<4>(E4)[      1020.028049] do_minidump
+<4>(E4)[      1020.028119] reg_async (26941) reg_async is not ddfs
+<4>(E4)[      1020.028374] elf_core_dump: pid reg_async(26941) leader reg_async is taking core
+<4>(E4)[      1020.089357] elf_core_dump: pid reg_async(26941) leader reg_async core is finished
+<6>(E6)[      1047.145601] disk_dump: starting a minidump by user request...
+<4>(E4)[      1047.145674] do_minidump
+<4>(E4)[      1047.145744] reg_async (26958) reg_async is not ddfs
+<4>(E4)[      1047.146222] elf_core_dump: pid reg_async(26958) leader reg_async is taking core
+<4>(E4)[      1047.207494] elf_core_dump: pid reg_async(26958) leader reg_async core is finished
+<6>(E6)[      1074.262962] disk_dump: starting a minidump by user request...
+<4>(E4)[      1074.263034] do_minidump
+<4>(E4)[      1074.263104] reg_async (26971) reg_async is not ddfs
+<4>(E4)[      1074.263612] elf_core_dump: pid reg_async(26971) leader reg_async is taking core
+<4>(E4)[      1074.345550] elf_core_dump: pid reg_async(26971) leader reg_async core is finished
+<6>(E6)[      1101.400597] disk_dump: starting a minidump by user request...
+<4>(E4)[      1101.400669] do_minidump
+<4>(E4)[      1101.400739] reg_async (27340) reg_async is not ddfs
+<4>(E4)[      1101.401078] elf_core_dump: pid reg_async(27340) leader reg_async is taking core
+<4>(E4)[      1101.461592] elf_core_dump: pid reg_async(27340) leader reg_async core is finished
+<6>(E6)[      1128.517986] disk_dump: starting a minidump by user request...
+<4>(E4)[      1128.518059] do_minidump
+<4>(E4)[      1128.518129] reg_async (27347) reg_async is not ddfs
+<4>(E4)[      1128.518465] elf_core_dump: pid reg_async(27347) leader reg_async is taking core
+<4>(E4)[      1128.579504] elf_core_dump: pid reg_async(27347) leader reg_async core is finished
+<6>(E6)[      1155.635581] disk_dump: starting a minidump by user request...
+<4>(E4)[      1155.635653] do_minidump
+<4>(E4)[      1155.635723] reg_async (27360) reg_async is not ddfs
+<4>(E4)[      1155.636057] elf_core_dump: pid reg_async(27360) leader reg_async is taking core
+<4>(E4)[      1155.715044] elf_core_dump: pid reg_async(27360) leader reg_async core is finished
+<6>(E6)[      1182.771013] disk_dump: starting a minidump by user request...
+<4>(E4)[      1182.771085] do_minidump
+<4>(E4)[      1182.771156] reg_async (27393) reg_async is not ddfs
+<4>(E4)[      1182.791970] elf_core_dump: pid reg_async(27393) leader reg_async is taking core
+<4>(E4)[      1182.865472] elf_core_dump: pid reg_async(27393) leader reg_async core is finished
+<6>(E6)[      1209.921468] disk_dump: starting a minidump by user request...
+<4>(E4)[      1209.921540] do_minidump
+<4>(E4)[      1209.921610] reg_async (27406) reg_async is not ddfs
+<4>(E4)[      1209.921948] elf_core_dump: pid reg_async(27406) leader reg_async is taking core
+<4>(E4)[      1210.001999] elf_core_dump: pid reg_async(27406) leader reg_async core is finished
+<6>(E6)[      1237.058104] disk_dump: starting a minidump by user request...
+<4>(E4)[      1237.058177] do_minidump
+<4>(E4)[      1237.058247] reg_async (27423) reg_async is not ddfs
+<4>(E4)[      1237.058570] elf_core_dump: pid reg_async(27423) leader reg_async is taking core
+<4>(E4)[      1237.118917] elf_core_dump: pid reg_async(27423) leader reg_async core is finished
+<6>(E6)[      1264.174581] disk_dump: starting a minidump by user request...
+<4>(E4)[      1264.174653] do_minidump
+<4>(E4)[      1264.174723] reg_async (27436) reg_async is not ddfs
+<4>(E4)[      1264.174901] elf_core_dump: pid reg_async(27436) leader reg_async is taking core
+<4>(E4)[      1264.235531] elf_core_dump: pid reg_async(27436) leader reg_async core is finished
+<6>(E6)[      1291.291965] disk_dump: starting a minidump by user request...
+<4>(E4)[      1291.292037] do_minidump
+<4>(E4)[      1291.292107] reg_async (27463) reg_async is not ddfs
+<4>(E4)[      1291.292391] elf_core_dump: pid reg_async(27463) leader reg_async is taking core
+<4>(E4)[      1291.378697] elf_core_dump: pid reg_async(27463) leader reg_async core is finished
+<6>(E6)[      1318.435400] disk_dump: starting a minidump by user request...
+<4>(E4)[      1318.435472] do_minidump
+<4>(E4)[      1318.435542] reg_async (27470) reg_async is not ddfs
+<4>(E4)[      1318.435915] elf_core_dump: pid reg_async(27470) leader reg_async is taking core
+<4>(E4)[      1318.497638] elf_core_dump: pid reg_async(27470) leader reg_async core is finished
+<6>(E6)[      1345.553972] disk_dump: starting a minidump by user request...
+<4>(E4)[      1345.554044] do_minidump
+<4>(E4)[      1345.554115] reg_async (27497) reg_async is not ddfs
+<4>(E4)[      1345.554390] elf_core_dump: pid reg_async(27497) leader reg_async is taking core
+<4>(E4)[      1345.613827] elf_core_dump: pid reg_async(27497) leader reg_async core is finished
+<6>(E6)[      1372.669438] disk_dump: starting a minidump by user request...
+<4>(E4)[      1372.669510] do_minidump
+<4>(E4)[      1372.669580] reg_async (27510) reg_async is not ddfs
+<4>(E4)[      1372.669791] elf_core_dump: pid reg_async(27510) leader reg_async is taking core
+<4>(E4)[      1372.743090] elf_core_dump: pid reg_async(27510) leader reg_async core is finished
+<6>(E6)[      1399.800941] disk_dump: starting a minidump by user request...
+<4>(E4)[      1399.801013] do_minidump
+<4>(E4)[      1399.801116] reg_async (27940) reg_async is not ddfs
+<4>(E4)[      1399.801271] elf_core_dump: pid reg_async(27940) leader reg_async is taking core
+<4>(E4)[      1399.862061] elf_core_dump: pid reg_async(27940) leader reg_async core is finished
+<6>(E6)[      1426.918396] disk_dump: starting a minidump by user request...
+<4>(E4)[      1426.918469] do_minidump
+<4>(E4)[      1426.918572] reg_async (28072) reg_async is not ddfs
+<4>(E4)[      1426.918763] elf_core_dump: pid reg_async(28072) leader reg_async is taking core
+<4>(E4)[      1426.979464] elf_core_dump: pid reg_async(28072) leader reg_async core is finished
+<6>(E6)[      1454.035999] disk_dump: starting a minidump by user request...
+<4>(E4)[      1454.036071] do_minidump
+<4>(E4)[      1454.036142] reg_async (28085) reg_async is not ddfs
+<4>(E4)[      1454.036367] elf_core_dump: pid reg_async(28085) leader reg_async is taking core
+<4>(E4)[      1454.097059] elf_core_dump: pid reg_async(28085) leader reg_async core is finished
+<6>(E6)[      1481.153479] disk_dump: starting a minidump by user request...
+<4>(E4)[      1481.153551] do_minidump
+<4>(E4)[      1481.153621] reg_async (28118) reg_async is not ddfs
+<4>(E4)[      1481.153928] elf_core_dump: pid reg_async(28118) leader reg_async is taking core
+<4>(E4)[      1481.214617] elf_core_dump: pid reg_async(28118) leader reg_async core is finished
+<6>(E6)[      1508.270876] disk_dump: starting a minidump by user request...
+<4>(E4)[      1508.270948] do_minidump
+<4>(E4)[      1508.271018] reg_async (28125) reg_async is not ddfs
+<4>(E4)[      1508.271423] elf_core_dump: pid reg_async(28125) leader reg_async is taking core
+<4>(E4)[      1508.332791] elf_core_dump: pid reg_async(28125) leader reg_async core is finished
+<6>(E6)[      1535.388471] disk_dump: starting a minidump by user request...
+<4>(E4)[      1535.388544] do_minidump
+<4>(E4)[      1535.388614] reg_async (28148) reg_async is not ddfs
+<4>(E4)[      1535.389003] elf_core_dump: pid reg_async(28148) leader reg_async is taking core
+<4>(E4)[      1535.450077] elf_core_dump: pid reg_async(28148) leader reg_async core is finished
+<6>(E6)[      1562.506755] disk_dump: starting a minidump by user request...
+<4>(E4)[      1562.506828] do_minidump
+<4>(E4)[      1562.506898] reg_async (28161) reg_async is not ddfs
+<4>(E4)[      1562.507368] elf_core_dump: pid reg_async(28161) leader reg_async is taking core
+<4>(E4)[      1562.568995] elf_core_dump: pid reg_async(28161) leader reg_async core is finished
+<6>(E6)[      1589.625361] disk_dump: starting a minidump by user request...
+<4>(E4)[      1589.625434] do_minidump
+<4>(E4)[      1589.625504] reg_async (28178) reg_async is not ddfs
+<4>(E4)[      1589.625716] elf_core_dump: pid reg_async(28178) leader reg_async is taking core
+<4>(E4)[      1589.702378] elf_core_dump: pid reg_async(28178) leader reg_async core is finished
+<6>(E6)[      1616.757975] disk_dump: starting a minidump by user request...
+<4>(E4)[      1616.758047] do_minidump
+<4>(E4)[      1616.758118] reg_async (28191) reg_async is not ddfs
+<4>(E4)[      1616.758451] elf_core_dump: pid reg_async(28191) leader reg_async is taking core
+<4>(E4)[      1616.818016] elf_core_dump: pid reg_async(28191) leader reg_async core is finished
+<6>(E6)[      1643.874504] disk_dump: starting a minidump by user request...
+<4>(E4)[      1643.874576] do_minidump
+<4>(E4)[      1643.874647] reg_async (28214) reg_async is not ddfs
+<4>(E4)[      1643.875019] elf_core_dump: pid reg_async(28214) leader reg_async is taking core
+<4>(E4)[      1643.936496] elf_core_dump: pid reg_async(28214) leader reg_async core is finished
+<6>(E6)[      1670.993927] disk_dump: starting a minidump by user request...
+<4>(E4)[      1670.993999] do_minidump
+<4>(E4)[      1670.994069] reg_async (28221) reg_async is not ddfs
+<4>(E4)[      1670.994236] elf_core_dump: pid reg_async(28221) leader reg_async is taking core
+<4>(E4)[      1671.066489] elf_core_dump: pid reg_async(28221) leader reg_async core is finished
+<6>(E6)[      1698.123264] disk_dump: starting a minidump by user request...
+<4>(E4)[      1698.123336] do_minidump
+<4>(E4)[      1698.123407] reg_async (28652) reg_async is not ddfs
+<4>(E4)[      1698.123702] elf_core_dump: pid reg_async(28652) leader reg_async is taking core
+<4>(E4)[      1698.185343] elf_core_dump: pid reg_async(28652) leader reg_async core is finished
+<6>(E6)[      1725.242832] disk_dump: starting a minidump by user request...
+<4>(E4)[      1725.242905] do_minidump
+<4>(E4)[      1725.242975] reg_async (28829) reg_async is not ddfs
+<4>(E4)[      1725.243163] elf_core_dump: pid reg_async(28829) leader reg_async is taking core
+<4>(E4)[      1725.306425] elf_core_dump: pid reg_async(28829) leader reg_async core is finished
+<6>(E6)[      1752.363282] disk_dump: starting a minidump by user request...
+<4>(E4)[      1752.363354] do_minidump
+<4>(E4)[      1752.363424] reg_async (28836) reg_async is not ddfs
+<4>(E4)[      1752.363623] elf_core_dump: pid reg_async(28836) leader reg_async is taking core
+<4>(E4)[      1752.444388] elf_core_dump: pid reg_async(28836) leader reg_async core is finished
+<6>(E6)[      1779.500848] disk_dump: starting a minidump by user request...
+<4>(E4)[      1779.500921] do_minidump
+<4>(E4)[      1779.500991] reg_async (28869) reg_async is not ddfs
+<4>(E4)[      1779.501215] elf_core_dump: pid reg_async(28869) leader reg_async is taking core
+<4>(E4)[      1779.563423] elf_core_dump: pid reg_async(28869) leader reg_async core is finished
+<6>(E6)[      1806.620360] disk_dump: starting a minidump by user request...
+<4>(E4)[      1806.620433] do_minidump
+<4>(E4)[      1806.620503] reg_async (28882) reg_async is not ddfs
+<4>(E4)[      1806.620710] elf_core_dump: pid reg_async(28882) leader reg_async is taking core
+<4>(E4)[      1806.689542] elf_core_dump: pid reg_async(28882) leader reg_async core is finished
+<6>(E6)[      1833.746820] disk_dump: starting a minidump by user request...
+<4>(E4)[      1833.746893] do_minidump
+<4>(E4)[      1833.746963] reg_async (28905) reg_async is not ddfs
+<4>(E4)[      1833.747151] elf_core_dump: pid reg_async(28905) leader reg_async is taking core
+<4>(E4)[      1833.808541] elf_core_dump: pid reg_async(28905) leader reg_async core is finished
+<6>(E6)[      1860.865196] disk_dump: starting a minidump by user request...
+<4>(E4)[      1860.865268] do_minidump
+<4>(E4)[      1860.865338] reg_async (28912) reg_async is not ddfs
+<4>(E4)[      1860.865561] elf_core_dump: pid reg_async(28912) leader reg_async is taking core
+<4>(E4)[      1860.926216] elf_core_dump: pid reg_async(28912) leader reg_async core is finished
+<6>(E6)[      1887.983800] disk_dump: starting a minidump by user request...
+<4>(E4)[      1887.983873] do_minidump
+<4>(E4)[      1887.983943] reg_async (28939) reg_async is not ddfs
+<4>(E4)[      1887.984325] elf_core_dump: pid reg_async(28939) leader reg_async is taking core
+<4>(E4)[      1888.045660] elf_core_dump: pid reg_async(28939) leader reg_async core is finished
+<6>(E6)[      1915.103290] disk_dump: starting a minidump by user request...
+<4>(E4)[      1915.103362] do_minidump
+<4>(E4)[      1915.103433] reg_async (28952) reg_async is not ddfs
+<4>(E4)[      1915.103751] elf_core_dump: pid reg_async(28952) leader reg_async is taking core
+<4>(E4)[      1915.164828] elf_core_dump: pid reg_async(28952) leader reg_async core is finished
+<6>(E6)[      1942.221880] disk_dump: starting a minidump by user request...
+<4>(E4)[      1942.221952] do_minidump
+<4>(E4)[      1942.222081] reg_async (29029) reg_async is not ddfs
+<4>(E4)[      1942.222311] elf_core_dump: pid reg_async(29029) leader reg_async is taking core
+<4>(E4)[      1942.283654] elf_core_dump: pid reg_async(29029) leader reg_async core is finished
+<6>(E6)[      1969.341689] disk_dump: starting a minidump by user request...
+<4>(E4)[      1969.341762] do_minidump
+<4>(E4)[      1969.341832] reg_async (29042) reg_async is not ddfs
+<4>(E4)[      1969.342048] elf_core_dump: pid reg_async(29042) leader reg_async is taking core
+<4>(E4)[      1969.403637] elf_core_dump: pid reg_async(29042) leader reg_async core is finished
+<6>(E6)[      1996.460811] disk_dump: starting a minidump by user request...
+<4>(E4)[      1996.460883] do_minidump
+<4>(E4)[      1996.460966] reg_async (29497) reg_async is not ddfs
+<4>(E4)[      1996.461339] elf_core_dump: pid reg_async(29497) leader reg_async is taking core
+<4>(E4)[      1996.522673] elf_core_dump: pid reg_async(29497) leader reg_async core is finished
+<6>(E6)[      2023.580237] disk_dump: starting a minidump by user request...
+<4>(E4)[      2023.580309] do_minidump
+<4>(E4)[      2023.580379] reg_async (29674) reg_async is not ddfs
+<4>(E4)[      2023.580610] elf_core_dump: pid reg_async(29674) leader reg_async is taking core
+<4>(E4)[      2023.643206] elf_core_dump: pid reg_async(29674) leader reg_async core is finished
+<6>(E6)[      2050.699698] disk_dump: starting a minidump by user request...
+<4>(E4)[      2050.699770] do_minidump
+<4>(E4)[      2050.699841] reg_async (29681) reg_async is not ddfs
+<4>(E4)[      2050.700022] elf_core_dump: pid reg_async(29681) leader reg_async is taking core
+<4>(E4)[      2050.762674] elf_core_dump: pid reg_async(29681) leader reg_async core is finished
+<6>(E6)[      2077.819280] disk_dump: starting a minidump by user request...
+<4>(E4)[      2077.819352] do_minidump
+<4>(E4)[      2077.819426] reg_async (29714) reg_async is not ddfs
+<4>(E4)[      2077.819646] elf_core_dump: pid reg_async(29714) leader reg_async is taking core
+<4>(E4)[      2077.880856] elf_core_dump: pid reg_async(29714) leader reg_async core is finished
+<6>(E6)[      2104.938795] disk_dump: starting a minidump by user request...
+<4>(E4)[      2104.938867] do_minidump
+<4>(E4)[      2104.938942] reg_async (29727) reg_async is not ddfs
+<4>(E4)[      2104.939171] elf_core_dump: pid reg_async(29727) leader reg_async is taking core
+<4>(E4)[      2105.001647] elf_core_dump: pid reg_async(29727) leader reg_async core is finished
+<6>(E6)[      2131.058710] disk_dump: starting a minidump by user request...
+<4>(E4)[      2131.058782] do_minidump
+<4>(E4)[      2131.058852] reg_async (29744) reg_async is not ddfs
+<4>(E4)[      2131.059219] elf_core_dump: pid reg_async(29744) leader reg_async is taking core
+<4>(E4)[      2131.122218] elf_core_dump: pid reg_async(29744) leader reg_async core is finished
+<6>(E6)[      2158.179238] disk_dump: starting a minidump by user request...
+<4>(E4)[      2158.179310] do_minidump
+<4>(E4)[      2158.179383] reg_async (29757) reg_async is not ddfs
+<4>(E4)[      2158.199636] elf_core_dump: pid reg_async(29757) leader reg_async is taking core
+<4>(E4)[      2158.262772] elf_core_dump: pid reg_async(29757) leader reg_async core is finished
+<6>(E6)[      2185.319576] disk_dump: starting a minidump by user request...
+<4>(E4)[      2185.319648] do_minidump
+<4>(E4)[      2185.319718] reg_async (29780) reg_async is not ddfs
+<4>(E4)[      2185.319917] elf_core_dump: pid reg_async(29780) leader reg_async is taking core
+<4>(E4)[      2185.380526] elf_core_dump: pid reg_async(29780) leader reg_async core is finished
+<6>(E6)[      2212.438053] disk_dump: starting a minidump by user request...
+<4>(E4)[      2212.438125] do_minidump
+<4>(E4)[      2212.438196] reg_async (29787) reg_async is not ddfs
+<4>(E4)[      2212.458661] elf_core_dump: pid reg_async(29787) leader reg_async is taking core
+<4>(E4)[      2212.520328] elf_core_dump: pid reg_async(29787) leader reg_async core is finished
+<6>(E6)[      2239.576709] disk_dump: starting a minidump by user request...
+<4>(E4)[      2239.576781] do_minidump
+<4>(E4)[      2239.576855] reg_async (29810) reg_async is not ddfs
+<4>(E4)[      2239.577089] elf_core_dump: pid reg_async(29810) leader reg_async is taking core
+<4>(E4)[      2239.637013] elf_core_dump: pid reg_async(29810) leader reg_async core is finished
+<6>(E6)[      2266.694106] disk_dump: starting a minidump by user request...
+<4>(E4)[      2266.694179] do_minidump
+<4>(E4)[      2266.694249] reg_async (29823) reg_async is not ddfs
+<4>(E4)[      2266.694434] elf_core_dump: pid reg_async(29823) leader reg_async is taking core
+<4>(E4)[      2266.755124] elf_core_dump: pid reg_async(29823) leader reg_async core is finished
+<6>(E6)[      2293.812696] disk_dump: starting a minidump by user request...
+<4>(E4)[      2293.812772] do_minidump
+<4>(E4)[      2293.812843] reg_async (29830) reg_async is not ddfs
+<4>(E4)[      2293.812999] elf_core_dump: pid reg_async(29830) leader reg_async is taking core
+<4>(E4)[      2293.877258] elf_core_dump: pid reg_async(29830) leader reg_async core is finished
+<6>(E6)[      2320.934399] disk_dump: starting a minidump by user request...
+<4>(E4)[      2320.934471] do_minidump
+<4>(E4)[      2320.934542] reg_async (30414) reg_async is not ddfs
+<4>(E4)[      2320.935012] elf_core_dump: pid reg_async(30414) leader reg_async is taking core
+<4>(E4)[      2320.998115] elf_core_dump: pid reg_async(30414) leader reg_async core is finished
+<6>(E6)[      2348.054593] disk_dump: starting a minidump by user request...
+<4>(E4)[      2348.054665] do_minidump
+<4>(E4)[      2348.054735] reg_async (30441) reg_async is not ddfs
+<4>(E4)[      2348.055165] elf_core_dump: pid reg_async(30441) leader reg_async is taking core
+<4>(E4)[      2348.116913] elf_core_dump: pid reg_async(30441) leader reg_async core is finished
+<6>(E6)[      2375.175011] disk_dump: starting a minidump by user request...
+<4>(E4)[      2375.175083] do_minidump
+<4>(E4)[      2375.175153] reg_async (30474) reg_async is not ddfs
+<4>(E4)[      2375.175318] elf_core_dump: pid reg_async(30474) leader reg_async is taking core
+<4>(E4)[      2375.236849] elf_core_dump: pid reg_async(30474) leader reg_async core is finished
+<6>(E6)[      2402.293554] disk_dump: starting a minidump by user request...
+<4>(E4)[      2402.293626] do_minidump
+<4>(E4)[      2402.293696] reg_async (30481) reg_async is not ddfs
+<4>(E4)[      2402.293961] elf_core_dump: pid reg_async(30481) leader reg_async is taking core
+<4>(E4)[      2402.357345] elf_core_dump: pid reg_async(30481) leader reg_async core is finished
+<6>(E6)[      2429.414059] disk_dump: starting a minidump by user request...
+<4>(E4)[      2429.414132] do_minidump
+<4>(E4)[      2429.414217] reg_async (30504) reg_async is not ddfs
+<4>(E4)[      2429.414438] elf_core_dump: pid reg_async(30504) leader reg_async is taking core
+<4>(E4)[      2429.475707] elf_core_dump: pid reg_async(30504) leader reg_async core is finished
+<6>(E6)[      2456.533482] disk_dump: starting a minidump by user request...
+<4>(E4)[      2456.533554] do_minidump
+<4>(E4)[      2456.533624] reg_async (30517) reg_async is not ddfs
+<4>(E4)[      2456.533842] elf_core_dump: pid reg_async(30517) leader reg_async is taking core
+<4>(E4)[      2456.595895] elf_core_dump: pid reg_async(30517) leader reg_async core is finished
+<6>(E6)[      2483.654071] disk_dump: starting a minidump by user request...
+<4>(E4)[      2483.654143] do_minidump
+<4>(E4)[      2483.654217] reg_async (30534) reg_async is not ddfs
+<4>(E4)[      2483.654503] elf_core_dump: pid reg_async(30534) leader reg_async is taking core
+<4>(E4)[      2483.716305] elf_core_dump: pid reg_async(30534) leader reg_async core is finished
+<6>(E6)[      2510.773375] disk_dump: starting a minidump by user request...
+<4>(E4)[      2510.773447] do_minidump
+<4>(E4)[      2510.773517] reg_async (30547) reg_async is not ddfs
+<4>(E4)[      2510.773726] elf_core_dump: pid reg_async(30547) leader reg_async is taking core
+<4>(E4)[      2510.834727] elf_core_dump: pid reg_async(30547) leader reg_async core is finished
+<6>(E6)[      2537.892067] disk_dump: starting a minidump by user request...
+<4>(E4)[      2537.892144] do_minidump
+<4>(E4)[      2537.892216] reg_async (30578) reg_async is not ddfs
+<4>(E4)[      2537.892483] elf_core_dump: pid reg_async(30578) leader reg_async is taking core
+<4>(E4)[      2537.953086] elf_core_dump: pid reg_async(30578) leader reg_async core is finished
+<6>(E6)[      2565.010477] disk_dump: starting a minidump by user request...
+<4>(E4)[      2565.010549] do_minidump
+<4>(E4)[      2565.010619] reg_async (30585) reg_async is not ddfs
+<4>(E4)[      2565.010878] elf_core_dump: pid reg_async(30585) leader reg_async is taking core
+<4>(E4)[      2565.071352] elf_core_dump: pid reg_async(30585) leader reg_async core is finished
+<6>(E6)[      2592.127964] disk_dump: starting a minidump by user request...
+<4>(E4)[      2592.128036] do_minidump
+<4>(E4)[      2592.128106] reg_async (30598) reg_async is not ddfs
+<4>(E4)[      2592.128556] elf_core_dump: pid reg_async(30598) leader reg_async is taking core
+<4>(E4)[      2592.191402] elf_core_dump: pid reg_async(30598) leader reg_async core is finished
+<6>(E6)[      2619.248503] disk_dump: starting a minidump by user request...
+<4>(E4)[      2619.248575] do_minidump
+<4>(E4)[      2619.248667] reg_async (31169) reg_async is not ddfs
+<4>(E4)[      2619.248958] elf_core_dump: pid reg_async(31169) leader reg_async is taking core
+<4>(E4)[      2619.310217] elf_core_dump: pid reg_async(31169) leader reg_async core is finished
+<6>(E6)[      2646.366951] disk_dump: starting a minidump by user request...
+<4>(E4)[      2646.367024] do_minidump
+<4>(E4)[      2646.367098] reg_async (31226) reg_async is not ddfs
+<4>(E4)[      2646.367349] elf_core_dump: pid reg_async(31226) leader reg_async is taking core
+<4>(E4)[      2646.429507] elf_core_dump: pid reg_async(31226) leader reg_async core is finished
+<6>(E6)[      2673.486557] disk_dump: starting a minidump by user request...
+<4>(E4)[      2673.486634] do_minidump
+<4>(E4)[      2673.486705] reg_async (31253) reg_async is not ddfs
+<4>(E4)[      2673.487190] elf_core_dump: pid reg_async(31253) leader reg_async is taking core
+<4>(E4)[      2673.550647] elf_core_dump: pid reg_async(31253) leader reg_async core is finished
+<6>(E6)[      2700.608057] disk_dump: starting a minidump by user request...
+<4>(E4)[      2700.608147] do_minidump
+<4>(E4)[      2700.608217] reg_async (31266) reg_async is not ddfs
+<4>(E4)[      2700.608508] elf_core_dump: pid reg_async(31266) leader reg_async is taking core
+<4>(E4)[      2700.670459] elf_core_dump: pid reg_async(31266) leader reg_async core is finished
+<6>(E6)[      2727.728485] disk_dump: starting a minidump by user request...
+<4>(E4)[      2727.728557] do_minidump
+<4>(E4)[      2727.728631] reg_async (31289) reg_async is not ddfs
+<4>(E4)[      2727.729038] elf_core_dump: pid reg_async(31289) leader reg_async is taking core
+<4>(E4)[      2727.807744] elf_core_dump: pid reg_async(31289) leader reg_async core is finished
+<6>(E6)[      2754.875777] disk_dump: starting a minidump by user request...
+<4>(E4)[      2754.875849] do_minidump
+<4>(E4)[      2754.875920] reg_async (31296) reg_async is not ddfs
+<4>(E4)[      2754.876080] elf_core_dump: pid reg_async(31296) leader reg_async is taking core
+<4>(E4)[      2754.941621] elf_core_dump: pid reg_async(31296) leader reg_async core is finished
+<6>(E6)[      2781.998464] disk_dump: starting a minidump by user request...
+<4>(E4)[      2781.998540] do_minidump
+<4>(E4)[      2781.998612] reg_async (31319) reg_async is not ddfs
+<4>(E4)[      2781.999127] elf_core_dump: pid reg_async(31319) leader reg_async is taking core
+<4>(E4)[      2782.061609] elf_core_dump: pid reg_async(31319) leader reg_async core is finished
+<6>(E6)[      2809.118792] disk_dump: starting a minidump by user request...
+<4>(E4)[      2809.118865] do_minidump
+<4>(E4)[      2809.118935] reg_async (31332) reg_async is not ddfs
+<4>(E4)[      2809.119154] elf_core_dump: pid reg_async(31332) leader reg_async is taking core
+<4>(E4)[      2809.182106] elf_core_dump: pid reg_async(31332) leader reg_async core is finished
+<6>(E6)[      2836.239330] disk_dump: starting a minidump by user request...
+<4>(E4)[      2836.239402] do_minidump
+<4>(E4)[      2836.239477] reg_async (31351) reg_async is not ddfs
+<4>(E4)[      2836.239757] elf_core_dump: pid reg_async(31351) leader reg_async is taking core
+<4>(E4)[      2836.301308] elf_core_dump: pid reg_async(31351) leader reg_async core is finished
+<6>(E6)[      2863.359879] disk_dump: starting a minidump by user request...
+<4>(E4)[      2863.359951] do_minidump
+<4>(E4)[      2863.360075] reg_async (31364) reg_async is not ddfs
+<4>(E4)[      2863.360319] elf_core_dump: pid reg_async(31364) leader reg_async is taking core
+<4>(E4)[      2863.423390] elf_core_dump: pid reg_async(31364) leader reg_async core is finished
+<6>(E6)[      2890.481331] disk_dump: starting a minidump by user request...
+<4>(E4)[      2890.481403] do_minidump
+<4>(E4)[      2890.481480] reg_async (31377) reg_async is not ddfs
+<4>(E4)[      2890.481684] elf_core_dump: pid reg_async(31377) leader reg_async is taking core
+<4>(E4)[      2890.546838] elf_core_dump: pid reg_async(31377) leader reg_async core is finished
+<6>(E6)[      2917.605829] disk_dump: starting a minidump by user request...
+<4>(E4)[      2917.605901] do_minidump
+<4>(E4)[      2917.605981] reg_async (31937) reg_async is not ddfs
+<4>(E4)[      2917.606233] elf_core_dump: pid reg_async(31937) leader reg_async is taking core
+<4>(E4)[      2917.669338] elf_core_dump: pid reg_async(31937) leader reg_async core is finished
+<6>(E6)[      2944.726314] disk_dump: starting a minidump by user request...
+<4>(E4)[      2944.726386] do_minidump
+<4>(E4)[      2944.726485] reg_async (31979) reg_async is not ddfs
+<4>(E4)[      2944.726780] elf_core_dump: pid reg_async(31979) leader reg_async is taking core
+<4>(E4)[      2944.788647] elf_core_dump: pid reg_async(31979) leader reg_async core is finished
+<6>(E6)[      2971.845866] disk_dump: starting a minidump by user request...
+<4>(E4)[      2971.845942] do_minidump
+<4>(E4)[      2971.846014] reg_async (32012) reg_async is not ddfs
+<4>(E4)[      2971.846213] elf_core_dump: pid reg_async(32012) leader reg_async is taking core
+<4>(E4)[      2971.908066] elf_core_dump: pid reg_async(32012) leader reg_async core is finished
+<6>(E6)[      2998.965218] disk_dump: starting a minidump by user request...
+<4>(E4)[      2998.965290] do_minidump
+<4>(E4)[      2998.965361] reg_async (32025) reg_async is not ddfs
+<4>(E4)[      2998.965633] elf_core_dump: pid reg_async(32025) leader reg_async is taking core
+<4>(E4)[      2999.027221] elf_core_dump: pid reg_async(32025) leader reg_async core is finished
+<6>(E6)[      3026.085091] disk_dump: starting a minidump by user request...
+<4>(E4)[      3026.085163] do_minidump
+<4>(E4)[      3026.085233] reg_async (32042) reg_async is not ddfs
+<4>(E4)[      3026.085616] elf_core_dump: pid reg_async(32042) leader reg_async is taking core
+<4>(E4)[      3026.148739] elf_core_dump: pid reg_async(32042) leader reg_async core is finished
+<6>(E6)[      3053.206112] disk_dump: starting a minidump by user request...
+<4>(E4)[      3053.206184] do_minidump
+<4>(E4)[      3053.206254] reg_async (32055) reg_async is not ddfs
+<4>(E4)[      3053.206465] elf_core_dump: pid reg_async(32055) leader reg_async is taking core
+<4>(E4)[      3053.269089] elf_core_dump: pid reg_async(32055) leader reg_async core is finished
+<6>(E6)[      3080.325857] disk_dump: starting a minidump by user request...
+<4>(E4)[      3080.325933] do_minidump
+<4>(E4)[      3080.326004] reg_async (32078) reg_async is not ddfs
+<4>(E4)[      3080.326491] elf_core_dump: pid reg_async(32078) leader reg_async is taking core
+<4>(E4)[      3080.388543] elf_core_dump: pid reg_async(32078) leader reg_async core is finished
+<6>(E6)[      3107.446331] disk_dump: starting a minidump by user request...
+<4>(E4)[      3107.446425] do_minidump
+<4>(E4)[      3107.446496] reg_async (32085) reg_async is not ddfs
+<4>(E4)[      3107.446866] elf_core_dump: pid reg_async(32085) leader reg_async is taking core
+<4>(E4)[      3107.508962] elf_core_dump: pid reg_async(32085) leader reg_async core is finished
+<6>(E6)[      3134.565826] disk_dump: starting a minidump by user request...
+<4>(E4)[      3134.565950] do_minidump
+<4>(E4)[      3134.566020] reg_async (32098) reg_async is not ddfs
+<4>(E4)[      3134.566443] elf_core_dump: pid reg_async(32098) leader reg_async is taking core
+<4>(E4)[      3134.628160] elf_core_dump: pid reg_async(32098) leader reg_async core is finished
+<6>(E6)[      3161.685182] disk_dump: starting a minidump by user request...
+<4>(E4)[      3161.685254] do_minidump
+<4>(E4)[      3161.685325] reg_async (32125) reg_async is not ddfs
+<4>(E4)[      3161.685553] elf_core_dump: pid reg_async(32125) leader reg_async is taking core
+<4>(E4)[      3161.746920] elf_core_dump: pid reg_async(32125) leader reg_async core is finished
+<6>(E6)[      3188.805078] disk_dump: starting a minidump by user request...
+<4>(E4)[      3188.805151] do_minidump
+<4>(E4)[      3188.805222] reg_async (32132) reg_async is not ddfs
+<4>(E4)[      3188.805451] elf_core_dump: pid reg_async(32132) leader reg_async is taking core
+<4>(E4)[      3188.867679] elf_core_dump: pid reg_async(32132) leader reg_async core is finished
+<6>(E6)[      3215.924177] disk_dump: starting a minidump by user request...
+<4>(E4)[      3215.924249] do_minidump
+<4>(E4)[      3215.924323] reg_async (32687) reg_async is not ddfs
+<4>(E4)[      3215.924541] elf_core_dump: pid reg_async(32687) leader reg_async is taking core
+<4>(E4)[      3215.988129] elf_core_dump: pid reg_async(32687) leader reg_async core is finished
+<6>(E6)[      3243.045645] disk_dump: starting a minidump by user request...
+<4>(E4)[      3243.045718] do_minidump
+<4>(E4)[      3243.045788] reg_async (32744) reg_async is not ddfs
+<4>(E4)[      3243.046145] elf_core_dump: pid reg_async(32744) leader reg_async is taking core
+<4>(E4)[      3243.108122] elf_core_dump: pid reg_async(32744) leader reg_async core is finished
+<6>(E6)[      3270.165138] disk_dump: starting a minidump by user request...
+<4>(E4)[      3270.165210] do_minidump
+<4>(E4)[      3270.165280] reg_async (311) reg_async is not ddfs
+<4>(E4)[      3270.165607] elf_core_dump: pid reg_async(311) leader reg_async is taking core
+<4>(E4)[      3270.227803] elf_core_dump: pid reg_async(311) leader reg_async core is finished
+<6>(E6)[      3297.285457] disk_dump: starting a minidump by user request...
+<4>(E4)[      3297.285529] do_minidump
+<4>(E4)[      3297.285599] reg_async (318) reg_async is not ddfs
+<4>(E4)[      3297.286009] elf_core_dump: pid reg_async(318) leader reg_async is taking core
+<4>(E4)[      3297.348629] elf_core_dump: pid reg_async(318) leader reg_async core is finished
+<6>(E6)[      3324.405141] disk_dump: starting a minidump by user request...
+<4>(E4)[      3324.405213] do_minidump
+<4>(E4)[      3324.405287] reg_async (341) reg_async is not ddfs
+<4>(E4)[      3324.405729] elf_core_dump: pid reg_async(341) leader reg_async is taking core
+<4>(E4)[      3324.468160] elf_core_dump: pid reg_async(341) leader reg_async core is finished
+<6>(E6)[      3351.524476] disk_dump: starting a minidump by user request...
+<4>(E4)[      3351.524548] do_minidump
+<4>(E4)[      3351.524618] reg_async (354) reg_async is not ddfs
+<4>(E4)[      3351.524861] elf_core_dump: pid reg_async(354) leader reg_async is taking core
+<4>(E4)[      3351.586433] elf_core_dump: pid reg_async(354) leader reg_async core is finished
+<6>(E6)[      3377.643673] disk_dump: starting a minidump by user request...
+<4>(E4)[      3377.643789] do_minidump
+<4>(E4)[      3377.643860] reg_async (371) reg_async is not ddfs
+<4>(E4)[      3377.644057] elf_core_dump: pid reg_async(371) leader reg_async is taking core
+<4>(E4)[      3377.706084] elf_core_dump: pid reg_async(371) leader reg_async core is finished
+<6>(E6)[      3404.792120] disk_dump: starting a minidump by user request...
+<4>(E4)[      3404.792193] do_minidump
+<4>(E4)[      3404.792267] reg_async (384) reg_async is not ddfs
+<4>(E4)[      3404.792497] elf_core_dump: pid reg_async(384) leader reg_async is taking core
+<4>(E4)[      3404.855367] elf_core_dump: pid reg_async(384) leader reg_async core is finished
+<6>(E6)[      3431.912627] disk_dump: starting a minidump by user request...
+<4>(E4)[      3431.912703] do_minidump
+<4>(E4)[      3431.912774] reg_async (397) reg_async is not ddfs
+<4>(E4)[      3431.912998] elf_core_dump: pid reg_async(397) leader reg_async is taking core
+<4>(E4)[      3431.993481] elf_core_dump: pid reg_async(397) leader reg_async core is finished
+<6>(E6)[      3459.050009] disk_dump: starting a minidump by user request...
+<4>(E4)[      3459.050081] do_minidump
+<4>(E4)[      3459.050151] reg_async (422) reg_async is not ddfs
+<4>(E4)[      3459.050369] elf_core_dump: pid reg_async(422) leader reg_async is taking core
+<4>(E4)[      3459.113053] elf_core_dump: pid reg_async(422) leader reg_async core is finished
+
+
+gdb /ddr/bin/reg_async reg_async.core.28221.1407857163
+
+Core was generated by `/ddr/bin/reg_async'.
+Program terminated with signal 6, Aborted.
+#0  0x00002b9f8c48fb93 in raise ()
+   from /auto/home/lsbuild/desktop-440032/lib64/libc.so.6
+(gdb) bt
+#0  0x00002b9f8c48fb93 in raise ()
+   from /auto/home/lsbuild/desktop-440032/lib64/libc.so.6
+#1  0x00002b9f8c491039 in abort ()
+   from /auto/home/lsbuild/desktop-440032/lib64/libc.so.6
+#2  0x00002b9f89b2f5d3 in dd_panic_abort (
+    msgBuf=0x7fff24274270 "ddr/reg/reg_async.c: regd_init: 574: Fatal Error\n")
+    at lib/debug.c:890
+#3  0x00002b9f89b2f993 in dd_panic_intern (
+    fmt=0x4060a1 "%s: %s: %d: Fatal Error\n") at lib/debug.c:982
+#4  0x00000000004036bb in regd_init (opts=0x507e60) at ddr/reg/reg_async.c:574
+#5  0x000000000040294f in main (argc=1, argv=0x7fff24274ff8)
+    at ddr/reg/reg_async.c:330
+
+gvim /auto/builds/5.5/443488/app/ddr/reg/reg_async.c
+
+// Initialize the daemon. Most of this is commlib stuff.
+static void regd_init(opts_t *opts)
+{
+
+    dd_log(logEng, sevInfo, NULL, "Registering commlib service \"%s\"", svc_id.csi_name);
+    e = commlib_service_register(g_reg_cl_handle, &svc_id, &svc_attr, CSRF_DEFAULT, &g_reg_svc_handle);
+    dd_panic_if_err(e);
+}
+
+#4  0x00000000004036bb in regd_init (opts=0x507e60) at ddr/reg/reg_async.c:574
+574     ddr/reg/reg_async.c: No such file or directory.
+        in ddr/reg/reg_async.c
+(gdb) info local
+_e_local = (dd_err_t *) 0x515728
+attr = {ca_concurrency_level = 2, ca_mem_size = 0, ca_max_msg_size = 0,
+  ca_timeout = 0, ca_stats_on = FALSE, ca_debug_on = FALSE}
+e = (dd_err_t *) 0x515728
+__FUNCTION__ = "regd_init"
+svc_id = {csi_name = "regd_/ddr", '\0' <repeats 245 times>, csi_ver = 1,
+  csi_domain = CSD_LOCAL, csi_host = '\0' <repeats 254 times>, csi_prog = 0,
+  csi_port = 0}
+svc_attr = {csa_disp_table = 0x507d80, csa_disp_table_size = 3,
+  csa_timeout = 0, csa_sess_create_cb = 0, csa_def_sess_notify_cb = 0,
+  csa_svc_unreg_cb = 0, csa_svc_unreg_cb_args = 0x0, csa_max_conns = 0}
+
+
+debug# tail messages.engineering
+Aug 12 09:02:47 localhost reg_async[1819]: INFO: Initializing commlib
+Aug 12 09:02:47 localhost reg_async[1819]: INFO: Registering commlib service "regd_/ddr"
+Aug 12 09:02:49 localhost ssm: INFO: SSM: wait_for_master_ssm_initialization_done: Failed to connect to directory service on localhost, 5203
+Aug 12 09:03:14 localhost reg_async[1819]: ERROR: MSG-INTRNL-00002: stackdump -v "5.5.1.0-443488" reg_async dd_version_checksum=48845545f8ecf87a2382bad5129dcaae 0x2ad2b6c99c10 0x2ad2b6c99a6f 0x2ad2b6cb25a1 0x2ad2b6cb2588 0x40368e 0x40294f 0x2ad2b960148b 0x4024f9
+Aug 12 09:03:14 localhost reg_async[1819]: ERROR: Error: <5203: Failed to connect to directory service on localhost, commlib/daemon/cl_daemon_clnt.c, cl_dir_connect, 188>
+Aug 12 09:03:14 localhost reg_async[1819]: ERROR: MSG-INTRNL-00001: PANIC: ddr/reg/reg_async.c: regd_init: 574: Fatal Error
+

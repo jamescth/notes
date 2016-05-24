@@ -1,0 +1,54 @@
+#! /usr/bin/env python
+"""
+This module is to enable debugability to verify MSG_ENG and KERN_INFO
+"""
+import threading
+import functools
+import time
+import logging
+
+logging.basicConfig(level=logging.NOTSET, format='%(threadName)s %(message)s')
+
+class PeriodicTimer(object):
+	"""
+	The class 
+
+	input:
+	  interval, callback
+
+	"""
+	def __init__(self, interval = 5, callback=None):
+		self.interval = interval
+
+		@functools.wraps(callback)
+		def wrapper(*args, **kwargs):
+			print 'args %s kwargs %s' % (args, kwargs)
+			result = callback(*args, **kwargs)
+			if result:
+				self.thread = threading.Timer(self.interval,
+				                              self.callback)
+				self.thread.start()
+
+		self.callback = wrapper
+
+	def start(self):
+		self.thread = threading.Timer(self.interval, self.callback)
+		self.thread.start()
+
+	def cancel(self):
+		self.thread.cancel()
+
+def foo():
+	logging.info('Doing some work...')
+	return True
+
+timer = PeriodicTimer(1, foo)
+timer.start()
+for i in range(2):
+	time.sleep(2)
+	logging.info('Hello')
+
+timer.cancel()
+
+t = threading.Timer(1, foo)
+t.start()

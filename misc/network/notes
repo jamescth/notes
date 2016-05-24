@@ -1,0 +1,17 @@
+Analysis tools
+	netperf
+	iperf
+	netsend
+	tcptrace
+	tcpslice
+	tcpsplit
+
+	captcp
+	wireshark
+	tcpdump
+	scapy
+simulators
+	ns3
+
+emulators
+	Linux Netem

@@ -1,0 +1,36 @@
+A container filesystem is just a tarball
+A container filesystem isn't magic... it's just a tarball
+
+# make a temp dir
+mktemp -d
+	/tmp/tmp.d3NqCJe2yJ
+
+# grab gpg key:
+curl -s -o /tmp/fedora.asc https://getfedora.org/static/8E1431D5.txt
+
+# trust pgp key:
+sudo rpm --import --root=/tmp/tmp.d3NqCje2yJ//tmp/fedora.asc
+
+# install packages signed with gpg key:
+dnf --installroot=/tmp/tmp.d3NqCje2yJ --releasever=22 \
+	install httpd
+
+cd /tmp/tmp.d3NqCJe2yJ
+tar zcf ../fedora.tar ./
+
+cat /tmp/fedora.tar | docker import - fedora
+
+# Docker file
+FROM {the long id from import}
+CMD ["/bin/bash"]
+
+
+# Tools to do:
+yum
+dnf
+debootstrap
+buildroot
+alpine
+gentoo
+
+=> use buildroot to build Minimal Linux Distros

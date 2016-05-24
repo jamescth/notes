@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/net/kprobe_sendto/dd_knet.ko := /auto/home/lsbuild/desktop-398860/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/net/kprobe_sendto/dd_knet.ko /auto/home5/hoj9/testcase/net/kprobe_sendto/dd_knet.o /auto/home5/hoj9/testcase/net/kprobe_sendto/dd_knet.mod.o

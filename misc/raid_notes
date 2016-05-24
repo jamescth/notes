@@ -1,0 +1,150 @@
+Data striping
+In computer data storage, data striping is the technique of segmenting logically
+sequential data, such as a file, in a way that accesses of sequential segment
+are made to different physical storage devices.  Striping is useful when a
+processing device requests access to data more quickly than a storage devices
+can provide access.  By performing segment accesses on multiple devices, multiple
+segments can be accessed concurrently.  This provides more data access throughput,
+which avoids causing the processor to idly wait for data accesses.  Striping is
+used across disk drive in RAID storage, network interfaces in Grid-oriented 
+Storage, and RAM in some systems.
+
+Method
+One method of striping is done by interleaving sequential segments on storage 
+devices in a round-robin fashion from the begining of the data sequence.  This
+works well for streaming data, but subsequest random accesses will require 
+knowledge of which device contains the data.  If the data is stored such that the
+physical address of each data segment is assigned a 1-to-1 mapping to a particular
+device, the device to access each segment requested can be calculated from the 
+address without knowing the offset of the data within the full sequence.
+
+Other methods might be employed in which sequential segments are not stored on 
+sequential devices.  Such non-sequential interleaving can have benefits in some
+error correction schemes.
+
+Advantages and disadvantages
+Advantages of striping include performance and throughput.  Sequential time 
+interleaving of data accesses allows the lesser data access throughput of each 
+storage devices to be cumulatively multiplied by the number of storage devices
+employed.  Increased throughput allows the data processing device to continue
+its work without interruption, and thereby finish its procedures more quickly.
+This is manifested in improved performance of the data processing.
+
+Because different segments of data are kept on different storage devices, the 
+failure of one device causes the corruption of the full data sequence.  In effect,
+the failure rate of the array of storage devices is equal to the sum of the
+failure rate of each storage device.  This disadvantage of striping can be
+overcome by the storage of redundent informantion, such as parity, for the 
+purpose of error correction.  In such a system, the disadvantage is over come at
+the cost of requiring extra storage.
+
+Wide Striping and Narrow Striping
+Wide Striping occurs when chunks of data are spread across multiple arrays, 
+possibly all the drives in the system.  Narrow Striping occurs when the chunks of
+data are spread across the drives in a single array.
+
+Other Applications
+Data striping is used in some modern database, such as Sybase, and in certain RAID
+devices under software or hardware control, such as IBM's RAMAC array subsystem.
+File systems of clusters also use striping.  Oracle Automatic Storage Management
+allows ASM files to be either coarse or fine striped.
+
+Data striping can also be achieved with Linux's Logical Volume Management (LVM). 
+The LVM system allows for the adjustment of coarseness of the striping pattern.
+LVM tools will allow implementation of data striping in conjunction with mirroring;
+however, LVM1 will not allow adding additional disks to a striped Logical Volume 
+(LV).  This can be achieved with LVM2 using LVM2 format metadata.
+
+In some RAID configurations (such as RAID-0) if one RAID disk fails, this file (and
+all other data), will be lost.  In other RAID configurations (such as a RAID-5 with
+a parity drive), if one drive fails the data can be restored by using the other
+devices in the array.  This is because RAID-5 uses parity error correcting 
+redundancy.
+
+***********************************************************************************
+RAID
+An acronym for Redundant Array of Independent Disks (formerly Redundant Array of
+Inexpensive Disks), is a technology that provides increased storage functions and 
+reliability through redundancy, combining multiple disk drives components into a
+logical unit where all drives in the array are interdependent.
+
+RAID is now used as an umbrella term for computer data storage schemes that can
+divide and replicate data among multiple disk drives.  The schemes or architectures
+are named by the word RAID followed by a number (e.g., RAID 0, RAID 1).  The
+various designs of RAID systems involve two key goals: increase data reliability
+and increase input/output performance.  When multiple physical disks are set up to
+use RAID technology, they are said to be in a RAID array.  This array distributes
+data across multiple disks, but the array is addressed by the operating system as
+one single disk.  RAID can be set up to serve several different purposes.
+
+
+Standard levels
+A number of standard schemes have evolved which are referred to as levels.  There
+were five RAID levels originally conceived, but many more variations have evolved,
+notably several nested levels and many non-standard levels.
+
+Following is a brief textual summay of the most commonly used RAID levels.
+	RAID 0 (block-level striping without parity or mirroring) provides improved 
+	performance and additional storage but no redundancy or fault tolerance (making
+	it not ture RAID, according to the acronym's definition).  However, because of
+	the similarities to RAID (especially the need for a controller to distribute
+	data across multiple disks), simple stripe sets are normally referred to as 
+	RAID 0.  Any disk failure destroys the array, and the likelihood of failure
+	increases with more disks in the array (at a minimum, catastrophic data loss
+	is twice as likely compared to single drives without RAID).  A single disk
+	failure destroys the entire array because when data is written to a RAID 0 
+	volume, the data is broken into fragments called blocks.  The number of blocks
+	is dictated by the stripe size, which is a configuration parameter of the 
+	array.  The blocks are written to their respective sidks simulaneously on the
+    same sector.  This allows smaller sections of the entire chunk of data to be
+	read off the drive in parallel, increasing bandwidth.  RAID 0 does not 
+	implement error checking, so any error is uncorrectables.  More disks in the
+	array means higher bandwidth, but greater risk of data loss.
+
+	In RAID 1 (mirroring without parity or striping), data is written identically 
+	to multiple disks (a "mirrored set").  Although many implementations create 
+	sets of 2 disks, sets many contain 3 or more disks.  Array provides fault
+	tolerance from disk errors or failure and continues to operate as long as at
+	least one drive in the mirrored is functioning.  With appropriate operating
+	system support, there can be increase to read performance, and only a minimal
+	write performance reduction.  Using RAID 1 with a separate controller for each
+	disk is sometimes called duplexing.
+
+	In RAID 2 (bit-level striping with dedicated Hamming-code parity), all disk
+	spindle rotation is synchronized, and data is striped such that each sequential
+	bit is on a different disk.  Hamming-code parity is calculated across 
+	corresponding bits on disks and stored on one or more parity disks.  Extremely
+	high data transfer rates are possible.
+
+	In RAID 3 (byte-level striping with dedicated parity), all disk spindle roration
+	is synchronized, and data is striped such that each sequential byte is on a
+	different disk.  Parity is calculated across corresponding bytes on disks and 
+	stored on a dedicated parity disk.  Very high data transfer rates are possible.
+
+	In RAID 4 (block-level striping with dedicated parity) is indential to RAID 5,
+	but confines all parity data to a single disk, which can create a performance
+	bottleneck.  In this setup, files can be distributed between multiple disks. 
+	Each disk operates independently which allows I/O requests to be performed in
+	parallel, though data transfer speeds can suffer due to the type of parity. The
+	error detection is achieved through dedicated parity and is stored in a seperate,
+	single disk unit.
+
+	In RAID 5 (block-level striping with distributed parity) distributes parity along
+	with the data and requires all drives but one to be present to operate; drive 
+	failure, any subsequent reads can be calculated from the distributed parity such
+	that the drive failure is masked from the end user.  The array will have data 
+	loss in the event of a second drive failure and is vulnerable until the data that
+	was on the failed drive is rebuilt onto a replacement drive.  A single drive 
+	failure in the set will result in reduced performance of the entire set until the
+	failed drive has been replaced and rebuild.
+
+	RAID 6 (block-level striping with double distribute parity) provides fault
+	tolerance from two drive failures; array continues to operate with up to two
+	failed drives.  This makes larger RAID groups more practical, especially for
+	high-availability systems.  this becomes increasingly important as large-capacity
+	drives lengthen the time needed to recover from the failure of a single drive.
+	Single-parity RAID levels are as vulnerable to data loss as a RAID 0 array until
+	the failed drive is replaced and its data rebuilt; the larger the drive, the longer
+	the rebuild will take.  Double parity gives time to rebuild the array without the
+	data being at risk if a single additional drive fails before the rebuild is
+	complete.

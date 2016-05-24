@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import subprocess
+
+class DDConfig:
+	"""
+	"""
+
+	def __init__(self, str_cmd = "not defined", eth = "not defined"):
+		if (eth == "not defined"):
+			self.str_cmd = str_cmd
+		else:
+			self.str_cmd = str_cmd + " " + eth
+
+		# -------- class member --------
+		self.output = []
+
+		self.index = []
+		self.key = 'eth'
+		self.eth_dic = {}
+
+	def print_config(self):
+		print "output for:", self.str_cmd
+		#p = subprocess.Popen([cmd,eth], stdout=subprocess.PIPE)
+		proc = subprocess.Popen(self.str_cmd, shell=True, stdout=subprocess.PIPE)
+		index = 0
+		# can we not copy so many times?  for now, quick hack
+		self.output = proc.communicate()[0]
+		for line in self.output.splitlines():
+			if (('inet' in line) or ('eth' in line)):
+				print line.partition(' ')[0]
+				print(line)
+
+def main():
+	a = DDConfig('ddsh -s net config')
+	a.print_config()
+	#print_config('ifconfig','eth0b')
+	del a
+if __name__ == '__main__':
+	main()
+
+

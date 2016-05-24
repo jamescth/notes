@@ -1,0 +1,4 @@
+LOCAL hostname
+sudo cat /etc/sudoers
+
+PUT ./test /tmp/test 0644

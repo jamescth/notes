@@ -1,0 +1,19 @@
+dump_nocrash_primary
+	write_common_headers() => disk_dump()/do_livedump()/do_appdump()
+	update_hdr_nblocks() => disk_dump()/do_livedump()
+	        unit = (crashdump_mode() || dumptype == APPDUMP) ? 
+			&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+
+	write_bitmap() => disk_dump()/do_livedump()
+	write_msgbuf() => disk_dump()/do_livedump()
+	write_compressed_memory() => disk_dump()
+	livedump_skip_page() => write_memory_nocrash()
+	write_memory_nocrash() => do_livedump()
+	write_sub_header() => disk_dump()/do_livedump()
+	check_primary_space() => disk_dump()
+	do_appdump()
+		primary =  (crashdump_mode()) ? 
+			&dump_primary[devnum] : &dump_nocrash_primary[devnum];
+
+	init_diskdump()
+

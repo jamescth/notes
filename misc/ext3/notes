@@ -1,0 +1,78 @@
+crash> files 25528
+ FD       FILE            DENTRY           INODE       TYPE PATH
+  3 ffff81008ce7d1c0 ffff81002216b300 ffff81005fb6eb18 REG  /ddr/var/log/debug/ddfs.memstat
+  f_op = 0xffffffff804aa820,
+  f_mapping = 0xffff81005fb6ec50
+
+crash> file_operations 0xffffffff804aa820
+struct file_operations {
+  llseek = 0xffffffff80282b38 <generic_file_llseek>,
+  read = 0xffffffff80282956 <do_sync_read>,
+  write = 0xffffffff8028284b <do_sync_write>,
+  aio_read = 0xffffffff8025bdd2 <generic_file_aio_read>,
+  aio_write = 0xffffffff802c5c6a <ext3_file_write>,
+  ioctl = 0xffffffff802ca3e0 <ext3_ioctl>,
+  compat_ioctl = 0xffffffff802ca97f <ext3_compat_ioctl>,
+  mmap = 0xffffffff8025a957 <generic_file_mmap>,
+  open = 0xffffffff8028139d <generic_file_open>,
+  release = 0xffffffff802c5bfc <ext3_release_file>,
+  fsync = 0xffffffff802c5d08 <ext3_sync_file>,
+  splice_write = 0xffffffff8029edc7 <generic_file_splice_write>,
+  splice_read = 0xffffffff8029f69b <generic_file_splice_read>,
+
+f_mapping
+crash> address_space 0xffff81005fb6ec50
+struct address_space {
+  a_ops = 0xffffffff804aab30,
+
+crash> address_space_operations 0xffffffff804aab30
+struct address_space_operations {
+  writepage = 0xffffffff802c7355 <ext3_ordered_writepage>,
+  readpage = 0xffffffff802c7a1d <ext3_readpage>,
+  sync_page = 0xffffffff802a0afc <block_sync_page>,
+  readpages = 0xffffffff802c7a01 <ext3_readpages>,
+  prepare_write = 0xffffffff802c7863 <ext3_prepare_write>,
+  commit_write = 0xffffffff802c7576 <ext3_ordered_commit_write>,
+  bmap = 0xffffffff802c77e0 <ext3_bmap>,
+  invalidatepage = 0xffffffff802c77a4 <ext3_invalidatepage>,
+  releasepage = 0xffffffff802c7731 <ext3_releasepage>,
+  direct_IO = 0xffffffff802c8a55 <ext3_direct_IO>,
+  migratepage = 0xffffffff8027f10e <buffer_migrate_page>,
+
+
+
+sys_write() -> vfs_write() ->  file->f_op->write() -> do_sync_write() -> f_op->aio_write() -> ext3_file_write()
+
+ext3_file_write()
+{
+	ret = generic_file_aio_write()
+	=>
+		__generic_file_aio_write_nolock
+		=>
+			generic_segment_checks()
+			generic_write_checks()
+			file_update_time()
+			generic_file_buffered_write()
+		sync_page_range()
+
+	if error, skip flushing
+
+	if the inode is IS_SYNC or O_SYNC & we r doing data journalling
+	then, enforce the transaction to disk
+
+	if(f_flags & O_SYNC)
+		ext3_should_journal_data()
+
+force_commit:
+	ext3_force_commit()
+	=>
+		ext3_journal_force_commit()
+		=>
+			journal_start()
+			=>
+				start_this_handle()
+				// A handle is an object which represents a 
+				   single atomic update to a filesystem, and 
+				   which tracks all of the modifications which
+				   form part of that one update.
+

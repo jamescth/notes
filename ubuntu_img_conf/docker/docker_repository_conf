@@ -1,0 +1,83 @@
+# http://www.activestate.com/blog/2014/01/deploying-your-own-private-docker-registry
+
+# we need the chunkin module for nginx
+sudo apt-get -y install git nginx-extras
+
+# gives us the htpasswd command
+sudo apt-get -y install apache2-utils
+
+# install dependencies
+sudo apt-get -y install build-essential libevent-dev libssl-dev liblzma-dev python-dev python-pip
+
+# install redis to use as our LRU cache
+sudo apt-get -y install redis-server
+
+sudo apt-get clean
+
+# Let's install docker registry
+sudo git clone https://github.com/dotcloud/docker-registry.git /opt/docker-registry
+cd /opt/docker-registry
+
+# checkout the latest stable version of the registry
+sudo git checkout 0.9.1
+# Note: checking out '0.6.3'.
+#
+#You are in 'detached HEAD' state. You can look around, make experimental
+#changes and commit them, and you can discard any commits you make in this
+#state without impacting any branches by performing another checkout.
+#
+#If you want to create a new branch to retain commits you create, you may
+#do so (now or later) by using -b with the checkout command again. Example:
+#
+#  git checkout -b new_branch_name
+#
+#HEAD is now at d853ea8... Bumped version
+
+# create log dirs
+sudo mkdir -p /var/log/docker-registry
+
+# install pip packages
+pip install -r requirements.txt
+
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
+# Step 1 - Install Prerequisites
+# The Docker registry is a Python application.  So, get it up and running
+sudo apt-get -y install build-essential python-dev libevent-dev python-pip liblzma-dev
+sudo apt-get install -y swig
+
+# Step 2 - Install and Configure Docker Registry
+sudo pip install docker-registry
+
+# Docker-registry requires a configuration file.
+cd /usr/local/lib/python2.7/dist-packages/config
+sudo cp config_sample.yml config.yml
+sudo mkdir /var/docker-registry
+cd /var/docker-registry
+
+gunicorn --access-logfile - --debug -k gevent -b 0.0.0.0:5000 -w 1 docker_registry.wsgi:application
+gunicorn --access-logfile /var/log/docker-registry/access.log --error-logfile /var/log/docker-registry/server.log -k gevent --max-requests 100 --graceful-timeout 3600 -t 3600 -b localhost:5000 -w 8 docker_registry.wsgi:application
+# Step 3 - Start Docker Registry as a Service
+
+# Step 4 - Secure Your Docker Registry with Nginx
+sudo apt-get -y install nginx apache2-utils
+# Create the first user as follows: 
+sudo htpasswd -c /etc/nginx/docker-registry.htpasswd <USERNAME>
+	james / tttt
+
+# If you want to add more users in the future, just re-run the above command without the c option:
+sudo htpasswd /etc/nginx/docker-registry.htpasswd <USERNAME_2>
+
+sudo gvim /etc/nginx/sites-available/docker-registry
+
+sudo ln -s /etc/nginx/sites-available/docker-registry /etc/nginx/sites-enabled/docker-registry
+
+# Step 5 - Set UP SSL
+
+# Step 6 - Access Your Docker Registry from Another Machine
+
+# Step 7 - Publish to your Docker Registry
+
+# Step 8 - Pull from Your Docker Registry
+
+
+

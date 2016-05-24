@@ -1,0 +1,9 @@
+#tracing mprotect ops.
+probe kernel.function("make_pages_present")
+{
+	printf("Process(%d)-ENTER [%s] - %s(sb)\n", 
+				pid(), execname(), probefunc());
+	printf("%s\n",  print_stack(backtrace()));
+	// printf("Start :%x - Len %d\n", start, len);
+}
+

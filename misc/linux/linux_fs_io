@@ -1,0 +1,126 @@
+fs.h/struct file
+
+/ext3
+crash> file_operations 0xffffffff804a97e0
+struct file_operations {
+  owner = 0x0,
+  llseek = 0xffffffff802a56df <block_llseek>,
+  read = 0xffffffff80282c16 <do_sync_read>,
+  write = 0xffffffff80282b0b <do_sync_write>,
+  aio_read = 0xffffffff8025bf16 <generic_file_aio_read>,
+  aio_write = 0xffffffff8025cd1e <generic_file_aio_write_nolock>,
+  readdir = 0,
+  poll = 0,
+  ioctl = 0,
+  unlocked_ioctl = 0xffffffff802a575b <block_ioctl>,
+  compat_ioctl = 0xffffffff803296b9 <compat_blkdev_ioctl>,
+  mmap = 0xffffffff8025aa9b <generic_file_mmap>,
+  open = 0xffffffff802a64b6 <blkdev_open>,
+  flush = 0,
+  release = 0xffffffff802a61b3 <blkdev_close>,
+  fsync = 0xffffffff802a5533 <block_fsync>,
+  aio_fsync = 0,
+  fasync = 0,
+  lock = 0,
+  sendpage = 0,
+  get_unmapped_area = 0,
+  check_flags = 0,
+  dir_notify = 0,
+  flock = 0,
+  splice_write = 0xffffffff8029f087 <generic_file_splice_write>,
+  splice_read = 0xffffffff8029f95b <generic_file_splice_read>,
+  setlease = 0
+}
+
+static const struct address_space_operations ext3_ordered_aops = {
+	.readpage		= ext3_readpage,
+	.readpages		= ext3_readpages,
+	.writepage		= ext3_ordered_writepage,
+	.write_begin		= ext3_write_begin,
+	.write_end		= ext3_ordered_write_end,
+	.bmap			= ext3_bmap,
+	.invalidatepage		= ext3_invalidatepage,
+	.releasepage		= ext3_releasepage,
+	.direct_IO		= ext3_direct_IO,
+	.migratepage		= buffer_migrate_page,
+	.is_partially_uptodate  = block_is_partially_uptodate,
+	.error_remove_page	= generic_error_remove_page,
+};
+
+static const struct address_space_operations ext3_writeback_aops = {
+	.readpage		= ext3_readpage,
+	.readpages		= ext3_readpages,
+	.writepage		= ext3_writeback_writepage,
+	.write_begin		= ext3_write_begin,
+	.write_end		= ext3_writeback_write_end,
+	.bmap			= ext3_bmap,
+	.invalidatepage		= ext3_invalidatepage,
+	.releasepage		= ext3_releasepage,
+	.direct_IO		= ext3_direct_IO,
+	.migratepage		= buffer_migrate_page,
+	.is_partially_uptodate  = block_is_partially_uptodate,
+	.error_remove_page	= generic_error_remove_page,
+};
+
+static const struct address_space_operations ext3_journalled_aops = {
+	.readpage		= ext3_readpage,
+	.readpages		= ext3_readpages,
+	.writepage		= ext3_journalled_writepage,
+	.write_begin		= ext3_write_begin,
+	.write_end		= ext3_journalled_write_end,
+	.set_page_dirty		= ext3_journalled_set_page_dirty,
+	.bmap			= ext3_bmap,
+	.invalidatepage		= ext3_invalidatepage,
+	.releasepage		= ext3_releasepage,
+	.is_partially_uptodate  = block_is_partially_uptodate,
+	.error_remove_page	= generic_error_remove_page,
+};
+
+drivers/scsi/sd.c
+static const struct block_device_operations sd_fops = {
+	.owner			= THIS_MODULE,
+	.open			= sd_open,
+	.release		= sd_release,
+	.ioctl			= sd_ioctl,
+	.getgeo			= sd_getgeo,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl		= sd_compat_ioctl,
+#endif
+	.check_events		= sd_check_events,
+	.revalidate_disk	= sd_revalidate_disk,
+	.unlock_native_capacity	= sd_unlock_native_capacity,
+};
+
+
+sys_write()
+  vfs_write()
+    file->f_op->write		file_operations
+      do_sync_write()
+        filp->f_op->aio_write()
+          generic_file_aio_write_nolock()
+
+
+buffer.c/end_buffer_async_write()
+
+
+ll_rw_block()
+fs/buffer.c/submit_bh()
+  block/blk-core.c/submit_bio() <= submit a bio to the block device layer for I/O
+    block/blk-core.c/generic_make_request() <= hand a buffer to its device driver for I/O
+    {
+      ...
+      do {
+        struct request_queue *q = bdev_get_queue(bio->bi_bdev);
+
+        q->make_request_fn(q, bio);
+
+        bio = bio_list_pop(current->bio_list);
+      } while (bio);
+    }
+
+
+ * generic_make_request() does not return any status.  The
+ * success/failure status of the request, along with notification of
+ * completion, is delivered asynchronously through the bio->bi_end_io
+ * function described (one day) else where.
+

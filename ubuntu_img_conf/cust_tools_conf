@@ -1,0 +1,16 @@
+sudo apt-get --assume-yes install fabric
+sudo apt-get --assume-yes install ipython
+sudo apt-get --assume-yes install python-pip
+sudo apt-get --assume-yes install kdiff3
+sudo apt-get --assume-yes install wireshark
+sudo apt-get --assume-yes install unity-tweak-tool gnome-tweak-tool
+sudo apt-get --assume-yes install crash
+
+# cython cant use pip due to miss of header files
+sudo apt-get --assume-yes install cython
+
+# python package
+sudo pip install pycallgraph
+sudo pip install dpkt
+sudo pip install scapy
+sudo pip install pexpect

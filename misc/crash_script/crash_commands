@@ -1,0 +1,633 @@
+crash> help commands
+*
+extend - extend the crash command set
+    crash> extend extlib1.so extlib2.so
+    ./extlib1.so: shared object loaded
+    ./extlib2.so: shared object loaded
+    crash> extend
+    SHARED OBJECT  COMMANDS
+    ./extlib1.so   echo util bin
+    ./extlib2.so   smp show
+    crash> extend -u extlib1.so
+    ./extlib1.so: shared object unloaded
+
+mach - machine specific data
+  mach [-cm]
+
+crash> mach -c
+CPU 0:
+struct cpuinfo_x86 {
+  x86 = 6 '\006',
+  x86_vendor = 0 '\0',
+  x86_model = 45 '-',
+  x86_mask = 6 '\006',
+  cpuid_level = 13,
+  x86_capability = {3219913727, 739248128, 0, 80128, 398386175, 0, 1, 1},
+  x86_vendor_id = "GenuineIntel\000\000\000",
+  x86_model_id = "       Intel(R) Xeon(R) CPU E5-2680 0 @ 2.70GHz\000\000\000\000\000\000\000\00
+0\000\000\000\000\000\000\000\000",
+  x86_cache_size = 20480,
+  x86_clflush_size = 64,
+  x86_cache_alignment = 64,
+  x86_tlbsize = 0,
+  x86_virt_bits = 48 '0',
+  x86_phys_bits = 46 '.',
+  x86_max_cores = 16 '\020',
+  x86_power = 0,
+  extended_cpuid_level = 2147483656,
+  loops_per_jiffy = 2701708,
+  llc_shared_map = {
+    bits = {16711935, 0, 0, 0}
+  },
+  apicid = 0 '\0',
+  booted_cores = 8 '\b',
+  phys_proc_id = 0 '\0',
+  cpu_core_id = 0 '\0'
+}
+
+struct x8664_pda {
+  pcurrent = 0xffffffff805cfdf0,
+  data_offset = 18446604437888970752,
+  kernelstack = 18446744071570915288,
+  oldrsp = 0,
+  irqcount = -1,
+  cpunumber = 0,
+  irqstackptr = 0xffffc20018199fc0 "",
+  nodenumber = 0,
+  __softirq_pending = 0,
+  __nmi_count = 140265,
+  mmu_state = 2,
+  isidle = 1,
+  active_mm = 0xffff813f8cd60440,
+  apic_timer_irqs = 2041864385
+}
+
+crash> mach -m
+      PHYSICAL ADDRESS RANGE         TYPE
+0000000000000000 - 000000000009ac00  E820_RAM
+000000000009ac00 - 00000000000a0000  E820_RESERVED
+00000000000e0000 - 0000000000100000  E820_RESERVED
+0000000000100000 - 00000000bf1d7000  E820_RAM
+00000000bf1d7000 - 00000000bf2fd000  E820_NVS
+00000000bf2fd000 - 00000000bf3da000  E820_RESERVED
+00000000bf3da000 - 00000000bf455000  E820_ACPI
+00000000bf455000 - 00000000bf495000  E820_RESERVED
+00000000bf495000 - 00000000bf497000  E820_RAM
+00000000bf497000 - 00000000bf498000  E820_NVS
+00000000bf498000 - 00000000bf4a1000  E820_RESERVED
+00000000bf4a1000 - 00000000bf4a9000  E820_NVS
+00000000bf4a9000 - 00000000bf4d0000  E820_RESERVED
+00000000bf4d0000 - 00000000bf556000  E820_NVS
+00000000bf556000 - 00000000bf800000  E820_RAM
+00000000e0000000 - 00000000f0000000  E820_RESERVED
+00000000fed1c000 - 00000000fed20000  E820_RESERVED
+00000000ff000000 - 0000000100000000  E820_RESERVED
+0000000100000000 - 0000004040000000  E820_RAM
+
+rd - read memory
+    crash> rd kernel_version 4
+    c0226a6c:  2e322e32 35312d35 00000000 00000001   2.2.5-15........
+    crash> rd c1157f00 52
+    c1157f00:  c0131f7a 00000400 00000015 c013206e   z...........n ..
+    c1157f10:  00000100 c3d4c140 00000100 00000246   ....@.......F...
+    c1157f20:  019b2065 c2a5bb90 080ac618 c02a83d0   e ............*.
+    crash> rd -s c1157f00 52
+    c1157f00:  alloc_fd_array+0x1a 00000400 00000015 expand_fd_array+0x72
+    c1157f10:  00000100 c3d4c140 00000100 00000246
+    c1157f20:  019b2065 c2a5bb90 080ac618 c02a83d0
+    crash> rd jiffies
+    c0213ae0:  0008cc3a                              :...
+    crash> rd -d jiffies
+    c0213ae0:        577376
+    crash> rd -64 kernel_version
+    c0226a6c:  35312d352e322e32                    2.2.5-15
+    crash> rd -32 kernel_version 2
+    c0226a6c:  2e322e32 35312d35                     2.2.5-15
+    crash> rd -16 kernel_version 4
+    c0226a6c:  2e32 2e32 2d35 3531                       2.2.5-15
+    crash> rd -8 kernel_version 8
+    c0226a6c:  32 2e 32 2e 35 2d 31 35                           2.2.5-15
+
+  Read the range of memory from c009bf2c to c009bf60:
+    crash> rd c009bf2c -e c009bf60
+    c009bf2c:  c009bf64 c01328c3 c009bf64 c0132838   d....(..d...8(..
+    c009bf3c:  0000002a 00000004 c57d77e8 00000104   *........w}.....
+    c009bf4c:  0000000b c009a000 7fffffff 00000000   ................
+    c009bf5c:  00000000                              ....
+
+
+task - task_struct contents
+  task [-R member[,member]] [pid | taskp] ...
+
+alias - command aliases
+    crash> alias
+    ORIGIN   ALIAS    COMMAND
+    builtin  man      help
+    builtin  ?        help
+    builtin  quit     q
+    builtin  sf       set scroll off
+    builtin  sn       set scroll on
+
+  Create a new alias to be added to the list:
+
+    crash> alias kp kmem -p
+    ORIGIN   ALIAS    COMMAND
+    runtime  kp       kmem -p
+
+  Create an alias with redirection characters:
+
+    crash> alias ksd "kmem -p | grep slab | grep DMA"
+    ORIGIN   ALIAS    COMMAND
+    runtime  ksd      kmem -p | grep slab | grep DMA
+
+  Remove an alias:
+
+    crash> alias kp ""
+    alias deleted: kp
+
+files - open files
+  files [-l | -d dentry] | [-R reference] [pid | taskp] ...
+    crash> files
+
+  Display the files opened by the "crond" daemon, which is PID 462:
+  crash> files 462
+
+  The -R option is typically invoked from "foreach files".  This example
+  shows all tasks that have "/dev/pts/4" open:
+    crash> foreach files -R pts/4
+
+  Display information about the dentry at address f745fd60:
+    crash> files -d f745fd60
+
+mod - module information and loading of symbols and debugging data
+
+  Display the currently-installed modules:
+    crash> mod
+
+  Load the symbolic and debugging data of all modules:
+    crash> mod -S
+
+  Load the symbolic and debugging data of the soundcore module from its
+  known location:
+    crash> mod -s soundcore
+     MODULE   NAME         SIZE  OBJECT FILE
+    c8019000  soundcore    2788  /lib/modules/2.2.5-15/misc/soundcore.o
+
+  Delete the current symbolic and debugging data of the soundcore module,
+  and then re-load it from a specified object file:
+
+    crash> mod -d soundcore
+    crash> mod -s soundcore /tmp/soundcore.o
+
+  After installing a new kernel module on a live system, reinitialize the
+  installed module list:
+
+    crash> !insmod mdacon
+    crash> mod
+
+repeat - repeat a command
+  Display the value of jiffies once per second:
+
+    crash> repeat -1 p jiffies
+
+timer - timer queue data
+    crash> timer
+
+ana - kmem analysis (datadoamin extension)
+  ana [-m] [-v]
+
+foreach - display command data for multiple tasks in the system
+  Display the stack traces for all tasks:
+    crash> foreach bt
+
+    crash> foreach bash task
+    ...
+
+    crash> foreach files
+    ...
+
+
+mount - mounted filesystem data
+  mount [-f] [-i] [-n pid|task] [vfsmount|superblock|devname|dirname|inode]
+
+  Display mounted filesystem data:
+    crash> mount
+
+  Display the open files associated with each mounted filesystem:
+    crash> mount -f
+
+  Display the dirty inodes associated with each mounted filesystem:
+    crash> mount -i
+
+  Display the mounted filesystem containing inode c5000aa8:
+    crash> mount c5000aa8
+
+runq - run queue
+    crash> runq
+
+union - union contents
+  union union_name[.member[,member]] [-o][-l offset][-rfu] [address | symbol]
+                                     [count | -c count]
+
+  Display the bdflush_param union definition, and then an instance of it:
+    crash> union bdflush_param
+
+    crash> union bdflush_param bdf_prm
+
+ascii - translate a hexadecimal string to ASCII
+
+  Translate the hexadecimal value of 0x62696c2f7273752f to ASCII:
+
+    crash> ascii 62696c2f7273752f
+    62696c2f7273752f: /usr/lib
+
+fuser - file users
+  fuser [pathname | inode]
+
+  Display the tasks using file /usr/lib/libkfm.so.2.0.0
+    crash> fuser /usr/lib/libkfm.so.2.0.0
+
+net - network command
+  net [-a] [[-s | -S] [-R ref] [pid | taskp]] [-n addr]
+
+  Display the network device list:
+    crash> net
+
+  Dump the ARP cache:
+    crash> net -a
+
+  Display the sockets for PID 2517, using both -s and -S output formats:
+    crash> net -s 2517
+
+  Translate the rcv_saddr from above into dotted-decimal notation:
+    crash> net -n 1041236234
+
+  From "foreach", find all tasks with references to socket c08ea3cc:
+    crash> foreach net -s -R c08ea3cc
+
+search - search memory
+  search [-s start | -k | -u] [-e end | -l length] [-m mask] value ...
+
+  Search the current context's address space for all instances of 0xdeadbeef:
+    crash> search -u deadbeef
+
+ Search all kernel memory above the kernel text space for all instances
+  of 0xabcd occuring in the lower 16-bits of each 32-bit word:
+    crash> search -s _etext -m ffff0000 abcd
+
+  Search the user address space of the current context for all instances
+  of 0xdeadbeef:
+    crash> search -u deadbeef
+
+  Search the 4K page at c532c000 for all instances of 0xffffffff:
+    crash> search -s c532c000 -l 4096 ffffffff
+
+  Search the static kernel data area for all instances of c2d400eb:
+    crash> search -s _etext -e _edata c2d400eb
+
+vm - virtual memory
+  vm [-p | -v | -m | [-R reference] | [-f vm_flags]] [pid | taskp] ...
+
+  Display the virtual memory data of the current context:
+    crash> vm
+
+  Display the virtual memory data along with page translations for PID 386:
+    crash> vm -p 386
+
+  Although the -R option is typically invoked from "foreach vm", it can be
+  executed directly.  This example displays all VM areas with vm_flags of 75:
+    crash> vm -R 75
+
+  Display the mm_struct for PID 4777:
+    crash> vm -m 4777
+
+  Display all of the vm_area_structs for task c47d4000:
+    crash> vm -v c47d4000
+
+  Translate a FLAGS value:
+    crash> vm -f 3875
+
+bt - backtrace
+  bt [-a|-r|-t|-T|-l|-e|-E|-f|-o|-O] [-R ref] [ -I ip ] [-S sp] [pid | taskp]
+
+  Display the stack trace of the active task(s) when the kernel panicked:
+    crash> bt -a
+
+  In order to examine each stack frame's contents use the bt -f option.
+  From the extra frame data that is displayed, the arguments passed to each
+  function can be determined.  Re-examining the PID 1592 trace above:
+    crash> bt -f 1592
+
+  Dump the text symbols found in the current context's stack:
+    crash> bt -t
+
+  Search the current stack for possible exception frames:
+    crash> bt -e
+
+gdb - gdb command
+    crash> gdb help
+
+p - print the value of an expression
+
+  Print the contents of jiffies:
+    crash> p jiffies
+    jiffies = $6 = 166532620
+    crash> px jiffies
+    jiffies = $7 = 0x9ed174b
+    crash> pd jiffies
+    jiffies = $8 = 166533160
+
+  Print the contents of the vm_area_struct "init_mm":
+    crash> p init_mm
+
+set - set a process context or internal crash variable
+  set [pid | taskp | [-c cpu] | -p] | [crash_variable [setting]] | -v
+
+  Set the current context to task c2fe8000:
+    crash> set c2fe8000
+
+  Set the context back to the panicking task:
+    crash> set -p
+
+  Turn off output scrolling:
+    crash> set scroll off
+    scroll: off (/usr/bin/less)
+
+  Show the current state of crash internal variables:
+    crash> set -v
+            scroll: on (/usr/bin/less)
+             radix: 10 (decimal)
+           refresh: on
+
+  Show the current context:
+    crash> set
+
+vtop - virtual to physical
+  vtop [-c [pid | taskp]] [-u|-k] address ...
+
+  Translate user virtual address 80b4000:
+    crash> vtop 80b4000
+
+  Translate kernel virtual address c806e000, first using swapper_pg_dir
+  as the page directory base, and secondly, using the page table base
+  of PID 1359:
+    crash> vtop c806e000
+    crash> vtop -c 1359 c806e000
+
+  Determine swap location of user virtual address 40104000:
+    crash> vtop 40104000
+
+btop - bytes to page
+    crash> btop 512a000
+    512a000: 512a
+
+help
+pgcache - dump pages in the page cache
+  pgcache <no arguments>Dump pages in the page cache
+
+sig - task signal handling
+  sig [[-l] | [-s sigset]] | [-g] [pid | taskp] ...
+
+    crash> sig 8970
+
+  Dump the signal-handling data for all tasks in the thread group containing
+  PID 2578:
+    crash> sig -g 2578
+
+  List the signal numbers and their names:
+    crash> sig -l
+
+waitq - list tasks queued on a wait queue
+  waitq  [ symbol ] | [ struct.member struct_addr ] | [ address ]
+
+  Find out if any tasks are blocked on the "buffer_wait" wait queue:
+    crash> waitq buffer_wait
+
+  See who is blocked on the "wait_chldexit" queue of task c5496000:
+    crash> waitq task_struct.wait_chldexit c5496000
+
+  Display the task list waiting on a known task queue:
+    crash> waitq c3534098
+
+dev - device data
+  dev [-i | -p]
+
+  Display the chrdevs and blkdevs array contents:
+    crash> dev
+
+  Display PCI data:
+    crash> dev -p
+
+  Display I/O port and I/O memory usage:
+    crash> dev -i
+
+irq - IRQ data
+  irq [[[index ...] | -u] | -d | -b]
+
+  Display the relevant data for IRQ 18:
+    crash> irq 18
+
+  Display the intel interrupt descriptor table entries:
+    crash> irq -d
+
+  Display the bottom half data:
+    crash> irq -b
+
+ps - display process status information
+  ps [-k|-u][-s][-p|-c|-t|-l|-a|-g|-r] [pid | taskp | command] ...
+
+  Display the parental hierarchy of the "crash" process on a live system:
+    crash> ps -p 4249
+
+  Display all children of the "kwm" window manager:
+    crash> ps -c kwm
+
+  Show the time usage data for pid 18844:
+    crash> ps -t 18844
+
+  Show all kernel threads:
+    crash> ps -k
+
+  Show all tasks sorted by their task_struct's last_run or timestamp value,
+  whichever applies:
+    crash> ps -l
+
+  Show the kernel stack pointer of each user task:
+    crash> ps -us
+
+  Display the argument and environment data for the automount task:
+    crash> ps -a automount
+
+struct - structure contents
+  struct struct_name[.member[,member]][-o][-l offset][-rfu] [address | symbol]
+                                       [count | -c count]
+
+whatis - search symbol table for data or type information
+  whatis [struct | union | typedef | symbol]
+
+   Display the definition of a linux_binfmt structure:
+    crash> whatis linux_binfmt
+
+    crash> whatis sys_read
+    ssize_t sys_read(unsigned int, char *, size_t);
+
+    crash> whatis jiffies
+    long unsigned int jiffies;
+
+    crash> whatis kdev_t
+    typedef short unsigned int kdev_t;
+    SIZE: 2  (0x2)
+
+dis - disassemble
+  dis [-r][-l][-u][-b [num]] [address | symbol | (expression)] [count]
+
+kmem - kernel memory
+  kmem [-f|-F|-p|-c|-C|-i|-s|-S|-v|-V|-n|-z] [-[l|L][a|i]] [slab] [[-P] address]
+
+  Display memory usage information:
+    crash> kmem -i
+
+  Display and verify free memory data:
+    crash> kmem -f
+
+  Dump all the base addresses of each free memory area from above:
+    crash> kmem -F
+
+  Dump the mem_map[] array:
+    crash> kmem -p
+
+  Display the vmlist entry data:
+    crash> kmem -v
+
+  Dump the vm_table contents:
+    crash> kmem -V
+
+  Determine (and verify) the page cache size:
+    crash> kmem -c
+
+  Dump all pages in the page_hash_table:
+    crash> kmem -C
+
+  Find the page_hash_table entry containing page c03576b8:
+    crash> kmem -c c03576b8
+
+  Display kmalloc() slab data:
+    crash> kmem -s
+
+  Display all slab data in the "arp_cache" cache:
+    crash> kmem -S arp_cache
+
+  Verify the active and inactive page lists:
+    crash> kmem -la -li
+
+  Display memory node data (if supported):
+    crash> kmem -n
+
+pte - translate a page table entry
+    crash> pte d8e067
+     PTE    PHYSICAL  FLAGS
+    d8e067   d8e000   (PRESENT|RW|USER|ACCESSED|DIRTY)
+
+    crash> pte 13f600
+     PTE      SWAP     OFFSET
+    13f600  /dev/hda2   5104
+
+swap - swap device information
+    crash> swap
+    FILENAME           TYPE         SIZE       USED   PCT  PRIORITY
+    /dev/sda8        PARTITION     136516k    47896k  35%     -1
+
+wr - write memory
+  wr [-u|-k|-p] [-8|-16|-32|-64] [address|symbol] value
+
+    crash> wr my_debug_flag 1
+
+eval - evaluate
+  eval [-b][-l] (expression) | value
+   crash> eval 128m
+   crash> eval 128 * 1m
+   crash> eval (1 << 27)
+   crash> eval -b 41dc065
+   crash> eval -lb 64g
+
+list - linked list
+  list [[-o] offset] [-e end] [-s struct[.member[,member]]] [-H] start
+
+  Note that each task_struct is linked to its parent's task_struct via the
+  p_pptr member:
+    crash> struct task_struct.p_pptr
+
+  That being the case, given a task_struct pointer of c169a000, show its
+  parental hierarchy back to the "init_task" (the "swapper" task):
+   crash> list task_struct.p_pptr c169a000
+
+  Given that the "task_struct.p_pptr" offset is 136 bytes, the same
+  result could be accomplished like so:
+    crash> list 136 c169a000
+
+  The list of currently-registered file system types are headed up by a
+  struct file_system_type pointer named "file_systems", and linked by
+  the "next" field in each file_system_type structure.  The following
+  sequence displays the structure address followed by the name and
+  fs_flags members of each registered file system type:
+    crash> p file_systems
+    file_systems = $1 = (struct file_system_type *) 0xc03adc90
+    crash> list file_system_type.next -s file_system_type.name,fs_flags 0xc03adc90
+
+  The run queue linking is done with the "run_list" member of the task_struct:
+    crash> struct task_struct.run_list
+    crash> list task_struct.run_list -H runqueue_head
+    f79ac000
+    f7254000
+    f7004000
+    crash> list 60 -H runqueue_head
+    f79ac000
+    f7254000
+    f7004000
+
+   crash> list -H vfsmntlist vfsmount.mnt_list -s vfsmount
+
+ptob - page to bytes
+    crash> ptob 512a
+    512a: 512a000
+
+sym - translate a symbol to its virtual address, or vice-versa
+  sym [-l] | [-M] | [-m module] | [-p|-n] | [-q string] | [symbol | vaddr]
+    crash> sym jiffies
+    crash> sym c0213ae0
+    c0213ae0 (D) jiffies
+
+  Dump the whole symbol table:
+    crash> sym -l
+
+  Find all symbols containing the string "pipe":
+    crash> sym -q pipe
+
+q - exit this session
+
+exit - exit this session
+
+log - dump system message buffer
+  log [-m]
+   -m  Display the message log level preceding each message.
+
+ptov - physical to virtual
+    crash> ptov 56e000
+    VIRTUAL   PHYSICAL
+    c056e000  56e000
+
+sys - system data
+  sys [-c [name|number]] config
+    crash> sys
+    crash> sys config
+
+  Dump the system call table:
+    crash> sys -c
+
+  Find the system call number of the select system call:
+    crash> sys -c select
+
+
+# crash /vmlinux-ddr244222
+crash> wr irq_panic 1
+

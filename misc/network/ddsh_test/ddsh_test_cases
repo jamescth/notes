@@ -1,0 +1,22 @@
+****** start v4 and v6 together ******
+
+# net show config
+eth0a     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:ED  
+          inet addr:10.25.128.173  Bcast:10.25.143.255  Mask:255.255.240.0
+          inet6 addr: 2620:0:170:1106:2a0:d1ff:feec:eeed/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:feec:eeed/64 Scope:Link
+
+# net show setting
+port    enabled   DHCP   IP address                             netmask          type   additional setting
+                                                                /prefix length                            
+-----   -------   ----   ------------------------------------   --------------   ----   ------------------
+eth0a   yes       yes    10.25.128.173*                         255.255.240.0*   n/a                      
+                         2620:0:170:1106:2a0:d1ff:feec:eeed**   /64                                       
+                         fe80::2a0:d1ff:feec:eeed**             /64                                       
+
+# ifconfig eth0a
+eth0a     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:ED  
+          inet addr:10.25.128.173  Bcast:10.25.143.255  Mask:255.255.240.0
+          inet6 addr: 2620:0:170:1106:2a0:d1ff:feec:eeed/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:feec:eeed/64 Scope:Link
+

@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/perf_per_cpu/perf_per_cpu.ko := /auto/home/lsbuild/desktop-371771/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/perf_per_cpu/perf_per_cpu.ko /auto/home5/hoj9/testcase/perf_per_cpu/perf_per_cpu.o /auto/home5/hoj9/testcase/perf_per_cpu/perf_per_cpu.mod.o

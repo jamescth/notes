@@ -1,0 +1,9 @@
+#tracing mprotect ops.
+probe kernel.function("mmput")
+{
+	if (execname() == "ddfs") {
+		printf("Process(%d)-ENTER [%s] - %s(sb)\n", 
+				pid(), execname(), probefunc());
+	}
+}
+

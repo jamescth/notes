@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/kprobe_diskdump/ddump_procmon.ko := /auto/home/lsbuild/desktop-398860/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/kprobe_diskdump/ddump_procmon.ko /auto/home5/hoj9/testcase/kprobe_diskdump/ddump_procmon.o /auto/home5/hoj9/testcase/kprobe_diskdump/ddump_procmon.mod.o

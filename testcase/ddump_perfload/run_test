@@ -1,0 +1,9 @@
+#ddsh -s filesys disable
+
+#./myddfs
+
+#echo 1 > /proc/`pidof myddfs`/rawdump
+
+#kill -sigabrt `pidof myddfs`
+
+#echo "appdump_clean" > /proc/diskdump

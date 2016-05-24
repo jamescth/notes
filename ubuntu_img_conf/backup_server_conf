@@ -1,0 +1,11 @@
+sudo cp /etc/hosts.allow /etc/hosts.allow.org
+sudo cp /etc/passwd /etc/passwd.org
+sudo cp /etc/group /etc/group.org
+sudo cp /etc/shadow /etc/shadow.org
+sudo cp /etc/dhcp/dhclient.conf /etc/dhcp/dhclient.conf.org
+sudo cp /etc/resolvconf/resolv.conf.d/head /etc/resolvconf/resolv.conf.d/head.org
+sudo cp /etc/yp.conf /etc/yp.conf.org
+sudo cp /etc/nsswitch.conf /etc/nsswitch.conf.org
+# sudo cp /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf.org
+# sudoers
+sudo cp /etc/sudoers /etc/sudoers.org

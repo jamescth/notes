@@ -1,0 +1,16 @@
+verify autosport
+
+grep
+bmc-eth0
+
+verify /ddr/var/core in autosupport if snmpd.core exists
+
+
+messages.engineering:
+grep 
+	netmon
+	sysmon
+	dm_map
+	ipmi
+
+debug/cifs/log.nmbd

@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/log_level/log_level.ko := /auto/home/lsbuild/desktop-321714/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/log_level/log_level.ko /auto/home5/hoj9/testcase/log_level/log_level.o /auto/home5/hoj9/testcase/log_level/log_level.mod.o

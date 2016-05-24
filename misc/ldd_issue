@@ -1,0 +1,150 @@
+# ldd /usr/bin/crash
+        linux-vdso.so.1 =>  (0x00007fffaeffd000)
+        libm.so.6 => /auto/home/lsbuild/desktop-335886/lib64/libm.so.6 (0x00002ae3fbc27000)
+        libncurses.so.5 => /auto/home/lsbuild/desktop-335886/usr/lib64/libncurses.so.5 (0x00002ae3fbdae000)
+        libdl.so.2 => /auto/home/lsbuild/desktop-335886/lib64/libdl.so.2 (0x00002ae3fbf15000)
+        libz.so.1 => /auto/home/lsbuild/desktop-335886/lib64/libz.so.1 (0x00002ae3fc019000)
+        libc.so.6 => /auto/home/lsbuild/desktop-335886/lib64/libc.so.6 (0x00002ae3fc12e000)
+        /auto/home/lsbuild/desktop-335886/lib64/ld-linux-x86-64.so.2 (0x00002ae3fbb0d000)
+
+
+# readelf -d /usr/bin/crash | grep NEEDED
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libncurses.so.5]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+
+# objdump -x /usr/bin/crash | grep NEEDED
+  NEEDED      libm.so.6
+  NEEDED      libncurses.so.5
+  NEEDED      libdl.so.2
+  NEEDED      libz.so.1
+  NEEDED      libc.so.6
+
+LD_LIBRARY_PATH=/lib64 
+
+#!/bin/sh
+if [ -n "$LD_LIBRARY_PATH" ]; then
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib64
+else
+  LD_LIBRARY_PATH=/lib64
+fi
+export LD_LIBRARY_PATH
+exec ${path}/${app} "$@"
+
+Or, use gcc flags
+
+gcc -o exename -L${path}/dynamiclib -lnameofLib \
+    -Wl,-R${path}/dynamiclib sourceCode1.c ...
+The -Wl is to pass extra commands to the linker, and in this case, with -R to tell the linker
+to store this path as the "default search path" for the .so
+
+
+http://www.innovationsts.com/blog/?p=1042
+Shared Library Issues In Linux
+
+$ ./psql 
+./psql: error while loading shared libraries: libpq.so.5: cannot open shared object file: No such file or directory
+
+$ ls -l | grep libread
+lrwxrwxrwx  1 root root      18 2010-03-03 11:11 libreadline.so.5 -> libreadline.so.5.2
+-rw-r--r--  1 root root  217188 2009-08-24 19:10 libreadline.so.5.2
+lrwxrwxrwx  1 root root      18 2010-02-02 09:34 libreadline.so.6 -> libreadline.so.6.0
+-rw-r--r--  1 root root  225364 2009-09-23 08:16 libreadline.so.6.0
+
+$ ls -l | grep ".*so "
+lrwxrwxrwx  1 root root      18 2010-02-02 14:48 libdbus-1.so -> libdbus-1.so.3.4.0
+
+$ ldd ./psql
+	linux-gate.so.1 =>  (0x003fc000)
+	libpq.so.5 => not found
+	libxml2.so.2 => /usr/lib/libxml2.so.2 (0x00845000)
+	libpam.so.0 => /lib/libpam.so.0 (0x0054f000)
+	libssl.so.4 => not found
+	libcrypto.so.4 => not found
+	libkrb5.so.3 => /usr/lib/libkrb5.so.3 (0x00706000)
+	libz.so.1 => /usr/lib/libz.so.1 (0x003d5000)
+	libreadline.so.4 => not found
+	libtermcap.so.2 => /lib/libtermcap.so.2 (0x00325000)
+	libcrypt.so.1 => /lib/libcrypt.so.1 (0x004a3000)
+	libdl.so.2 => /lib/libdl.so.2 (0x0031f000)
+	libm.so.6 => /lib/libm.so.6 (0x0033f000)
+	libc.so.6 => /lib/libc.so.6 (0x001d7000)
+	libaudit.so.0 => /lib/libaudit.so.0 (0x00532000)
+	libk5crypto.so.3 => /usr/lib/libk5crypto.so.3 (0x0079e000)
+	libcom_err.so.2 => /lib/libcom_err.so.2 (0x0052d000)
+	libkrb5support.so.0 => /usr/lib/libkrb5support.so.0 (0x006f6000)
+	libkeyutils.so.1 => /lib/libkeyutils.so.1 (0x005ae000)
+	libresolv.so.2 => /lib/libresolv.so.2 (0x00518000)
+	/lib/ld-linux.so.2 (0x001b9000)
+	libselinux.so.1 => /lib/libselinux.so.1 (0x003bb000)
+	libsepol.so.1 => /lib/libsepol.so.1 (0x00373000)
+
+$ sudo find / -name libpq.so.5
+/opt/PostgreSQL/8.4/lib/libpq.so.5
+/opt/PostgreSQL/8.4/pgAdmin3/lib/libpq.so.5
+
+$ export LD_LIBRARY_PATH="/opt/PostgreSQL/8.4/lib/"
+bash-3.2$ ./psql 
+Password: 
+psql (8.4.3)
+Type "help" for help.
+
+postgres=#
+
+
+$ sudo -s
+Password: 
+[root@localhost bin]# echo /opt/PostgreSQL/8.4/lib > /etc/ld.so.conf.d/postgres-i386.conf
+[root@localhost bin]# cat /etc/ld.so.conf.d/postgres-i386.conf
+/opt/PostgreSQL/8.4/lib
+[root@localhost bin]# /sbin/ldconfig
+[root@localhost bin]# exit
+exit
+
+
+
+#!/bin/bash - 
+
+# These variables are designed to be changed if your Linux distro's ldd output
+# varies from Red Hat or Ubuntu for some reason
+iself="not a dynamic executable" # Used to see if executable is not dynamic
+notfound="not.*found"            # Used to see if ldd doesn't find a library
+
+# Step through all of the executable files in the user specified directory
+for exe in $(find $1 -type f -perm /111)
+do      
+    # Check to see if ldd can get any information from this executable. It won't
+    # if the executable is something like a script or a non-ELF executable.
+    if [ -z "$(ldd $exe | grep -i "$iself")" ]
+    then                                   
+        # Step through each of the lines of output from the ldd command
+        # substituting : for a delimiter instead of a space
+        for line in $(ldd $exe | tr " " ":")        
+        do
+            # If ldd gives us output with our "not found" variable string in it,
+            # we'll need to warn the user that there is a shared library issue
+            if [ -n "$(echo "$line" | grep -i "$notfound")" ]
+            then
+                # Grab the first field, ignoring the words "not" or "found".
+                # If we don't do this, we'll end up grabbing a field with a
+                # word and not the library name.                               
+                library="$(echo $line | cut -d ":" -f 1)"
+                
+                printf "Executable %s is missing shared object %s\n" $exe $library
+            fi                                                
+        done                                 
+    fi 
+done
+
+#!/bin/bash - 
+
+# Set up the variables to hold the PostgreSQL lib and bin paths. These paths may
+# vary on your system, so change them accordingly.
+LIB_PATH=/opt/PostgreSQL/8.4/lib                    # Postgres library path
+BIN_FILE=/opt/PostgreSQL/8.4/pgAdmin3/bin/psql      # The binary to run
+
+# Start the specified program with the library path and have it replace this 
+# process. Note that this will not change LD_LIBRARY_PATH in the parent shell.
+exec $(LD_LIBRARY_PATH="$LIB_PATH" "$BIN_FILE")

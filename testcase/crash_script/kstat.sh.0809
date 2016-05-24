@@ -1,0 +1,77 @@
+# need to give the per_cpu__kstat as the arg1
+# use 'grep per_cpu__kstat ${path}/System.map-ddr385898' to get the value
+#     ffffffff808d0950 D per_cpu__kstat
+#     ls_cpustat 0xffffffff808d0950
+define ls_cpustat
+	set $v_runq = $arg0
+	set $cpu = 0
+	printf "kstat offset is %p\n", $v_runq
+	set $cpu_pda_p = (struct x8664_pda *)((long)_cpu_pda[$cpu])
+
+	# cpu_pda is valid for all NR_CPUS. 
+	# So, we use it's data_offset to verify if a cpu it's online
+	printf "          user     nice   system  softirq     irq     idle   iowait    steal\n"
+	while $cpu_pda_p->data_offset != 0
+		# printf "cpu_pda_p %p offset %p $kstat %p\n", $cpu_pda_p, $cpu_pda_p->data_offset, ($v_runq + $cpu_pda_p->data_offset)
+		set $kstat = (struct kernel_stat *)($v_runq + $cpu_pda_p->data_offset)
+		set $cpu_usage = (struct cpu_usage_stat)$kstat->cpustat
+		printf "cpu%02d %8d %8d %8d %8d", $cpu, $cpu_usage->user, $cpu_usage->nice, $cpu_usage->system, $cpu_usage->softirq
+		printf "%8d %8d %8d %8d\n", $cpu_usage->irq, $cpu_usage->idle, $cpu_usage->iowait, $cpu_usage->steal
+
+		set $cpu = $cpu+1
+		set $cpu_pda_p = (struct x8664_pda *)((long)_cpu_pda[$cpu])
+	end
+end
+
+define ls_sirqstat
+	set $v_runq = $arg0
+	set $cpu = 0
+	printf "kstat offset is %p\n", $v_runq
+	set $cpu_pda_p = (struct x8664_pda *)((long)_cpu_pda[$cpu])
+
+	# cpu_pda is valid for all NR_CPUS. 
+	# So, we use it's data_offset to verify if a cpu it's online
+	printf "      (hex) pendingC  servi_C pendingT start_ts  done_ts sum_time prev_sum\n"
+
+	while $cpu_pda_p->data_offset != 0
+		# printf "cpu_pda_p %p offset %p $kstat %p\n", $cpu_pda_p, $cpu_pda_p->data_offset, ($v_runq + $cpu_pda_p->data_offset)
+		set $kstat = (struct kernel_stat *)($v_runq + $cpu_pda_p->data_offset)
+
+		set $idx = 0
+		printf "----- ----- -------- -------- -------- -------- -------- -------- --------\n"
+		while $idx < 8
+			if $idx == 0 
+				printf "CPU%02d HI   ", $cpu
+			end
+			if $idx == 1
+				printf "CPU%02d TIMER", $cpu
+			end
+			if $idx == 2
+				printf "CPU%02d NETTX", $cpu
+			end
+			if $idx == 3
+				printf "CPU%02d NETRX", $cpu
+			end
+			if $idx == 4
+				printf "CPU%02d BLOCK", $cpu
+			end
+			if $idx == 5
+				printf "CPU%02d TASKL", $cpu
+			end
+			if $idx == 6
+				printf "CPU%02d SCHED", $cpu
+			end
+			if $idx == 7
+				printf "CPU%02d HTIME", $cpu
+			end
+
+			set $sirq = (struct softirq_psstat)$kstat->sirqstat[$idx]
+			printf " %8x %8x %8x", $sirq->marked_pending_count, $sirq->servicing_count, $sirq->marked_pending_ts
+			printf " %8x %8x %8x %8x", $sirq->service_start_ts, $sirq->service_done_ts, $sirq->sum_time, $sirq->prev_sum_time
+			set $idx = $idx + 1
+		end
+
+		set $cpu = $cpu+1
+		set $cpu_pda_p = (struct x8664_pda *)((long)_cpu_pda[$cpu])
+	end
+end

@@ -1,0 +1,6 @@
+server 192.168.100.1
+zone cherry.local
+update delete ipv6_ddr1.cherry.local IN A 192.168.100.111
+zone 192.168.100.0.in-addr.arpa
+update delete 111.100.168.192.in-addr.arpa. IN PTR ipv6_ddr1.cherry.local
+send

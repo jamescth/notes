@@ -1,0 +1,11 @@
+create a new archive
+tar -cvf test.tar RSA_Key_Manager_Client/2.7SP1/linux_x64_lsb30/library/
+
+append files to the end of an archive
+tar -rvf test.tar RSA_Key_Manager_Client/2.7SP1/linux_x64_lsb30/samples/config/
+
+view archive contents
+tar -tvf test.tar
+
+gz tar file
+gzip test.tar

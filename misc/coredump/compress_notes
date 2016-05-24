@@ -1,0 +1,25 @@
+UnCompressed Blocks: 796995 compressed Blocks- 263981
+print in do_appdump()
+
+in Write application data pages
+
+	uncomp_data_blocks = comp_data_blocks = blocks;
+
+	for each vma {
+
+		for (addr in vma) {
+			ret = diskdump_compress_and_write(APPDUMP, primary->scratch, ndevs, &devnum,
+				&blk_in_chunk, &blk_offset, 
+				&outbuf_filled, &comp_data_blocks);
+
+	...
+	ret = diskdump_compress_and_write_remaining(APPDUMP, primary->scratch, ndevs, &devnum,
+                                            blk_in_chunk, &blk_offset, 
+                                            &outbuf_filled,&comp_data_blocks);
+
+#define CHUNKSIZE ((1<<block_order) * PAGE_SIZE)
+	(1<<4) * 4096 = 64K
+#define COMP_CHUNKSIZE ((1<<comp_block_order) * PAGE_SIZE)
+	(1<<3) * 4096 = 32K
+syrah
+

@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/my_cdev/my_cdev.ko := /auto/home/lsbuild/desktop-335886/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/my_cdev/my_cdev.ko /auto/home5/hoj9/testcase/my_cdev/my_cdev.o /auto/home5/hoj9/testcase/my_cdev/my_cdev.mod.o

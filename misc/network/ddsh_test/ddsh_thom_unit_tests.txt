@@ -1,0 +1,1984 @@
+---------------   -------   ----   ------------------------------------
+---------------   ----   -----------------------------
+* Value from DHCP
+** auto_generated IPv6 address
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! #
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net create interface
+eth4a vlan 540
+Creating interface ...
+Done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config eth4a.540 up
+Configuring interface...
+
+interface eth4a.540, is enabled and up but ip address is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net create virtual
+veth111
+Creating the virtual interface ...
+Done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net aggregate add
+veth111 mode balanced hash xor-L3L4 interfaces eth0b
+Current interfaces for veth111: eth0b
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config veth111 up
+Configuring interface...
+
+Message from syslogd@dd890-21 at Fri May 16 14:53:10 2014 ...
+dd890-21 kernel: (U1)(MSG-BONDING-00003):[     92032.527459] dd_net:
+bonding: : veth111: link status consistently up for  interface eth0b.
+
+interface veth111, is enabled and up but ip address is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config create
+interface veth111 vlan 140
+
+**** Invalid <ifname> (Ethernet interface name).
+
+Incorrect syntax "net config create interface veth111 vlan 140", showing
+help:
+  net config <ifname>
+                {[<ipaddr>] [netmask <mask>] | [<ipv6addr>] |
+                [dhcp {yes [ipversion {ipv4|ipv6}]|no}]}
+                {[autoneg] | [duplex {full | half} speed
+{10|100|1000|10000}]
+                [up | down] [mtu {<size> | default}]
+                [txqueuelen <size>]
+  net config <ifname> type {none | management | replication | cluster}
+                                       Configure an Ethernet interface or
+set
+                                       type for an Ethernet interface
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net create interface
+veth111 vlan 140
+Creating interface ...
+Done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config veth111.140
+up
+Configuring interface...
+
+interface veth111.140, is enabled and up but ip address is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+eth4a.540.60 192.168.150.10 netmask 255.255.255.0
+
+eth4a.540.60 error,19: No such device
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+eth4a.540:60 192.168.150.10 netmask 255.255.255.0
+Creating interface ...
+Done.
+Configuring interface...
+done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+eth4a.540:600 2100:bad:dead:f00d::e4a1:100/64
+Creating interface ...
+Done.
+Configuring interface...
+
+interface eth4a.540:600, is enabled but netmask is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net create interface
+eth4a.540 alias 260
+
+To create an alias, use net config command,the net create is deprecated
+Creating interface ...
+Done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+eth4a.541:70 192.168.151.10 netmask 255.255.255.0
+
+eth4a.541:70 error,19: No such device
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config veth111:61
+192.168.152.10 netmask 255.255.255.0
+Creating interface ...
+Done.
+Configuring interface...
+done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config veth111:601
+2100:bad:dead:f00d::e4a3:100/64
+Creating interface ...
+Done.
+Configuring interface...
+
+interface veth111:601, is enabled but netmask is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net create interface
+veth111 alias 261
+
+To create an alias, use net config command,the net create is deprecated
+Creating interface ...
+Done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+veth111.140:71 192.168.172.10 netmask 255.255.255.0
+Creating interface ...
+Done.
+Configuring interface...
+done.
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+veth111.140:701 2100:bad:dead:f00d::1e4a4:100/64
+
+**** Invalid 'net config <options>': "2100:bad:dead:f00d::1e4a4:100/64" is
+not a recognized address or option.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+veth111.140:701 2100:bad:dead:f00d::1e4a4:100/64
+
+**** Invalid 'net config <options>': "2100:bad:dead:f00d::1e4a4:100/64" is
+not a recognized address or option.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net config
+veth111.140:701 2100:bad:dead:f00d::e4a1:100/64
+Creating interface ...
+Done.
+Configuring interface...
+
+interface veth111.140:701, is enabled but netmask is not configured.
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net show settings
+port              enabled   DHCP   IP address
+netmask           type   additional setting
+                  
+/prefix length    
+---------------   -------   ----   ------------------------------------
+---------------   ----   -----------------------------
+eth0a             yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                                   2620:0:170:1106:2a0:d1ff:fecf:2a19**
+/64                
+                                   fe80::2a0:d1ff:fecf:2a19**
+/64                
+eth0b             yes       n/a    n/a
+n/a               n/a    bonded to veth111
+eth4a             no        n/a    n/a
+n/a               n/a
+                                   2100:bad:dead:f00d::e4a:100**
+/64                
+                                   2100:bad:dead:f00d::e4a:210**
+/64                
+                                   fe80::21b:21ff:fe8f:d868**
+/64                
+eth4a.540         yes       no     (not specified)
+(not specified)   n/a
+                                   2100:bad:dead:f00d::e4a1:100**
+/64                
+                                   fe80::21b:21ff:fe8f:d868**
+/64                
+eth4a.540:260     no        n/a    n/a
+n/a               n/a
+eth4a.540:60      yes       no     192.168.150.10
+255.255.255.0     n/a
+eth4a.540:600     yes       no     2100:bad:dead:f00d::e4a1:100
+/64               n/a
+eth4a:10          yes       no     192.168.140.30
+255.255.255.0     n/a
+eth4a:100         yes       no     2100:bad:dead:f00d::e4a:100
+/64               n/a
+eth4a:200         yes       no     192.168.140.200
+255.255.255.0     n/a
+eth4a:210         yes       no     2100:bad:dead:f00d::e4a:210
+/64               n/a
+eth4b             yes       no     (not specified)
+(not specified)   n/a
+                                   2100:bad:dead:f00d::e4b:100**
+/64                
+                                   2100:bad:dead:f00d::e4b:210**
+/64                
+eth4b:10          yes       no     192.168.141.30
+255.255.255.0     n/a
+eth4b:100         yes       no     2100:bad:dead:f00d::e4b:100
+/64               n/a
+eth4b:200         yes       no     192.168.141.200
+255.255.255.0     n/a
+eth4b:210         yes       no     2100:bad:dead:f00d::e4b:210
+/64               n/a
+eth5a             yes       no     (not specified)
+(not specified)   n/a
+                                   fe80::21b:21ff:fe52:87f4**
+/64                
+eth5b             no        n/a    n/a
+n/a               n/a
+                                   2100:bad:dead:f00d::e5b:100**
+/64                
+                                   2100:bad:dead:f00d::e5b:210**
+/64                
+eth5b:10          yes       no     192.168.151.30
+255.255.255.0     n/a
+eth5b:100         yes       no     2100:bad:dead:f00d::e5b:100
+/64               n/a
+eth5b:200         yes       no     192.168.151.200
+255.255.255.0     n/a
+eth5b:210         yes       no     2100:bad:dead:f00d::e5b:210
+/64               n/a
+veth111.140       yes       no     (not specified)
+(not specified)   n/a
+                                   2100:bad:dead:f00d::e4a1:100**
+/64                
+                                   fe80::2a0:d1ff:fecf:2a18**
+/64                
+veth111.140:701   yes       no     2100:bad:dead:f00d::e4a1:100
+/64               n/a
+veth111.140:71    yes       no     192.168.172.10
+255.255.255.0     n/a
+veth111:261       no        n/a    n/a
+n/a               n/a
+veth111:601       yes       no     2100:bad:dead:f00d::e4a3:100
+/64               n/a
+veth111:61        yes       no     192.168.152.10
+255.255.255.0     n/a
+veth111           yes       no     (not specified)
+(not specified)   n/a    balanced hash xor-L3L4: eth0b
+                                   2100:bad:dead:f00d::e4a3:100**
+/64                
+                                   fe80::2a0:d1ff:fecf:2a18**
+/64                
+---------------   -------   ----   ------------------------------------
+---------------   ----   -----------------------------
+* Value from DHCP
+** auto_generated IPv6 address
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s net show config
+eth0a     Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:19
+          inet addr:10.25.130.91  Bcast:10.25.143.255  Mask:255.255.240.0
+          inet6 addr: 2620:0:170:1106:2a0:d1ff:fecf:2a19/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:fecf:2a19/64 Scope:Link
+          UP BROADCAST NOTRAILERS RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:4029131 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:74906 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:278770069 (265.8 MiB)  TX bytes:6262600 (5.9 MiB)
+
+eth0b     Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          UP BROADCAST RUNNING SLAVE MULTICAST  MTU:1500  Metric:1
+          RX packets:2 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:114754 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:180 (180.0 b)  TX bytes:7009350 (6.6 MiB)
+
+eth4a     Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          inet6 addr: 2100:bad:dead:f00d::e4a:100/64 Scope:Global
+          inet6 addr: 2100:bad:dead:f00d::e4a:210/64 Scope:Global
+          inet6 addr: fe80::21b:21ff:fe8f:d868/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:54090 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:107896 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:3661668 (3.4 MiB)  TX bytes:6718837 (6.4 MiB)
+
+eth4a.540 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          inet6 addr: 2100:bad:dead:f00d::e4a1:100/64 Scope:Global
+          inet6 addr: fe80::21b:21ff:fe8f:d868/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:15 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:1626 (1.5 KiB)
+
+eth4a.540:260 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a.540:60 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          inet addr:192.168.150.10  Bcast:192.168.150.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a.540:600 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a:10  Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          inet addr:192.168.140.30  Bcast:192.168.140.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a:100 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a:200 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          inet addr:192.168.140.200  Bcast:192.168.140.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4a:210 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:68
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth4b     Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:69
+          inet6 addr: 2100:bad:dead:f00d::e4b:100/64 Scope:Global
+          inet6 addr: 2100:bad:dead:f00d::e4b:210/64 Scope:Global
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+eth4b:10  Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:69
+          inet addr:192.168.141.30  Bcast:192.168.141.255
+Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth4b:100 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:69
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth4b:200 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:69
+          inet addr:192.168.141.200  Bcast:192.168.141.255
+Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth4b:210 Link encap:Ethernet  HWaddr 00:1B:21:8F:D8:69
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth5a     Link encap:Ethernet  HWaddr 00:1B:21:52:87:F4
+          inet6 addr: fe80::21b:21ff:fe52:87f4/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:65866 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:59605 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:4365278 (4.1 MiB)  TX bytes:3534846 (3.3 MiB)
+
+eth5b     Link encap:Ethernet  HWaddr 00:1B:21:52:87:F5
+          inet6 addr: 2100:bad:dead:f00d::e5b:100/64 Scope:Global
+          inet6 addr: 2100:bad:dead:f00d::e5b:210/64 Scope:Global
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+eth5b:10  Link encap:Ethernet  HWaddr 00:1B:21:52:87:F5
+          inet addr:192.168.151.30  Bcast:192.168.151.255
+Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth5b:100 Link encap:Ethernet  HWaddr 00:1B:21:52:87:F5eth
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth5b:200 Link encap:Ethernet  HWaddr 00:1B:21:52:87:F5
+          inet addr:192.168.151.200  Bcast:192.168.151.255
+Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+eth5b:210 Link encap:Ethernet  HWaddr 00:1B:21:52:87:F5
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+
+veth111.140 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          inet6 addr: 2100:bad:dead:f00d::e4a1:100/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:fecf:2a18/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:31 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:3500 (3.4 KiB)
+
+veth111.140:701 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+
+veth111.140:71 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          inet addr:192.168.172.10  Bcast:192.168.172.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+
+veth111:261 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+
+veth111:601 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+
+veth111:61 Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          inet addr:192.168.152.10  Bcast:192.168.152.255
+Mask:255.255.255.0
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+
+veth111   Link encap:Ethernet  HWaddr 00:A0:D1:CF:2A:18
+          inet6 addr: 2100:bad:dead:f00d::e4a3:100/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:fecf:2a18/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:2 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:114754 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:180 (180.0 b)  TX bytes:7009350 (6.6 MiB)
+
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! # ddsh -s reg show config.net.eth
+config.net.eth0a.enabled = true
+config.net.eth0a.use_dhcp = true
+config.net.eth0b.enabled = false
+config.net.eth0b.ip_address = 0
+config.net.eth0b.ip_cur_address = 0
+config.net.eth0b.mtusize = 1500
+config.net.eth0b.netmask = 255.0.0.0
+config.net.eth0b.noauto.enabled = false
+config.net.eth0b.use_dhcp = false
+config.net.eth4a.540.enabled = true
+config.net.eth4a.540.ip_address = 0
+config.net.eth4a.540.ip_cur_address = 0
+config.net.eth4a.540.mtusize = 1500
+config.net.eth4a.540.netmask = 255.0.0.0
+config.net.eth4a.540.noauto.enabled = false
+config.net.eth4a.540.use_dhcp = false
+config.net.eth4a.540:260.enabled = false
+config.net.eth4a.540:60.enabled = true
+config.net.eth4a.540:60.ip_address = 192.168.150.10
+config.net.eth4a.540:60.ip_cur_address = 192.168.150.10
+config.net.eth4a.540:60.mtusize = 1500
+config.net.eth4a.540:60.netmask = 255.255.255.0
+config.net.eth4a.540:60.noauto.enabled = true
+config.net.eth4a.540:60.noauto.full_duplex = true
+config.net.eth4a.540:60.noauto.speed = 0
+config.net.eth4a.540:60.use_dhcp = false
+config.net.eth4a.540:600.enabled = true
+config.net.eth4a.540:600.ip_address = 2100:bad:dead:f00d::e4a1:100/64
+config.net.eth4a.540:600.ip_cur_address = 2100:bad:dead:f00d::e4a1:100/64
+config.net.eth4a.540:600.mtusize = 1500
+config.net.eth4a.540:600.netmask =
+config.net.eth4a.540:600.noauto.enabled = true
+config.net.eth4a.540:600.noauto.full_duplex = true
+config.net.eth4a.540:600.noauto.speed = 0
+config.net.eth4a.540:600.use_dhcp = false
+config.net.eth4a.541:270.enabled = false
+config.net.eth4a.541:70.enabled = true
+config.net.eth4a.541:70.ip_address = 192.168.151.10
+config.net.eth4a.541:70.mtusize = 1500
+config.net.eth4a.541:70.netmask = 255.255.255.0
+config.net.eth4a.541:70.noauto.enabled = true
+config.net.eth4a.541:70.noauto.full_duplex = true
+config.net.eth4a.541:70.noauto.speed = 0
+config.net.eth4a.541:70.use_dhcp = false
+config.net.eth4a.541:700.enabled = true
+config.net.eth4a.541:700.ip_address = 2100:bad:dead:f00d::e4a2:100/64
+config.net.eth4a.541:700.mtusize = 1500
+config.net.eth4a.541:700.netmask =
+config.net.eth4a.541:700.noauto.enabled = true
+config.net.eth4a.541:700.noauto.full_duplex = true
+config.net.eth4a.541:700.noauto.speed = 0
+config.net.eth4a.541:700.use_dhcp = false
+config.net.eth4a:10.enabled = true
+config.net.eth4a:10.ip_address = 192.168.140.30
+config.net.eth4a:10.ip_cur_address = 2100:bad:dead:f00d::e4a:20/64
+config.net.eth4a:10.mtusize = 1500
+config.net.eth4a:10.netmask = 255.255.255.0
+config.net.eth4a:10.noauto.enabled = true
+config.net.eth4a:10.noauto.full_duplex = true
+config.net.eth4a:10.noauto.speed = 0
+config.net.eth4a:10.use_dhcp = false
+config.net.eth4a:100.enabled = true
+config.net.eth4a:100.ip_address = 2100:bad:dead:f00d::e4a:100/64
+config.net.eth4a:100.mtusize = 1500
+config.net.eth4a:100.netmask =
+config.net.eth4a:100.noauto.enabled = true
+config.net.eth4a:100.noauto.full_duplex = true
+config.net.eth4a:100.noauto.speed = 0
+config.net.eth4a:100.use_dhcp = false
+config.net.eth4a:200.enabled = true
+config.net.eth4a:200.ip_address = 192.168.140.200
+config.net.eth4a:200.mtusize = 1500
+config.net.eth4a:200.netmask = 255.255.255.0
+config.net.eth4a:200.noauto.enabled = true
+config.net.eth4a:200.noauto.full_duplex = true
+config.net.eth4a:200.noauto.speed = 0
+config.net.eth4a:200.use_dhcp = false
+config.net.eth4a:210.enabled = true
+config.net.eth4a:210.ip_address = 2100:bad:dead:f00d::e4a:210/64
+config.net.eth4a:210.mtusize = 1500
+config.net.eth4a:210.netmask =
+config.net.eth4a:210.noauto.enabled = true
+config.net.eth4a:210.noauto.full_duplex = true
+config.net.eth4a:210.noauto.speed = 0
+config.net.eth4a:210.use_dhcp = false
+config.net.eth4b.enabled = true
+config.net.eth4b.ip_address = 0
+config.net.eth4b.ip_cur_address = 2100:bad:dead:f00d::e4b:100/64
+config.net.eth4b.mtusize = 1500
+config.net.eth4b.netmask = 255.0.0.0
+config.net.eth4b.noauto.enabled = false
+config.net.eth4b.use_dhcp = false
+config.net.eth4b:10.enabled = true
+config.net.eth4b:10.ip_address = 192.168.141.30
+config.net.eth4b:10.ip_cur_address = 2100:bad:dead:f00d::e4b:20/64
+config.net.eth4b:10.mtusize = 1500
+config.net.eth4b:10.netmask = 255.255.255.0
+config.net.eth4b:10.noauto.enabled = true
+config.net.eth4b:10.noauto.full_duplex = true
+config.net.eth4b:10.noauto.speed = 0
+config.net.eth4b:10.use_dhcp = false
+config.net.eth4b:100.enabled = true
+config.net.eth4b:100.ip_address = 2100:bad:dead:f00d::e4b:100/64
+config.net.eth4b:100.mtusize = 1500
+config.net.eth4b:100.netmask =
+config.net.eth4b:100.noauto.enabled = true
+config.net.eth4b:100.noauto.full_duplex = true
+config.net.eth4b:100.noauto.speed = 0
+config.net.eth4b:100.use_dhcp = false
+config.net.eth4b:200.enabled = true
+config.net.eth4b:200.ip_address = 192.168.141.200
+config.net.eth4b:200.mtusize = 1500
+config.net.eth4b:200.netmask = 255.255.255.0
+config.net.eth4b:200.noauto.enabled = true
+config.net.eth4b:200.noauto.full_duplex = true
+config.net.eth4b:200.noauto.speed = 0
+config.net.eth4b:200.use_dhcp = false
+config.net.eth4b:210.enabled = true
+config.net.eth4b:210.ip_address = 2100:bad:dead:f00d::e4b:210/64
+config.net.eth4b:210.mtusize = 1500
+config.net.eth4b:210.netmask =
+config.net.eth4b:210.noauto.enabled = true
+config.net.eth4b:210.noauto.full_duplex = true
+config.net.eth4b:210.noauto.speed = 0
+config.net.eth4b:210.use_dhcp = false
+config.net.eth5a.enabled = true
+config.net.eth5a.ip_address = 0
+config.net.eth5a.ip_cur_address = 0
+config.net.eth5a.mtusize = 1500
+config.net.eth5a.netmask = 255.0.0.0
+config.net.eth5a.noauto.enabled = false
+config.net.eth5a.use_dhcp = false
+config.net.eth5b.enabled = false
+config.net.eth5b.ip_address = 0
+config.net.eth5b.ip_cur_address = 2100:bad:dead:f00d::e5b:100/64
+config.net.eth5b.mtusize = 1500
+config.net.eth5b.netmask = 255.0.0.0
+config.net.eth5b.noauto.enabled = false
+config.net.eth5b.use_dhcp = false
+config.net.eth5b:10.enabled = true
+config.net.eth5b:10.ip_address = 192.168.151.30
+config.net.eth5b:10.ip_cur_address = 2100:bad:dead:f00d::e5b:20/64
+config.net.eth5b:10.mtusize = 1500
+config.net.eth5b:10.netmask = 255.255.255.0
+config.net.eth5b:10.noauto.enabled = true
+config.net.eth5b:10.noauto.full_duplex = true
+config.net.eth5b:10.noauto.speed = 0
+config.net.eth5b:10.use_dhcp = false
+config.net.eth5b:100.enabled = true
+config.net.eth5b:100.ip_address = 2100:bad:dead:f00d::e5b:100/64
+config.net.eth5b:100.mtusize = 1500
+config.net.eth5b:100.netmask =
+config.net.eth5b:100.noauto.enabled = true
+config.net.eth5b:100.noauto.full_duplex = true
+config.net.eth5b:100.noauto.speed = 0
+config.net.eth5b:100.use_dhcp = false
+config.net.eth5b:200.enabled = true
+config.net.eth5b:200.ip_address = 192.168.151.200
+config.net.eth5b:200.mtusize = 1500
+config.net.eth5b:200.netmask = 255.255.255.0
+config.net.eth5b:200.noauto.enabled = true
+config.net.eth5b:200.noauto.full_duplex = true
+config.net.eth5b:200.noauto.speed = 0
+config.net.eth5b:200.use_dhcp = false
+config.net.eth5b:210.enabled = true
+config.net.eth5b:210.ip_address = 2100:bad:dead:f00d::e5b:210/64
+config.net.eth5b:210.mtusize = 1500
+config.net.eth5b:210.netmask =
+config.net.eth5b:210.noauto.enabled = true
+config.net.eth5b:210.noauto.full_duplex = true
+config.net.eth5b:210.noauto.speed = 0
+config.net.eth5b:210.use_dhcp = false
+!!!! dd890-21 YOUR DATA IS IN DANGER !!!! #
+
+
+
+
+Arti
+
+
+
+
+
+On 5/15/14 8:04 PM, "Bean, Thom" <thom.bean@emc.com> wrote:
+
+I found one problem.  Because the IPv6 aliases were created they were
+given in the net config output.  This is confusing since they do not
+exist in the kernel.  These will need to be blocked from being output
+especially since the addresses are the base interface.
+
+Regards,
+Thom Bean
+(408) 986-4265
+
+On May 15, 2014, at 7:34 PM, Thom Bean <thom.bean@emc.com> wrote:
+
+This is the type of things I am running on the extended test:
+
+ddsh -s net create interface eth4a vlan 540
+ddsh -s net config eth4a.540 up
+ddsh -s net create interface eth4a vlan 541
+
+ddsh -s net create virtual veth111
+ddsh -s net aggregate add veth111 mode balanced hash xor-L3L4
+interfaces eth0b
+ddsh -s net config veth111 up
+ddsh -s net create interface veth111 vlan 140
+ddsh -s net config veth111.140 up
+ddsh -s net create interface veth111 vlan 141
+ddsh -s net show settings
+ddsh -s net config
+ddsh -s reg show config.net.eth
+
+
+ddsh -s net config eth4a.540:60 192.168.150.10 netmask 255.255.255.0
+ddsh -s net config eth4a.540:600 2100:bad:dead:f00d::e4a1:100/64
+ddsh -s net create interface eth4a.540 alias 260
+ddsh -s net config eth4a.541:70 192.168.151.10 netmask 255.255.255.0
+ddsh -s net config eth4a.541:700 2100:bad:dead:f00d::e4a2:100/64
+ddsh -s net create interface eth4a.541 alias 270
+ddsh -s net config veth111:61 192.168.152.10 netmask 255.255.255.0
+ddsh -s net config veth111:601 2100:bad:dead:f00d::e4a3:100/64
+ddsh -s net create interface veth111 alias 261
+ddsh -s net config veth111.140:71 192.168.172.10 netmask 255.255.255.0
+ddsh -s net config veth111.140:701 2100:bad:dead:f00d::1e4a4:100/64
+ddsh -s net create interface veth111.141 alias 282
+ddsh -s net config veth111.141:72 192.168.182.10 netmask 255.255.255.0
+ddsh -s net config veth111.141:702 2100:bad:dead:f00d::1e4a5:100/64
+ddsh -s net create interface veth111.141 alias 292
+ddsh -s net show settings
+ddsh -s net config
+ddsh -s reg show config.net.eth
+
+ddsh -s net config eth4a.540:60 192.168.150.11 netmask 255.255.255.0
+ddsh -s net config eth4a.540:60 2100:bad:dead:f00d::e4a:123/64
+ddsh -s net config eth4a.540:60 2100:bad:dead:f00d::e4a:213/64
+ddsh -s net config eth4a.540:60 192.168.150.10 netmask 255.255.255.0
+
+ddsh -s net config veth111:61 192.168.171.11 netmask 255.255.255.0
+ddsh -s net config veth111:61 2100:bad:dead:f00d::2e4a:423/64
+ddsh -s net config veth111:61 2100:bad:dead:f00d::2e4a:513/64
+ddsh -s net config veth111:61 192.168.152.10 netmask 255.255.255.0
+
+ddsh -s net config veth111.140:71 192.168.181.11 netmask 255.255.255.0
+ddsh -s net config veth111.140:71 2100:bad:dead:f00d::2e4a:423/64
+ddsh -s net config veth111.140:71 2100:bad:dead:f00d::2e4a:513/64
+ddsh -s net config veth111.140:71 192.168.152.10 netmask 255.255.255.0
+ddsh -s net show settings
+ddsh -s net config
+ddsh -s reg show config.net.eth
+
+
+Regards,
+Thom Bean
+(408) 986-4265
+
+On May 15, 2014, at 5:01 PM, Khandelwal, Arti <Arti.Khandelwal@emc.com>
+wrote:
+
+So Basic Unit test passed except for destroy alias of v6.  Looking into
+this issue.  Send me commands for extended testing of aliases on
+vlan/bonding.
+
+Arti
+
+
+
+
+
+On 5/15/14 4:54 PM, "Khandelwal, Arti" <Arti.Khandelwal@emc.com> wrote:
+
+-bash-3.00# ddsh -s net show settings
+port       enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+--------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a      yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                          2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                          fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b      yes       no     (not specified)
+(not
+specified)   n/a
+                          fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a      yes       no     192.168.140.10
+255.255.255.0     n/a
+                          fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10   no        n/a    n/a                                    n/a
+         n/a
+eth4b      yes       no     (not specified)
+(not
+specified)   n/a
+eth5a      yes       no     (not specified)
+(not
+specified)   n/a
+                          fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b      no        n/a    n/a                                    n/a
+         n/a
+--------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:80 192.168.140.20 netmask
+255.255.255.0
+Creating interface ...
+Done.
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port       enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+--------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a      yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                          2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                          fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b      yes       no     (not specified)
+(not
+specified)   n/a
+                          fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a      yes       no     192.168.140.10
+255.255.255.0     n/a
+                          fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10   no        n/a    n/a                                    n/a
+         n/a
+eth4a:80   yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b      yes       no     (not specified)
+(not
+specified)   n/a
+eth5a      yes       no     (not specified)
+(not
+specified)   n/a
+                          fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b      no        n/a    n/a                                    n/a
+         n/a
+--------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200
+2100:bad:dead:f00d::e4a:100/64
+
+Creating interface ...
+Done.
+Configuring interface...
+
+interface eth4a:200, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:100**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net create interface eth4a alias 500
+
+To create an alias, use net config command,the net create is
+deprecated
+Creating interface ...
+Done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:100**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            
+/64
+          n/a
+eth4a:500   no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 192.168.140.90 netmask
+255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:100**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            
+/64
+          n/a
+eth4a:500   yes       no     192.168.140.90
+255.255.255.0     n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net create interface eth4a alias 700
+
+To create an alias, use net config command,the net create is
+deprecated
+Creating interface ...
+Done.
+-bash-3.00# ddsh -s net config eth4a:700
+2100:bad:dead:f00d::e4a:210/64
+
+Configuring interface...
+
+interface eth4a:700, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:100**          /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            
+/64
+          n/a
+eth4a:500   yes       no     192.168.140.90
+255.255.255.0     n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 192.168.140.100 netmask
+255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:100**          /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            
+/64
+          n/a
+eth4a:500   yes       no     192.168.140.100
+255.255.255.0     n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200 2100:bad:dead:f00d::e4a:30/64
+Configuring interface...
+
+interface eth4a:200, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:30**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:30            
+/64
+          n/a
+eth4a:500   yes       no     192.168.140.100
+255.255.255.0     n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200 192.168.140.70 netmask
+255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     192.168.140.100
+255.255.255.0     n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 2100:bad:dead:f00d::e4a:20/64
+
+Configuring interface...
+
+net set mask failure for: eth4a
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       yes       no     192.168.140.10
+255.255.255.0     n/a
+                           2100:bad:dead:f00d::e4a:20**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20            
+/64
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:20**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20            
+/64
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4a:80    yes       no     192.168.140.20
+255.255.255.0     n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:80 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:20**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20            
+/64
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:20**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20            
+/64
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net destroy eth4a:500
+You are requesting to destroy the interface eth4a:500.
+Destroying interface ...
+Done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:20**           /64
+
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20            
+/64
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0.0.0.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:500   no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address
+netmask           type   additional setting
+
+/prefix length
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*
+255.255.240.0*    n/a
+                           2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64
+
+                           fe80::2a0:d1ff:fecf:2a19**             /64
+
+eth0b       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::2a0:d1ff:fecf:2a18**             /64
+
+eth4a       no        n/a    n/a                                    
+n/a
+          n/a
+                           2100:bad:dead:f00d::e4a:210**          /64
+
+                           fe80::21b:21ff:fe8f:d868**             /64
+
+eth4a:10    no        n/a    n/a                                    
+n/a
+          n/a
+eth4a:200   yes       no     192.168.140.70
+255.255.255.0     n/a
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            
+/64
+          n/a
+eth4b       yes       no     (not specified)                        
+(not
+specified)   n/a
+eth5a       yes       no     (not specified)                        
+(not
+specified)   n/a
+                           fe80::21b:21ff:fe52:87f4**             /64
+
+eth5b       no        n/a    n/a                                    
+n/a
+          n/a
+---------   -------   ----   ------------------------------------
+---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00#
+
+
+
+
+-bash-3.00# ddsh -s net show settings
+port       enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                   /prefix length                            
+--------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a      yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                            2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                            fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b      yes       no     (not specified)                        (not specified)   n/a                      
+                            fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a      yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                            fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10   no        n/a    n/a                                    n/a               n/a                      
+eth4b      yes       no     (not specified)                        (not specified)   n/a                      
+eth5a      yes       no     (not specified)                        (not specified)   n/a                      
+                            fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b      no        n/a    n/a                                    n/a               n/a                      
+--------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:80 192.168.140.20 netmask 255.255.255.0
+Creating interface ...
+Done.
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port       enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                   /prefix length                            
+--------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a      yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                            2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                            fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b      yes       no     (not specified)                        (not specified)   n/a                      
+                            fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a      yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                            fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10   no        n/a    n/a                                    n/a               n/a                      
+eth4a:80   yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b      yes       no     (not specified)                        (not specified)   n/a                      
+eth5a      yes       no     (not specified)                        (not specified)   n/a                      
+                            fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b      no        n/a    n/a                                    n/a               n/a                      
+--------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200 2100:bad:dead:f00d::e4a:100/64      
+Creating interface ...
+Done.
+Configuring interface...
+
+interface eth4a:200, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:100**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net create interface eth4a alias 500
+
+To create an alias, use net config command,the net create is deprecated
+Creating interface ...
+Done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:100**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            /64               n/a                      
+eth4a:500   no        n/a    n/a                                    n/a               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 192.168.140.90 netmask 255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:100**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            /64               n/a                      
+eth4a:500   yes       no     192.168.140.90                         255.255.255.0     n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net create interface eth4a alias 700
+
+To create an alias, use net config command,the net create is deprecated
+Creating interface ...
+Done.
+-bash-3.00# ddsh -s net config eth4a:700 2100:bad:dead:f00d::e4a:210/64      
+Configuring interface...
+
+interface eth4a:700, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:100**          /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            /64               n/a                      
+eth4a:500   yes       no     192.168.140.90                         255.255.255.0     n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 192.168.140.100 netmask 255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:100**          /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:100            /64               n/a                      
+eth4a:500   yes       no     192.168.140.100                        255.255.255.0     n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200 2100:bad:dead:f00d::e4a:30/64
+Configuring interface...
+
+interface eth4a:200, is enabled but netmask is not configured.
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:30**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     2100:bad:dead:f00d::e4a:30             /64               n/a                      
+eth4a:500   yes       no     192.168.140.100                        255.255.255.0     n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:200 192.168.140.70 netmask 255.255.255.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     192.168.140.100                        255.255.255.0     n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 2100:bad:dead:f00d::e4a:20/64        
+Configuring interface...
+
+net set mask failure for: eth4a
+
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       yes       no     192.168.140.10                         255.255.255.0     n/a                      
+                             2100:bad:dead:f00d::e4a:20**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20             /64               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:20**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20             /64               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4a:80    yes       no     192.168.140.20                         255.255.255.0     n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:80 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:20**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20             /64               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:20**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20             /64               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net destroy eth4a:500  
+You are requesting to destroy the interface eth4a:500.
+Destroying interface ...
+Done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:20**           /64                                        
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   yes       no     2100:bad:dead:f00d::e4a:20             /64               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0.0.0.0
+Configuring interface...
+done.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:500   no        n/a    n/a                                    n/a               n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00# ddsh -s net config eth4a:500 0
+Alias is detroyed.
+-bash-3.00# ddsh -s net show settings
+port        enabled   DHCP   IP address                             netmask           type   additional setting
+                                                                    /prefix length                            
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+eth0a       yes       yes    10.25.130.91*                          255.255.240.0*    n/a                      
+                             2620:0:170:1106:2a0:d1ff:fecf:2a19**   /64                                        
+                             fe80::2a0:d1ff:fecf:2a19**             /64                                        
+eth0b       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::2a0:d1ff:fecf:2a18**             /64                                        
+eth4a       no        n/a    n/a                                    n/a               n/a                      
+                             2100:bad:dead:f00d::e4a:210**          /64                                        
+                             fe80::21b:21ff:fe8f:d868**             /64                                        
+eth4a:10    no        n/a    n/a                                    n/a               n/a                      
+eth4a:200   yes       no     192.168.140.70                         255.255.255.0     n/a                      
+eth4a:700   yes       no     2100:bad:dead:f00d::e4a:210            /64               n/a                      
+eth4b       yes       no     (not specified)                        (not specified)   n/a                      
+eth5a       yes       no     (not specified)                        (not specified)   n/a                      
+                             fe80::21b:21ff:fe52:87f4**             /64                                        
+eth5b       no        n/a    n/a                                    n/a               n/a                      
+---------   -------   ----   ------------------------------------   ---------------   ----   ------------------
+* Value from DHCP
+** auto_generated IPv6 address
+-bash-3.00#
+

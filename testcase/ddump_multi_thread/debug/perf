@@ -1,0 +1,130 @@
+vortex6
+single-thread
+Apr 13 14:17:39 vortex6 kernel: (E4)[      1909.571396] Dumping mini-core for ddfs(3081)<6>disk_dump: Found 4 appdump devices;using 4 primary NO mirror
+Apr 13 14:17:39 vortex6 kernel: (E7)[      1909.766074] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 614400 BLOCK_SECTOR 5066752
+
+Apr 13 14:17:42 vortex6 kernel: (E6)[      1910.566920] disk_dump: Dumping core file for process 3081 (ddfs) tsc: 5360056235106
+Apr 13 14:17:42 vortex6 kernel: (E7)[      1910.566951] disk_dump: DISK_DUMP_STARTOFF 18944 startoff 614408 BLOCK_SECTOR 5066816
+Apr 13 14:17:42 vortex6 kernel: (E4)[      1910.566952]
+Apr 13 14:17:42 vortex6 kernel: (E7)[      1910.567013] disk_dump: check_appdump_space: Available dump space :449537596, reqd_sects 52483160
+Apr 13 14:17:42 vortex6 kernel: (E4)[      1910.567014]
+Apr 13 14:17:42 vortex6 kernel: (E6)[      1910.567074] disk_dump: Application Dump Starting at offset :614408
+Apr 13 14:17:53 vortex6 kernel: (E6)[      1923.862645] disk_dump: Dumping process :ddfs (pid = 3081) pages starting block :615403:...
+Apr 13 14:18:27 vortex6 kernel: (E6)[      1957.548017] Signal 3 posted to ddfs(pid=3081)  by ddr_stated(pid=2437)
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.697035] disk_dump: APPDUMP complete. Dumped: 7187747 diskblocks - 6572344 data pages
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.697086] disk_dump: APPDUMP complete. UnCompressed Blocks: 7187747 compressed Blocks- 618281
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.697187] disk_dump: write_appdump_header: ndevs=4 : blocks :618281 : offset :614408 chunksize: 524288
+Apr 13 14:18:39 vortex6 kernel: (E7)[      1969.944063] disk_dump: measurement
+Apr 13 14:18:39 vortex6 kernel: (E4)[      1969.944064]
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944126] disk_dump: total vm 18602226 shared vm 12043459 map count 764
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944157] disk_dump: app zero 357663 non-zero 6214681 other 0
+Apr 13 14:18:39 vortex6 kernel: (E4)[      1969.944158]
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944218] disk_dump: app_blk_odr 7 blk_odr 7 comp_blk_odr 3
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944249] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944280] disk_dump:             3           776        256   25163545
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944312] disk_dump: blocks 7187747 data pages 6572344 B4-comp 615403 compressed Blocks 2878
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944343] disk_dump: offset bmap 614400 dump start 614408 blk 707563
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944374] disk_dump: written size (Kb) total 372620 non-comp 3980 comp 368640
+Apr 13 14:18:39 vortex6 kernel: (E4)[      1969.944375]
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944434] disk_dump: Time       start elf th statu
+s phdr
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944465] disk_dump: 4296318763   843  16     0 8
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944496] disk_dump:  map  sect status     data end
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944562] disk_dump: 11254   34   1972    46169 4296379059
+Apr 13 14:18:39 vortex6 kernel: (E4)[      1969.944563]
+Apr 13 14:18:39 vortex6 kernel: (E6)[      1969.944625] disk_dump: APPDUMP total time taken 60296
+
+
+multi-thread
+Apr 16 10:50:54 vortex6 kernel: (E6)[       993.510729] disk_dump: APPDUMP complete. Dumped: 7187814 diskblocks - 6572407 data pages
+Apr 16 10:50:54 vortex6 kernel: (E6)[       993.510732] disk_dump: APPDUMP complete. UnCompressed Blocks: 7187814 compressed Blocks- 618286
+Apr 16 10:50:59 vortex6 kernel: (E7)[       993.848220] disk_dump: measurement
+Apr 16 10:50:59 vortex6 kernel: (E4)[       993.848221]
+Apr 16 10:50:59 vortex6 kernel: (E6)[       993.848333] disk_dump: total vm 18602189 shared vm 12043459 map count 768
+Apr 16 10:50:59 vortex6 kernel: (E6)[       993.848365] disk_dump: app zero 355655 non-zero 6216752 other 0
+Apr 16 10:50:59 vortex6 kernel: (E4)[       993.848366]
+Apr 16 10:50:59 vortex6 kernel: (E6)[       993.848448] disk_dump: app_blk_odr 7 blk_odr 7 comp_blk_odr 3
+Apr 16 10:50:59 vortex6 kernel: (E6)[       993.848486] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848520] disk_dump:             3           776        256   25163545
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848566] disk_dump: blocks 7187814 data pages 6572407 B4-comp 615407 compressed Blocks 2879
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848598] disk_dump: offset bmap 614400 dump start 614408 blk 707567
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848630] disk_dump: written size (Kb) total 372636 non-comp 3996 comp 368640
+Apr 16 10:51:00 vortex6 kernel: (E4)[       993.848631]
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848736] disk_dump: Time       start elf th status phdr
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848767] disk_dump: 4295357020  1366  21     0       8
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848798] disk_dump:  map  sect status     data        end
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848860] disk_dump: 10456  125   2171    35548 4295406715
+Apr 16 10:51:00 vortex6 kernel: (E4)[       993.848860]
+Apr 16 10:51:00 vortex6 kernel: (E6)[       993.848937] disk_dump: APPDUMP total time taken 49695
+
+
+kuma29
+thread:8
+Apr 16 12:49:38 kuma29-eth0a kernel: (E6)[    255478.736518] disk_dump: APPDUMP complete. Dumped: 17585920 diskblocks - 16971491 data pages
+Apr 16 12:49:38 kuma29-eth0a kernel: (E6)[    255478.736521] disk_dump: APPDUMP complete. UnCompressed Blocks: 17585920 compressed Blocks- 662976
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.736523] disk_dump: write_appdump_header: ndevs=4 : blocks :662976 : offset :614408 chunksize: 524288
+Apr 16 12:49:39 kuma29-eth0a kernel: (E4)[    255478.736526]  waiter 5 leaving
+Apr 16 12:49:39 kuma29-eth0a kernel: (E7)[    255478.800256] disk_dump: measurement
+Apr 16 12:49:39 kuma29-eth0a kernel: (E4)[    255478.800257]
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800322] disk_dump: total vm 16972055 shared vm 573 map count 13
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800353] disk_dump: app zero 26 non-zero 16971465 other 0
+Apr 16 12:49:39 kuma29-eth0a kernel: (E4)[    255478.800354]
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800417] disk_dump: app_blk_odr 7 blk_odr 7 comp_blk_odr 3
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800448] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800479] disk_dump:             3          2064        256   67078720
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800511] disk_dump: blocks 17585920 data pages 16971491 B4-comp 614429 compressed Blocks 48547
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800543] disk_dump: offset bmap 614400 dump start 614408 blk 2167965
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800575] disk_dump: written size (Kb) total 6214228 non-comp 84 comp 6214144
+Apr 16 12:49:39 kuma29-eth0a kernel: (E4)[    255478.800576]
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800636] disk_dump: Time       start elf th status phdr
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800667] disk_dump: 4550082406   467   5     1       5
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800698] disk_dump:  map  sect status     data        end
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800730] disk_dump:    85   18      0   187153 4550270140
+Apr 16 12:49:39 kuma29-eth0a kernel: (E4)[    255478.800730]
+Apr 16 12:49:39 kuma29-eth0a kernel: (E6)[    255478.800791] disk_dump: APPDUMP total time taken 187734
+
+thread:16
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.282063] disk_dump: APPDUMP complete. Dumped: 17585920 diskblocks - 16971491 data pages
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.282065] disk_dump: APPDUMP complete. UnCompressed Blocks: 17585920 compressed Blocks- 662978
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.282067] disk_dump: write_appdump_header: ndevs=4 : blocks :662978 : offset :614408 chunksize: 524288
+Apr 18 10:09:53 kuma29-eth0a kernel: (E7)[      2776.354686] disk_dump: measurement
+Apr 18 10:09:53 kuma29-eth0a kernel: (E4)[      2776.354687]
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354752] disk_dump: total vm 16972055 shared vm 573 map count 13
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354784] disk_dump: app zero 26 non-zero 16971465 other 0
+Apr 18 10:09:53 kuma29-eth0a kernel: (E4)[      2776.354785]
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354847] disk_dump: app_blk_odr 7 blk_odr 7 comp_blk_odr 3
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354878] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354912] disk_dump:             3          2064        256   67078720    2441406
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354944] disk_dump: blocks 17585920 data pages 16971491 B4-comp 614429 compressed Blocks 48549
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.354976] disk_dump: offset bmap 614400 dump start 614408 blk 2168093
+Apr 18 10:09:53 kuma29-eth0a kernel: (E6)[      2776.355019] disk_dump: written size (Kb) total 6214740 non-comp 84 comp 6214656
+Apr 18 10:09:53 kuma29-eth0a kernel: (E4)[      2776.355020]
+Apr 18 10:09:54 kuma29-eth0a kernel: (E6)[      2776.355081] disk_dump: Time       start elf th status phdr
+Apr 18 10:09:54 kuma29-eth0a kernel: (E6)[      2776.355113] disk_dump: 4296966435   502   2     1       5
+Apr 18 10:09:54 kuma29-eth0a kernel: (E6)[      2776.355144] disk_dump:  map  sect status     data        end
+Apr 18 10:09:54 kuma29-eth0a kernel: (E6)[      2776.355175] disk_dump:    85   18      0   157899 4297124947
+Apr 18 10:09:54 kuma29-eth0a kernel: (E4)[      2776.355176]
+Apr 18 10:09:54 kuma29-eth0a kernel: (E6)[      2776.355237] disk_dump: APPDUMP total time taken 158512
+
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.480996] disk_dump: APPDUMP complete. Dumped: 17585920 diskblocks - 16971491 data pages
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.481043] disk_dump: APPDUMP complete. UnCompressed Blocks: 17585920 compressed Blocks- 662970
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.481075] disk_dump: write_appdump_header: ndevs=4 : blocks :662970 : offset :614408 chunksize: 524288
+Apr 16 13:16:04 kuma29-eth0a kernel: (E7)[    257061.559066] disk_dump: measurement
+Apr 16 13:16:04 kuma29-eth0a kernel: (E4)[    257061.559067]
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559132] disk_dump: total vm 16972055 shared vm 573 map count 13
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559166] disk_dump: app zero 26 non-zero 16971465 other 0
+Apr 16 13:16:04 kuma29-eth0a kernel: (E4)[    257061.559168]
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559232] disk_dump: app_blk_odr 7 blk_odr 7 comp_blk_odr 3
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559264] disk_dump: header_blocks bitmap_blocks log_blocks ram_blocks max_mm
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559296] disk_dump:             3          2064        256   67078720
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559327] disk_dump: blocks 17585920 data pages 16971491 B4-comp 614429 compressed Blocks 48541
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559359] disk_dump: offset bmap 614400 dump start 614408 blk 2167837
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559390] disk_dump: written size (Kb) total 6213716 non-comp 84 comp 6213632
+Apr 16 13:16:04 kuma29-eth0a kernel: (E4)[    257061.559391]
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559452] disk_dump: Time       start elf th status phdr
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559483] disk_dump: 4551271473   486   2     0       6
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559514] disk_dump:  map  sect status     data        end
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559545] disk_dump:    84   18      0   583578 4551855647
+Apr 16 13:16:04 kuma29-eth0a kernel: (E4)[    257061.559546]
+Apr 16 13:16:04 kuma29-eth0a kernel: (E6)[    257061.559607] disk_dump: APPDUMP total time taken 584174
+

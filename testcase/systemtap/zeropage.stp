@@ -1,0 +1,8 @@
+probe kernel.function("shrink_page_list").return {
+    printf("%d pages reclaimed\n", $return)
+}
+
+probe end {
+    printf("ends.\n");
+}
+

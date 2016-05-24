@@ -1,0 +1,52 @@
+good
+# net ddns enable
+# net ddns enable windows
+# net ddns enable unix 
+# net ddns enable unix TSIG-key rndc-key TSIG-secret 1122334
+# net ddns enable windows TSIG-key rndc-key TSIG-secret "xsDJgO6KYgo7vVIArjsZ6Q=="
+
+# net ddns status
+# net ddns show
+
+net ddns TSIG-key set <key> TSIG-secret <secret>
+# net ddns TSIG-key set rndc-key TSIG-secret "xsDJgO6KYgo7vVIArjsZ6Q=="
+# net ddns show
+# net ddns TSIG-key reset 
+
+# net ddns add eth0b interface-hostname ipv6_ddr2
+
+net ddns add eth0b ipv
+
+# reg show config.net.ddns
+# net ddns disable
+# reg show config.net.ddns
+# net ddns enable noncifs yes
+# reg show config.net.ddns
+# net ddns disable
+
+# net ddns noncifs show
+
+# net ddns set eth0b 
+
+make sure free mem if only updating ifhost
+
+# net ddns noncifs set eth0b iface-host 0
+# net ddns noncifs set eth0b iface-host host
+# net ddns noncifs set eth0b iface-host auto
+# net ddns noncifs set eth0b iface-host abc
+# reg show config.net.eth0b
+# reg show config.net.ddns
+
+# net ddns noncifs key 123 secret 456
+# net ddns noncifs key set 123 secret 456
+# net ddns noncifs key show
+# net ddns noncifs key del
+
+# net config eth0b 2100:bad:cafe:f00d::deed:3/64
+# net config eth0b 2100:bad:cafe:f00d::deed:2/64
+# net config eth0b 192.168.100.100 netmask 255.255.255.0
+
+net config eth0b dhcp yes ipversion ipv6
+net config eth0b 192.168.100.100
+net config eth0b dhcp yes
+

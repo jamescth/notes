@@ -1,0 +1,73 @@
+Artemis:
+bug 96774
+/auto/cores/96774/bundle_2013-07-26_05-43-20/ddr/var/support
+
+[hoj9@jho1-dl core]$ ll
+total 289508120
+-rwxrwxrwx  1 chenk11 chenk11 76754767872 Jul 10 08:07 ddfs.core.19295.1372397262
+-rwxrwxrwx  1 chenk11 chenk11 71482675200 Jun 25 09:18 ddfs.core.23768.1371855424
+-rwxrwxrwx  1 chenk11 chenk11 76737757184 Jul  9 10:48 ddfs.core.31512.1372310656
+-rwxrwxrwx  1 chenk11 chenk11 71481114624 Jul 18 12:51 ddfs.core.4909.1371882863
+
+-rw-r--r--  1 root root 10882233195 Jun 22 09:19 ddfs.core.4909.1371882863.gz
+
+/ddr/var/ext:
+total 132334452
+-rw-r--r--  1 root root  1786870846 Jul  3 07:04 ddfs.core.10066.1372826265.gz
+	disk_dump: written size (Kb) total 1172324 non-comp 8036 comp 1164288
+-rw-r--r--  1 root root  1240724028 Jul  1 19:56 ddfs.core.10083.1372700239.gz
+	disk_dump: written size (Kb) total 866692 non-comp 3460 comp 863232
+-rw-r--r--  1 root root  1240719665 Jul  5 18:03 ddfs.core.10422.1373038140.gz
+-rw-r--r--  1 root root  1240726937 Jul  2 22:05 ddfs.core.10487.1372793451.gz
+-rw-r--r--  1 root root 10795129752 Jun 22 15:42 ddfs.core.10880.1371906464.gz
+	disk_dump: written size (Kb) total 4294044 non-comp 8092 comp 4285952
+-rw-r--r--  1 root root  1240745651 Jul  1 20:14 ddfs.core.11131.1372700376.gz
+-rw-r--r--  1 root root  1240796513 Jul  5 18:21 ddfs.core.11486.1373038277.gz
+-rw-r--r--  1 root root  1240796896 Jul  2 22:22 ddfs.core.11576.1372793585.gz
+-rw-r--r--  1 root root  1240774871 Jul  1 20:31 ddfs.core.12194.1372700513.gz
+-rw-r--r--  1 root root  1240814550 Jun 28 08:10 ddfs.core.12223.1372397442.gz
+	disk_dump: written size (Kb) total 866692 non-comp 3460 comp 863232
+-rw-r--r--  1 root root  1240809662 Jul  5 18:38 ddfs.core.12331.1373038414.gz
+-rw-r--r--  1 root root  9082958181 Jun 24 07:56 ddfs.core.12723.1372051416.gz
+	disk_dump: written size (Kb) total 3654524 non-comp 8060 comp 3646464
+-rw-r--r--  1 root root  1240718191 Jul  2 22:40 ddfs.core.12756.1372793733.gz
+-rw-r--r--  1 root root  1240724835 Jun 28 08:28 ddfs.core.13045.1372397574.gz
+	disk_dump: written size (Kb) total 866692 non-comp 3460 comp 863232
+-rw-r--r--  1 root root  1240732993 Jul  1 20:49 ddfs.core.13248.1372700649.gz
+-rw-r--r--  1 root root  1240740722 Jun 28 08:45 ddfs.core.13434.1372397707.gz
+	disk_dump: app zero 10435781 non-zero 5329944 other 0
+-rw-r--r--  1 root root  4806279010 Jun 22 13:32 ddfs.core.1349.1371899153.gz
+-rw-r--r--  1 root root 10561093762 Jun 22 12:41 ddfs.core.17818.1371895586.gz
+-rw-r--r--  1 root root 11812274401 Jul 12 13:10 ddfs.core.18454.1373624265.gz
+-rw-r--r--  1 root root 11061133108 Jun 21 06:43 ddfs.core.19693.1371787326.gz
+	disk_dump: written size (Kb) total 1452908 non-comp 8044 comp 1444864
+-rw-r--r--  1 root root  2424187160 Jun 26 07:49 ddfs.core.21430.1372224263.gz
+-rw-r--r--  1 root root  6082588385 Jul 15 12:47 ddfs.core.24410.1373883390.gz
+-rw-r--r--  1 root root  4718193208 Jun 22 13:04 ddfs.core.24628.1371897454.gz
+	disk_dump: written size (Kb) total 2128728 non-comp 8024 comp 2120704
+-rw-r--r--  1 root root 10882233195 Jun 22 09:19 ddfs.core.4909.1371882863.gz
+-rw-r--r--  1 root root  3951425605 Jul 12 14:12 ddfs.core.5847.1373629507.gz
+-rw-r--r--  1 root root  1240747237 Jul  3 07:22 ddfs.core.5868.1372826586.gz
+-rw-r--r--  1 root root  4508029247 Jun 22 09:43 ddfs.core.7532.1371885431.gz
+	 disk_dump: written size (Kb) total 2060152 non-comp 8056 comp 2052096
+-rw-r--r--  1 root root  1240743111 Jul  3 07:39 ddfs.core.7763.1372826723.gz
+-rw-r--r--  1 root root 12557437313 Jun 25 08:28 ddfs.core.8125.1372138545.gz
+-rw-r--r--  1 root root  8014442690 Jun 23 08:37 ddfs.core.8347.1371967593.gz
+	disk_dump: written size (Kb) total 3301228 non-comp 8044 comp 3293184
+-rw-r--r--  1 root root  1240828388 Jul  5 17:46 ddfs.core.9386.1373038003.gz
+-rw-r--r--  1 root root  1240730956 Jul  2 21:47 ddfs.core.9404.1372793312.gz
+-rw-r--r--  1 root root  1240737183 Jul  3 07:57 ddfs.core.9542.1372826864.gz
+
+
+Bug 86793
+27G for gz
+111G for mini
+
+Signal 3 posted to ddfs(pid=12196)  by ddfs(pid=12196) 
+disk_dump: written size (Kb) total 10895456 non-comp 6752 comp 10888704
+-rw-r--r--  1 root root 27473567265 Jan 17 20:49 ddfs.core.12196.1358441575.gz
+-rw-r--r--  1 root admin  70499714 Jan 17 11:52 ddfs.core.12196.1358441575.mini.gz
+
+
+Bug 84827
+

@@ -1,0 +1,92 @@
+(gdb) bt
+#0  add_options (ctx=0x7fff3cd684f0, ifname=0x0, ifo=0x540010, argc=3, argv=0x7fff3cd687b8)
+    at if-options.c:2055
+#1  0x00000000004065c1 in main (argc=3, argv=0x7fff3cd687b8) at dhcpcd.c:1225
+
+(gdb) p *(struct dhcpcd_ctx *)0x7fff3cd684f0
+$3 = {sigset = {__val = {0 <repeats 16 times>}}, cffile = 0x4329f5 "/etc/dhcpcd.conf",
+  options = 0, argc = 3, argv = 0x7fff3cd687b8, ifac = 0, ifav = 0x0, ifdc = 0, ifdv = 0x0,
+  ifc = 1, ifv = 0x7fff3cd687c8, duid = 0x0, duid_len = 0, pid_fd = -1, link_fd = -1,
+  ifaces = 0x0, eloop = 0x0, control_fd = -1, control_fds = 0x0,
+  control_sock = '\0' <repeats 40 times>, vivso = 0x0, vivso_len = 0, dhcp_opts = 0x5465e0,
+  dhcp_opts_len = 121, ipv4_routes = 0x0, udp_fd = -1, packet = 0x0, opt_buffer = 0x0,
+  dhcp6_opts = 0x54d810, dhcp6_opts_len = 69, ipv6 = 0x0, ra_restore = 0x0, ra_restore_len = 0}
+
+(gdb) n
+2065    in if-options.c
+(gdb) p *(struct dhcpcd_ctx *)0x7fff3cd684f0
+$4 = {sigset = {__val = {0 <repeats 16 times>}}, cffile = 0x4329f5 "/etc/dhcpcd.conf",
+  options = 0, argc = 3, argv = 0x7fff3cd687b8, ifac = 0, ifav = 0x0, ifdc = 0, ifdv = 0x0,
+  ifc = 1, ifv = 0x7fff3cd687c8, duid = 0x0, duid_len = 0, pid_fd = -1, link_fd = -1,
+  ifaces = 0x0, eloop = 0x0, control_fd = -1, control_fds = 0x0,
+  control_sock = '\0' <repeats 40 times>, vivso = 0x0, vivso_len = 0, dhcp_opts = 0x5465e0,
+  dhcp_opts_len = 121, ipv4_routes = 0x0, udp_fd = -1, packet = 0x0, opt_buffer = 0x0,
+  dhcp6_opts = 0x54d810, dhcp6_opts_len = 69, ipv6 = 0x0, ra_restore = 0x0, ra_restore_len = 0}
+
+(gdb) p *(struct if_options *)0x540010
+$5 = {iaid = "\000\000\000", metric = -1,
+  requestmask = "\000\000\000\000\000\000@", '\0' <repeats 24 times>,
+  requiremask = "\000\000\000\000\000\000@", '\0' <repeats 24 times>,
+  nomask = '\0' <repeats 31 times>, requestmask6 = '\0' <repeats 8191 times>,
+  requiremask6 = '\0' <repeats 8191 times>, nomask6 = '\0' <repeats 8191 times>,
+  dstmask = '\0' <repeats 31 times>, leasetime = 0, timeout = 30, reboot = 5,
+  options = 1688991596043273, req_addr = {s_addr = 0}, req_mask = {s_addr = 0}, routes = 0x0,
+  config = 0x0, environ = 0x0, script = 0x0, hostname = '\0' <repeats 250 times>, fqdn = 0,
+  vendorclassid = "*dhcpcd-6.3.2:Linux-2.6.23-ddr427759:x86_64:GenuineIntel", '\0' <repeats 200 times>, clientid = '\0' <repeats 49 times>, userclass = '\0' <repeats 256 times>,
+  vendor = '\0' <repeats 256 times>, blacklist_len = 0, blacklist = 0x0, whitelist_len = 0,
+  whitelist = 0x0, arping_len = 0, arping = 0x0, fallback = 0x0, ia_type = 0, ia = 0x0,
+  ia_len = 0, dhcp_override = 0x0, dhcp_override_len = 0, dhcp6_override = 0x0,
+  dhcp6_override_len = 0, vivco_en = 0, vivco = 0x0, vivco_len = 0, vivso_override = 0x0,
+  vivso_override_len = 0, auth = {options = 2, protocol = 0 '\0', algorithm = 0 '\0',
+    rdm = 0 '\0', last_replay = 0, last_replay_set = 0 '\0', tokens = {tqh_first = 0x0,
+      tqh_last = 0x5465c8}}}
+
+(gdb) ptype ifo
+type = struct if_options {
+    uint8_t iaid[4];
+    int metric;
+    uint8_t requestmask[32];
+    uint8_t requiremask[32];
+    uint8_t nomask[32];
+    uint8_t requestmask6[8192];
+    uint8_t requiremask6[8192];
+    uint8_t nomask6[8192];
+    uint8_t dstmask[32];
+    uint32_t leasetime;
+    time_t timeout;
+    time_t reboot;
+    long long unsigned int options;
+    struct in_addr req_addr;
+    struct in_addr req_mask;
+    struct rt_head *routes;
+    char **config;
+    char **environ;
+    char *script;
+    char hostname[251];
+    int fqdn;
+    uint8_t vendorclassid[257];
+    uint8_t clientid[50];
+    uint8_t userclass[257];
+    uint8_t vendor[257];
+    size_t blacklist_len;
+    in_addr_t *blacklist;
+    size_t whitelist_len;
+    in_addr_t *whitelist;
+    size_t arping_len;
+    in_addr_t *arping;
+    char *fallback;
+    uint16_t ia_type;
+    struct if_ia *ia;
+    size_t ia_len;
+    struct dhcp_opt *dhcp_override;
+    size_t dhcp_override_len;
+    struct dhcp_opt *dhcp6_override;
+    size_t dhcp6_override_len;
+    uint32_t vivco_en;
+    struct vivco *vivco;
+    size_t vivco_len;
+    struct dhcp_opt *vivso_override;
+    size_t vivso_override_len;
+    struct auth auth;
+} *
+

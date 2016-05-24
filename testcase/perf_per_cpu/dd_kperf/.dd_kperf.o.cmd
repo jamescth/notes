@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/perf_per_cpu/dd_kperf/dd_kperf.o := /auto/home/lsbuild/desktop-398860/usr/bin/ld -m elf_x86_64  -r -o /auto/home5/hoj9/testcase/perf_per_cpu/dd_kperf/dd_kperf.o /auto/home5/hoj9/testcase/perf_per_cpu/dd_kperf/dd_kprobe.o /auto/home5/hoj9/testcase/perf_per_cpu/dd_kperf/dd_init.o

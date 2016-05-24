@@ -1,0 +1,56 @@
+# http://askubuntu.com/questions/122505/how-do-i-create-a-completely-unattended-install-of-ubuntu
+#  OR
+# check this http://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu
+
+# Remaster a CD, ie, download a non graphical ubuntu installation ISO, mount it
+
+# sudo su -
+LOCAL sudo mkdir -p /mnt/iso
+LOCAL sudo mkdir -o loop ubuntu.iso /mnt/iso
+
+# Copy the relevant files to a different directory
+LOCAL sudo mkdir -p /opt/ubuntuiso
+LOCAL sudo cp -rT /mnt/iso /opt/ubuntuiso
+
+# Prevent ther language selection menu from appearing
+LOCAL sudo cd /opt/ubuntuiso
+LOCAL sudo en > isolinux/lang
+
+# use GUI program to add a kickstart file named ks.cfg
+LOCAL sudo apt-get install system-config-kickstart
+LOCAL system-config-kickstart 
+# save file to kc.cfg
+
+# To add packages from the installation, add a %package section to the kc.cfg kickstart file
+# append to the end of ks.cfg file something like this
+
+# %packages
+# @ ubuntu-server
+# openssh-server
+# ftp
+# build-essential
+
+# This will install the ubuntu-server 'bundle', and will add the openssh-server, ftp ... packages.
+
+# Add a preseed file, to suppress other questions
+
+# echo 'd-i partman/confirm_write_new_label boolean true
+# d-i partman/choose_partition \
+# select Finish partitioning and write changes to disk
+# d-i partman/confirm boolean true' > ks.preseed
+
+# set the boot command line to use kickstart and preseed files
+# vi isolinux/txt.cfg
+
+# search for 
+# label install
+#  menu label ^Install Ubuntu Server
+#  kernel /install/vmlinuz
+#  append file=/cdrom/preseed/ubuntu-server.seed vga=788 initrd=/install/initrd.gz quiet --
+
+# add kc=cdrom:/ks.cfg and preseed/file=/cdrom/ks.preseed to the append line. you can remove quiet and vga=788
+# append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz ks=cdrom:/ks.cfg preseed/file=/cdrom/ks.preseed --
+
+# Now create a new iso
+LOCAL mkisofs -D -r -V "ATTENDLESS_UBUNTU" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o /opt/autoinstall.iso /opt/ubuntuiso
+

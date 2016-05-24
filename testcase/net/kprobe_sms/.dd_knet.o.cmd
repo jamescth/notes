@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/net/kprobe_sms/dd_knet.o := /auto/home/lsbuild/desktop-440032/usr/bin/ld -m elf_x86_64  -r -o /auto/home5/hoj9/testcase/net/kprobe_sms/dd_knet.o /auto/home5/hoj9/testcase/net/kprobe_sms/dd_kprobe.o

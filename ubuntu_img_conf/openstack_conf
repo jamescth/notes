@@ -1,0 +1,517 @@
+# https://fosskb.wordpress.com/2014/10/18/openstack-juno-on-ubuntu-14-10/
+
+# configurate the repositories and update the packages
+sudo apt-get upgrade
+sudo apt-get install ubuntu-cloud-keyring
+sudo echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu" "trusty-updates/juno main" > /etc/apt/sources.list.d/cloudarchive-juno.list
+sudo apt-get update && apt-get -y upgrade
+
+# RaabitMQ server
+sudo apt-get install -y rabbitmq-server
+#change Password for the user 'guest' in the rabbitmq-server
+sudo rabbitmqctl change_password guest rabbit
+
+
+# MySQL server
+sudo apt-get install -y mysql-server python-mysqldb
+
+# Edit /etc/mysql/my.cnf
+#bind-address = 0.0.0.0
+#[mysqld]
+#...
+#default-storage-engine = innodb
+#innodb_file_per_table
+#collation-server = utf8_general_ci
+#init-connect = 'SET NAMES utf8'
+#character-set-server = utf8
+
+# Restart MySQL
+sudo service mysql restart
+
+
+# Other Support Packages
+sudo apt-get install -y ntp vlan bridge-utils
+
+# Edit /etc/sysctl.conf
+#net.ipv4.ip_forward=1
+#net.ipv4.conf.all.rp_filter=0
+#net.ipv4.conf.default.rp_filter=0
+
+# Load the values
+sudo sysctl -p
+
+
+###### Keystone ########
+sudo apt-get install -y keystone
+
+# Create mysql database named keystone & add credentials
+mysql -u root -p
+#mysql> CREATE DATABASE keystone;
+#mysql> GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'keystone_dbpass';
+#mysql> quit
+
+# Edit /etc/keystone/keystone.conf
+# comment out
+# connection = sqlite:////var/lib/keystone/keystone.db
+# add
+# connection = mysql://keystone:keystone_dbpass@127.0.0.1/keystone
+
+# Restart the keystone service and sync the database
+sudo service keystone restart
+sudo keystone-manage db_sync
+
+# Export the variable to run initial keystone commands:
+export OS_SERVICE_TOKEN=ADMIN
+export OS_SERVICE_ENDPOINT=http://127.0.0.1:35357/v2.0
+
+# Create admin user, admin tenant, admin role and service tenant. Also add admin user to admin tenant and admin role
+keystone tenant-create --name=admin --description="Admin Tenant"
+keystone tenant-create --name=service --description="Service Tenant"
+keystone user-create --name=admin --pass=ADMIN --email=admin@example.com
+keystone role-create --name=admin
+keystone user-role-add --user=admin --tenant=admin --role=admin
+
+# Create keystone service
+keystone service-create --name=keystone --type=identity --description="Keystone Identity Service"
+
+# Create keystone endpoint
+keystone endpoint-create --service=keystone --publicurl=http://127.0.0.1:5000/v2.0 --internalurl=http://127.0.0.1:5000/v2.0 --adminurl=http://127.0.0.1:35357/v2.0
+
+# Unset the exported values
+unset OS_SERVICE_TOKEN
+unset OS_SERVICE_ENDPOINT
+
+# Create a file named creds and add the following lines
+export OS_USERNAME=admin
+export OS_PASSWORD=ADMIN
+export OS_TENANT_NAME=admin
+export OS_AUTH_URL=http://127.0.0.1:35357/v2.0
+
+# Source the file
+source creds
+
+# Test the keysone setup
+keystone token-get
+keystone user-list
+
+
+###### Glance (Image Store) ########
+sudo apt-get install -y glance
+
+# Create database and credentials for Glance
+mysql -u root -p
+#CREATE DATABASE glance;
+#GRANT ALL ON glance.* TO 'glance'@'%' IDENTIFIED BY 'glance_dbpass';
+#quit;
+
+# Create glance related keystone entries
+keystone user-create --name=glance --pass=glance_pass --email=glance@example.com
+keystone user-role-add --user=glance --tenant=service --role=admin
+keystone service-create --name=glance --type=image --description="Glance Image Service"
+keystone endpoint-create --service=glance --publicurl=http://127.0.0.1:9292 --internalurl=http://127.0.0.1:9292 --adminurl=http://127.0.0.1:9292
+
+# Edit /etc/glance/glance-api.conf
+# # sqlite_db = /var/lib/glance/glance.sqlite
+# connection = mysql://glance:glance_dbpass@10.0.0.1/glance
+#
+# [keystone_authtoken]
+# auth_uri = http://127.0.0.1:5000/v2.0
+# identity_uri = http://127.0.0.1:35357
+# admin_tenant_name = service
+# admin_user = glance
+# admin_password = glance_pass
+#
+# [paste_deploy]
+# flavor = keystone
+
+# Edit /etc/glance/glance-registry.conf
+# # sqlite_db = /var/lib/glance/glance.sqlite
+# connection = mysql://glance:glance_dbpass@10.0.0.1/glance
+#
+# [keystone_authtoken]
+# auth_uri = http://127.0.0.1:5000/v2.0
+# identity_uri = http://127.0.0.1:35357
+# admin_tenant_name = service
+# admin_user = glance
+# admin_password = glance_pass
+#
+# [paste_deploy]
+# flavor = keystone
+
+# Sync the database
+sudo glance-manage db_sync
+
+# Download a pre-bundled image for testing
+glance image-create --name Cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+glance image-list
+
+
+###### Nova (Compute) ########
+sudo apt-get install -y nova-api nova-cert nova-conductor nova-consoleauth nova-novncproxy nova-scheduler python-novaclient nova-compute nova-console
+
+# Create database and credentials for Nova
+mysql -u root -p
+#mysql> CREATE DATABASE nova;
+#mysql> GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY 'nova_dbpass';
+#mysql> quit
+
+# Create Keystone entries for Nova
+keystone user-create --name=nova --pass=nova_pass --email=nova@test.com
+keystone user-role-add --user=nova --tenant=service --role=admin
+keystone service-create --name=nova --type=compute --description="OpenStack Compute"
+keystone endpoint-create --service=nova --publicurl=http://127.0.0.1:8774/v2/%\(tenant_id\)s --internalurl=http://127.0.0.1:8774/v2/%\(tenant_id\)s --adminurl=http://127.0.0.1:8774/v2/%\(tenant_id\)s
+
+# Edit /etc/nova/nova.conf
+#[DEFAULT]
+#logdir=/var/log/nova
+#state_path=/var/lib/nova
+#lock_path=/var/lock/nova
+#force_dhcp_release=True
+#iscsi_helper=tgtadm
+#libvirt_use_virtio_for_bridges=True
+#connection_type=libvirt
+#root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
+#verbose=True
+#rpc_backend = nova.rpc.impl_kombu
+#rabbit_host = 127.0.0.1
+#rabbit_password = rabbit
+#my_ip = 127.0.0.1
+#vncserver_listen = 127.0.0.1
+#vncserver_proxyclient_address = 127.0.0.1
+#novncproxy_base_url=http://127.0.0.1:6080/vnc_auto.html
+#glance_host = 127.0.0.1
+#auth_strategy=keystone
+#
+#network_api_class=nova.network.neutronv2.api.API
+#neutron_url=http://127.0.0.1:9696
+#neutron_auth_strategy=keystone
+#neutron_admin_tenant_name=service
+#neutron_admin_username=neutron
+#neutron_admin_password=neutron_pass
+#neutron_metadata_proxy_shared_secret=openstack
+#neutron_admin_auth_url=http://127.0.0.1:35357/v2.0
+#linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+#firewall_driver=nova.virt.firewall.NoopFirewallDriver
+#security_group_api=neutron
+#
+#vif_plugging_is_fatal: false
+#vif_plugging_timeout: 0
+#
+#[database]
+#connection = mysql://nova:nova_dbpass@127.0.0.1/nova
+#
+#[keystone_authtoken]
+#auth_uri = http://127.0.0.1:5000
+#auth_host = 127.0.0.1
+#auth_port = 35357
+#auth_protocol = http
+#admin_tenant_name = service
+#admin_user = nova
+#admin_password = nova_pass
+
+# sync the Nova db
+sudo nova-manage db sync
+
+# Restart all nova services
+sudo service nova-api restart ; sudo service nova-cert restart; sudo service nova-consoleauth restart ;sudo service nova-scheduler restart;sudo service nova-conductor restart; sudo service nova-novncproxy restart; sudo service nova-compute restart; sudo service nova-console restart
+
+# Test the Nova installation using the following command
+nova-manage service list
+
+# The output should be something like this
+#
+#Binary           Host                     Zone             Status     State Updated_At
+#nova-consoleauth ubuntu                   internal         enabled    :-)   2014-04-19 08:55:13
+#nova-conductor   ubuntu                   internal         enabled    :-)   2014-04-19 08:55:14
+#nova-cert        ubuntu                   internal         enabled    :-)   2014-04-19 08:55:13
+#nova-scheduler   ubuntu                   internal         enabled    :-)   2014-04-19 08:55:13
+#nova-compute     ubuntu                   nova             enabled    :-)   2014-04-19 08:55:14
+#nova-console     ubuntu                   internal         enabled    :-)   2014-04-19 08:55:14
+
+# Also run the following command to check if nova is able to authenticate with keystone server
+nova list
+
+
+###### Neutron(Networking service) ########
+
+# Install the Neutron services
+sudo apt-get install -y neutron-server neutron-plugin-openvswitch neutron-plugin-openvswitch-agent neutron-common neutron-dhcp-agent neutron-l3-agent neutron-metadata-agent openvswitch-switch
+
+# Create database and credentials for Neutron
+mysql -u root -p
+#CREATE DATABASE neutron;
+#GRANT ALL ON neutron.* TO 'neutron'@'%' IDENTIFIED BY 'neutron_dbpass';
+#quit;
+
+# Create Keystone entries for Neutron
+keystone user-create --name=neutron --pass=neutron_pass --email=neutron@example.com
+keystone service-create --name=neutron --type=network --description="OpenStack Networking"
+keystone user-role-add --user=neutron --tenant=service --role=admin
+keystone endpoint-create --service=neutron --publicurl http://127.0.0.1:9696 --adminurl http://127.0.0.1:9696  --internalurl http://127.0.0.1:9696
+
+# Edit /etc/neutron/neutron.conf
+#[DEFAULT]
+#core_plugin = ml2
+#notification_driver=neutron.openstack.common.notifier.rpc_notifier
+#verbose=True
+#rpc_backend = rabbit
+#rabbit_host = 127.0.0.1
+#rabbit_password = rabbit
+#service_plugins=router
+#allow_overlapping_ips=True
+#auth_strategy=keystone
+#neutron_metadata_proxy_shared_secret=openstack
+#service_neutron_metadata_proxy=True
+#nova_admin_password=nova_pass
+#notify_nova_on_port_data_changes=True
+#notify_nova_on_port_status_changes=True
+#nova_admin_auth_url=http://127.0.0.1:35357/v2.0
+#nova_admin_tenant_id=service
+#nova_url=http://127.0.0.1:8774/v2
+#nova_admin_username=nova
+#
+#[keystone_authtoken]
+#auth_host = 127.0.0.1
+#auth_port = 35357
+#auth_protocol = http
+#admin_tenant_name = service
+#admin_user = neutron
+#admin_password = neutron_pass
+#signing_dir = $state_path/keystone-signing
+#
+#notify_nova_on_port_status_changes = True
+#notify_nova_on_port_data_changes = True
+#nova_url = http://127.0.0.1:8774
+#nova_admin_username = nova
+#nova_admin_tenant_id =
+#nova_admin_password = nova_pass
+#nova_admin_auth_url = http://127.0.0.1:35357/v2.0
+#
+#[database]
+#connection = mysql://neutron:neutron_dbpass@127.0.0.1/neutron
+#
+#[agent]
+#root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+# Open /etc/neutron/plugins/ml2/ml2_conf.ini and make the following changes
+#[ml2]
+#type_drivers=flat,vlan
+#tenant_network_types=vlan,flat
+#mechanism_drivers=openvswitch
+#[ml2_type_flat]
+#flat_networks=External
+#[ml2_type_vlan]
+#network_vlan_ranges=Intnet1:100:200
+#[ml2_type_gre]
+#[ml2_type_vxlan]
+#[securitygroup]
+#firewall_driver=neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+#enable_security_group=True
+#[ovs]
+#bridge_mappings=External:br-ex,Intnet1:br-eth1
+
+# We have created two physical networks one as a flat network and the other as a vlan network with
+# vlan ranging from 100 to 200. We have mapped External network to br-ex and Intnet1 to br-eth1.
+# Now Create bridges
+
+# Note: The naming convention for the ethernet cards may also be like “p4p1″, “em1″ from Ubuntu 14.04 LTS.
+# You can use the appropriate interface names below instead of “eth1″ and “eth2″.
+
+sudo ovs-vsctl add-br br-int
+sudo ovs-vsctl add-br br-eth1
+sudo ovs-vsctl add-br br-ex
+sudo ovs-vsctl add-port br-eth1 eth1
+sudo ovs-vsctl add-port br-ex eth2
+
+# According to our set up all traffic belonging to External network will be bridged to eth2 and all traffic
+# of Intnet1 will be bridged to eth1. If you have only one interface(eth0) and would like to use it for all
+# networking then please have a look at 
+# https://fosskb.wordpress.com/2014/06/10/managing-openstack-internaldataexternal-network-in-one-interface.
+
+# Edit /etc/neutron/metadata_agent.ini to look like this
+#[DEFAULT]
+#auth_url = http://127.0.0.1:5000/v2.0
+#auth_region = RegionOne
+#admin_tenant_name = service
+#admin_user = neutron
+#admin_password = neutron_pass
+#metadata_proxy_shared_secret = openstack
+
+# Edit /etc/neutron/dhcp_agent.ini to look like this
+#[DEFAULT]
+#interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+#dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+#use_namespaces = True
+
+# Edit /etc/neutron/l3_agent.ini to look like this
+#[DEFAULT]
+#interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+#use_namespaces = True
+
+# Sync the db
+neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade juno
+
+# Restart all Neutron services
+sudo service neutron-server restart; sudo service neutron-plugin-openvswitch-agent restart;sudo service neutron-metadata-agent restart; sudo service neutron-dhcp-agent restart; sudo service neutron-l3-agent restart
+
+# Check if the services are running. Run the following command
+neutron agent-list
+
+# The output should be like
+# +--------------------------------------+--------------------+--------+-------+----------------+
+# | id                                   | agent_type         | host   | alive | admin_state_up |
+# +--------------------------------------+--------------------+--------+-------+----------------+
+# | 01a5e70c-324a-4183-9652-6cc0e5c98499 | Metadata agent     | ubuntu | :-)   | True           |
+# | 17b9440b-50eb-48b7-80a8-a5bbabc47805 | DHCP agent         | ubuntu | :-)   | True           |
+# | c30869f2-aaca-4118-829d-a28c63a27aa4 | L3 agent           | ubuntu | :-)   | True           |
+# | f846440e-4ca6-4120-abe1-ffddaf1ab555 | Open vSwitch agent | ubuntu | :-)   | True           |
+# +--------------------------------------+--------------------+--------+-------+----------------+
+
+# Users who want to know what happens under the hood can read
+# 1. How neutron-openvswitch-agent provides L2 connectivity between Instances, DHCP servers and routers
+# https://fosskb.wordpress.com/2014/06/19/l2-connectivity-in-openstack-using-openvswitch-mechanism-driver/
+# 2. How neutron-l3-agent provides services like routing, natting, floatingIP and security groups
+# https://fosskb.wordpress.com/2014/09/15/l3-connectivity-using-neutron-l3-agent/
+# 3. See more of Linux networking capabilities
+# https://fosskb.wordpress.com/2014/06/25/a-bite-of-virtual-linux-networking/
+
+
+###### Cinder ########
+
+#Install Cinder services
+sudo apt-get install cinder-api cinder-scheduler cinder-volume lvm2 open-iscsi-utils open-iscsi iscsitarget sysfsutils
+
+# Create database and credentials for Cinder
+mysql -u root -p
+#mysql> CREATE DATABASE cinder;
+#mysql> GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%' IDENTIFIED BY 'cinder_dbpass';
+#mysql> quit;
+
+# Create Cinder related keystone entries
+keystone user-create --name=cinder --pass=cinder_pass --email=cinder@example.com
+keystone user-role-add --user=cinder --tenant=service --role=admin
+keystone service-create --name=cinder --type=volume --description="OpenStack Block Storage"
+keystone endpoint-create --service=cinder --publicurl=http://127.0.0.1:8776/v1/%\(tenant_id\)s --internalurl=http://127.0.0.1:8776/v1/%\(tenant_id\)s --adminurl=http://127.0.0.1:8776/v1/%\(tenant_id\)s
+keystone service-create --name=cinderv2 --type=volumev2 --description="OpenStack Block Storage v2"
+keystone endpoint-create --service=cinderv2 --publicurl=http://127.0.0.1:8776/v2/%\(tenant_id\)s --internalurl=http://127.0.0.1:8776/v2/%\(tenant_id\)s --adminurl=http://127.0.0.1:8776/v2/%\(tenant_id\)
+
+# Edit /etc/cinder/cinder.conf and replace all the lines with the following.
+# [DEFAULT]
+# rootwrap_config = /etc/cinder/rootwrap.conf
+# api_paste_confg = /etc/cinder/api-paste.ini
+# iscsi_helper = tgtadm
+# volume_name_template = volume-%s
+# volume_group = cinder-volumes
+# verbose = True
+# auth_strategy = keystone
+# state_path = /var/lib/cinder
+# lock_path = /var/lock/cinder
+# volumes_dir = /var/lib/cinder/volumes
+# rpc_backend = cinder.openstack.common.rpc.impl_kombu
+# rabbit_host = 127.0.0.1
+# rabbit_port = 5672
+# rabbit_userid = guest
+# rabbit_password = rabbit
+# glance_host = 127.0.0.1
+#
+# [database]
+# connection = mysql://cinder:cinder_dbpass@10.0.0.1/cinder
+#
+# [keystone_authtoken]
+# auth_uri = http://127.0.0.1:5000
+# auth_host = 127.0.0.1
+# auth_port = 35357
+# auth_protocol = http
+# admin_tenant_name = service
+# admin_user = cinder
+# admin_password = cinder_pass
+
+# Sync the database
+cinder-manage db sync
+
+# Create physical volume
+pvcreate /dev/sdb
+
+# Create volume group named “cinder-volumes”
+vgcreate cinder-volumes /dev/sdb
+
+# Restart all the Cinder services
+sudo service cinder-scheduler restart;sudo service cinder-api restart;sudo service cinder-volume restart;sudo service tgt restart
+
+# Create a volume to test the setup
+cinder create --display-name myVolume 1
+
+# List the volume created
+cinder list
+# +--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+# |                  ID                  |   Status  | Display Name | Size | Volume Type | Bootable | Attached to |
+# +--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+# | e19242b5-8caf-4093-9b81-96d6bb1f7000 | available |   myVolume   |  1   |     None    |  false   |             |
+# +--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+
+
+###### Horizon (OpenStack Dashboard) ########
+sudo apt-get install -y openstack-dashboard
+
+# After installing login using the following credentials
+# URL     : http://10.0.0.1/horizon
+# Username: admin
+# Password: ADMIN
+
+########################################################################
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get update
+
+# ?? probably not found
+sudo add-apt-repository ppa:cloud-installer/testing
+
+#    gpg: keyring `/tmp/tmpde6_ujec/secring.gpg' created
+#    gpg: keyring `/tmp/tmpde6_ujec/pubring.gpg' created
+#    gpg: requesting key D2FF09ED from hkp server keyserver.ubuntu.com
+#    gpg: /tmp/tmpde6_ujec/trustdb.gpg: trustdb created
+#    gpg: key D2FF09ED: public key "Launchpad PPA for Ubuntu Cloud Installer" imported
+#    gpg: Total number processed: 1
+#    gpg:               imported: 1  (RSA: 1)
+#    OK
+
+# if the above doesn't get PPA, run the following cmds:
+# sudo apt-get install software-properties-common
+# sudo add-apt-repository ppa:cloud-installer/testing
+
+sudo apt-get update
+
+sudo apt-get install ssh
+sudo apt-get install htop
+sudo apt-get install nload
+sudo apt-get install ntop
+  # interface for ntop: eth0
+
+sudo apt-get install openstack
+
+sudo apt-get update
+ifconfig
+  # lxcbr0 should show up
+  # lxcbr0    Link encap:Ethernet  HWaddr ae:64:e0:f0:12:f6  
+  #           inet addr:10.0.3.1  Bcast:10.0.3.255  Mask:255.255.255.0
+
+sudo openstack-install
+
+  # create passwd
+  # Single
+
+  # on another terminal, run 'nload' to verify the network load
+
+
+# user name should be 'admin'
+
+# install GUI
+sudo apt-get -y install xorg gnome-core gnome-system-tools gnome-app-install
+startx
+
+sudo apt-get update
+
+firefox
+Dashboard http://10.0.3.241/horizon
+JuJu http://10.0.3.57
+ntop localhost:3000

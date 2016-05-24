@@ -1,0 +1,123 @@
+arch/x86_64/kernel/mpparse.c
+
+/*
+ * Various Linux-internal data structures created from the
+ * MP-table.
+ */
+DECLARE_BITMAP(mp_bus_not_pci, MAX_MP_BUSSES);
+int mp_bus_id_to_pci_bus [MAX_MP_BUSSES] = { [0 ... MAX_MP_BUSSES-1] = -1 };
+
+
+/* I/O APIC entries */
+struct mpc_config_ioapic mp_ioapics[MAX_IO_APICS];
+
+/* # of MP IRQ source entries */
+struct mpc_config_intsrc mp_irqs[MAX_IRQ_SOURCES];
+
+/* MP IRQ source entries */
+int mp_irq_entries;
+
+/* Processor that is doing the boot up */
+unsigned int boot_cpu_id = -1U;
+/* Internal processor count */
+unsigned int num_processors __cpuinitdata = 0;
+
+extern struct irq_desc irq_desc[NR_IRQS];
+struct irq_cfg irq_cfg[NR_IRQS] __read_mostly = {
+
+/*
+ * # of IRQ routing registers
+ */
+int nr_ioapic_registers[MAX_IO_APICS];
+
+
+/* CFS-related fields in a runqueue */
+struct cfs_rq {
+	struct load_weight load;
+	unsigned long nr_running;
+
+	s64 fair_clock;
+	u64 exec_clock;
+	u64 min_vruntime;
+	s64 wait_runtime;
+	u64 sleeper_bonus;
+	unsigned long wait_runtime_overruns, wait_runtime_underruns;
+
+	struct rb_root tasks_timeline;
+	struct rb_node *rb_leftmost;
+	struct rb_node *rb_load_balance_curr;
+	/* 'curr' points to currently running entity on this cfs_rq.
+	 * It is set to NULL otherwise (i.e when none are currently running).
+	 */
+	struct sched_entity *curr;
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	struct rq *rq;	/* cpu runqueue to which this cfs_rq is attached */
+
+	/* leaf cfs_rqs are those that hold tasks (lowest schedulable entity in
+	 * a hierarchy). Non-leaf lrqs hold other higher schedulable entities
+	 * (like users, containers etc.)
+	 *
+	 * leaf_cfs_rq_list ties together list of leaf cfs_rq's in a cpu. This
+	 * list is used during load balance.
+	 */
+	struct list_head leaf_cfs_rq_list; /* Better name : task_cfs_rq_list? */
+#endif
+};
+
+irq_desc->status
+/* Internal flags */
+#define IRQ_INPROGRESS		0x00000100	/* IRQ handler active - do not enter! */
+#define IRQ_DISABLED		0x00000200	/* IRQ disabled - do not enter! */
+#define IRQ_PENDING		0x00000400	/* IRQ pending - replay on enable */
+#define IRQ_REPLAY		0x00000800	/* IRQ has been replayed but not acked yet */
+#define IRQ_AUTODETECT		0x00001000	/* IRQ is being autodetected */
+#define IRQ_WAITING		0x00002000	/* IRQ not yet seen - for autodetection */
+#define IRQ_LEVEL		0x00004000	/* IRQ level triggered */
+#define IRQ_MASKED		0x00008000	/* IRQ masked - shouldn't be seen again */
+#define IRQ_PER_CPU		0x00010000	/* IRQ is per CPU */
+#define IRQ_NOPROBE		0x00020000	/* IRQ is not valid for probing */
+#define IRQ_NOREQUEST		0x00040000	/* IRQ cannot be requested */
+#define IRQ_NOAUTOEN		0x00080000	/* IRQ will not be enabled on request irq */
+#define IRQ_WAKEUP		0x00100000	/* IRQ triggers system wakeup */
+#define IRQ_MOVE_PENDING	0x00200000	/* need to re-target IRQ destination */
+#define IRQ_NO_BALANCING	0x00400000	/* IRQ is excluded from balancing */
+
+struct cpu_usage_stat {
+	cputime64_t user;
+	cputime64_t nice;
+	cputime64_t system;
+	cputime64_t softirq;
+	cputime64_t irq;
+	cputime64_t idle;
+	cputime64_t iowait;
+	cputime64_t steal;
+};
+
+typedef struct {
+	unsigned int soft_lkup_wdog_after_rec_thresh;
+	unsigned int soft_lkup_wdog_rec_thresh;
+}soft_lkup_wdog_time_t;
+
+struct kernel_stat {
+	struct cpu_usage_stat	cpustat;
+	unsigned int irqs[NR_IRQS];
+	unsigned int softlkup_touchtime[SFT_LKUP_TOUCH_TIME_ARRAY_COUNT];
+	soft_lkup_wdog_time_t soft_lkup_wdog_time;
+
+	unsigned long long sft_lkup_wdog_last_queued;
+	unsigned long long sft_lkup_wdog_cur_time;
+	unsigned int do_irq_count;
+	unsigned int softirq_count;
+	unsigned int do_softirq_tot_count;
+};
+
+static inline int kstat_irqs(int irq)
+{
+	int cpu, sum = 0;
+
+	for_each_possible_cpu(cpu)
+		sum += kstat_cpu(cpu).irqs[irq];
+
+	return sum;
+}
+

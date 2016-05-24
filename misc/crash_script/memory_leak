@@ -1,0 +1,32 @@
+ddfs.info
+messages.engineering
+06/06 17:37:54.906: dd_malloc_fence_check_leaks: Leak stacktrace in /ddr/bin/ddfs:
+06/06 17:37:54.906: 	# 0 /ddr/bin/ddfs [0xdf3316] (0xdf3316)
+06/06 17:37:54.907: 	# 1 /ddr/bin/ddfs [0xdf32ad] (0xdf32ad)
+06/06 17:37:54.907: 	# 2 /ddr/bin/ddfs [0xdf3116] (0xdf3116)
+06/06 17:37:54.907: 	# 3 /ddr/bin/ddfs [0x11bc6aa] (0x11bc6aa)
+06/06 17:37:54.907: 	# 4 /ddr/bin/ddfs [0x11bc9bc] (0x11bc9bc)
+06/06 17:37:54.907: 	# 5 /ddr/bin/ddfs [0xdf229d] (0xdf229d)
+06/06 17:37:54.907: 	# 6 /ddr/bin/ddfs [0xdf2bfe] (0xdf2bfe)
+06/06 17:37:54.907: 	# 7 /ddr/bin/ddfs [0xdf2c6d] (0xdf2c6d)
+
+
+[hoj9@jho1-dl ~]$ addr2line -e /auto/builds/main/248731/app/install/debug/ddr/bin/ddfs 0xdf3316 0xdf32ad 0xdf3116 0xdf7997 0xdf7cf1 0xdf229d 0xdf2bfe 0xdf2c6d
+include/dd_alloc.h:932
+include/dd_alloc.h:957
+shared/plib/plib_pci.c:649
+shared/plib/qlogic.c:95
+shared/plib/qlogic.c:116
+shared/plib/plib_pci.c:255
+shared/plib/plib_pci.c:557
+shared/plib/plib_pci.c:587
+[hoj9@jho1-dl ~]$ addr2line -e /auto/builds/main/248731/app/install/debug/ddr/bin/ddfs 0xdf3b54 0xdf2eb5 0xdf7997 0xdf7cf1 0xdf229d 0xdf2bfe 0xdf2c6d 0xdf3bcd
+include/dd_alloc.h:598
+shared/plib/plib_pci.c:625
+shared/plib/qlogic.c:95
+shared/plib/qlogic.c:116
+shared/plib/plib_pci.c:255
+shared/plib/plib_pci.c:557
+shared/plib/plib_pci.c:587
+shared/plib/plib_pci.c:687
+

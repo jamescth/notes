@@ -1,0 +1,256 @@
+pgcache
+crash> pgcache
+    VFSMOUNT         SUPERBLK     TYPE   DEVNAME         DIRNAME
+ffff81015a275d80 ffff81015a273400 rootfs rootfs          /
+ffff81014f0ed4b0 ffff81014f36a2b0 DIR      0    sys
+ffff81014f0ed660 ffff81014f36a518 DIR      0    proc
+ffff81014f0edb70 ffff81014f36ac50 DIR      0    sysroot
+
+crash> kmem -i
+              PAGES        TOTAL      PERCENTAGE
+ TOTAL MEM  1005495       3.8 GB         ----
+      FREE     4726      18.5 MB    0% of TOTAL MEM
+      USED  1000769       3.8 GB   99% of TOTAL MEM
+    SHARED   553507       2.1 GB   55% of TOTAL MEM
+   BUFFERS       35       140 KB    0% of TOTAL MEM
+    CACHED    34479     134.7 MB    3% of TOTAL MEM
+      SLAB   147501     576.2 MB   14% of TOTAL MEM
+
+TOTAL SWAP  1048574         4 GB         ----
+ SWAP USED   650943       2.5 GB   62% of TOTAL SWAP
+ SWAP FREE   397631       1.5 GB   37% of TOTAL SWAP
+
+crash> ps
+   PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+      0      0   0  ffffffff805d4df0  RU   0.0       0      0  [swapper]
+      0      1   1  ffff81015a3c40c0  RU   0.0       0      0  [swapper]
+      1      0   0  ffff81015a3a9080  RU   0.0    6120     32  init
+      2      0   1  ffff81015a3a8860  IN   0.0       0      0  [kthreadd]
+
+crash> kmem -s
+CACHE            NAME                 OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE
+ffff81008a7c3180 fib6_nodes                64          9        59      1     4k
+ffff81008a35e140 ip6_dst_cache            320          8        12      1     4k
+ffff81008a35f100 ndisc_cache              256          3        15      1     4k
+ffff81008a3530c0 RAWv6                    960          5         8      2     4k
+ffff81008a636080 UDPLITEv6                960          0         0      0     4k
+ffff81008a637040 UDPv6                    960          4         4      1     4k
+ffff810094413740 tw_sock_TCPv6            192          0         0      0     4k
+ffff8100943e8700 request_sock_TCPv6       192          0         0      0     4k
+ffff810159d89240 buffer_page_cache         24   16949843  16949952  117708     4k
+
+crash> kmem -s | awk {'print $2 " " $3*$4}' | sort -n -k 2,2 |tail
+
+for live system, use /proc/slabinfo
+
+crash> max_low_pfn
+max_low_pfn = $3 = 1441792
+crash> min_low_pfn
+min_low_pfn = $4 = 0
+crash> max_pfn
+max_pfn = $5 = 1441792
+
+crash> per_cpu__vm_event_states
+PER-CPU DATA TYPE:
+  struct vm_event_state per_cpu__vm_event_states;
+PER-CPU ADDRESSES:
+  [0]: ffff81000103cc70
+  [1]: ffff81000104dc70
+
+crash> vm_event_state ffff81000103cc70
+struct vm_event_state {
+  event = {553790516, 170391274, 35451285, 12231200, 0, 597930752, 12772281, 0, 611981021, 56135
+54766, 5671945701, 176011050, 9033882, 0, 22459608873, 2537811583, 0, 0, 69116641, 1834807, 0, 0
+, 2811876291, 725845112, 0, 0, 2280218448, 101540140, 0, 1552, 5847424, 43186552, 1648, 3412888,
+ 214894, 12146265}
+}
+
+enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+		FOR_ALL_ZONES(PGALLOC),
+		PGFREE, PGACTIVATE, PGDEACTIVATE,
+		PGFAULT, PGMAJFAULT,
+		FOR_ALL_ZONES(PGREFILL),
+		FOR_ALL_ZONES(PGSTEAL),
+		FOR_ALL_ZONES(PGSCAN_KSWAPD),
+		FOR_ALL_ZONES(PGSCAN_DIRECT),
+		PGINODESTEAL, SLABS_SCANNED, KSWAPD_STEAL, KSWAPD_INODESTEAL,
+		PAGEOUTRUN, ALLOCSTALL, PGROTATED,
+		NR_VM_EVENT_ITEMS
+};
+
+
+crash> totalram_pages
+totalram_pages = $8 = 1005495
+crash> nr_swap_pages
+nr_swap_pages = $9 = 397631
+
+crash> vm_stat
+vm_stat = $11 =
+ {{
+    counter = 4726		NR_FREE_PAGES
+  }, {
+    counter = 386056		NR_INACTIVE
+  }, {
+    counter = 165137		NR_ACTIVE
+  }, {
+    counter = 0
+  }, {
+    counter = 519242
+  }, {
+    counter = 33947
+  }, {
+    counter = 553665
+  }, {
+    counter = 0
+  }, {
+    counter = -2
+  }, {
+    counter = 1477
+  }, {
+    counter = 146024
+  }, {
+    counter = 4572
+  }, {
+    counter = 0
+  }, {
+    counter = 0
+  }, {
+    counter = 24718493
+  }, {
+    counter = 1222312183
+  }, {
+    counter = 0
+  }, {
+    counter = 0
+  }, {
+    counter = 80514
+  }, {
+    counter = 1222312183
+  }, {
+    counter = 0
+  }}
+
+locked pages:
+crash> mm_struct 0xffff81013d82fc00 | grep locked
+  locked_vm = 540776,
+
+	vma->vm_flags = newflags;
+
+	/*
+	 * Keep track of amount of locked VM.
+	 */
+	pages = (end - start) >> PAGE_SHIFT;
+	if (newflags & VM_LOCKED) {
+		pages = -pages;
+		if (!(newflags & VM_IO)) {
+			ret = make_pages_present(start, end);
+		}
+	} 
+
+
+make_pages_present()
+	get_user_pages()
+		get_user_pages_internal
+			handle_mm_fault
+				handle_pte_fault
+
+kmem -p > kmem_p.out
+
+      PAGE       PHYSICAL      MAPPING       INDEX CNT FLAGS
+ffff81015a800000        0                0        0  1 400
+ffff81015a800040     1000                0        0  1 400
+ffff81015a800080     2000                0        0  1 400
+ffff81015a8000c0     3000                0        0  0 880000
+ffff81015a800100     4000                0        0  0 880000
+ffff81015a800140     5000                0        0  0 800000
+ffff81015a800180     6000                0        0  1 400
+ffff81015a8001c0     7000                0        0  1 400
+ffff81015a800200     8000                0        0  1 400
+ffff81015a800240     9000                0        0  1 400
+ffff81015a800280     a000                0        0  1 400
+ffff81015a8002c0     b000                0        0  1 400
+ffff81015a800300     c000                0        0  1 400
+ffff81015a800340     d000                0        0  1 400
+ffff81015a800380     e000                0        0  1 400
+...
+ffff81015f786040 13e181000 ffff81004fbc6591 11457975006  1 200000000000060
+ffff81015f786080 13e182000 ffff81013d169a00    10165  2 20000000000003c
+ffff81015f7860c0 13e183000 ffff81013d169a00    10166  2 20000000000003c
+ffff81015f786100 13e184000                0     1499  1 200000000000080
+ffff81015f786140 13e185000                0     1500  0 200000000000080
+ffff81015f786180 13e186000 ffff81004fbc69f1    11238  1 200000000000060
+ffff81015f7861c0 13e187000                0     1495  1 200000000000080
+ffff81015f786200 13e188000 ffff81013f36e320   281225  2 20000000000082c
+ffff81015f786240 13e189000 ffff810144e66460        4  4 20000000001006c
+
+crash> eval 0x200000000000060
+hexadecimal: 200000000000060
+    decimal: 144115188075855968
+      octal: 10000000000000000140
+     binary: 0000001000000000000000000000000000000000000000000000000001100000
+                                                                      6543210
+
+crash> eval 200000000000080
+hexadecimal: b5e620f48050
+    decimal: 200000000000080
+      octal: 5536304075100120
+     binary: 0000000000000000101101011110011000100000111101001000000001010000
+                                                    4321098765432109876543210
+
+#define PG_locked	 	 0	/* Page is locked. Don't touch. */
+#define PG_error		 1
+#define PG_referenced		 2
+#define PG_uptodate		 3
+...
+
+crash> page ffff81015f786180
+struct page {
+  flags = 144115188075855968,
+  _count = {
+    counter = 1
+  },
+  {
+    _mapcount = {
+      counter = 0
+    },
+    {
+      inuse = 0,
+      offset = 0
+    }
+  },
+  {
+    {
+      private = 0,
+      mapping = 0xffff81004fbc69f1
+    },
+    ptl = {
+      raw_lock = {
+        slock = 0
+      },
+      tracker = {
+        caller = 0,
+        owner = 27121
+      }
+    },
+    {
+      lockless_freelist = 0x0,
+      slab = 0xffff81004fbc69f1
+    },
+    {
+      first_page = 0x0
+    }
+  },
+  {
+    index = 11238,
+    freelist = 0x2be6
+  },
+  lru = {
+    next = 0xffff81015f7ed2a8,
+    prev = 0xffff81015f71d668
+  },
+  page_cgroup = 18446604441141158528
+}
+
+crash> p/x 144115188075855968
+$4 = 0x200000000000060
+

@@ -1,0 +1,72 @@
+# stop the services before modification
+sudo service ypbind stop
+sudo service autofs stop
+
+# set up addtional login for nis in bootup
+sudo cp /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf /tmp/50-ubuntu.conf
+sudo chmod 666 /tmp/50-ubuntu.conf
+sudo cat /tmp/50-ubuntu.conf.mig >> /tmp/50-ubuntu.conf
+sudo chmod 644 /tmp/50-ubuntu.conf
+sudo cp /tmp/50-ubuntu.conf /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf
+
+# set up dhclient
+sudo cp /etc/dhcp/dhclient.conf /tmp/dhclient.conf
+sudo chmod 666 /tmp/dhclient.conf
+sudo cat /tmp/dhclient.conf.mig >> /tmp/dhclient.conf
+sudo chmod 644 /tmp/dhclient.conf
+sudo cp /tmp/dhclient.conf /etc/dhcp/dhclient.conf
+
+# set up resolve.conf
+sudo cp /etc/resolvconf/resolv.conf.d/head /tmp/head
+sudo chmod 666 /tmp/head
+sudo cat /tmp/head.mig >> /tmp/head
+sudo chmod 644 /tmp/head
+sudo cp /tmp/head /etc/resolvconf/resolv.conf.d/head
+
+# set up yp.conf
+sudo cp /etc/yp.conf /tmp/yp.conf
+sudo chmod 666 /tmp/yp.conf
+sudo cat /tmp/yp.conf.mig >> /tmp/yp.conf
+sudo chmod 644 /tmp/yp.conf
+sudo cp /tmp/yp.conf /etc/yp.conf
+
+# set up nsswitch.conf
+sudo cp /etc/nsswitch.conf /tmp/nsswitch.conf
+sudo chmod 666 /tmp/nsswitch.conf
+sudo cat /tmp/nsswitch.conf.mig >> /tmp/nsswitch.conf
+sudo chmod 644 /tmp/nsswitch.conf
+sudo cp /tmp/nsswitch.conf /etc/nsswitch.conf
+
+# set up hosts.allow
+sudo cp /etc/hosts.allow /tmp/hosts.allow
+sudo chmod 666 /tmp/hosts.allow
+sudo cat /tmp/hosts.allow.mig >> /tmp/hosts.allow
+sudo chmod 644 /tmp/hosts.allow
+sudo cp /tmp/hosts.allow /etc/hosts.allow
+
+# set up passwd
+sudo cp /etc/passwd /tmp/passwd
+sudo chmod 666 /tmp/passwd
+sudo cat /tmp/passwd.mig >> /tmp/passwd
+sudo chmod 644 /tmp/passwd
+sudo cp /tmp/passwd /etc/passwd
+
+# set up group
+sudo cp /etc/group /tmp/group
+sudo chmod 666 /tmp/group
+sudo cat /tmp/group.mig >> /tmp/group
+sudo chmod 644 /tmp/group
+sudo cp /tmp/group /etc/group
+
+# set up shadow
+sudo chmod 644 /etc/shadow
+sudo cp /etc/shadow /tmp/shadow
+sudo chmod 666 /tmp/shadow
+sudo cat /tmp/shadow.mig  >> /tmp/shadow
+sudo chmod 644 /tmp/shadow
+sudo cp /tmp/shadow /etc/shadow
+sudo chmod 640 /etc/shadow
+
+sudo service ypbind restart
+sudo service autofs restart
+

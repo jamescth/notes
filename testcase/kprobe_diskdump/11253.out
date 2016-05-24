@@ -1,0 +1,320 @@
+PID: 11253  TASK: ffff81148f2c6540  CPU: 3   COMMAND: "ddr_procmon"
+struct task_struct {
+  state = 8, 
+  stack = 0xffff810d8272e000, 
+  usage = {
+    counter = 2
+  }, 
+  flags = 4202752, 
+  ptrace = 1529, 
+  lock_depth = -1, 
+  prio = 120, 
+  static_prio = 120, 
+  normal_prio = 120, 
+  run_list = {
+    next = 0xffff81148f2c6570, 
+    prev = 0xffff81148f2c6570
+  }, 
+  sched_class = 0xffffffff805ef090, 
+  se = {
+    wait_runtime = 0, 
+    fair_key = 188861474604, 
+    load = {
+      weight = 1024, 
+      inv_weight = 4194304
+    }, 
+    run_node = {
+      rb_parent_color = 1, 
+      rb_right = 0x0, 
+      rb_left = 0x0
+    }, 
+    on_rq = 0, 
+    exec_start = 0, 
+    sum_exec_runtime = 148293026, 
+    vruntime = 188861656114, 
+    prev_sum_exec_runtime = 146608827, 
+    wait_start_fair = 0, 
+    sleep_start_fair = 1, 
+    wait_start = 0, 
+    wait_max = 1001400, 
+    sum_wait_runtime = 0, 
+    sleep_start = 1084038451213, 
+    sleep_max = 0, 
+    sum_sleep_runtime = 0, 
+    block_start = 1084038322015, 
+    block_max = 0, 
+    exec_max = 999848, 
+    slice_max = 936862, 
+    wait_runtime_overruns = 0, 
+    wait_runtime_underruns = 0
+  }, 
+  ioprio = 0, 
+  btrace_seq = 0, 
+  policy = 0, 
+  cpus_allowed = {
+    bits = {4294967295, 0, 0, 0}
+  }, 
+  time_slice = 1000, 
+  sched_info = {
+    pcnt = 443, 
+    cpu_time = 149049693, 
+    run_delay = 827298, 
+    last_arrival = 1122505075135037, 
+    last_queued = 0
+  }, 
+  tasks = {
+    next = 0xffff810cf2102878, 
+    prev = 0xffff811464f08478
+  }, 
+  ptrace_children = {
+    next = 0xffff81148f2c66c8, 
+    prev = 0xffff81148f2c66c8
+  }, 
+  ptrace_list = {
+    next = 0xffff811fb2e3d208, 
+    prev = 0xffff81349ea422d8
+  }, 
+  mm = 0xffff8134a3eb6c00, 
+  active_mm = 0xffff8134a3eb6c00, 
+  binfmt = 0xffffffff805fc050, 
+  exit_state = 0, 
+  exit_code = 0, 
+  exit_signal = 17, 
+  pdeath_signal = 0, 
+  personality = 0, 
+  did_exec = 1, 
+  pid = 11253, 
+  tgid = 11253, 
+  real_parent = 0xffff811fb2e3d080, 
+  parent = 0xffff81124d5ed400, 
+  children = {
+    next = 0xffff810cf2102900, 
+    prev = 0xffff81316211a300
+  }, 
+  sibling = {
+    next = 0xffff81349ea42340, 
+    prev = 0xffff81124d5ed5f0
+  }, 
+  group_leader = 0xffff81148f2c6540, 
+  pids = {{
+      node = {
+        next = 0x0, 
+        pprev = 0xffff811f81216778
+      }, 
+      pid = 0xffff811f81216760
+    }, {
+      node = {
+        next = 0x0, 
+        pprev = 0xffff811f81216780
+      }, 
+      pid = 0xffff811f81216760
+    }, {
+      node = {
+        next = 0x0, 
+        pprev = 0xffff811f81216788
+      }, 
+      pid = 0xffff811f81216760
+    }}, 
+  thread_group = {
+    next = 0xffff81145f1935e0, 
+    prev = 0xffff81145fa784a0
+  }, 
+  vfork_done = 0x0, 
+  set_child_tid = 0x2b6a96bdf790, 
+  clear_child_tid = 0x2b10f6f59610, 
+  rt_priority = 0, 
+  utime = 40, 
+  stime = 104, 
+  prev_utime = 30, 
+  prev_stime = 120, 
+  nvcsw = 418, 
+  nivcsw = 14, 
+  start_time = {
+    tv_sec = 1083, 
+    tv_nsec = 903617306
+  }, 
+  real_start_time = {
+    tv_sec = 1083, 
+    tv_nsec = 903617306
+  }, 
+  min_flt = 15772, 
+  maj_flt = 0, 
+  it_prof_expires = 0, 
+  it_virt_expires = 0, 
+  it_sched_expires = 0, 
+  cpu_timers = {{
+      next = 0xffff81148f2c6848, 
+      prev = 0xffff81148f2c6848
+    }, {
+      next = 0xffff81148f2c6858, 
+      prev = 0xffff81148f2c6858
+    }, {
+      next = 0xffff81148f2c6868, 
+      prev = 0xffff81148f2c6868
+    }}, 
+  uid = 0, 
+  euid = 0, 
+  suid = 0, 
+  fsuid = 0, 
+  gid = 0, 
+  egid = 0, 
+  sgid = 0, 
+  fsgid = 0, 
+  group_info = 0xffffffff805f1b40, 
+  cap_effective = 4294967039, 
+  cap_inheritable = 0, 
+  cap_permitted = 4294967039, 
+  keep_capabilities = 0, 
+  user = 0xffffffff805f12c0, 
+  fpu_counter = 2 '\002', 
+  oomkilladj = 0, 
+  comm = "ddr_procmon\000\000\000\000", 
+  rawdump_enabled = 0, 
+  debug_daemon = 0, 
+  dd_disable_fork = 0, 
+  link_count = 0, 
+  total_link_count = 0, 
+  sysvsem = {
+    undo_list = 0xffff813433ebe4c0
+  }, 
+  thread = {
+    rsp0 = 18446604493755973632, 
+    rsp = 18446604493755972760, 
+    userrsp = 140736328276328, 
+    fs = 47351862760832, 
+    gs = 0, 
+    es = 0, 
+    ds = 0, 
+    fsindex = 0, 
+    gsindex = 0, 
+    debugreg0 = 0, 
+    debugreg1 = 0, 
+    debugreg2 = 0, 
+    debugreg3 = 0, 
+    debugreg6 = 0, 
+    debugreg7 = 0, 
+    cr2 = 0, 
+    trap_no = 0, 
+    error_code = 0, 
+    i387 = {
+      fxsave = {
+        cwd = 895, 
+        swd = 0, 
+        twd = 0, 
+        fop = 0, 
+        rip = 0, 
+        rdp = 0, 
+        mxcsr = 8096, 
+        mxcsr_mask = 65535, 
+        st_space = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        xmm_space = {3049259008, 1109501099, 0, 0, 134217728, 1103288575, 0, 0, 458760, 327686, 196612, 65538, 0, 0, 0, 0, 4294901760, 4294770686, 4294639612, 4294508538, 4457330, 6218590, 4354191, 6625176, 21455, 0, 21002, 0, 0, 0, 0, 0, 524296, 524296, 524296, 524296, 0, 0, 0, 0, 65536, 196610, 327684, 458758, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+        padding = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+      }
+    }, 
+    ioperm = 0, 
+    io_bitmap_ptr = 0x0, 
+    io_bitmap_max = 0, 
+    tls_array = {0, 0, 0}, 
+    perfctr = 0x0
+  }, 
+  fs = 0xffff811499c4cec0, 
+  files = 0xffff811fb2e5f940, 
+  nsproxy = 0xffffffff805f2ae0, 
+  signal = 0xffff81147ff05680, 
+  sighand = 0xffff811f812ccb00, 
+  blocked = {
+    sig = {0}
+  }, 
+  real_blocked = {
+    sig = {0}
+  }, 
+  saved_sigmask = {
+    sig = {0}
+  }, 
+  pending = {
+    list = {
+      next = 0xffff81148f2c6bf0, 
+      prev = 0xffff81148f2c6bf0
+    }, 
+    signal = {
+      sig = {262144}
+    }
+  }, 
+  sas_ss_sp = 0, 
+  sas_ss_size = 0, 
+  notifier = 0, 
+  notifier_data = 0x0, 
+  notifier_mask = 0x0, 
+  qos_exit_callback = 0, 
+  umem_stat = {
+    uss = 0x0
+  }, 
+  dld_ctl = 0x0, 
+  security = 0x0, 
+  audit_context = 0x0, 
+  seccomp = <incomplete type>, 
+  parent_exec_id = 3, 
+  self_exec_id = 5, 
+  alloc_lock = {
+    raw_lock = {
+      slock = 1
+    }, 
+    tracker = {
+      caller = 195266, 
+      owner = 11373
+    }
+  }, 
+  pi_lock = {
+    raw_lock = {
+      slock = 1
+    }, 
+    tracker = {
+      caller = 0, 
+      owner = 0
+    }
+  }, 
+  pi_waiters = {
+    prio_list = {
+      next = 0xffff81148f2c6c78, 
+      prev = 0xffff81148f2c6c78
+    }, 
+    node_list = {
+      next = 0xffff81148f2c6c88, 
+      prev = 0xffff81148f2c6c88
+    }
+  }, 
+  pi_blocked_on = 0x0, 
+  journal_info = 0x0, 
+  bio_list = 0x0, 
+  bio_tail = 0x0, 
+  reclaim_state = 0x0, 
+  backing_dev_info = 0x0, 
+  io_context = 0x0, 
+  ptrace_message = 0, 
+  last_siginfo = 0x0, 
+  io_wait = 0x0, 
+  ioac = <incomplete type>, 
+  mempolicy = 0x0, 
+  il_next = 0, 
+  cgroups = 0xffffffff80b23760, 
+  cg_list = {
+    next = 0xffff81148f2c6d00, 
+    prev = 0xffff81148f2c6d00
+  }, 
+  robust_list = 0x0, 
+  compat_robust_list = 0x0, 
+  pi_state_list = {
+    next = 0xffff81148f2c6d20, 
+    prev = 0xffff81148f2c6d20
+  }, 
+  pi_state_cache = 0x0, 
+  fs_excl = {
+    counter = 0
+  }, 
+  rcu = {
+    next = 0x0, 
+    func = 0
+  }, 
+  splice_pipe = 0x0
+}
+

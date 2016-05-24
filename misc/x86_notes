@@ -1,0 +1,23 @@
+x86-64 is a 64-bit extention of x86, that almost entirely removes 
+segmentation in favor of the flat memory model used by almost all
+operating systems for the 386 or newer processors.  In long mode,
+all segment offsets are ignored, except for the FS and GS segments.
+When used with 4 Kib pages, the page table tree has 4 levels, 
+instead of three.  The virtual addresses are divided up  as follows:
+16 bits unused, 9 bits each for 4 tree level (total: 36 bits), and
+12 lowest bits unmodified.  With 2 Mib pages there are only three
+levels to the page table for a total of 27 bits used in paging and
+21 bits of offset.  Some newer CPUs also support a 1 GiB page with
+two levels of paging and 30 bits of offset.  CPUID can be used to 
+determine if 1 GiB pages are supported.  In all three cases, the
+16 highest bits are required to be equal to 48th bit, or in the 
+other words, the low 48 bits are sign extended to the higher bits.
+This is done to allow a future expansion of the addressable range,
+without compromising backwards compatibility.
+
+PAE Page-Directory Pointer Table
+PTE Page Table Entries
+PD  Page Directory
+PMD Page Middle Directories
+PT  Page Tables
+PGD The virtual address of the process's page directory

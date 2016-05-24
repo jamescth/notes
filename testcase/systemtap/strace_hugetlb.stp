@@ -1,0 +1,32 @@
+#tracing cow ops on hugetlb
+probe kernel.function("copy_huge_page"),
+	kernel.function("enqueue_huge_page"),
+	kernel.function("dequeue_huge_page"),
+	kernel.function("free_huge_page"),
+	kernel.function("alloc_fresh_huge_page"),
+	kernel.function("alloc_huge_page"),
+	kernel.function("update_and_free_page"),
+	kernel.function("set_huge_ptep_writable"),
+	kernel.function("copy_hugetlb_page_range"),
+	kernel.function("__unmap_hugepage_range"),
+	kernel.function("unmap_hugepage_range"),
+	kernel.function("hugetlb_cow"),
+	kernel.function("hugetlb_no_page"),
+	kernel.function("hugetlb_fault"),
+	kernel.function("follow_hugetlb_page"),
+	kernel.function("hugetlb_change_protection"),
+	kernel.function("hugetlb_reserve_pages"),
+	kernel.function("hugetlb_unreserve_pages")
+{
+	printf("Process(%d)-ENTER [%s] - %s(sb)\n", 
+				pid(), execname(), probefunc());
+	printf("%s\n",  print_stack(backtrace()));
+}
+/*
+probe kernel.function("copy_hugetlb_page_range")
+{
+	printf("Process(%d)-%s\n dst-mm:%p src-mm:%p vma:%p", 
+						pid(), probefunc(), $dst, $src, $vma);
+	printf("%s\n",  print_stack(backtrace()));
+}
+*/

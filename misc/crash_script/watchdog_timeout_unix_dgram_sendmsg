@@ -1,0 +1,53 @@
+More detail in bug #47877.
+
+there are 41 cronds, which means cronds are stuck.
+> crash> ps | grep crond | wc -l
+> 41
+
+Half of the cronds are piped waiting for their peers to finish unix_dgram_sendmsg().
+> #0 [ffff8101fe0adaa8] schedule at ffffffff804cc7f4
+> #1 [ffff8101fe0adb70] schedule_timeout at ffffffff804cd80f
+> #2 [ffff8101fe0adbc0] unix_wait_for_peer at ffffffff804b0cf8
+> #3 [ffff8101fe0adc50] unix_dgram_sendmsg at ffffffff804b18b8
+> #4 [ffff8101fe0adcd0] sock_sendmsg at ffffffff80433f04
+> #5 [ffff8101fe0ade60] sys_sendto at ffffffff80435470
+> #6 [ffff8101fe0adf80] system_call at ffffffff8020beb2
+
+Let's check syslogd.  One of the syslogs was run 2 secs ago.
+> crash> ps -l | grep syslogd
+> [2297914604289721]  PID: 22326  TASK: ffff8101fd1fc040  CPU: 2   COMMAND: "syslogd"
+> [2297499811829363]  PID: 4439   TASK: ffff8101e2535820  CPU: 2   COMMAND: "syslogd"
+> crash> ps -l | head -1
+> [2297917550772049]  PID: 22600  TASK: ffff81023c5e1820  CPU: 0   COMMAND: "java"
+> crash> p (2297917550772049-2297499811829363)/1000000000
+> $3 = 417
+> crash> p (2297917550772049-2297914604289721)/1000000000
+> $4 = 2
+
+And it has net config
+> crash> net -s 22326
+> PID: 22326  TASK: ffff8101fd1fc040  CPU: 2   COMMAND: "syslogd"
+> FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+>  0 ffff8101ffe8bac0 ffff81041dad9c80 UNIX:DGRAM
+> 18 ffff810426f2b080 ffff810207afd380 INET:DGRAM   0.0.0.0-514 0.0.0.0-0
+> 19 ffff810040962840 ffff810427ae93c0 INET:DGRAM   10.2.40.2-39677 10.2.60.1-53
+> 20 ffff8101ffe8b0c0 ffff81000fc78cc0 INET:DGRAM   10.2.40.2-39678 10.2.60.2-53
+
+let verify the remote-logging in autosupport:
+> [hoj9@jho1-dl support]$ grep config.net.dns autosupport
+> config.net.dns = 10.2.60.1:10.2.60.2
+> [hoj9@jho1-dl support]$ grep config.log.hosts autosupport
+> autosupport:config.log.hosts.enabled = true
+> autosupport:config.log.hosts.list = 10.2.60.16
+
+Verify messages.engineering, right before kdeadman.sh stuck:
+> Oct 23 00:41:11 jpspk1dd01 netlogond[22874]: [LWNetGetPreferredDCList() ddr/cifs/netlogon/server/api/lwnet-prefdc.c:358] prefdc:Skipping preferred DC [name:jpspk1dcvm02.jpasp1.local, ip address:<not resolved>] [h_errno: 2]
+> Oct 23 00:41:31 jpspk1dd01 netlogond[22874]: [LWNetDnsQueryWithBuffer() ddr/cifs/netlogon/utils/lwnet-dns.c:1349] DNS lookup for '_ldap._tcp.dc._msdcs.jpasp1.local' failed with errno 110, h_errno = 2
+
+var/log/cron
+> Oct 23 00:45:01 jpspk1dd01 crond[4076]: (root) CMD (/ddr/bin/kdeadman.sh) <=== last kdeadman run to pet watchdog
+> Oct 23 01:05:33 localhost crond[21823]: (CRON) STARTUP (V5.0)
+> Oct 23 01:05:56 jpspk1dd01 crond[22540]: (CRON) STARTUP (V5.0)
+
+
+So, watchdog barked was due to the network issue, which may relate to HW.

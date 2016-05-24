@@ -1,0 +1,10 @@
+iface=$interface
+echo $interface > /tmp/interface_dhcp
+
+# calling tranlator program
+/ddr/bin/dhcp_translator $iface /var/db/dhclient6.leases
+
+if [ $? = 0 ]; then
+    # calling original registry udpater program
+    /ddr/bin/dhcp_update /tmp/dhcpcd-$iface.info up
+fi

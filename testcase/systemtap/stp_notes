@@ -1,0 +1,108 @@
+http://sourceware.org/systemtap/SystemTap_Beginners_Guide/
+
+usage:
+	/auto/tools/bin/stp <build#> <systemtap-script>
+	/auto/tools/bin/stp <linux-install-dir> <systemtap-script>
+
+	<build#>:
+		103620		or
+		main/103620	or
+		4.6*/123856
+
+	<linux-install-dir>:
+		platform/os/install		or
+		/p4/main/platform/os/install
+
+scp syscall.ko root@syrah6
+
+# staprun ./syscall.ko
+# staprun -x ./syscall.ko
+
+syscall.stp:
+
+probe syscall.* {
+	if (pid() == target()) {
+		printf("%s(%s) ", name, argstr)
+	}
+}
+
+probe syscall.*.return {
+	if (pid() == target()) {
+		printf("==> %s \n", retstr)
+	}
+}
+
+
+systemTap functions
+tid()	The current thread ID.
+uid()	The current user ID.
+cpu()	The current CPU number.
+gettimeofday_s()	The number of seconds since UNIX epoch (1/1/1970)
+ctime()	Convert number of seconds since UNIX epoch to date.
+pp()	A string describing the probe point currently being handled.
+thread_indent()
+	provideing a way to better organize print results.  It takes one arg
+	,an indentation delta, which indicates how many spaces to add or remove
+	from a thread's "indentation counter".  It then returns a string w/
+	some generic trace data along w/ an appropriate number of indentation
+	spaces.
+
+	the generic data included in the returned string includes a timestamp(
+	number of microseconds since the 1st call to thread_indent() by the
+	thread), a process name, and the thread ID.
+
+	example thread_indent.stp
+	probe kernel.function("*@net/socket.c")
+	{
+		printf ("%s -> %s\n", thread_indent(1), probefunc())
+	}
+	probe kernel.function("@net/socket.c").return
+	{
+		printf (%s <- %s\n", thread_indent(-1), probefunc())
+	}
+
+	probe 	kernel.statement("scsi_dump_probe@drivers/block/scsi_dump.c:765")
+	{
+		printf("device %p\n", $dev);
+		printf("scsi_dump_probe(%p)\n", $dev);
+		printf("sdev: %p host :%p hostt :%p dump_poll :%p\n", 
+				$sdev, $sdev->host, $sdev->host->hostt, $sdev->host->hostt->dump_poll);
+	
+	}
+
+target()
+	Used in conjunction w/ 'stap script -x process ID' or 'stap script
+	-c command'.  If you want to specify a script to take an argument
+	to a process ID or command, use target() as the variable in the script
+	to refer to it.
+
+Variables
+	By default variables are only local to the probe they are used in.
+	To share a variable between probes, declare the variable name using
+	global outside of the probes.
+
+kernel_char(address)
+	obtain the character at address from kernel memory
+kernel_short(addr)
+kernel_int(addr)
+kernel_long(addr)
+kernel_string(addr)
+kernel_string_n(addr,n)
+
+[hoj9@aduggal-dl systemtap]$ /auto/tools/stap-0.9.9/bin/stap \
+-r /ws/main/platform/os/linux-2.6.23/ -g -p4 -m msi msi.stp
+
+msi.ko
+
+[hoj9@jho1-dl systemtap]$ /auto/tools/stap-0.9.9/bin/stap \
+-r /auto/buildarchive/main/247304/os/install/lib/modules/2.6.23-ddr247304/build/ \
+ -g -p4 -m msi -L 'kernel.function("move_masked_irq")'
+
+kernel.function("move_masked_irq@kernel/irq/migration.c:15") $irq:int $desc:struct irq_desc* $tmp:cpumask_t $__func__:char[] const
+
+[hoj9@jho1-dl systemtap]$ /auto/tools/stap-0.9.9/bin/stap -r \
+/auto/buildarchive/main/247304/os/install/lib/modules/2.6.23-ddr247304/build/ \
+ -g -p4 -m msi -L 'kernel.function("do_IRQ")'
+
+kernel.function("do_IRQ@arch/x86_64/kernel/irq.c:107") $regs:struct pt_regs* $old_regs:struct pt_regs* $vector:unsigned int $irq:unsigned int $intr_start:long unsigned int $intr_finish:long unsigned int $__func__:char[] const
+

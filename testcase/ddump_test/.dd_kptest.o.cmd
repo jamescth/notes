@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_test/dd_kptest.o := /auto/home/lsbuild/desktop-399007/usr/bin/ld -m elf_x86_64  -r -o /auto/home5/hoj9/testcase/ddump_test/dd_kptest.o /auto/home5/hoj9/testcase/ddump_test/dd_kp_diskdump.o

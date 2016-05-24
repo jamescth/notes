@@ -1,0 +1,29 @@
+*******************
+vmlinuz -> vmlinux
+*******************
+
+$ sudo od -A d -t x1 /boot/vmlinuz-$(uname -r) | grep '1f 8b 08 00' --colour
+0018624 ff e0 1f 8b 08 00 00 00 00 00 02 03 ec fd 0b 7c
+
+count the offset of '1f 8b 08 00'
+$ wcalc 18624+2
+ = 18626
+
+$ sudo dd if=/boot/vmlinuz-$(uname -r) bs=1 skip=18626 | zcat > /tmp/vmlinux-$(uname -r)
+
+*******************
+download vmlinux
+*******************
+1.
+echo "deb http://ddebs.ubuntu.com $(lsb_release -cs)-updates main restricted universe multiverse
+deb http://ddebs.ubuntu.com $(lsb_release -cs)-security main restricted universe multiverse
+deb http://ddebs.ubuntu.com $(lsb_release -cs)-proposed main restricted universe multiverse" | \
+sudo tee -a /etc/apt/sources.list.d/ddebs.list
+2.
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 428D7C01
+3.
+sudo apt-get update
+4.
+sudo apt-get install linux-image-$(uname -r)-dbgsym
+5.
+/usr/lib/debug/boot/vmlinux-$(uname -r)

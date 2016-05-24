@@ -1,0 +1,25 @@
+bug 114331
+
+check slot #
+
+verify SACK
+
+se tcp_connnect_info
+	show sack info??
+
+/ddr/var/log/debug/tcp.log
+
+TX_QLEN
+
+ring buffer
+	receive buffer
+	transmit buffer
+
+drop packets
+
+flow control
+	how
+
+ethtool - per interface stats
+
+

@@ -1,0 +1,29 @@
+james@james-laptop:/etc$ sudo apt-get install samba
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Suggested packages:
+  openbsd-inetd inet-superserver smbldap-tools ldb-tools
+The following NEW packages will be installed:
+  samba
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 6,275kB of archives.
+After this operation, 17.1MB of additional disk space will be used.
+Get:1 http://us.archive.ubuntu.com/ubuntu/ lucid-updates/main samba 2:3.4.7~dfsg-1ubuntu3.2 [6,275kB]
+Fetched 6,275kB in 47s (131kB/s)                                                                      
+Preconfiguring packages ...
+Selecting previously deselected package samba.
+(Reading database ... 234119 files and directories currently installed.)
+Unpacking samba (from .../samba_2%3a3.4.7~dfsg-1ubuntu3.2_i386.deb) ...
+Processing triggers for man-db ...
+Processing triggers for ufw ...
+Processing triggers for ureadahead ...
+ureadahead will be reprofiled on next reboot
+Setting up samba (2:3.4.7~dfsg-1ubuntu3.2) ...
+Generating /etc/default/samba...
+Importing account for nobody...ok
+Importing account for james...ok
+update-alternatives: using /usr/bin/smbstatus.samba3 to provide /usr/bin/smbstatus (smbstatus) in auto mode.
+smbd start/running, process 2084
+nmbd start/running, process 2091
+

@@ -1,0 +1,65 @@
+# crash
+      KERNEL: /vmlinux-ddr383122
+    DUMPFILE: /dev/mem
+
+# gdb crash
+(gdb) b main
+Breakpoint 1 at 0x45bba0
+(gdb) b cmd_runq
+(gdb) run /vmlinux-ddr383122 /dev/mem
+Starting program: /usr/bin/crash /vmlinux-ddr383122 /dev/mem
+
+(gdb) b cmd_runq
+Breakpoint 1 at 0x4a4dbc: file task.c, line 6314.
+(gdb) run /vmlinux-ddr382581 /dev/mem
+
+
+$ file ./crash
+./crash: ELF 64-bit LSB executable, AMD x86-64,
+version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs),
+for GNU/Linux 2.6.0, not stripped
+                     ^^^^^^^^^^^^
+
+however, in Makefile:
+	strip ${TOPDIR}/install/usr/bin/crash && \
+        ^^^^^
+
+So, copy from /auto to the DDR
+
+(gdb) set output-radix 16
+Output radix now set to decimal 16, hex 10, octal 20.
+(gdb) p *(struct kernel_table *) 0xb23860
+  __per_cpu_offset = {0xffff88013fc00000, 0xffff88013fd00000,
+
+crash> set radix 16
+output radix: 16 (hex)
+crash> __per_cpu_offset
+__per_cpu_offset = $9 =
+ {0xffff88013fc00000, 0xffff88013fd00000, 0xffffffff81598000, 0xffffffff81598000, 0xffffffff8159
+8000, 0xffffffff81598000, 0xffffffff81598000, 0xffffffff81598000, 
+
+********************************************************************
+using runqueue as an example:
+For new kernel, get the __per_cpu_offset + symbol content:
+
+(gdb) p kt
+$2 = (struct kernel_table *) 0x91c720
+
+# grep runqueue /proc/kallsyms
+0000000000011780 d runqueues
+
+old kernel:
+# grep per_cpu__runqueues /proc/kallsyms
+ffffffff808f0940 d per_cpu__runqueues
+
+struct x8664_pda {
+  data_offset = 0xffff810080846000,
+
+(gdb) p 0xffffffff808f0940+0xffff810080846000
+$6 = 0xffff810001136940
+
+crash> runq
+RUNQUEUES[0]: ffff810001136940
+ RT PRIO_ARRAY: ffff810001136a40
+ CFS RB_ROOT: ffff810001136a20
+

@@ -1,0 +1,7 @@
+TEST:Test_remode_hostname
+CMD:ddsh -s net ddns disable
+CMD:ddsh -s net ddns enable unix
+CMD:ddsh -s net ddns status EXPECT:enabled in the Unix mode
+CMD:ddsh -s net ddns enable unix EXPECT:**** DDNS is already enabled
+CMD:ddsh -s net ddns TSIG-key set rndc-key TSIG-secret \"xsDJgO6KYgo7vVIArjsZ6Q==\"
+

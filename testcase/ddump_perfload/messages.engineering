@@ -1,0 +1,527 @@
+Mar  9 16:54:11 artemis07 sms: NOTICE: Entered sms_session_create_new_session_job app_name [ddsh] a->header.user_name [sysadmin],a->username [sysadmin], pid [2906]
+Mar  9 16:54:11 artemis07 ddsh: WARNING: sml_security_create_new_session started new session 
+Mar  9 16:54:12 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2906) sysadmin: command "filesys destroy"
+Mar  9 16:54:12 artemis07 ddsh: NOTICE: MSG-DDSH-00007: Invalid non-interactive command "filesys destroy".
+Mar  9 16:54:30 artemis07 sms: NOTICE: Entered sms_session_create_new_session_job app_name [ddsh] a->header.user_name [sysadmin],a->username [sysadmin], pid [2937]
+Mar  9 16:54:30 artemis07 ddsh: WARNING: sml_security_create_new_session started new session 
+Mar  9 16:54:31 artemis07 ddsh: NOTICE: MSG-DDSH-00013: (tty=pts/3, session=2937) sysadmin: Started CLI
+Mar  9 16:54:36 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2937) sysadmin: command "filesys destroy"
+Mar  9 16:54:36 artemis07 ddsh: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 16:54:41 artemis07 sms: NOTICE: In _stop_rcd_service: uid is 0, cmd is [/etc/rc.d/init.d/smb stop]
+Mar  9 16:54:41 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=2959) root: command "reg set dynamic.procmon.smbd.state.admin 1"
+Mar  9 16:54:41 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=2960) root: command "reg set dynamic.procmon.nmbd.state.admin 1"
+Mar  9 16:54:42 artemis07 ddr_procmon: NOTICE: MSG-PMON-00002: Disabling /usr/sbin/smbd. 
+Mar  9 16:54:42 artemis07 ddr_procmon: NOTICE: MSG-PMON-00002: Disabling /usr/sbin/nmbd. 
+Mar  9 16:54:44 artemis07 sms: NOTICE: sm_fs_shutdown_local_nolock: filesys: changing state The filesystem is enabled and running.  -> shutdown (2:1->4)
+Mar  9 16:54:44 artemis07 ddr_stated: change state: state=4, status_text=[filesys disable]. 
+Mar  9 16:54:44 artemis07 ddfs[423]: NOTICE: MSG-DDR-00003: Shutting down ddfs 
+Mar  9 16:54:44 artemis07 ddfs[423]: INFO:  Collection Replication stats:  
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO:  Lrepl server connection stats:   	starts       0  	stops        0  Lrepl server RPC stats:   	opens        0 failed 0  	send_refs    0 failed 0  	send_refs_features 0 failed 0  	recv_refs    0 failed 0  	send_sketches 0 failed 0  	recv_bases   0 failed 0  	send_segs    0 failed 0  	send_segs_features 0 failed 0  	delta_send_segs 0 failed 0  	closes       0 failed 0 abandoned 0  	send_small_files 0 failed 0  	send_acls    0  Lrepl server segment stats:   	refs_received 0  	features_received 0  	segs_requested 0  	sketches_received 0  	bases_sent   0  	segs_received 0  Lrepl server time stats:   	send_file    0 s  	send_refs    0 s  	send_refs_features 0 s  	send_segs    0 s  	recv_refs    0 s  	send_small_file 0 s  	delta_send_sketches 0 s  	delta_recv_bases 0 s  	delta_read_bases 0 s  Lrepl server delta stats:   	total_segs   0  	decoded_segs 0  	total_bytes  0  	decoded_bytes 0  	delta_encoded_bytes 0  	post_lc_bytes 0  	delta_comp_ratio  0.00  Lrepl server presend st
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO:  Lrepl client RPC stats:   	opens        0  	send_refs    0  	send_refs_features 0  	recv_refs    0  	force_update_server_window 0  	send_sketches 0  	recv_bases   0  	send_segs    0  	send_segs_features 0  	delta_send_segs 0  	closes       0  	send_small_files 0  	send_acls    0  Lrepl client event stats:   	recv_refs_sleep 0  	send_refs_runs 0  	send_segs_runs 0  	get_chunk_info 0  	send_chunk_info 0  	unpack_chunk 0  	re_seg_buff_full 0  	re_seg_flush 0  Lrepl client async read stats:   	async_batch_checks 0  	read_ready   0  	out_of_async_ctxs 0  	reads_out_of_sequence 0  Lrepl client segment stats:   	refs_sent    0  	refs_features_sent 0  	segs_requested 0  	sketches_sent 0  	bases_received 0  	segs_sent    0  	segs_features_sent 0  Lrepl client time stats:   	send_file    0 s  	send_refs    0 s  	send_segs    0 s  	recv_refs    0 s  	recv_refs_sleep 0 s  	read_segs    0 s  	send_small_file 0 s  	delta_send_sketches 0 s  	delta_recv_bases 0 s  	delta_read_bases 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: svc_tcp thread exiting (r=0x2903600)
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: Shutting down nfs3 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_tcp_rendezvous_destroy:546 - Entering nfs3 dd_rpc_tcp_rendezvous_destroy. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_tcp_rendezvous_destroy:576 - Destroyed nfs3 dd_rpc_tcp_rendezvous: 0x2ab60ca29a70. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_udp_shutdown:62 - dd_rpc_udp_shutdown nfs3. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: Shutting down mountd 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_tcp_rendezvous_destroy:546 - Entering mountd dd_rpc_tcp_rendezvous_destroy. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_tcp_rendezvous_destroy:576 - Destroyed mountd dd_rpc_tcp_rendezvous: 0x2ab608cff3d0. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_udp_shutdown:62 - dd_rpc_udp_shutdown mountd. 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: Destroying nfs rpc instance 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_alloc = 2 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_alloc_failed = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_register = 2 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_register_failed = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_shutdown = 2 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_shutdown_duplicate = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - xprt_destroy = 2 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_spurious_wakeup = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_reclaim = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_paused = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_blocked = 4 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_shutdown = 2 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_readv = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_readv_failed = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_readv_drained = 4 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_readv_blocked = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_rpcmsg_alloc = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_rpcmsg_alloc_blocked = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_rpcmsg_alloc_done = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_slot_alloc = 4 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_slot_alloc_blocked = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_slot_alloc_done = 0 
+Mar  9 16:54:46 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_slot_free = 4 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_mbuf_alloc = 4 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_mbuf_alloc_blocked = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_mbuf_alloc_done = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_closed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_invalid_type = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_partial_datagram = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_partial_stream = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_corrupt_datagram = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_corrupt_stream = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_frag = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_underflow = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - rdstrm_msg_overflow = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_call_encode = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_call_encode_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_reply_encode = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_reply_encode_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_writev = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_writev_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_writev_blocked = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_writev_partial = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_msg_drained = 2 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_msg_unprocessed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_shutdown = 2 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - wrstrm_closed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_hdr_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_arg_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_auth_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_proc_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_prog_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_vers_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_decode_okay = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - call_processed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - reply_unmatched_xid = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - reply_decode_okay = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - reply_decode_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_accept_okay = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_accept_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_teardown_okay = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_xprt_connect_okay = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_xprt_connect_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - tcp_xprt_create_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - udp_xprt_create_okay = 2 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - udp_xprt_create_failed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - clnt_call_sync = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - clnt_call_async = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - clnt_call_enqueued = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - clnt_call_unprocessed = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_mutex.lock_contentions = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_mutex.unlock_contentions = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_mutex.lock_contention_cyc = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_mutex.unlock_contention_cyc = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_xprt.lock_contentions = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_xprt.unlock_contentions = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_xprt.lock_contention_cyc = 0 
+Mar  9 16:54:47 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_snprintf_stat:122 - dd_rpc_xprt.unlock_contention_cyc = 0 
+Mar  9 16:54:48 artemis07 ddfs[423]: INFO: [dd_rpc_nfs] dd_rpc_destroy:314 - Destroyed dd_rpc_nfs instance: 0x2ab608cfe760. 
+Mar  9 16:54:48 artemis07 ddfs[423]: INFO:  NFS DDCP Stats: 	nfs_ddcp_abandons=0 	nfs_ddcp_errors=0 	nfs_ddcp_opens=0 	nfs_ddcp_send_refs=0 	nfs_ddcp_recv_refs=0 	nfs_ddcp_send_segs=0 	nfs_ddcp_copy_refs=0 	nfs_ddcp_closes=0 	nfs_ddcp_total_segments=0 	nfs_ddcp_identical_segments=0 	nfs_ddcp_total_bytes=0 	nfs_ddcp_identical_bytes=0 	nfs_ddcp_include_bytes=0 	nfs_ddcp_post_lc_bytes=0 	nfs_ddcp_open_us=0 	nfs_ddcp_send_refs_us=0 	nfs_ddcp_recv_refs_us=0 	nfs_ddcp_send_segs_us=0 	nfs_ddcp_close_file_us=0 	nfs_ddcp_send_file_us=0 
+Mar  9 16:54:48 artemis07 ddfs[423]: DEBUG: BufferCache shutdown completed successfully 
+Mar  9 16:54:48 artemis07 ddfs[423]: DEBUG: BufferCache shutdown completed successfully 
+Mar  9 16:54:48 artemis07 ddfs[423]: NOTICE: MSG-SCRUB-00003: The scrub cycle on volume vol2 (partition vol2) completed 
+Mar  9 16:54:48 artemis07 ddfs[423]: INFO: CC-state: cc_state_write part_type 1
+Mar  9 16:54:48 artemis07 ddfs[423]: INFO:   DM Interface Stats (From 1331339994 to 1331340888, 894 seconds) Op                  count *fail  avg(us)  max(us)     100us     250us     500us     750us       1ms     250ms     500ms        1s       10s      >10s ---------------------------------------------------------------------------------------------------------------------------------------------------- make_root               1       367734us 367734us         0         0         0         0         0         0         1         0         0         0 open_root               1 1        432us    432us         0         0         1         0         0         0         0         0         0         0 close_root              1       162189us 162189us         0         0         0         0         0         1         0         0         0         0 reopen_root             0        dm_gc                   0       dm_gc_enum              0       enum_nodes              0       mk_cp                   0       fsync   
+Mar  9 16:54:50 artemis07 ddfs[423]: INFO:  Fingerprint Index Global Stats: 	ssi_open_done=1 	ssi_close_done=0 	ssi_lookup_nomem=0 	ssim_mbuf_alloc_failed=0 	ssif_bucket_alloc_failed=0  Fingerprint Index Stats for /vol2/col1/cp1: 	ssim_lookup_found_mem=7 	ssim_lookup_on_disk=6 	ssim_lookup_on_disk_us=36 	ssim_lookup_found_disk=0 	ssim_lookup_found_addl=0 	ssim_lookup_merge_race=0 	ssim_lookup_read_masked=0 	ssim_lookup_write_masked=0 	ssim_lookup_deleted=0 	ssim_lookup_invalid_container=0 	ssim_lookup_failed=6 	ssim_lookup_spillover_bucket=0 	ssim_iterate_bucket_skips=0 	ssim_entries_added=86 	ssim_index_growths_partial=0 	ssim_index_growths_full=0 	ssim_index_growths_failed=0 	ssim_cm_compact_calls=0 	ssim_merge_start=0 	ssim_merge_checkpoint_done=0 	ssim_merge_partial_done=0 	ssim_merge_full_done=0 	ssim_merge_inter_level=0 	ssim_merge_done=0 	ssim_merge_progress=0 	ssim_merge_noprogress=0 	ssim_bucket_alloc_failed=0 	ssim_entry_alloc_failed=0 	ssim_entry_lwm=234880938 	ssim_prune_bucket_calls=0 	ssim_prune_ex
+Mar  9 16:54:51 artemis07 ddfs[423]: NOTICE: /../vpart:/vol2/col1/cp1/cset: Container set 8a361f7f1c94509c:f18e665910051de2 closed. 
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  ChunkStore Stats: 	writes=0 	reads=0 	partial_reads=0 	tp_meta_prefetchs=0 	chunk_meta_prefetchs=0 	t0_prefetchs=0 	prefetchs=0 	prefetch_holds=0 	prefetch_hold_resets=0 	prefetch_discards=0 	validates=0 	syncs=4 	commits=15 	enums=0 	markers=0 	seg_reads=0 	pre_filter_writes=0 	full_t1_filters=0 	prevalidate_errors=0  	Segment stats:  	Level    SegsWritten  SegAvgSz       SegsRead SegsPrefetched 	    0            142     17284            108              0 	    1             12       347             14              0 	    2              6        44              9              0 	    3              6        44              9              0 	    4              3       156              6              0 	    5              0         0              0              0 	    6              6       688             13              0 	    7              0         0              0              0 	    8              0         0              0              0 	    9              0    
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  SegStore sssb Stats: 	 n_open=44 	 n_close=44 	 n_write=13 	 n_pre_filter_write=0 	 n_commit=0 	 n_commit_async=4 	 n_read=57 	 n_read_compressed=0 	 n_prefetch=0 	 n_wait_prefetch=13 	 n_validate=0 	 n_read_seg_miss_index=0 	 n_read_seg_miss_index_fill_0_byte=0 	 n_read_meta_blocked=5 	 n_read_data_blocked=6 	 n_read_not_blocked=70 	 n_pre_nw_meta_blocked=0 	 n_pre_mw_meta_blocked=0 	 n_pre_0w_meta_blocked=0 	 n_pre_out_of_order=0 	 n_pre_unconsecutive=0 	 n_pre_no_batch=0 	 n_pre_dup=0 	 n_pre_no_ssi=0 	 n_pre_no_window=0 	 n_gc_f_n=0 	 n_gc_f_live_seg_n=0 	 n_gc_f_plive_seg_n=0 	 n_gc_f_dead_seg_n=0 	 n_gc_f_live_cr_n=0 	 n_gc_f_clive_cr_n=0 	 n_gc_f_plive_cr_n=0 	 n_gc_f_dead_cr_n=0 	 n_gc_s_n=0 	 n_gc_s_live_seg_n=0 	 n_gc_s_plive_seg_n=0 	 n_gc_s_dead_seg_n=0 	 n_gc_s_live_cr_n=0 	 n_gc_s_clive_cr_n=0 	 n_gc_s_plive_cr_n=0 	 n_gc_s_dead_cr_n=0 	 n_gc_f_bigcr_n=0 	 n_gc_f_cp_us=0 	 n_gc_s_cp_us=0 	 n_gc_f_pre_us=0 	 n_gc_s_pre_us=0 	 n_marker_segs=0 	 n_new_split_
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  SegStore ssc Stats: 	 n_insert=40 	 n_lookup_succeed=87 	 n_lookup_failed=10 	 n_update=8 	 n_delete=5 	 n_waits=0 	 n_func1_fail=0 	 n_func2_fail=0 	 n_insert_us=66 	 n_lookup_us=216 	 n_update_us=5 	 n_delete_us=1 	 n_func1_us=6 	 n_func2_us=60 	bucket lock stats:             0(     0.000 sec)          0(     0.000 sec)  SegStore ssc Stats: 	 n_insert=29 	 n_lookup_succeed=24 	 n_lookup_failed=31 	 n_update=40 	 n_delete=29 	 n_waits=0 	 n_func1_fail=0 	 n_func2_fail=0 	 n_insert_us=13 	 n_lookup_us=73 	 n_update_us=24 	 n_delete_us=6 	 n_func1_us=1 	 n_func2_us=1 	bucket lock stats:             0(     0.000 sec)          0(     0.000 sec)  SegStore ssc Stats: 	 n_insert=40 	 n_lookup_succeed=23 	 n_lookup_failed=44 	 n_update=62 	 n_delete=40 	 n_waits=0 	 n_func1_fail=0 	 n_func2_fail=0 	 n_insert_us=16 	 n_lookup_us=117 	 n_update_us=40 	 n_delete_us=15 	 n_func1_us=0 	 n_func2_us=1 	bucket lock stats:             0(     0.000 sec)          0(     0.000 sec)  SegS
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO: 
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO: 
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  SegStore sscb Stats: 	 n_data_read=6 	 n_container_clean=5 	 n_container_sealed=8 	 n_container_read=5 	 n_container_cross=0 	 n_container_cross_unusable=0 	 n_region_sealed=9 	 n_region_read=6 	 n_sequential_region_read=0 	 n_physical_byte_read=9216 	 n_logical_byte_read=203126 	 n_logical_byte_read_padded=786432 	 n_evict_region=0 	 n_evict_region_never_read=0 	 n_ur_0_rd=0 	 n_ur_1_rd=0 	 n_ur_2_rd=0 	 n_ur_3_rd=0 	 n_ur_4_rd=0 	 n_ur_5_rd=0 	 n_ur_6_rd=0 	 n_ur_7_rd=0 	 n_ur_8_rd=0 	 n_ur_9_rd=0 	 n_ur_10_rd=0 	 n_ur_read_cnt=0 	 n_ur_read_byte_cnt=0 	 n_ur_0_rd_byte=0 	 n_ur_1_rd_byte=0 	 n_ur_2_rd_byte=0 	 n_ur_3_rd_byte=0 	 n_ur_4_rd_byte=0 	 n_ur_5_rd_byte=0 	 n_ur_6_rd_byte=0 	 n_ur_7_rd_byte=0 	 n_ur_8_rd_byte=0 	 n_ur_9_rd_byte=0 	 n_ur_10_rd_byte=0 	 n_meta_read_lock_wt=0 	 n_meta_read_lock_wt_ms=0 	 n_cid_cache_waits=0 	 n_ur_read_lock_wt=0 	 n_rd_wt_merge=0 	 n_ur_read_lock_wt_ms=0 	 n_cn_flock_wt=0 	 n_cn_dlock_wt=0 	 n_cn_dlock_seq_mismatch=2 	 n_cn_tot
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  SegStore ssbb Stats: 	 n_byte_input=506744 	 n_byte_filter=371576 	 n_byte_pack=6877 	 n_gc_input=0 	 n_gc_filter=0 	 n_gc_pack=0 	 n_seg_input=23 	 n_seg_redun=11 	 n_seg_nonredun=12 	 n_batch_redun=0 	 n_batch_nonredun=10 	 n_batch_comp_skip=0 	 n_batch_comp_re=0 	 n_batch_comp_zero=0 	 n_seg_self_f=11 	 n_seg_cross_f=0 	 n_seg_cross_g_f=0 	 n_seg_write_dup=0 	 n_byte_write_dup=0 	 n_byte_not_write_dup_0=0 	 n_byte_not_write_dup_1=0 	 n_ws_update_1=0 	 n_ws_update_2=0 	 n_wr_batch=13 	 n_wr_q_us=708 	 n_wr_f_us=87 	 n_wr_p_us=3252 	 n_wr_max_us=457 	 n_pw_batch=0 	 n_pw_q_us=0 	 n_pw_f_us=0 	 n_pw_max_us=0 	 n_rd_batch=57 	 n_rd_q_us=1540 	 n_rd_f_us=20084 	 n_rd_max_us=15601 	 n_vl_batch=0 	 n_vl_q_us=0 	 n_vl_f_us=0 	 n_vl_max_us=0 	 n_pr_batch=0 	 n_pr_discard=0 	 n_pr_discard2=0 	 n_pr_trunc=0 	 n_pr_merge=0 	 n_pr_q_us=0 	 n_pr_f_us=0 	 n_pr_max_us=0 	 n_wsm_success=0 	 n_wsm_i_load=0 	 n_wsm_m_issue=0 	 n_wsm_m_load=0 	 n_wsm_m_insert=0 	 n_wsm_m_wakeup=0 	 n_s
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  ChunkStore Stats: 	writes=0 	reads=0 	partial_reads=0 	tp_meta_prefetchs=0 	chunk_meta_prefetchs=0 	t0_prefetchs=0 	prefetchs=0 	prefetch_holds=0 	prefetch_hold_resets=0 	prefetch_discards=0 	validates=0 	syncs=4 	commits=15 	enums=0 	markers=0 	seg_reads=0 	pre_filter_writes=0 	full_t1_filters=0 	prevalidate_errors=0  	Segment stats:  	Level    SegsWritten  SegAvgSz       SegsRead SegsPrefetched 	    0            142     17284            108              0 	    1             12       347             14              0 	    2              6        44              9              0 	    3              6        44              9              0 	    4              3       156              6              0 	    5              0         0              0              0 	    6              6       688             13              0 	    7              0         0              0              0 	    8              0         0              0              0 	    9              0    
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  Sketch Cache Stats: 	lookups=0 	lookup_failures=0 	lookup_candidates=0 	feature_0_buckets_0_to_0_records=2097152 	feature_1_buckets_0_to_0_records=2097152 	feature_2_buckets_0_to_0_records=2097152 	uncached_1f_candidates=0 	uncached_2f_candidates=0 	uncached_3f_candidates=0 	cached_1f_candidates=0 	cached_2f_candidates=0 	cached_3f_candidates=0 	uncached_1f_best_candidates=0 	uncached_2f_best_candidates=0 	uncached_3f_best_candidates=0 	cached_1f_best_candidates=0 	cached_2f_best_candidates=0 	cached_3f_best_candidates=0 	entry_insertions=0 	entry_insertion_skipped=0 	entry_insertion_failures=0 	entry_evictions=0 	entry_eviction_skipped=0 	feature_0_insertion_skipped=0 	feature_0_insertion_failures=0 	feature_0_eviction_skipped=0 	feature_1_insertion_skipped=0 	feature_1_insertion_failures=0 	feature_1_eviction_skipped=0 	feature_2_insertion_skipped=0 	feature_2_insertion_failures=0 	feature_2_eviction_skipped=0 	bucket_eviction_iterations=0 	lookups_since_eviction=0 	
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  Segstore filter histogram:  	Batch type: WRITE, with q delay 	id                             mean      std-dev       <1ms      <10ms     <100ms        <1s       <10s       >10s      total        max        min 	0                            0.33ms       0.07ms         10          0          0          0          0          0         10       0.46       0.23 	1                            0.37ms       0.15ms         15          0          0          0          0          0         15       0.69       0.18 	2                            0.32ms       0.13ms         24          0          0          0          0          0         24       0.60       0.10 	3                            0.24ms       0.05ms          3          0          0          0          0          0          3       0.30       0.16 	4                            0.33ms       0.13ms         52          0          0          0          0          0         52       0.69       0.10  	Batch type: COMMIT, with q
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  Segstore filter histogram:  	Batch type: WRITE, without q delay 	id                             mean      std-dev       <1ms      <10ms     <100ms        <1s       <10s       >10s      total        max        min 	0                            0.27ms       0.06ms         10          0          0          0          0          0         10       0.37       0.19 	1                            0.34ms       0.15ms         15          0          0          0          0          0         15       0.66       0.15 	2                            0.28ms       0.12ms         24          0          0          0          0          0         24       0.53       0.07 	3                            0.21ms       0.05ms          3          0          0          0          0          0          3       0.26       0.14 	4                            0.29ms       0.12ms         52          0          0          0          0          0         52       0.66       0.07  	Batch type: COMMIT, wit
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  Segstore nvram histogram: 	id                             mean      std-dev       <1ms      <10ms     <100ms        <1s       <10s       >10s      total        max        min 	0                            0.10ms       0.01ms          3          0          0          0          0          0          3       0.11       0.09 	1                            0.08ms       0.01ms         15          0          0          0          0          0         15       0.11       0.07 	2                            0.07ms       0.01ms         23          0          0          0          0          0         23       0.10       0.06 	3                            0.07ms       0.00ms          3          0          0          0          0          0          3       0.07       0.07 	4                            0.08ms       0.01ms         44          0          0          0          0          0         44       0.11       0.06 
+Mar  9 16:54:51 artemis07 ddfs[423]: INFO:  Segstore data change distribution histogram: 	New data runlength 	id                             mean      std-dev       <40K       <80K      <160K      <320K      <640K      <1.5M       <10M      <100M     >=100M      total        max        min 	0                              8.65        10.86          3          0          0          0          0          0          0          0          0          3      24.00       0.87 	1                             10.86         9.73          9          0          0          0          0          0          0          0          0          9      28.00       0.65 	2                              7.52         7.63         10          0          0          0          0          0          0          0          0         10      24.00       0.75 	3                              1.04         0.68          3          0          0          0          0          0          0          0          0          3       1.90       0.23 	4      
+Mar  9 16:54:53 artemis07 ddfs[423]: INFO: Mgm-like: mgm_like_shutdown
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Shutdown timings: 
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Stack size init subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: coredump settings subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDFS QoS Stats subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDFS Start State Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Hugetlb init subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDFS guts subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDFS QoS sched policy subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: State check control subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: RPC control subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: GC memdebug subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Health Monitor subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: ddr_stated heartbeat control subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDR Volume Layer subsystem took 1 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: CC-Master-1st subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDR Storage Layer Asynchronous subsystem took 4 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Storage Layer Remote Server subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDR Page Pool Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: NVRAM Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Container Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Collection-Partition Manager subsystem took 2 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: MGM-like (MGM for 4.9) subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: SegStore subsystem took 2 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: RSegStore subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: BinMgr-Agent subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Scrub Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: CC-Agent subsystem took 2 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: CC-Master subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: RSegStoreOST subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: RSegStore subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: PrimeSegment subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: CC-Master-State-Seq subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: ContentStore subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: cc_state_dynamic subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Directory Manager subsystem took 1 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: SFS-lite subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: File Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: DDFS Run State Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Ext3 Scrub subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: NFS subsystem took 2 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: System Management Component subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: GC Manager subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: GC Sample subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: BinMgr-Migration subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: Replication subsystem took 2 seconds to shutdown.  
+Mar  9 16:55:00 artemis07 ddfs[423]: INFO: SYSTEM_SHUTDOWN: File Migration subsystem took 0 seconds to shutdown.  
+Mar  9 16:55:01 artemis07 ddfs[423]: NOTICE: MSG-DDR-00004: ddfs shut down 
+Mar  9 16:55:02 artemis07 dm_map: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 16:55:02 artemis07 dm_map: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 16:55:02 artemis07 dm_map: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 16:55:02 artemis07 ddsh: NOTICE: DD_ROOT set to /ddr/
+Mar  9 16:55:03 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 16:55:03 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 16:55:06 artemis07 sms: NOTICE: Running command: /ddr/bin/fs_tool  -V /ddr  -f /ddr/var/log/debug/destroy.29941-48896.log -- -d -f -a  for destroying the FS
+Mar  9 16:55:06 artemis07 fs_tool: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=25
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=25
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=23
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=23
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:55:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:55:14 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:55:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:55:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:55:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:55:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:55:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:55:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:55:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:55:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:55:30 artemis07 sms: NOTICE: Run: /ddr/bin/fs_tool  -V /ddr  -f /ddr/var/log/debug/destroy.29941-48896.log -- -d -f -a  return 0
+Mar  9 16:55:30 artemis07 dm_map: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 16:55:30 artemis07 sms: NOTICE: Destroyed Filesystem.
+Mar  9 16:55:30 artemis07 dm_map: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 16:55:30 artemis07 dm_map: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 16:55:31 artemis07 ddsh: NOTICE: DD_ROOT set to /ddr/
+Mar  9 16:55:31 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 16:55:31 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 16:55:32 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 16:55:32 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 16:55:33 artemis07 sasm: NOTICE: Start of SASM enclosure validation. Some commands may not work as expected while the validation in progress 
+Mar  9 16:55:33 artemis07 sasm: NOTICE: End of SASM enclosure validation. 
+Mar  9 16:55:37 artemis07 sms: NOTICE: Storage is rescaned.
+Mar  9 16:55:37 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 16:55:37 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 16:55:44 artemis07 sms: NOTICE: In _start_rcd_service: uid is 0, cmd is [/etc/rc.d/init.d/smb start]
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3785) root: command "reg show nokey protocol.cifs.share.backup.raw.useddcl"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3788) root: command "reg show nokey protocol.cifs.enabled"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3789) root: command "reg set dynamic.procmon.smbd.state.admin 0"
+Mar  9 16:55:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3790) root: command "reg show dynamic.procmon.smbd.state.admin"
+Mar  9 16:55:45 artemis07 smb: Current state: dynamic.procmon.smbd.state.admin = 0
+Mar  9 16:55:45 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3792) root: command "reg set dynamic.procmon.nmbd.state.admin 0"
+Mar  9 16:55:45 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=<>, session=3793) root: command "reg show dynamic.procmon.nmbd.state.admin"
+Mar  9 16:55:45 artemis07 smb: Current state: dynamic.procmon.nmbd.state.admin = 0
+Mar  9 16:55:45 artemis07 sms: INFO: DDNS: update: DDNS is not enabled. 
+Mar  9 16:55:46 artemis07 ddr_procmon: NOTICE: MSG-PMON-00001: Enabling /usr/sbin/smbd. 
+Mar  9 16:55:46 artemis07 ddr_procmon: NOTICE: MSG-PMON-00001: Enabling /usr/sbin/nmbd. 
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=23
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=23
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:56:23 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:56:23 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 16:56:24 artemis07 sysmon: INFO: Event cleared: 97: EVT-STORAGE-00013: Active tier is low on spares.EVT-OBJ::Tier=1
+Mar  9 16:57:20 artemis07 smtp_send: NOTICE: MTA on mail:25 is sjcrelay1.datadomain.com ESMTP Postfix TLS supported 
+Mar  9 16:57:20 artemis07 emsmon: INFO: _log_memory: sqlite3 memory usage: cur=277640, high=314664
+Mar  9 17:01:01 artemis07 dm_map: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 17:01:01 artemis07 dm_map: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:01:01 artemis07 dm_map: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:01:01 artemis07 ddsh: NOTICE: DD_ROOT set to /ddr/
+Mar  9 17:01:01 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:01:01 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:01:37 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=2937) sysadmin: command "exit"
+Mar  9 17:01:39 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:01:39 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:01:45 artemis07 sms: NOTICE: Entered sms_session_create_new_session_job app_name [ddsh] a->header.user_name [sysadmin],a->username [sysadmin], pid [4979]
+Mar  9 17:01:45 artemis07 ddsh: WARNING: sml_security_create_new_session started new session 
+Mar  9 17:01:46 artemis07 ddsh: NOTICE: MSG-DDSH-00013: (tty=pts/3, session=4979) sysadmin: Started CLI
+Mar  9 17:01:50 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "filesys create"
+Mar  9 17:01:52 artemis07 sms: NOTICE: _sms_disk_add_volume_op: create=1 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.1 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.2 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.3 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.4 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.5 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.6 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.7 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.8 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.9 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.10 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.11 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.12 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.13 
+Mar  9 17:01:52 artemis07 sms: NOTICE: sms_disk_add_volume, found disk: 2.14 
+Mar  9 17:01:52 artemis07 sms: INFO: create vol vol3 
+Mar  9 17:02:00 artemis07 check_emulation: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 17:02:00 artemis07 dm_map: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 17:02:00 artemis07 dm_map: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:02:00 artemis07 dm_map: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:02:00 artemis07 ddsh: NOTICE: DD_ROOT set to /ddr/
+Mar  9 17:02:01 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:02:01 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:07:59 artemis07 dd_hd_rdb_tool: INFO: hd_check_integrity: HD RDB Backup begin
+Mar  9 17:08:05 artemis07 dd_hd_rdb_tool: INFO: _log_memory: sqlite3 memory usage: cur=8890448, high=9021592
+Mar  9 17:08:05 artemis07 dd_hd_rdb_tool: INFO: hd_check_integrity: HD RDB Backup end
+Mar  9 17:08:26 artemis07 sms: INFO: done create vol vol3, id 0x2101987ef95e7414 
+Mar  9 17:08:26 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:08:26 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:08:31 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:08:31 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:08:35 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:08:35 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:08:39 artemis07 sms: INFO: sms_disk_add_volume created volume "vol3" of size 22804530462720
+Mar  9 17:08:39 artemis07 sms: NOTICE: Creating the filesystem - running command: /ddr/bin/mkddr   -V /ddr -S vol3 -o /ddr/var/log/debug/create.29941-49077.log   
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:08:46 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:08:46 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:08:48 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:08:48 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:08:48 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:08:48 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:08:48 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:08:48 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:08:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:08:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:08:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:08:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:08:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:08:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:08:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:08:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:08:54 artemis07 sysmon: INFO: Event posted: 98: EVT-STORAGE-00013: Active tier is low on spares.EVT-OBJ::Tier=1
+Mar  9 17:08:54 artemis07 dd_hd_rdb_tool: INFO: hd_check_integrity: HD RDB Backup begin
+Mar  9 17:09:00 artemis07 dd_hd_rdb_tool: INFO: _log_memory: sqlite3 memory usage: cur=8890448, high=9021592
+Mar  9 17:09:00 artemis07 dd_hd_rdb_tool: INFO: hd_check_integrity: HD RDB Backup end
+Mar  9 17:09:00 artemis07 newddfs: NOTICE: MSG-DDR-00024: Setting system.ENABLE_DDFS_MINI_COREDUMP to 1 
+Mar  9 17:09:53 artemis07 sms: NOTICE: sm_fs_shutdown_local_nolock: filesys: current state The filesystem is disabled and shutdown. [filesys disable]  (4:1)
+Mar  9 17:09:53 artemis07 dm_map: DEBUG: dd_plib_base_get_serial: class_name: eth0a, mac: 00:60:16:49:99:2d 
+Mar  9 17:09:53 artemis07 dm_map: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:09:53 artemis07 dm_map: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:09:53 artemis07 ddsh: NOTICE: DD_ROOT set to /ddr/
+Mar  9 17:09:53 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:09:53 artemis07 dd_qostool: ERROR: Error: <5050: **** The filesystem is not running., ddr/sm/ddfs/ddfs_smc_private.c, ddfs_smc_private_do_filesys_rpc, 25> 
+Mar  9 17:09:57 artemis07 sysmon: INFO: Event posted: 98: EVT-STORAGE-00013: Active tier is low on spares.EVT-OBJ::Tier=1
+Mar  9 17:10:23 artemis07 smtp_send: NOTICE: MTA on mail:25 is sjcrelay2.datadomain.com ESMTP Postfix 
+Mar  9 17:10:28 artemis07 emsmon: INFO: _log_memory: sqlite3 memory usage: cur=277640, high=314664
+Mar  9 17:10:44 artemis07 sshd[8687]: Accepted keyboard-interactive/pam for sysadmin from 137.69.76.103 port 39752 ssh2
+Mar  9 17:10:44 artemis07 sms: NOTICE: Entered sms_session_create_new_session_job app_name [ddsh] a->header.user_name [sysadmin],a->username [sysadmin], pid [8693]
+Mar  9 17:10:44 artemis07 ddsh: WARNING: sml_security_create_new_session started new session 
+Mar  9 17:10:44 artemis07 ddsh: NOTICE: cmd  scp -f /ddr/var/log/debug/platform/infra.log exited with 0:
+Mar  9 17:11:49 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:13:52 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:14:10 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:14:10 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:15:22 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:15:22 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:15:23 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:15:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:15:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:15:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:15:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:15:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:15:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:15:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:15:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:15:56 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:17:59 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:19:38 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:19:38 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:20:02 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:20:44 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "system show date"
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:20:50 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:20:50 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:20:51 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:20:51 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:22:05 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:22:27 artemis07 ssm: INFO: ssm_uevent_logger_thr: seqnum 5378, accepted 3, rejected 1832 || Failures: dropped 0, malformed 0, poked 0, short 0 
+Mar  9 17:24:07 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:25:06 artemis07 sms: NOTICE: dd_plib_sas_wwn2dev_ids: Matched 14 of 15 SAS addresses while scanning sysfs 
+Mar  9 17:25:06 artemis07 sms: NOTICE: Disk 2.15 on path instance 0 has no sysfs entry (unable to match sas address of 0x0)
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:25:14 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:25:14 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:25:15 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:25:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:25:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:25:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:25:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:25:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:25:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:25:15 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:25:15 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:26:10 artemis07 ddr_procmon: NOTICE: Set ddr_state to previous state. 
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=1:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1143031D381E:Temperature(C)=24
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has a hardware fault and may need to be replaced.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Unable to access a disk and the disk state is in use.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk has not been added to the system.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: A foreign enclosure has been detected.EVT-OBJ::Enclosure=1 EVT-INFO::EnclSerialNo=
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk temperature is moderately high.EVT-OBJ::Enclosure=1:Disk=2:Threshold(C)=50 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=1142031D3951:Temperature(C)=22
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:26:24 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:26:24 artemis07 sysmon: WARNING: ems_post_event: Failed to initialize event: Unable to access a disk and the disk state is absent.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclosureSerialNumber=:DiskSerialNumber=N/A
+Mar  9 17:26:25 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:26:25 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=1 EVT-INFO::EnclSerialNo=:DriveSerialNo=1143031D381E
+Mar  9 17:26:25 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:26:25 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=2 EVT-INFO::EnclSerialNo=:DriveSerialNo=1142031D3951
+Mar  9 17:26:25 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:26:25 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=3 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:26:25 artemis07 sysmon: WARNING: _ems_parse_object_str: Wrong object format: EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:26:25 artemis07 sysmon: WARNING: ems_clear_event: Failed to initialize event: Disk may not be used as a spare, size must be 186.17 GiB or larger.EVT-OBJ::Enclosure=1:Disk=4 EVT-INFO::EnclSerialNo=:DriveSerialNo=---
+Mar  9 17:26:31 artemis07 ddsh: NOTICE: MSG-DDSH-00009: (tty=pts/3, session=4979) sysadmin: command "exit"
+Mar  9 17:27:26 artemis07 sshd[11334]: Accepted keyboard-interactive/pam for sysadmin from 137.69.76.103 port 44876 ssh2
+Mar  9 17:27:26 artemis07 sms: NOTICE: Entered sms_session_create_new_session_job app_name [ddsh] a->header.user_name [sysadmin],a->username [sysadmin], pid [11376]
+Mar  9 17:27:26 artemis07 ddsh: WARNING: sml_security_create_new_session started new session 

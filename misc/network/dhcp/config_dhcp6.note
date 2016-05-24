@@ -1,0 +1,59 @@
+http://www.r00tsec.com/2013/04/howto-setup-ipv6-network-with-ubuntu.html
+
+sudo apt-get -y install wide-dhcpv6-server
+
+# After the DHCPv6 server is installed it has to be manually configured by editing the file
+# /etc/wide-dhcpv6/dhcp6s.conf.  A sample dhcp6s.conf is available at
+# /usr/share/doc/wide-dhcpv6-server/examples.
+
+	eth1
+
+update /etc/wide-dhcpv6/dhcp6s.conf
+
+append /etc/sysctl.conf
+	net.ipv6.conf.all.autoconf=1
+	net.ipv6.conf.all.accept_ra=1
+
+run 
+	sudo sysctl -w net.ipv6.conf.all.autoconf=1
+	sudo sysctl -w net.ipv6.conf.all.accept_ra=1
+
+append /etc/network/interfaces
+	auto eth1
+	iface eth1 inet6 auto
+
+check /etc/default/ufw
+	IPV6=yes
+
+sudo dhclient -6 eth1
+
+
+
+$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0c:29:09:36:b2  
+          inet addr:10.25.142.81  Bcast:10.25.143.255  Mask:255.255.240.0
+          inet6 addr: fe80::20c:29ff:fe09:36b2/64 Scope:Link
+          inet6 addr: 2620:0:170:1106:20c:29ff:fe09:36b2/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:25128 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:198 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:2766988 (2.7 MB)  TX bytes:27849 (27.8 KB)
+
+eth1      Link encap:Ethernet  HWaddr 00:0c:29:09:36:bc  
+          inet6 addr: fe80::20c:29ff:fe09:36bc/64 Scope:Link
+          inet6 addr: 2100:dead:cafe:f00d::beef:1003/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:57 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:27 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:29208 (29.2 KB)  TX bytes:3016 (3.0 KB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:28 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:28 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:1988 (1.9 KB)  TX bytes:1988 (1.9 KB)

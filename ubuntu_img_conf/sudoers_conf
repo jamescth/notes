@@ -1,0 +1,15 @@
+
+# what's this for? p4bundle, lt_host, go2
+# mkdir /usr/tmp
+PY sudoers
+
+# in case if anything goes wrong:
+# pkexec cp /etc/sudoers.org /etc/sudoers
+# pkexec chmod 0440 /etc/sudoers
+
+sudo cp /etc/sudoers /tmp/sudoers
+sudo chmod 666 /tmp/sudoers
+sudo cat /tmp/sudoers.mig >> /tmp/sudoers
+sudo chmod 440 /tmp/sudoers
+sudo cp /tmp/sudoers /etc/sudoers
+# apt-get install vim-gtk

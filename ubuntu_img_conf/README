@@ -1,0 +1,31 @@
+# on Ubuntu, check /var/log for log files
+
+# install the neeeded packages first
+./py_set_nis.py --user=james --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=pre_pkg_install_conf
+
+# back up the original conf
+./py_set_nis.py --user=james --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=backup_conf
+
+# need to upload migs before nis conf
+./py_set_nis.py --user=james --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=upload_mig_conf
+./py_set_nis.py --user=james --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=nis_conf
+./py_set_nis.py --user=james --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=sudoers_conf
+# better reboot to verify
+
+# to revert
+# ./py_set_nis.py --user=james --passwd=jamescth --ip=jho4-dl.datadomain.com --conf=resume_conf
+
+./py_set_nis.py --user=hoj9 --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=dd_env_conf
+
+# ia32
+
+# perl
+./py_set_nis.py --user=hoj9 --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=perl_conf
+
+# cust-tools
+./py_set_nis.py --user=hoj9 --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=cust_tools_conf
+
+# vnc or nomachine
+./py_set_nis.py --user=hoj9 --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=vnc_conf
+# OR
+./py_set_nis.py --user=hoj9 --passwd=<passwd> --ip=jho4-dl.datadomain.com --conf=nomachine_conf

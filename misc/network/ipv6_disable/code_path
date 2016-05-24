@@ -1,0 +1,91 @@
+traceroute:
+cmd_alias.c:
+ddsh_set_default_aliases(void)
+{
+    ...
+    static const struct kv_pair kShortcuts[] = {
+    ...
+        { "traceroute", "route trace", pUsr },
+
+cmd_route.c
+dd_err_t *
+cmd_route_trace(cmd_route_trace_args_t *a)
+
+CLI_Spec_route.xml
+    <CLI>
+        <CmdLine>
+            <Line><![CDATA[route trace <ipv4addr> | <ipv6addr> | {<hostname> [ipversion {ipv4 | ipv6}]}]]></Line>
+        </CmdLine>
+        <CmdSubject>route</CmdSubject>
+        <CmdVerb>trace</CmdVerb>
+        <CmdDescription><![CDATA[Show a traceroute to a host]]></CmdDescription>
+        <Argument ID="1" Requirement="required">
+            <Name type="internal">host</Name>
+            <Value>
+                <Type>hostnamev4v6</Type>
+            </Value>
+        </Argument>
+        <Argument ID="2" Requirement="optional">
+            <Name type="keyword">ipversion</Name>
+            <Value>
+                <Type>arbitrary_text</Type>
+                <Selections>ipv4,ipv6</Selections>
+            </Value>
+        </Argument>
+        <CmdAccessControl>RBAC_default_view_ID</CmdAccessControl>
+    </CLI>
+
+# route trace
+**** Missing one or more required arguments.
+Incomplete syntax "route trace", showing help:
+  route trace <ipv4addr> | <ipv6addr> | {<hostname> [ipversion {ipv4 | ipv6}]}
+                                       Show a traceroute to a host
+# traceroute
+Version 1.4a12
+Usage: traceroute [-dFInrvx] [-g gateway] [-i iface] [-f first_ttl]
+        [-m max_ttl] [ -p port] [-q nqueries] [-s src_addr] [-t tos]
+        [-w waittime] [-z pausemsecs] host [packetlen]
+
+# tracepath
+Usage: tracepath [-n] <destination>[/<port>]
+
+
+************************************************************************************
+se ipv6 enable/disable/status
+
+# ddsh -s se ipv6 status
+IPV6 is Enabled on all interfaces
+
+/p4/main/app/ddr/ddsh/cmd_priv.c
+	static dd_uint32_t is_ipv6_disabled(void)
+	cmd_se_ipv6(cmd_se_ipv6_args_t *a)
+	set_ipv6_switch(dd_uint32_t val)
+
+CLI_Spec_se.xml
+        <CmdLine>
+            <Line><![CDATA[se ipv6 <enable|disable|status> ]]></Line>
+        </CmdLine>
+        <CmdSubject>se</CmdSubject>
+        <CmdVerb>ipv6</CmdVerb>
+        <CmdDescription><![CDATA[To Enable or Disable the ipv6 addresses on all interfaces ]]></CmdDescription>
+        <Argument ID="1" Requirement="required">
+            <Name type="internal">ipv6arg</Name>
+            <Value>
+                <Type>arbitrary_text</Type>
+                <Selections>enable,disable,status</Selections>
+            </Value>
+        </Argument>
+
+variables
+	app/ddr/reg/reg_defaults.c
+	    { K_config_net6_ipv6_disabled, "0" },
+// Sets the ipv6 switch key in registry to enable(0) or disable(1)
+
+K_config_net6_ipv6_"disabled"
+
+in autosupport:
+config.net6.ipv6.disabled = 0
+
+
+
+

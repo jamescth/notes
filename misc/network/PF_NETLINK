@@ -1,0 +1,21 @@
+netlink - communication between kernel and userspace (PF_NETLINK)
+
+synopsis
+	#include <asm/types.h>
+	#include <sys/socket.h>
+	#include <linux/netlink.h>
+
+	netlink_socket = socket(PF_NETLINK, socket_type, netlink_family);
+
+Description
+	Netlink is used to transfer information between kernel and userspace processes.
+	It consists of a standard sockets-based interface for userface processes and an
+	internal kernel API for kernel modules.  The internal kernel interface is not
+	documented in this manual page.  There is also an obsolete netlink interface
+	via netlink character devices; this interface is not documented here and is
+	only provided for backwards compatibility.
+	Netlink is a datagram-oriented service.  Both SOCK_RAW and SOCK_DGRAM are 
+	vaild values for socket_type.  However, the netlink protocol does not 
+	distinguish between datagram and raw sockets.
+	netlink_family selects the kernel module or netlink group to communicate 
+	with.  

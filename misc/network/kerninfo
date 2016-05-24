@@ -1,0 +1,23 @@
+Apr 11 22:08:48 MG_DD1 kernel: (E6)[  14757004.892152] device veth2 entered promiscuous mode
+Apr 11 22:08:48 MG_DD1 kernel: (E6)[  14757004.892189] device eth4a entered promiscuous mode
+Apr 11 22:08:54 MG_DD1 kernel: (E6)[  14757010.667912] device veth2 left promiscuous mode
+Apr 11 22:08:54 MG_DD1 kernel: (E6)[  14757010.667949] device eth4a left promiscuous mode
+Apr 11 22:10:10 MG_DD1 kernel: (E6)[  14757087.267797] device veth2 entered promiscuous mode
+Apr 11 22:10:10 MG_DD1 kernel: (E6)[  14757087.267834] device eth4a entered promiscuous mode
+Apr 11 22:10:54 MG_DD1 kernel: (E6)[  14757131.186863] device veth2 left promiscuous mode
+Apr 11 22:10:54 MG_DD1 kernel: (E6)[  14757131.186900] device eth4a left promiscuous mode
+Apr 11 22:10:59 MG_DD1 kernel: (E3)[  14757135.232766] fsync duration [0,0,1]; syslogd: (37755ms), dr 202391, wb 151, fr 862809, ca 3864750
+Apr 11 22:13:39 MG_DD1 kernel: (E6)[  14757295.810612] device veth2 entered promiscuous mode
+Apr 11 22:13:39 MG_DD1 kernel: (E6)[  14757295.810650] device eth4a entered promiscuous mode
+Apr 11 22:14:37 MG_DD1 kernel: (E6)[  14757352.910919] device veth2 left promiscuous mode
+Apr 11 22:14:37 MG_DD1 kernel: (E6)[  14757352.910981] device eth4a left promiscuous mode
+Apr 11 22:19:34 MG_DD1 kernel: (E6)[  14757649.262783] device veth2 entered promiscuous mode
+Apr 11 22:19:34 MG_DD1 kernel: (E6)[  14757649.262823] device eth4a entered promiscuous mode
+Apr 11 22:20:15 MG_DD1 kernel: (E3)[  14757691.102392] fsync duration [0,0,1]; syslogd: (35090ms), dr 202011, wb 977, fr 436478, ca 4270078
+Apr 11 22:20:46 MG_DD1 kernel: (E6)[  14757721.457151] device veth2 left promiscuous mode
+Apr 11 22:20:50 MG_DD1 kernel: (E6)[  14757721.457189] device eth4a left promiscuous mode
+
+
+tcpdump mode
+ *  s2io_set_multicast - entry point for multicast address enable/disable.
+

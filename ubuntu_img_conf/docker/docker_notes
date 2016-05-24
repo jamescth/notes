@@ -1,0 +1,76 @@
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+sudo sh -c "echo deb https://get.docker.io/ubuntu docker main \
+> /etc/apt/sources.list.d/docker.list"
+sudo apt-get update
+sudo apt-get install lxc-docker
+
+# http://askubuntu.com/questions/475764/docker-io-dns-doesnt-work-its-trying-to-use-8-8-8-8
+# For DD, need to disable dnsmasq on the host
+vi /etc/NetworkManager/NetworkManager.conf
+	#dns=dnsmasq
+sudo restart network-manager
+sudo restart docker
+
+# the host probably has to allow xhost
+sudo xhost +
+
+sudo gpasswd -a james docker
+
+# ypbind/autofs may hang
+sudo service ypbind stop
+sudo service ypbind start
+sudo service autofs stop
+sudo service autofs start
+
+# run registry (docker 1.6 & above)
+# https://docs.docker.com/registry/
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+docker run -d -p 5000:5000 \
+    -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry \
+    -v /myregistrydata:/var/lib/registry \
+    --restart=always --name registry registry:2
+
+# Start your registry
+docker run -d -p 5000:5000 registry:2
+
+# Pull (or build) some image from the hub
+docker pull ubuntu
+
+# Tag the image so that it points to your registry
+docker tag ubuntu localhost:5000/myfirstimage
+
+# Push it
+docker push localhost:5000/myfirstimage
+
+# Pull it back
+docker pull localhost:5000/myfirstimage
+
+#gui
+docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix ubuntu:14.10
+
+# move container to another host
+docker save -o <save image to path> <image name>
+docker load -i <path to image tar file>
+
+
+# The NIS is setup on the host
+# add the NIS user/group id inside the container
+$ docker run -ti --rm -v /auto:/auto ubuntu:14.10 /bin/bash
+$ docker run -ti --rm -v /auto:/auto -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -v /etc/shadow:/etc/shadow -v /etc/nsswitch.conf:/etc/nsswitch.conf ubuntu:14.10 /bin/bash
+
+$  docker run -ti --rm -v /auto:/auto ubuntu:14.10 /bin/bash
+
+# groupadd -g ${EMC ID #} ${NIS ID}
+	ex: groupadd -g 123456 hoj9
+# useradd -u ${EMC ID #} -g ${EMC ID #} ${NIS ID}
+	ex: useradd -u 123456 -g 123456 hoj9
+
+# cat /etc/group 
+${NIS ID}:x:${EMC ID #}:
+$ cat /etc/passwd
+${NIS ID}:x:${EMC ID #}:${EMC ID #}::/home/${NIS ID}:
+

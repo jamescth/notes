@@ -1,0 +1,128 @@
+default-duid "\000\001\000\001\033\243\272\231\000\214\372\005t\320";
+lease6 {
+  interface "eth0b";
+  ia-na fa:05:74:d0 {
+    starts 1410400059;
+    renew 50;
+    rebind 80;
+    iaaddr 3ffe:501:ffff:100::6666 {
+      starts 1410399821;
+      preferred-life 100;
+      max-life 200;
+      option dhcp6.status-code success;
+    }
+    iaaddr 3ffe:501:ffff:100::abcd {
+      starts 1410400059;
+      preferred-life 100;
+      max-life 200;
+      option dhcp6.status-code success;
+    }
+  }
+  option dhcp6.client-id 0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0;
+  option dhcp6.server-id 0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1;
+  option dhcp6.status-code success;
+}
+lease6 {
+  interface "eth0b";
+  ia-na fa:05:74:d0 {
+    starts 1410400059;
+    renew 50;
+    rebind 80;
+    iaaddr 3ffe:501:ffff:100::6666 {
+      starts 1410399821;
+      preferred-life 100;
+      max-life 200;
+      option dhcp6.status-code success;
+    }
+    iaaddr 3ffe:501:ffff:100::abcd {
+      starts 1410400059;
+      preferred-life 100;
+      max-life 200;
+      option dhcp6.status-code success;
+    }
+  }
+  released;
+  option dhcp6.client-id 0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0;
+  option dhcp6.server-id 0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1;
+  option dhcp6.status-code success;
+}
+
+
+Sep 10 18:47:32 dd640-47 sms: INFO: smu_net_get_dhcp_pid_for_iface pid = 12857, file name /var/run/dhcpcd-eth0a.pid
+Sep 10 18:47:38 dd640-47 sysadmin: Inside dhclient-enter-exit for PREINIT6 for eth0b with exit status 0
+Sep 10 18:47:38 dd640-47 sysadmin: calling update program with remove argument
+Sep 10 18:47:32 dd640-47 last message repeated 2 times
+Sep 10 18:47:38 dd640-47 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:38 dd640-47 dhcp_update: NOTICE:  dhcp_update : removing reg entry as iface going down
+Sep 10 18:47:38 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b removal
+Sep 10 18:47:38 dd640-47 sysadmin: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:39 dd640-47 logger: Inside dhclient-enter-exit for BOUND6 for eth0b with exit status 0
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  destination filename /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  IPADDR=3ffe:501:ffff:100::6666
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  DHCPSID=0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  LEASETIME=200
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  RENEWALTIME=50
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  REBINDTIME=80
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  INTERFACE=eth0b
+Sep 10 18:47:39 dd640-47 dhcp_translator: INFO:  CLIENTID=0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0
+Sep 10 18:47:39 dd640-47 logger: calling update program with up argument
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE:  dhcp_update : updating reg entry as iface going up
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b removal
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key ipaddr Putting 3ffe:501:ffff:100::6666/64 into dynamic.net.dhcp.eth0b.ipaddr
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key dhcpsid Putting 0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1 into dynamic.net.dhcp.eth0b.dhcpsid
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key leasetime Putting 200 into dynamic.net.dhcp.eth0b.leasetime
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key renewaltime Putting 50 into dynamic.net.dhcp.eth0b.renewaltime
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key rebindtime Putting 80 into dynamic.net.dhcp.eth0b.rebindtime
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key interface Putting eth0b into dynamic.net.dhcp.eth0b.interface
+Sep 10 18:47:39 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key clientid Putting 0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0 into dynamic.net.dhcp.eth0b.clientid
+Sep 10 18:47:40 dd640-47 logger: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:40 dd640-47 logger: Inside dhclient-enter-exit for BOUND6 for eth0b with exit status 0
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  destination filename /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  IPADDR=3ffe:501:ffff:100::6666
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  DHCPSID=0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  LEASETIME=200
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  RENEWALTIME=50
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  REBINDTIME=80
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  INTERFACE=eth0b
+Sep 10 18:47:40 dd640-47 dhcp_translator: INFO:  CLIENTID=0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0
+Sep 10 18:47:40 dd640-47 logger: calling update program with up argument
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE:  dhcp_update : updating reg entry as iface going up
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b removal
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key ipaddr Putting 3ffe:501:ffff:100::6666/64 into dynamic.net.dhcp.eth0b.ipaddr
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key dhcpsid Putting 0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1 into dynamic.net.dhcp.eth0b.dhcpsid
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key leasetime Putting 200 into dynamic.net.dhcp.eth0b.leasetime
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key renewaltime Putting 50 into dynamic.net.dhcp.eth0b.renewaltime
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key rebindtime Putting 80 into dynamic.net.dhcp.eth0b.rebindtime
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key interface Putting eth0b into dynamic.net.dhcp.eth0b.interface
+Sep 10 18:47:40 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b DHCP-key clientid Putting 0:1:0:1:1b:a3:ba:99:0:8c:fa:5:74:d0 into dynamic.net.dhcp.eth0b.clientid
+Sep 10 18:47:40 dd640-47 logger: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:40 dd640-47 logger: Inside dhclient-enter-exit for DEPREF6 for eth0b with exit status 2
+Sep 10 18:47:40 dd640-47 logger: unable to obtain values for DEPREF6
+Sep 10 18:47:41 dd640-47 logger: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:41 dd640-47 logger: Inside dhclient-enter-exit for EXPIRE6 for eth0b with exit status 0
+Sep 10 18:47:41 dd640-47 logger: calling update program with remove argument
+Sep 10 18:47:41 dd640-47 dhcp_update: NOTICE:  dhcp_update : Updating with info from /tmp/dhcpcd-eth0b.info
+Sep 10 18:47:41 dd640-47 dhcp_update: NOTICE:  dhcp_update : removing reg entry as iface going down
+Sep 10 18:47:41 dd640-47 dhcp_update: NOTICE: dhcp_update : Iface: eth0b removal
+Sep 10 18:47:41 dd640-47 logger: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:41 dd640-47 logger: exiting from dhclient-enter-exit for eth0b
+Sep 10 18:47:48 dd640-47 netmon: INFO: Event cleared: 147: EVT-NETM-00003: Invalid network configuration setting on eth0b. EVT-OBJ::Interface Index=4:Setting=IP address EVT-INFO::Configured Value=n/a:Actual Value=n/a
+Sep 10 18:48:08 dd640-47 netmon: NOTICE: netmon: res_query error 110.
+Sep 10 18:48:12 dd640-47 smtp_send: WARNING: EMS: Unknown host specified for mail server (getaddrinfo return result = -2)
+Sep 10 18:48:12 dd640-47 emsmon: WARNING: Email failed: Alert-id=147: ReturnCode=512
+Sep 10 18:48:18 dd640-47 netmon: INFO: Event cleared: 147: EVT-NETM-00003: Invalid network configuration setting on eth0b. EVT-OBJ::Interface Index=4:Setting=IP address EVT-INFO::Configured Value=n/a:Actual Value=n/a
+Sep 10 18:48:38 dd640-47 netmon: WARNING: _ems_parse_object_str: Wrong object format: DNS-Servers = 3ffe:501:ffff:100:200:ff:fe00:3f3e
+Sep 10 18:48:38 dd640-47 netmon: WARNING: ems_get_event: Failed to initialize event: Unable to communicate with configured DNS. EVT-INFO::DNS-Servers = 3ffe:501:ffff:100:200:ff:fe00:3f3e
+Sep 10 18:48:38 dd640-47 netmon: WARNING: _ems_parse_object_str: Wrong object format: DNS-Servers = 3ffe:501:ffff:100:200:ff:fe00:3f3e
+Sep 10 18:48:38 dd640-47 netmon: WARNING: ems_post_event: Failed to initialize event: Unable to communicate with configured DNS. EVT-INFO::DNS-Servers = 3ffe:501:ffff:100:200:ff:fe00:3f3e
+Sep 10 18:48:38 dd640-47 netmon: NOTICE: Run: traceroute -I 3ffe:501:ffff:100:200:ff:fe00:3f3e 2>&1
+Sep 10 18:48:38 dd640-47 netmon: NOTICE: Output: traceroute: unknown host 3ffe:501:ffff:100:200:ff:fe00:3f3e
+Sep 10 18:48:38 dd640-47 netmon: NOTICE: netmon error:1
+Sep 10 18:49:12 dd640-47 sysadmin: dhclient6-ddr-linux 14790 reason: xRELEASE6
+Sep 10 18:49:12 dd640-47 sysadmin: dhclient6-ddr-linux 14790 reason: xRELEASE6 iface: eth0b
+Sep 10 18:49:12 dd640-47 sysadmin: dhclient6-ddr-linux old prefix: x new: x
+Sep 10 18:49:12 dd640-47 sysadmin: dhclient6-ddr-linux old ip: 3ffe:501:ffff:100::6666 old ip prefixlen: 64
+Sep 10 18:49:12 dd640-47 sysadmin: Inside dhclient-enter-exit for RELEASE6 for eth0b with exit status 0
+

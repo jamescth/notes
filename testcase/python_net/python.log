@@ -1,0 +1,6 @@
+08-14 13:54 my_scapy     INFO     Number of arguments: 2
+08-14 13:54 my_scapy     INFO     argument list: ['./my_scapy.py', '-i/tmp/128_html_link0.pcap']
+08-14 13:54 my_scapy     INFO     Input file is /tmp/128_html_link0.pcap
+08-14 13:54 my_scapy     INFO     Output file is 
+08-14 13:54 my_scapy     INFO     /tmp/128_html_link0.pcap exists
+08-14 13:54 my_scapy     INFO     end of py

@@ -1,0 +1,4 @@
+date
+hwclock
+
+date && date -s "03/15/2012 09:55:00"

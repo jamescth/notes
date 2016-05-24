@@ -1,0 +1,36 @@
+TCP Port Numbers
+Length of 16 bits
+Validate from 1 - 65535
+3 catagories:
+	well-known	1-1023
+	registered	1024 - 49151
+	dynamic		49152 - 65535
+Available for DD	32768 - 61000
+official iana assigned ports:
+	http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+
+TCP Seq/ACK numbers
+	length of 32 bits
+	Random sequence number at connection open
+	each data byte is counted
+	Seq/Ack numbers point to the next data to be sent/received
+	The SYN and FIN packets consume one sequence number each
+	This forces an ACK for these and allows destination to wait for pending data
+	The max sequence number is 4,294,967,295
+	At a speed of 1Gb/s (128MB/s), it would take 32 seconds to send 4,294,967,295 Bytes
+	At 10Gb/s it would take 3.2 seconds.
+	in reality, 1Gb line expect 920-940Mb/s (115-120MB/s)  10Gb means * 10
+
+SYN/FIN Seq Numbers
+	Host 1 app tells TCP to connect to Host 2
+	Host 1 TCP Sends SYN pakcet	Seq = 10, Ack = 0
+	Host 2 TCP Sends SYN-ACK	Seq = 20, Ack = 11
+	...
+
+TCP Flags
+	FIN (0x01): This is part of a close sequence
+	SYN (0x02): This is part of an open sequence
+	RST (0x04): Reset the connection - immediate close
+	PSH (0x08): Push this and all previous data to the applicaton
+	ACK (0x10): The Acknowledgement field has meaning
+	URG (0x20): The Urgent Pointer must be used

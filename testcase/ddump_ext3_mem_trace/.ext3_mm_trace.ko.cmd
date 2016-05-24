@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/ddump_ext3_mem_trace/ext3_mm_trace.ko := /auto/home/lsbuild/desktop-335886/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/ddump_ext3_mem_trace/ext3_mm_trace.ko /auto/home5/hoj9/testcase/ddump_ext3_mem_trace/ext3_mm_trace.o /auto/home5/hoj9/testcase/ddump_ext3_mem_trace/ext3_mm_trace.mod.o

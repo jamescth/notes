@@ -1,0 +1,114 @@
+https://help.ubuntu.com/community/KickstartCompatibility
+
+1. go to the following website to download a mini iso to create a bootable USB:
+# https://help.ubuntu.com/community/Installation/MinimalCD
+
+2. in the Linux terminal:
+	sudo dd if={mini.iso} of=/dev/{your usb} bs=1M
+
+3. insert the usb to your Linux workstation, reboot your workstation
+4. make sure it can boot from USB
+5. hit 'esc' to enter Grub
+6. run:
+   linux initrd=initrd.gz -- ks=http://mirrors.datadomain.com/ubuntu-14.10.cfg preseed/file=http://mirrors.datadomain.com/ubuntu-14.10.seed
+   linux initrd=initrd.gz -- ks=http://mirrors.datadomain.com/ubuntu-14.10.cfg file=http://mirrors.datadomain.com/ubuntu-14.10.seed
+   linux initrd=initrd.gz -- ks=http://mirrors.datadomain.com/ubuntu-14.10.cfg nousbstorage
+   linux initrd=initrd.gz -- preseed/url=http://mirrors.datadomain.com/u-14.10.seed
+7. the screen will pause - 
+   a.select "Finish partitioning and write changes to disk"
+   b."Write the changes to disks", slect "Yes" to overwrite partitions
+8. due to a bug, GRUB install will fail 'grub-install /dev/sda' (sda is the bootable USB, it should be sdb instead).  
+   a. When see the error msg, select "continue", and "continue"
+   b. back to the main menu, select "Install the GRUP boot loader on a hard disk".
+   c. When asked "Install the GRUB boot loader to the master boot record?", select "NO"
+   d. "Device for boot loader installation", type "/dev/sdb".
+      you can press "ALT+F2" to switch to a different terminal, then type "fdisk -l" to see the device/partition list. and "ALT+F1" to switch back.
+
+Ubuntu Preseed Install
+# http://searchitchannel.techtarget.com/feature/Performing-an-automated-Ubuntu-install-using-preseeding
+1. google 'download ubuntu server'
+2. The server version should be 64-bit (x86_64) only.  So, click on 'Download'
+3. on your mac:
+   a. hdiutil convert -format UDRW -o {ubuntu.img} {ubuntu.iso}
+   b. sudo dd if={ubuntu.img}.dmg of=/dev/{ur usb} bs=1m
+   c. diskutil eject /dev/{ur usb}
+4. boot from usb
+5. Select 'English'
+6. hit 'F6'
+7. hit 'esc'
+8. move arror '<-' key
+9. change the boot options to 'auto=true priority=critical url=http://mirrors.datadomain.com/u.seed interface=eth0 hostname=jho5-dl domain=datadomain.com initrd=/install/initrd.gz'
+
+Ubuntu server network installer
+1. google 'download ubuntu server'
+2. click 'Alternative downloads and torrents'
+3. select any version of Network installer (amd64 - For 64-bit Intel/AMD (x86_64))
+4. on your mac:
+   a. hdiutil convert -format UDRW -o {ubuntu.img} {ubuntu.iso}
+   b. sudo dd if={ubuntu.img}.dmg of=/dev/{ur usb} bs=1m
+   c. diskutil eject /dev/{ur usb}
+5. boot from usb
+6. press 'TAB' to edit 'Install' menu entry
+   change the boot option to 'linux auto=true priority=critical url=http://mirrors.datadomain.com/pu.seed interface=eth0 hostname=jho5-dl domain=datadomain.com initrd=initrd.gz --- quiet'
+
+
+http://askubuntu.com/questions/122505/how-do-i-create-a-completely-unattended-install-of-ubuntu
+
+http://lost-and-found-narihiro.blogspot.com/2014/07/ubuntu-1404-automatic-installation-with.html
+
+https://help.ubuntu.com/community/KickstartCompatibility
+https://help.ubuntu.com/lts/installation-guide/amd64/ch04s06.html
+
+system-config-kickstart
+http://www.linuxquestions.org/questions/ubuntu-63/system-config-kickstart-not-working-in-ubuntu-14-04-a-4175502357/
+
+how to create a customized Ubuntu Server ISO
+http://askubuntu.com/questions/409607/how-to-create-a-customized-ubuntu-server-iso
+
+how to customize an Ubuntu installation disc - the right way (14.04)
+http://nathanpfry.com/how-to-customize-an-ubuntu-installation-disc/
+
+https://help.ubuntu.com/community/Installation/MinimalCD
+https://www.debian.org/mirror/ftpmirror
+https://help.ubuntu.com/community/KickstartCompatibility
+
+How to create a bootable USB stick on OS X
+http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-mac-osx
+
+	1. Download iso
+	2. hdiutil convert -format UDRW -o ${PATH}/target.img ${PATH}/ubuntu.iso
+	3. diskutil list
+	4. insert usb
+	5. diskutil list
+	6. diskutil unmountDisk /dev/diskN
+	7. sudo dd if=${PATH}/target.img of=/dev/rdiskN bs=1m
+	8. diskutil eject /dev/diskN
+
+Ubuntu LiveCDCustomization
+https://help.ubuntu.com/community/LiveCDCustomization
+http://www.feedingthemachine.com/2009/01/clamav-live-cd-update-script/
+
+cd /tmp
+mkdir -p iso newiso
+sudo mount -o loop ./mini.iso ./iso
+sudo cp -r ./iso/* ./newiso
+sudo cp -r ./iso/.disk/ ./newiso/
+sudo umount iso
+cd newiso
+
+sudo rsync -a iso newiso/
+# mv iso from newiso & rename
+
+diff -ur iso newiso/
+
+# How do I create an EFI-bootable ISO of a customized version of Ubuntu?
+# http://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu
+# Mini
+sudo mkisofs -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -z -iso-level 4 -c boot.cat -o ../newmini.iso -joliet-long -e boot/grub/efi.img .
+
+sudo mkisofs -U -A "CustomMini" -V "CustomMini" -volset "CustomMini" -J -joliet-long -r -v -T -o ../newmini.iso -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot .
+
+# use dumpet to verify
+$ dumpet -i ./newmini.iso 
+
+sudo mkisofs -U -A "CustomMini" -V "CustomMini" -volset "CustomMini" -J -joliet-long -r -v -T -o ../CustomMini.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot .

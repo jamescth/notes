@@ -1,0 +1,4 @@
+#ypserver 10.25.129.97
+#ypserver 10.25.132.208
+ypserver nislab3.datadomain.com
+ypserver nislab4.datadomain.com

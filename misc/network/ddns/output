@@ -1,0 +1,60 @@
+TUServer
+forward:
+opcode QUERY
+rcode NOERROR
+flags QR AA RD
+;QUESTION
+TUServer.cherry.local. IN A
+;ANSWER
+TUServer.cherry.local. 604800 IN A 192.168.100.1
+;AUTHORITY
+cherry.local. 604800 IN NS TUServer.cherry.local.
+;ADDITIONAL
+
+reverse:
+opcode QUERY
+rcode NOERROR
+flags QR AA RD
+;QUESTION
+1.100.168.192.in-addr.arpa. IN PTR
+;ANSWER
+1.100.168.192.in-addr.arpa. 604800 IN PTR TUServer.cherry.local.
+;AUTHORITY
+100.168.192.in-addr.arpa. 604800 IN NS TUServer.cherry.local.
+;ADDITIONAL
+TUServer.cherry.local. 604800 IN A 192.168.100.1
+
+
+ddr1/wrong:
+opcode QUERY
+rcode NOERROR
+flags QR AA RD
+;QUESTION
+
+ddr1/wrong:
+opcode QUERY
+rcode NOERROR
+flags QR AA RD
+;QUESTION
+210.100.168.192.in-addr.arpa. IN PTR
+;ANSWER
+210.100.168.192.in-addr.arpa. 600 IN PTR 210.100.168.19.100.168.192.in-addr.arpa.
+210.100.168.192.in-addr.arpa. 600 IN PTR 210.100.168.192.100.168.192.in-addr.arpa.
+;AUTHORITY
+100.168.192.in-addr.arpa. 604800 IN NS TUServer.cherry.local.
+;ADDITIONAL
+TUServer.cherry.local. 604800 IN A 192.168.100.1
+
+210.100.168.192.in-addr.arpa. IN PTR
+;ANSWER
+210.100.168.192.in-addr.arpa. 600 IN PTR 210.100.168.19.100.168.192.in-addr.arpa.
+210.100.168.192.in-addr.arpa. 600 IN PTR 210.100.168.192.100.168.192.in-addr.arpa.
+;AUTHORITY
+100.168.192.in-addr.arpa. 604800 IN NS TUServer.cherry.local.
+;ADDITIONAL
+TUServer.cherry.local. 604800 IN A 192.168.100.1
+
+
+reverse ip:201.100.168.192.in-addr.arpa.
+rzone :100.168.192.in-addr.arpa
+

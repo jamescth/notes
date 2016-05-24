@@ -1,0 +1,6 @@
+#docker build -t go-dev:1.4.2 .
+
+FROM busybox
+
+MAINTAINER James Ho
+COPY new_pkt /

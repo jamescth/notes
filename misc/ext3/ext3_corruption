@@ -1,0 +1,30 @@
+bug 68442
+ Converted it back to ext3 fs using tune2fs -j /dev/dd_dg10p1 
+ Certs and hd_log look complete.
+
+  Certs and historical database files were fine in lost+found so copied these to
+  the correct location.
+
+  converted back to ext3 by unmounting the ext2 fs, and re-created journaling by
+  running tune2fs -j /dev/dd_dg10p1 , then remount as ext3
+
+  recreated the directory structures for the rest from another 5.0.1 system to
+  prevent any problems to sync (col1,ddr,etcerts,releases,usr,var)
+
+  mount /dev/dd_dg10p2 /ddr/var_extra, mount /dev/dd_dg10p3 /ddr/ext/col1/repl
+
+  linked /ddr/ext/col1/repl/replication_log to /ddr/col1/repl
+
+  ran nvsfile create to recreate the /ddr/ext/col1/col_state file.
+
+  Initially tried to bring up ddfs and saw registry out of sync messages and 
+  nvram_id mismatch, so ran ddr_cfg -S to sync HU registry to external storage. 
+  and had to clear nvram, once this was done DDFS could be brought up.
+
+  Verified that sidefx recreated the other back up files 
+   (/ddr/ext/etc/passwd,smbpasswd, shadow)
+
+  To make sure everything was ok, since we mounted everything manually rebooted
+  the machine to verify that everything was ok. 
+
+

@@ -1,0 +1,24 @@
+TSO is the tip of a fairly big iceberg when it comes to network performace boosting techniques.
+
+Let's consider the basic network interface.  Your OS sends a whole packet to the NIC (network interface card) using PIO (Programmed input/output i.e. one word (normally 32 bits) at a time) as it should appear on the wire only excluding the frame cheack sequence.
+
+These are the speed boosts for the transmission of data.
+
+So the first speed boost is to use DMA (Direct Memory Access), this allows the processor to do other things while the hardware copies the packet.  But the OS still has to copy the packet data into memory and generate the headers and checksums.
+
+The second boost is to have the hardware generate the checksum for the data portion of the packet, the OS will still copy the data into its memory space and place the header before it.  As the OS is generating the headers it may as well always generate the checksums for the headers.  This seems complicated, but the mechanism is actually quite simple.  The hardware is told to start checksumming when it reaches position XX and to place the checksum at position yy in the packet buffer.
+
+The third boost is to use Scatter/Gather. This basically means the OS doesn't copy the data into its memory, it passes the header and the location of the data portion to the driver and allows the driver to collect the data and send it. This requires hardware checksumming, if the OS needs to checksum the packet then it needs to copy it into memory first.
+
+The fourth (and highest level of natively supported boosting in Linux) is TSO. With TSO the OS gives the hardware a header template and then a large chunk of data (no more than 64k) for it to split and checksum, the means the OS needs to generate fewer header and any overhead in setting up the DMA is also decimated. WHen the packets go on the wire they are compliant to the normal rules of packets and will be compatable with ANY switch or router they transit through.
+
+Reception is a different story.  Hardware checksumming is more of a guess than a certainty here.  So what SHOULD happen is the hardware passes the packet and the checksum to the OS separately and allows the OS to decide if the packet is OK or not.
+
+Scatter/Gather is pretty much redundant for receive.
+
+LRO (Large receive offload), well, there's no easy way for the hardware to know what these packets mean, so LRO is currently a software only construct, the packets are passed to the OS, the OS then decides whether or not to concatenate the data and pass a large chunk to the application or to pass many smaller chunks.
+
+A few notes on the network stack.
+
+The software should ALWAYS produce the ACK packets. The only reason it wouldn't is if you had a TOE (TCP Offload Engine) on your NIC. 
+

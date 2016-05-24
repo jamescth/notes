@@ -1,0 +1,23 @@
+moving the cursor
+	0	move cursor to start of current line
+	$	move cursor to end of current line
+	w	move cursor to beginning of next word
+	b	move cursor back to beginning of preceding word
+	:0	1st line of file
+	:$	last line of file
+
+inert text
+	i	insert text before cursor
+	I	insert text at beginning of current line
+	a	append text after cursor
+	A	Append text to end of current line
+	o	open and put text in a new line below current line
+	O	open and put text in a new line above current line
+
+delete text
+	x	delete single char under cursor
+	Nx	delete N char
+	dw	delete the single word
+	dNw	delete N words
+	D	delete the remainder of the line
+	dd	delete entire current line

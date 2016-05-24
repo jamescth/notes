@@ -1,0 +1,19 @@
+#tracing all operations on indes
+
+probe kernel.function("*@fs/inode.c")
+{
+	if (execname() ==  "open") {
+		printf("##############Proces-ENTER [%s] - %s(sb)\n", execname(), probefunc());
+		//printf("%s\n", backtrace());
+	}
+	
+}
+
+probe kernel.function("*@fs/inode.c").return
+{
+
+	if (execname() ==  "open") {
+		printf("##############Proces return [%s] - %s(sb)\n", execname(), probefunc());
+		printf("%s\n", backtrace());
+	}
+}

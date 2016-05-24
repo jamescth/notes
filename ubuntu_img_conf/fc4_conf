@@ -1,0 +1,11 @@
+# BIOS
+# make sure vt is enabled
+
+# when set up virtualbox
+# storage: use IDE instead of SATA
+# network: Use bridge instead of NAT
+
+# /etc/sysconfig/network
+# HOSTNAME=jho1-dl.datadomain.com
+# NISDOMAIN=datadomain.com
+

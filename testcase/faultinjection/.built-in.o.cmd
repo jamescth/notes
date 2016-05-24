@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/faultinjection/built-in.o :=  rm -f /auto/home5/hoj9/testcase/faultinjection/built-in.o; /auto/home/lsbuild/desktop-358510/usr/bin/ar rcs /auto/home5/hoj9/testcase/faultinjection/built-in.o

@@ -1,0 +1,27 @@
+$ ssh root@ucsc13.chaos.local
+passwd: v6eval
+
+terminal 1:
+# cu -l cuau0
+# cu -l cuau1
+root@ucsc13:~ # cu -l cuau0
+all ports busy
+root@ucsc13:~ # cu -l cuau1
+Connected
+
+dhclient6 -6 -nw -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -d -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -r -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+dhclient6 -6 -x -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+
+DDR:
+$ go2 dd640-47.chaos.local
+
+section 1 - Address Asignment for Client: 					3315
+section 4 - DNS configuration in parallel with Address Assignment for client:	3646
+section 7 - Stateless DHCPv6 for DNS configuration for client:			3736
+
+ternimal 2/run tests:
+~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3315# make ipv6ready_p2_client
+~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3646# make ipv6ready_p2_client
+~/Desktop/tahi/DHCP/DHCPv6_Self_Test_P2_1_1_4/rfc3736# make ipv6ready_p2_client

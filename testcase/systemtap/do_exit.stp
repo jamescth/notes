@@ -1,0 +1,19 @@
+
+// Return the cmd_line of a task.
+function task_cmd_line:string (task:long) %{ 
+    strlcpy(THIS->__retvalue, current->cmd_line, 30);
+%}
+
+probe kernel.function("do_exit")
+{
+	printf("%s(%d) do_exit: \n", execname(), tid());
+}
+
+probe kernel.function("exit_mm")
+{
+	printf("%s(%d) exit_mm(%p): \n", execname(), tid(), $tsk);
+}
+
+
+
+

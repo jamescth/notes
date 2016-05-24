@@ -1,0 +1,285 @@
+include/linux/if.h
+	struct ifmap 
+	struct if_settings
+	struct ifreq 		Interface request structure used for socket ioctl's
+	struct ifconf		Structure used in SIOCGIFCONF request
+
+include/linux/if_ether.h
+	struct ethhdr		This is an Ethernet frame header.
+
+include/linux/if_packet.h
+	struct sockaddr_pkt
+	struct sockaddr_ll
+	struct tpacket_stats
+	struct tpacket_auxdata
+	struct tpacket_hdr
+	struct tpacket_req
+	struct packet_mreq
+	/*
+	   Frame structure:
+	
+	   - Start. Frame must be aligned to TPACKET_ALIGNMENT=16
+	   - struct tpacket_hdr
+	   - pad to TPACKET_ALIGNMENT=16
+	   - struct sockaddr_ll
+	   - Gap, chosen so that packet data (Start+tp_net) alignes to TPACKET_ALIGNMENT=16
+	   - Start+tp_mac: [ Optional MAC header ]
+	   - Start+tp_net: Packet data, aligned to TPACKET_ALIGNMENT=16.
+	   - Pad to align to TPACKET_ALIGNMENT=16
+	 */
+
+include/linux/netdevice.h
+*	struct net_device
+	struct net_device_stats
+	struct netif_rx_stats
+	struct dev_addr_list
+	struct hh_cache
+	enum netdev_state_t
+	struct netdev_boot_setup 
+	struct packet_type
+*	struct softnet_data		Incoming packets are placed on per-cpu queues
+
+	extern struct net_device		loopback_dev;		/* The loopback */
+	extern struct list_head			dev_base_head;		/* All devices */
+	extern rwlock_t				dev_base_lock;		/* Device list lock */
+
+include/linux/inetdevice.h
+	struct ipv4_devconf
+	struct in_device
+	struct in_ifaddr
+
+include/linux/netpoll.h
+	struct netpoll
+	struct netpoll_info
+
+include/linux/ethtool.h
+	struct ethtool_cmd 
+	struct ethtool_drvinfo
+	struct ethtool_wolinfo		wake-on-lan settings
+	struct ethtool_coalesce		for configuring coalescing parameters of chip
+	struct ethtool_ringparam	for configuring RX/TX ring parameters
+	struct ethtool_pauseparam
+	struct ethtool_test		for requesting NIC test and getting results
+	struct ethtool_stats		for dumping NIC-specific statistics
+*	struct ethtool_ops
+
+include/linux/if_vlan.h
+	struct vlan_ethhdr
+	struct vlan_hdr
+	struct vlan_group;
+	struct vlan_priority_tci_mapping
+	struct vlan_dev_info		Holds information that makes sense if this device is a VLAN device
+	enum vlan_ioctl_cmds
+
+include/linux/ip.h
+*	struct iphdr
+	struct ip_auth_hdr
+	struct ip_esp_hdr
+	struct ip_comp_hdr
+	struct ip_beet_phdr
+
+include/linux/ipv6.h
+	struct in6_pktinfo 
+	struct in6_ifreq
+	struct ipv6_rt_hdr		routing header
+	struct ipv6_opt_hdr
+	struct ipv6_destopt_hao		home address option in destination options header
+	struct ipv6_auth_hdr
+*	struct ipv6hdr			IPv6 fixed header
+	struct ipv6_devconf		This structure contains configuration options per IPv6 link
+	struct inet6_skb_parm		results of exthdrs parsing as offsets from skb->nh
+	struct inet6_request_sock
+	struct tcp6_request_sock
+	struct ipv6_pinfo		- ipv6 private area
+	struct raw6_sock
+	struct udp6_sock
+	struct tcp6_sock
+
+include/net/ip.h
+	struct inet_skb_parm
+	struct ipcm_cookie
+	struct ip_ra_chain
+	struct ip_reply_arg
+	struct ipv4_config
+
+include/linux/in.h
+	/* Standard well-defined IP protocols.  */
+	enum {
+	  IPPROTO_IP = 0,		/* Dummy protocol for TCP		*/
+	  IPPROTO_ICMP = 1,		/* Internet Control Message Protocol	*/
+	  IPPROTO_IGMP = 2,		/* Internet Group Management Protocol	*/
+	  IPPROTO_IPIP = 4,		/* IPIP tunnels (older KA9Q tunnels use 94) */
+	  IPPROTO_TCP = 6,		/* Transmission Control Protocol	*/
+	  IPPROTO_IPV6	 = 41,		/* IPv6-in-IPv4 tunnelling		*/
+
+	struct in_addr {	Internet address.
+
+include/linux/net.h
+*	typedef enum {
+		SS_FREE = 0,			/* not allocated		*/
+		SS_UNCONNECTED,			/* unconnected to any socket	*/
+		SS_CONNECTING,			/* in process of connecting	*/
+		SS_CONNECTED,			/* connected to socket		*/
+		SS_DISCONNECTING		/* in process of disconnecting	*/
+	} socket_state;
+
+	/**
+	 * enum sock_type - Socket types
+	 * @SOCK_STREAM: stream (connection) socket
+	 * @SOCK_DGRAM: datagram (conn.less) socket
+	 * @SOCK_RAW: raw socket
+	 * @SOCK_RDM: reliably-delivered message
+	 * @SOCK_SEQPACKET: sequential packet socket
+	 * @SOCK_DCCP: Datagram Congestion Control Protocol socket
+	 * @SOCK_PACKET: linux specific way of getting packets at the dev level.
+	 *		  For writing rarp and other similar things on the user level.
+	 *
+	 * When adding some new socket type please
+	 * grep ARCH_HAS_SOCKET_TYPE include/asm-* /socket.h, at least MIPS
+	 * overrides this enum for binary compat reasons.
+	 */
+
+*	enum sock_type {
+		SOCK_STREAM	= 1,
+		SOCK_DGRAM	= 2,
+		SOCK_RAW	= 3,
+		SOCK_RDM	= 4,
+		SOCK_SEQPACKET	= 5,
+		SOCK_DCCP	= 6,
+		SOCK_PACKET	= 10,
+	};
+
+	/**
+	 *  struct socket - general BSD socket
+	 *  @state: socket state (%SS_CONNECTED, etc)
+	 *  @flags: socket flags (%SOCK_ASYNC_NOSPACE, etc)
+	 *  @ops: protocol specific socket operations
+	 *  @fasync_list: Asynchronous wake up list
+	 *  @file: File back pointer for gc
+	 *  @sk: internal networking protocol agnostic socket representation
+	 *  @wait: wait queue for several uses
+	 *  @type: socket type (%SOCK_STREAM, etc)
+	 */
+
+*	struct socket
+*	struct proto_ops
+	struct net_proto_family
+
+include/linux/socket.h
+	struct __kernel_sockaddr_storage
+*	struct sockaddr
+	struct linger
+	struct msghdr 
+	struct cmsghdr
+
+	#define AF_UNSPEC	0
+	#define AF_UNIX		1	/* Unix domain sockets 		*/
+	#define AF_LOCAL	1	/* POSIX name for AF_UNIX	*/
+	#define AF_INET		2	/* Internet IP Protocol 	*/
+	#define AF_INET6	10	/* IP version 6			*/
+	#define AF_NETLINK	16
+	#define AF_PACKET	17	/* Packet family		*/
+
+include/net/sock.h
+	struct sock_common	minimal network layer representation of sockets
+*	struct sock		network layer representation of sockets
+*	struct proto		Networking protocol blocks we attach to sockets
+	struct sock_iocb	used to kick off async processing of socket ios
+
+include/linux/inet_sock.h
+	struct ip_options	IP Options
+	 * @faddr - Saved first hop address
+	 * @is_data - Options in __data, rather than skb
+	 * @is_strictroute - Strict source route
+	 * @srr_is_hit - Packet destination addr was our one
+	 * @is_changed - IP checksum more not valid
+	 * @rr_needaddr - Need to record addr of outgoing dev
+	 * @ts_needtime - Need to record timestamp
+	 * @ts_needaddr - Need to record addr of outgoing dev
+
+	struct inet_request_sock
+
+*	struct inet_sock	representation of INET sockets
+	 * @sk - ancestor class
+	 * @pinet6 - pointer to IPv6 control block
+	 * @daddr - Foreign IPv4 addr
+	 * @rcv_saddr - Bound local IPv4 addr
+	 * @dport - Destination port
+	 * @num - Local port
+	 * @saddr - Sending source
+	 * @uc_ttl - Unicast TTL
+	 * @sport - Source port
+	 * @id - ID counter for DF pkts
+	 * @tos - TOS
+	 * @mc_ttl - Multicasting TTL
+	 * @is_icsk - is this an inet_connection_sock?
+	 * @mc_index - Multicast device index
+	 * @mc_list - Group array
+	 * @cork - info to build ip hdr on each ip frag while socket is corked
+
+include/linux/udp.h
+	struct udphdr
+*	struct udp_sock
+
+include/linux/tcp.h
+	struct tcphdr
+	struct tcp_info
+	struct tcp_md5sig
+	struct tcp_sack_block_wire	This defines a selective acknowledgement block
+	struct tcp_sack_block
+	struct tcp_options_received
+	struct tcp_request_sock
+*	struct tcp_sock
+
+include/linux/skbuff.h
+*	struct sk_buff_head
+	struct skb_shared_info
+*	struct sk_buff			socket buffer
+	 *	@next: Next buffer in list
+	 *	@prev: Previous buffer in list
+	 *	@sk: Socket we are owned by
+	 *	@tstamp: Time we arrived
+	 *	@dev: Device we arrived on/are leaving by
+	 *	@transport_header: Transport layer header
+	 *	@network_header: Network layer header
+	 *	@mac_header: Link layer header
+	 *	@dst: destination entry
+	 *	@sp: the security path, used for xfrm
+	 *	@cb: Control buffer. Free for use by every layer. Put private vars here
+	 *	@len: Length of actual data
+	 *	@data_len: Data length
+	 *	@mac_len: Length of link layer header
+	 *	@hdr_len: writable header length of cloned skb
+	 *	@csum: Checksum (must include start/offset pair)
+	 *	@csum_start: Offset from skb->head where checksumming should start
+	 *	@csum_offset: Offset from csum_start where checksum should be stored
+	 *	@local_df: allow local fragmentation
+	 *	@cloned: Head may be cloned (check refcnt to be sure)
+	 *	@nohdr: Payload reference only, must not modify header
+	 *	@pkt_type: Packet class
+	 *	@fclone: skbuff clone status
+	 *	@ip_summed: Driver fed us an IP checksum
+	 *	@priority: Packet queueing priority
+	 *	@users: User count - see {datagram,tcp}.c
+	 *	@protocol: Packet protocol from driver
+	 *	@truesize: Buffer size 
+	 *	@head: Head of buffer
+	 *	@data: Data head pointer
+	 *	@tail: Tail pointer
+	 *	@end: End pointer
+	 *	@destructor: Destruct function
+	 *	@mark: Generic packet mark
+	 *	@nfct: Associated connection, if any
+	 *	@ipvs_property: skbuff is owned by ipvs
+	 *	@nf_trace: netfilter packet trace flag
+	 *	@nfctinfo: Relationship of this skb to the connection
+	 *	@nfct_reasm: netfilter conntrack re-assembly pointer
+	 *	@nf_bridge: Saved data about a bridged frame - see br_netfilter.c
+	 *	@iif: ifindex of device we arrived on
+	 *	@queue_mapping: Queue mapping for multiqueue devices
+	 *	@tc_index: Traffic control index
+	 *	@tc_verd: traffic control verdict
+	 *	@dma_cookie: a cookie to one of several possible DMA operations
+	 *		done by skb DMA functions
+	 *	@secmark: security marking
+

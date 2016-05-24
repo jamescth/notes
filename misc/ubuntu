@@ -1,0 +1,52 @@
+for p4:
+[hoj9@jho1-dl notes]$ ll /usr/tmp
+lrwxrwxrwx  1 root root 10 Aug 19  2010 /usr/tmp -> ../var/tmp
+
+/sbin/sh -> /sbin/bash 
+	/sbin/sh -> dash (Wrong)
+
+need to install 'patch' utility
+
+depmod
+
+ROOT:
+# sudo -i
+# sudo passwd root
+
+get packages:
+> sudo apt-get install fakeroot kernel-wedge build-essential makedumpfile kernel-package libncurses5 libcurses5-dev
+
+> sudo apt-get build-dep --no-install-recommends linux-image-$(uname -r)
+
+> cd ~/src
+> apt-get source linux-image-$(uname -r)
+> cd linux-2.6.32
+
+dup the config file
+> cp -vi /boot/config-`uname -r` .config
+
+modify .config
+
+customize the options
+> make menuconfig
+
+> export CONCURRENCY_LEVEL=3
+
+build:
+> make-kpkg clean
+> fakeroot make-kpkg --initrd --append-to-ve_rsion=<my own> kernel-image kernel-headers
+
+installation:
+> cd ~/src
+> sudo dpkg -i linux-image-2.6.32.11+drm33.2-<my own>_2.6.32.11+drm33.2-<my own>-10.00.Custom_amd64.deb
+> sudo dpkg -i linux-headers-2.6.32.11+drm33.2-<my own>_2.6.32.11+drm33.2-<my own>-10.00.Custom_amd64.deb
+
+> sudo update-initramfs -c -k [all]/2.6.32.11+drm33.2-<my own>
+
+update /boot/grub/grub.cfg
+> sudo update-grub
+
+remove:
+> sudo dpkg -r linux-headers-2.6.32.11+drm33.2-<my own>
+> sudo dpkg -r linux-image-2.6.32.11+drm33.2-<my own>
+> sudo rm /boot/initrd.img-2.6.32.11+drm33.2-<my own>

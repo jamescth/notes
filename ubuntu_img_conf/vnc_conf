@@ -1,0 +1,14 @@
+sudo apt-get -y install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
+sudo apt-get -y install ubuntu-gnome-desktop -y
+sudo apt-get -y install gnome-core xfce4 firefox
+sudo apt-get -y install vnc4server
+# use lightdm for better performance
+
+# dpkg -l | grep vnc
+# sudo vncserver -kill :1
+# system tools -> dconf Editor
+#	org -> gnome -> desktop -> wm -> keybindings
+#		maximize
+#		panel-main-menu
+#		show-desktop
+#		unmaximize

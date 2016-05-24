@@ -1,0 +1,239 @@
+[pid 26013] clone(Process 30349 attached
+[pid 30349] execve("/sbin/dhclient6", ["dhclient6", "-r", "eth0b"], [/* 13 vars */]) = 0
+[pid 26013] clone( <unfinished ...>
+[pid 26013] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b86e5bc39f0) = 30350
+[pid 30350] execve("/sbin/dhclient6", ["dhclient6", "-6", "-1", "-cf", "/etc/dhcp/dhclient6.conf", "-sf", "/sbin/dhclient6-ddr-linux", "-pf", "/var/run/dhclient-eth0b.pid", "eth0b"], [/* 13 vars */]) = 0
+[pid 30350] clone(Process 30351 attached
+[pid 30351] execve("/sbin/dhclient6-ddr-linux", ["/sbin/dhclient6-ddr-linux"], [/* 4 vars */]) = 0
+[pid 30351] clone(Process 30352 attached
+[pid 30352] execve("/ddr/bin/dhcp_translator", ["/ddr/bin/dhcp_translator", "eth0b", "/var/db/dhclient6.leases"], [/* 7 vars */]) = 0
+[pid 30351] clone(Process 30353 attached
+[pid 30353] execve("/ddr/bin/dhcp_update", ["/ddr/bin/dhcp_update", "/tmp/dhcpcd-eth0b.info", "up"], [/* 7 vars */]) = 0
+[pid 30351] clone(Process 30354 attached
+[pid 30354] execve("/sbin/ip", ["/sbin/ip", "link", "set", "eth0b", "up"], [/* 7 vars */]) = 0
+[pid 30351] clone(Process 30355 attached
+[pid 30355] execve("/sbin/ip", ["/sbin/ip", "-f", "inet6", "addr", "flush", "dev", "eth0b", "scope", "global", "permanent"], [/* 7 vars */]) = 0
+[pid 30350] clone(Process 30358 attached
+[pid 30358] execve("/sbin/dhclient6-ddr-linux", ["/sbin/dhclient6-ddr-linux"], [/* 19 vars */]) = 0
+[pid 30358] clone(Process 30359 attached
+[pid 30359] execve("/ddr/bin/dhcp_translator", ["/ddr/bin/dhcp_translator", "eth0b", "/var/db/dhclient6.leases"], [/* 22 vars */]) = 0
+[pid 30358] clone(Process 30360 attached
+[pid 30360] execve("/ddr/bin/dhcp_update", ["/ddr/bin/dhcp_update", "/tmp/dhcpcd-eth0b.info", "up"], [/* 22 vars */] <unfinished ...>
+[pid 30360] <... execve resumed> )      = 0
+[pid 30358] clone(Process 30361 attached
+[pid 30361] execve("/sbin/ip", ["/sbin/ip", "-f", "inet6", "addr", "add", "2100:bad:cafe:f00d::deed:1001/64"..., "dev", "eth0b", "scope", "global"], [/* 22 vars */]) = 0
+[pid 30358] clone(Process 30362 attached
+[pid 30362] execve("/bin/cat", ["cat", "/dev/null"], [/* 22 vars */]) = 0
+[pid 30358] clone( <unfinished ...>
+[pid 30358] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b8031c01090) = 30363
+[pid 30363] execve("/bin/chmod", ["chmod", "644", "/etc/resolv.conf.dhclient6"], [/* 22 vars */]) = 0
+[pid 30358] clone(Process 30364 attached
+[pid 30364] execve("/bin/mv", ["mv", "/etc/resolv.conf.dhclient6", "/etc/resolv.conf"], [/* 22 vars */]) = 0
+[pid 30350] clone(Process 30365 attached
+[pid 26011] clone(Process 30403 attached
+[pid 30403] execve("/bin/sh", ["sh", "-c", "/etc/rc.d/init.d/smb reload"], [/* 13 vars */] <unfinished ...>
+[pid 30403] <... execve resumed> )      = 0
+[pid 30403] execve("/etc/rc.d/init.d/smb", ["/etc/rc.d/init.d/smb", "reload"], [/* 16 vars */]) = 0
+[pid 30403] clone(Process 30404 attached
+[pid 30404] clone(Process 30405 attached
+[pid 30405] execve("/sbin/consoletype", ["/sbin/consoletype"], [/* 16 vars */]) = 0
+[pid 30403] clone(Process 30406 attached
+[pid 30406] execve("/usr/bin/logger", ["logger", "-p", "local1.notice", "-t", "smb", "Reloading smb.conf file."], [/* 16 vars */]) = 0
+[pid 30403] clone(Process 30407 attached
+[pid 30407] execve("/usr/bin/smbcontrol", ["smbcontrol", "-d", "0", "nmbd", "reload-config"], [/* 16 vars */] <unfinished ...>
+[pid 30407] <... execve resumed> )      = 0
+[pid 30403] clone(Process 30408 attached
+[pid 30408] execve("/usr/bin/smbcontrol", ["smbcontrol", "-d", "0", "smbd", "reload-config"], [/* 16 vars */]) = 0
+[pid 26015] clone(Process 30419 attached
+[pid 30419] execve("/bin/sh", ["sh", "-c", "/etc/rc.d/init.d/smb reload"], [/* 13 vars */]) = 0
+[pid 30419] execve("/etc/rc.d/init.d/smb", ["/etc/rc.d/init.d/smb", "reload"], [/* 16 vars */]) = 0
+[pid 30419] clone(Process 30420 attached
+[pid 30420] clone(Process 30421 attached
+[pid 30421] execve("/sbin/consoletype", ["/sbin/consoletype"], [/* 16 vars */]) = 0
+[pid 30419] clone(Process 30422 attached
+[pid 30422] execve("/usr/bin/logger", ["logger", "-p", "local1.notice", "-t", "smb", "Reloading smb.conf file."], [/* 16 vars */] <unfinished ...>
+[pid 30422] <... execve resumed> )      = 0
+[pid 30419] clone(Process 30423 attached
+[pid 30423] execve("/usr/bin/smbcontrol", ["smbcontrol", "-d", "0", "nmbd", "reload-config"], [/* 16 vars */]) = 0
+[pid 30419] clone(Process 30424 attached
+[pid 30424] execve("/usr/bin/smbcontrol", ["smbcontrol", "-d", "0", "smbd", "reload-config"], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30425 attached
+[pid 30425] execve("/bin/bash", ["bash", "-c", "/sbin/ip route | grep default | "...], [/* 13 vars */] <unfinished ...>
+[pid 30425] <... execve resumed> )      = 0
+[pid 30425] clone(Process 30426 attached
+[pid 30425] clone( <unfinished ...>
+[pid 30425] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b4e6e800090) = 30427
+[pid 30426] execve("/sbin/ip", ["/sbin/ip", "route"], [/* 16 vars */] <unfinished ...>
+[pid 30426] <... execve resumed> )      = 0
+[pid 30425] clone( <unfinished ...>
+[pid 30425] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b4e6e800090) = 30428
+[pid 30425] clone( <unfinished ...>
+[pid 30425] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b4e6e800090) = 30429
+[pid 30427] execve("/bin/grep", ["grep", "default"], [/* 16 vars */] <unfinished ...>
+[pid 30427] <... execve resumed> )      = 0
+[pid 30428] execve("/usr/bin/tail", ["tail", "-1"], [/* 16 vars */] <unfinished ...>
+[pid 30428] <... execve resumed> )      = 0
+[pid 30429] execve("/usr/bin/awk", ["awk", "{print $3}"], [/* 16 vars */] <unfinished ...>
+[pid 30429] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30430 attached
+[pid 30430] execve("/bin/sh", ["sh", "-c", "/sbin/route add default gw 10.25"...], [/* 13 vars */]) = 0
+[pid 30430] clone(Process 30431 attached
+[pid 30431] execve("/sbin/route", ["/sbin/route", "add", "default", "gw", "10.25.128.1", "eth4b"], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30432 attached
+[pid 30432] execve("/bin/sh", ["sh", "-c", "grep -q \'File exists\' /ddr/var/l"...], [/* 13 vars */] <unfinished ...>
+[pid 30432] <... execve resumed> )      = 0
+[pid 30432] execve("/bin/grep", ["grep", "-q", "File exists", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30433 attached
+[pid 30433] execve("/bin/sh", ["sh", "-c", "cat /ddr/var/log/debug/plibnet_e"...], [/* 13 vars */] <unfinished ...>
+[pid 30433] <... execve resumed> )      = 0
+[pid 30433] clone(Process 30434 attached
+[pid 30433] clone( <unfinished ...>
+[pid 30433] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b4bbca9f090) = 30435
+[pid 30434] execve("/bin/cat", ["cat", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */] <unfinished ...>
+[pid 30435] execve("/usr/bin/logger", ["logger", "-p", "local1.error", "-t", "dd_plib_net.adddfgw_eth4b"], [/* 16 vars */] <unfinished ...>
+[pid 30434] <... execve resumed> )      = 0
+[pid 30435] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30436 attached
+[pid 30436] execve("/bin/sh", ["sh", "-c", "/sbin/route add default gw 10.25"...], [/* 13 vars */]) = 0
+[pid 30436] clone(Process 30437 attached
+[pid 30437] execve("/sbin/route", ["/sbin/route", "add", "default", "gw", "10.25.128.1", "eth4a"], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30438 attached
+[pid 30438] execve("/bin/sh", ["sh", "-c", "grep -q \'File exists\' /ddr/var/l"...], [/* 13 vars */]) = 0
+[pid 30438] execve("/bin/grep", ["grep", "-q", "File exists", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30439 attached
+[pid 30439] execve("/bin/sh", ["sh", "-c", "cat /ddr/var/log/debug/plibnet_e"...], [/* 13 vars */]) = 0
+[pid 30439] clone(Process 30440 attached
+[pid 30439] clone(Process 30441 attached
+[pid 30440] execve("/bin/cat", ["cat", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */] <unfinished ...>
+[pid 30440] <... execve resumed> )      = 0
+[pid 30441] execve("/usr/bin/logger", ["logger", "-p", "local1.error", "-t", "dd_plib_net.adddfgw_eth4a"], [/* 16 vars */] <unfinished ...>
+[pid 30441] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30442 attached
+[pid 30442] execve("/bin/sh", ["sh", "-c", "/sbin/route add default gw 10.25"...], [/* 13 vars */]) = 0
+[pid 30442] clone(Process 30443 attached
+[pid 30443] execve("/sbin/route", ["/sbin/route", "add", "default", "gw", "10.25.128.1", "eth0b"], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30444 attached (waiting for parent)
+[pid 30444] execve("/bin/sh", ["sh", "-c", "grep -q \'File exists\' /ddr/var/l"...], [/* 13 vars */] <unfinished ...>
+[pid 30444] <... execve resumed> )      = 0
+[pid 30444] execve("/bin/grep", ["grep", "-q", "File exists", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30445 attached
+[pid 30445] execve("/bin/sh", ["sh", "-c", "cat /ddr/var/log/debug/plibnet_e"...], [/* 13 vars */]) = 0
+[pid 30445] clone(Process 30446 attached
+[pid 30445] clone( <unfinished ...>
+[pid 30445] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b18e52a0090) = 30447
+[pid 30446] execve("/bin/cat", ["cat", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */] <unfinished ...>
+[pid 30446] <... execve resumed> )      = 0
+[pid 30447] execve("/usr/bin/logger", ["logger", "-p", "local1.error", "-t", "dd_plib_net.adddfgw_eth0b"], [/* 16 vars */] <unfinished ...>
+[pid 30447] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30448 attached
+[pid 30448] execve("/bin/sh", ["sh", "-c", "/sbin/route add default gw 10.25"...], [/* 13 vars */]) = 0
+[pid 30448] clone(Process 30449 attached
+[pid 30449] execve("/sbin/route", ["/sbin/route", "add", "default", "gw", "10.25.128.1", "eth0a"], [/* 16 vars */]) = 0
+[pid 26013] clone( <unfinished ...>
+[pid 26013] <... clone resumed> child_stack=0, flags=CLONE_PARENT_SETTID|SIGCHLD, parent_tidptr=0x2b86e5bbf4cc) = 30450
+[pid 30450] execve("/bin/sh", ["sh", "-c", "grep -q \'File exists\' /ddr/var/l"...], [/* 13 vars */] <unfinished ...>
+[pid 30450] <... execve resumed> )      = 0
+[pid 30450] execve("/bin/grep", ["grep", "-q", "File exists", "/ddr/var/log/debug/plibnet_err.2"...], [/* 16 vars */]) = 0
+[pid 26013] clone(Process 30451 attached
+[pid 30451] execve("/bin/bash", ["bash", "-c", "/sbin/ip -f inet6 route | grep d"...], [/* 13 vars */] <unfinished ...>
+[pid 30451] <... execve resumed> )      = 0
+[pid 30451] clone(Process 30452 attached
+[pid 30451] clone( <unfinished ...>
+[pid 30451] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2ac963b53090) = 30453
+[pid 30452] execve("/sbin/ip", ["/sbin/ip", "-f", "inet6", "route"], [/* 16 vars */] <unfinished ...>
+[pid 30452] <... execve resumed> )      = 0
+[pid 30451] clone( <unfinished ...>
+[pid 30451] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2ac963b53090) = 30454
+[pid 30451] clone( <unfinished ...>
+[pid 30451] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2ac963b53090) = 30455
+[pid 30453] execve("/bin/grep", ["grep", "default"], [/* 16 vars */] <unfinished ...>
+[pid 30453] <... execve resumed> )      = 0
+[pid 30454] execve("/usr/bin/tail", ["tail", "-1"], [/* 16 vars */] <unfinished ...>
+[pid 30454] <... execve resumed> )      = 0
+[pid 30455] execve("/usr/bin/awk", ["awk", "{print $3}"], [/* 16 vars */] <unfinished ...>
+[pid 30455] <... execve resumed> )      = 0
+[pid 26013] clone( <unfinished ...>
+[pid 26013] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b86e5bc39f0) = 30456
+[pid 30456] execve("/bin/bash", ["bash", "-c", "ls /sys/class/net|egrep \'^eth(M|"...], [/* 13 vars */] <unfinished ...>
+[pid 30456] <... execve resumed> )      = 0
+[pid 30456] clone( <unfinished ...>
+[pid 30456] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2afbee2c2090) = 30457
+[pid 30456] clone( <unfinished ...>
+[pid 30456] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2afbee2c2090) = 30458
+[pid 30457] execve("/bin/ls", ["ls", "/sys/class/net"], [/* 16 vars */] <unfinished ...>
+[pid 30457] <... execve resumed> )      = 0
+[pid 30458] execve("/bin/egrep", ["egrep", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30458] <... execve resumed> )      = 0
+[pid 30458] execve("/bin/grep", ["grep", "-E", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30458] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30459 attached
+[pid 30459] execve("/bin/bash", ["bash", "-c", "ls /sys/class/net|egrep \'^eth(M|"...], [/* 13 vars */] <unfinished ...>
+[pid 30459] <... execve resumed> )      = 0
+[pid 30459] clone( <unfinished ...>
+[pid 30459] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b50a80c4090) = 30460
+[pid 30459] clone( <unfinished ...>
+[pid 30459] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b50a80c4090) = 30461
+[pid 30460] execve("/bin/ls", ["ls", "/sys/class/net"], [/* 16 vars */] <unfinished ...>
+[pid 30460] <... execve resumed> )      = 0
+[pid 30461] execve("/bin/egrep", ["egrep", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30461] <... execve resumed> )      = 0
+[pid 30461] execve("/bin/grep", ["grep", "-E", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30461] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30462 attached
+[pid 30462] execve("/bin/bash", ["bash", "-c", "ls /sys/class/net|egrep \'^eth(M|"...], [/* 13 vars */] <unfinished ...>
+[pid 30462] <... execve resumed> )      = 0
+[pid 30462] clone( <unfinished ...>
+[pid 30462] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2ae2b804b090) = 30463
+[pid 30462] clone( <unfinished ...>
+[pid 30462] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2ae2b804b090) = 30464
+[pid 30463] execve("/bin/ls", ["ls", "/sys/class/net"], [/* 16 vars */] <unfinished ...>
+[pid 30463] <... execve resumed> )      = 0
+[pid 30464] execve("/bin/egrep", ["egrep", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30464] <... execve resumed> )      = 0
+[pid 30464] execve("/bin/grep", ["grep", "-E", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30464] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30465 attached
+[pid 30465] execve("/bin/bash", ["bash", "-c", "ls /sys/class/net|egrep \'^eth(M|"...], [/* 13 vars */] <unfinished ...>
+[pid 30465] <... execve resumed> )      = 0
+[pid 30465] clone( <unfinished ...>
+[pid 30465] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2adbcc31a090) = 30466
+[pid 30465] clone( <unfinished ...>
+[pid 30465] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2adbcc31a090) = 30467
+[pid 30466] execve("/bin/ls", ["ls", "/sys/class/net"], [/* 16 vars */] <unfinished ...>
+[pid 30466] <... execve resumed> )      = 0
+[pid 30467] execve("/bin/egrep", ["egrep", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30467] <... execve resumed> )      = 0
+[pid 30467] execve("/bin/grep", ["grep", "-E", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30467] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30468 attached
+[pid 30468] execve("/bin/bash", ["bash", "-c", "ls /sys/class/net|egrep \'^eth(M|"...], [/* 13 vars */] <unfinished ...>
+[pid 30468] <... execve resumed> )      = 0
+[pid 30468] clone( <unfinished ...>
+[pid 30468] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b8f0e913090) = 30469
+[pid 30468] clone( <unfinished ...>
+[pid 30468] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b8f0e913090) = 30470
+[pid 30469] execve("/bin/ls", ["ls", "/sys/class/net"], [/* 16 vars */] <unfinished ...>
+[pid 30469] <... execve resumed> )      = 0
+[pid 30470] execve("/bin/egrep", ["egrep", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30470] <... execve resumed> )      = 0
+[pid 30470] execve("/bin/grep", ["grep", "-E", "^eth(M|V|[0-9])"], [/* 16 vars */] <unfinished ...>
+[pid 30470] <... execve resumed> )      = 0
+[pid 26013] clone(Process 30471 attached
+[pid 30471] execve("/etc/rc.d/init.d/ntpd", ["ntpd", "restart"], [/* 13 vars */]) = 0
+[pid 30471] clone(Process 30472 attached
+[pid 30472] clone(Process 30473 attached
+[pid 30473] execve("/sbin/consoletype", ["/sbin/consoletype"], [/* 16 vars */]) = 0
+[pid 30471] clone( <unfinished ...>
+[pid 30471] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b9e1f89f090) = 30474
+[pid 30474] execve("/bin/usleep", ["usleep", "100000"], [/* 16 vars */]) = 0
+[pid 30471] clone(Process 30475 attached
+[pid 30475] execve("/bin/rm", ["rm", "-f", "/var/run/ntpd.pid"], [/* 16 vars */]) = 0
+[pid 30471] clone(Process 30476 attached
+[pid 30476] execve("/bin/rm", ["rm", "-f", "/var/lock/subsys/ntpd"], [/* 16 vars */]) = 0
+[pid 30471] clone(Process 30477 attached
+[pid 30477] execve("/usr/sbin/ntpd", ["ntpd", "-u", "ntp:ntp", "-p", "/var/run/ntpd.pid"], [/* 16 vars */]) = 0
+[pid 30477] clone(Process 30478 attached
+[pid 30471] clone( <unfinished ...>
+[pid 30471] <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x2b9e1f89f090) = 30479
+[pid 30479] execve("/bin/touch", ["touch", "/var/lock/subsys/ntpd"], [/* 16 vars */] <unfinished ...>
+[pid 30479] <... execve resumed> )      = 0

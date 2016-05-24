@@ -1,0 +1,35 @@
+iface=$interface
+
+logger "Inside dhclient-enter-exit for $reason for $iface with exit status $exit_status" 
+# handling DHCP resposne
+if [ "$reason" = "DEPREF6" ] || [ "$reason" = "BOUND6" ] || [ "$reason" = "RENEW6" ] || [ "$reason" = "REBIND6" ] ; then
+    # Success, in dhclient, should call dhcp_update with up argument
+    if [ $exit_status == 0 ]; then 
+        # calling tranlator program
+        /ddr/bin/dhcp_translator $iface /var/db/dhclient6.leases
+
+         if [ $? = 0 ]; then
+             # calling original registry udpater program
+             logger "calling update program with up argument" 
+             /ddr/bin/dhcp_update /tmp/dhcpcd-$iface.info up
+         else
+             # dhcp_translator failed 
+             logger "dhcp_translator failed to generate *info file $?" 
+         fi
+     elif [ $exit_status == 2 ]; then
+        # dhclient obtained empty data
+        logger "unable to obtain values for $reason"
+     fi
+elif [ "$reason" = "PREINIT6" ] || [ "$reason" = "EXPIRE6" ] || [ "$reason" = "RELEASE6" ] || [ "$reason" = "STOP6" ]; then 
+    if [ $exit_status == 0 ]; then
+         # calling original registry udpater program
+         logger "calling update program with remove argument" 
+         /ddr/bin/dhcp_update /tmp/dhcpcd-$iface.info down
+         # remove the db file
+         rm /tmp/dhcpcd-$iface.info
+    elif [ $exit_status == 2 ]; then
+        # dhclient obtained old values
+        logger "unable to obtain values for $reason"
+    fi
+fi
+logger "exiting from dhclient-enter-exit for $iface" 

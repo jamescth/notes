@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/perf_per_cpu/built-in.o :=  rm -f /auto/home5/hoj9/testcase/perf_per_cpu/built-in.o; /auto/home/lsbuild/desktop-371771/usr/bin/ar rcs /auto/home5/hoj9/testcase/perf_per_cpu/built-in.o

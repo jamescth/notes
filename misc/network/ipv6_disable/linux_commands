@@ -1,0 +1,91 @@
+/etc/sysconfig/network
+	NETWORKING_IPV6=yes
+	IPV6_AUTOCONF=yes
+
+/proc/sys/net/ipv6/conf/eth0
+	IPv6 enable
+	autoconf disable
+
+ddsh -s se ipv6 enable/disable/status
+
+
+ubuntu:
+$ ifconfig
+eth2      Link encap:Ethernet  HWaddr 00:0c:29:3a:cf:ee  
+          inet6 addr: fe80::20c:29ff:fe3a:cfee/64 Scope:Link
+          inet6 addr: 2100:bad:cafe:f00d::deed:1000/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:18072 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1458 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:7906366 (7.9 MB)  TX bytes:168686 (168.6 KB)
+
+$ sudo su -
+# cd /proc/sys/net/ipv6/conf/eth2
+# echo 1 > disable_ipv6 
+# exit
+$ sudo /etc/init.d/networking restart
+
+$ ifconfig
+
+eth2      Link encap:Ethernet  HWaddr 00:0c:29:3a:cf:ee  
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:18116 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1463 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:7928767 (7.9 MB)  TX bytes:169276 (169.2 KB)
+
+
+ddr:
+# pwd
+/proc/sys/net/ipv6/conf/eth0b
+eth0b     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC
+          inet6 addr: 2100:bad:cafe:f00d::deed:2/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:feec:eeec/64 Scope:Link
+
+# /etc/init.d/network restart
+# ifconfig eth0b
+eth0b     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+# net config eth0b.333 up
+eth0b.333 Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC
+          inet6 addr: 2100::3/64 Scope:Global
+          inet6 addr: fe80::2a0:d1ff:feec:eeec/64 Scope:Link
+
+!!!! ipv6_ddr2 YOUR DATA IS IN DANGER !!!! # ifconfig eth0b
+eth0b     Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC
+          inet6 addr: fe80::2a0:d1ff:feec:eeec/64 Scope:Link
+
+
+  net create interface {<physical-ifname> | <virtual-ifname>}
+                {vlan <vlan-id> | alias <alias-id>}
+                                       Create a VLAN interface or an IP Alias
+                                       Interface
+  net create virtual veth<id>          Create a virtual interface
+
+  net destroy {<virtual-ifname> | <vlan-ifname> | <ipalias-ifname> }
+                                       Destroy a VLAN or IP Alias or Virtual
+                                       interface
+
+# net create interface eth0b vlan 123
+eth0b.123 Link encap:Ethernet  HWaddr 00:A0:D1:EC:EE:EC
+          BROADCAST MULTICAST  MTU:1500  Metric:1
+
+# net destroy eth0b.123
+
+# pwd
+/proc/sys/net/ipv4/conf/eth0b.123
+/proc/sys/net/ipv6/conf/eth0b.123
+
+
+# pwd
+/sys/class/net
+drwxr-xr-x  4 root root 0 May 16 10:49 eth0a
+drwxr-xr-x  4 root root 0 May 16 10:49 eth0b
+drwxr-xr-x  4 root root 0 May 16 11:41 eth0b.123
+drwxr-xr-x  4 root root 0 May 16 11:10 eth0b.333
+drwxr-xr-x  4 root root 0 May 16 10:47 ifb0
+drwxr-xr-x  4 root root 0 May 16 10:47 ifb1
+drwxr-xr-x  4 root root 0 May 16 10:47 lo
+

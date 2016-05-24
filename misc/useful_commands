@@ -1,0 +1,12 @@
+strace
+strace -f	#follow through fork
+
+readlink
+	# readlink /proc/22067/fd/3
+	> /tmp/foobar.lock
+
+lsof
+	# lsof | grep /tmp/foobar.lock
+	> command 21856	price	3uW	REG	253,88	0	34443743	/tmp/foobar.lock
+	> command 22067	price	3u	REG	253,88	0	34443743	/tmp/foobar.lock
+

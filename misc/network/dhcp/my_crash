@@ -1,0 +1,40 @@
+define for_each_proc
+	set $list_tasks_next = (long)(&((struct task_struct*)0)->tasks)
+	set $swapper = &init_task
+	set $init = &init_task->tasks.next
+	set $head = $init
+	set $task = (struct task_struct*)(((long)$head) - $list_tasks_next)
+	set $cur = $task->tasks.next
+
+	printf "%p %p %p\n", $swapper, $head, $cur
+
+	while $cur != $head
+		set $task = (struct task_struct*)(((long)$cur) - $list_tasks_next)
+		printf "%5d %16s %p %p\n", $task->pid, $task->comm, $task, $cur
+		
+		set $cur = $task->tasks.next
+	end
+end
+document for_each_proc
+  list all tasks
+end
+
+define get_each_sms
+	set $sms = (struct task_struct*)$arg0
+	set $head = &($sms->sibling)
+	set $cur = $sms->sibling.next
+	set $list_sibling_next = (long)(&((struct task_struct*)0)->sibling)
+
+	printf "sms %p sibling %p next %p\n", $sms, $head, $cur
+
+	while $cur != $head
+		set $task = (struct task_struct*)(((long)$cur) - $list_sibling_next)
+		printf "%5d %16s %p %p\n", $task->pid, $task->comm, $task, $cur
+		
+		set $cur = $task->sibling.next
+	end
+end
+document for_each_proc
+  list all tasks
+end
+

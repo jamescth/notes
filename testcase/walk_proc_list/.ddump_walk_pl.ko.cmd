@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/walk_proc_list/ddump_walk_pl.ko := /auto/home/lsbuild/desktop-354533/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/walk_proc_list/ddump_walk_pl.ko /auto/home5/hoj9/testcase/walk_proc_list/ddump_walk_pl.o /auto/home5/hoj9/testcase/walk_proc_list/ddump_walk_pl.mod.o

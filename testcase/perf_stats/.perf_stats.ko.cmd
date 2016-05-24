@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/perf_stats/perf_stats.ko := /auto/home/lsbuild/desktop-380131/usr/bin/ld -r -m elf_x86_64   -o /auto/home5/hoj9/testcase/perf_stats/perf_stats.ko /auto/home5/hoj9/testcase/perf_stats/perf_stats.o /auto/home5/hoj9/testcase/perf_stats/perf_stats.mod.o

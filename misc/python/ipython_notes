@@ -1,0 +1,113 @@
+ipython
+In [1]: a = "abc"
+
+In [2]: who
+a	
+
+In [5]: who
+a	b
+
+In [6]: whos
+Variable   Type    Data/Info
+----------------------------
+a          str     abc
+b          int     5
+
+In [8]: history
+	a = "abc"
+	who
+	hello
+	b =5
+	who
+	whos
+	print "history"
+	history
+
+In [9]: exec In[5]
+a	b	
+
+In [3]: help('if')
+In [8]: pdoc history
+
+	use 'q' to exit
+
+In [1]: ls
+ipython_notes  test.py
+
+In [2]: run test.py
+hello
+
+In [3]: import time
+In [4]: time.sleep(5)
+In [9]: dir(time)
+In [5]: help('time')
+In [6]: help('time.sleep')
+In [47]: math?
+In [52]: math.pi?
+In [51]: math.pi
+
+
+name = raw_input( "what is your name: " )
+
+
+In [5]: a = 10
+In [8]: import sys
+In [9]: sys.getsizeof(a)
+Out[9]: 24
+In [11]: a = "hello"
+In [12]: len(a)
+Out[12]: 5
+
+In [13]: 3/4
+Out[13]: 0
+In [14]: 3.0/4
+Out[14]: 0.75
+In [15]: from __future__ import division
+In [16]: 3/4
+Out[16]: 0.75
+
+In [72]: a = 'abcdefg'
+In [73]: a[3]
+Out[73]: 'd'
+In [74]: q=a[3:6]
+In [75]: q
+Out[75]: 'def'
+In [77]: a[-1]
+Out[77]: 'g'
+In [79]: q = a[1:]
+In [80]: q
+Out[80]: 'bcdefg'
+In [81]: q=a[:]
+In [82]: q
+Out[82]: 'abcdefg'
+
+In [88]: dir(a)
+In [89]: help(a.replace)
+In [168]: type(a)
+Out[168]: list
+In [170]: type(a[0])
+Out[170]: int
+In [207]: repr(d3)
+Out[207]: "{'squirrel': 'The Tale of Squirrel Nutkin', 'rabbit': 'The Tale of Peter Rabbit', 'bunny': 'The Tale of Benjamin Bunny'}"
+
+sys.argv[1], sys.argv[2]...
+
+# a demo of module func
+if __name__ == "__main__":
+	print "testing myfunc()"
+	print myfunc()
+
+
+from commandline:
+$ pydoc if
+
+$ python test.py 
+hello
+
+$ ./test.py 
+hello
+
+#! /usr/bin/env python
+
+EDITOR=$(which gvim)
+export EDITOR

@@ -1,0 +1,4 @@
+"kworker" is a placeholder process for kernel worker threads, which perform most of the
+actual processing for the kernel, especially in cases where there are interrupts, timers,
+I/O, etc.  These typically correspond to the vast majority of any allocated "system"
+time to running processes.  

@@ -1,0 +1,120 @@
+# dhclient6 -6 -d -cf /etc/dhcp/dd_dhclient6.conf -sf /etc/dhclient6-ddr-linux -pf /var/run/dhclient-eth0b.pid eth0b
+Internet Systems Consortium DHCP Client 4.2.6
+Copyright 2004-2014 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+/etc/dhcp/dd_dhclient6.conf line 8: expecting number.
+send    dhcp-max-message-size,
+                              ^
+/etc/dhcp/dd_dhclient6.conf line 8: expecting a statement.
+send    dhcp-max-message-size, dhcp-message-type, dhcp6.elapsed-time;
+                                                                     ^
+/etc/dhcp/dd_dhclient6.conf line 9: semicolon expected.
+
+^
+Nothing to flush.
+rm: cannot remove `/tmp/dhcpcd-eth0b.info': No such file or directory
+Listening on Socket/eth0b
+Sending on   Socket/eth0b
+PRC: Soliciting for leases (INIT).
+XMT: Forming Solicit, 0 ms elapsed.
+XMT:  X-- IA_NA fa:05:74:d0
+XMT:  | X-- Request renew in  +3600
+XMT:  | X-- Request rebind in +5400
+XMT:  | X-- Request address 3ffe:501:ffff:100::6666.
+XMT:  | | X-- Request preferred in +7200
+XMT:  | | X-- Request valid in     +10800
+XMT:  | X-- Request address 3ffe:501:ffff:100::abcd.
+XMT:  | | X-- Request preferred in +7200
+XMT:  | | X-- Request valid in     +10800
+XMT: Solicit on eth0b, interval 1030ms.
+XMT: Forming Solicit, 1030 ms elapsed.
+XMT:  X-- IA_NA fa:05:74:d0
+XMT:  | X-- Request renew in  +3600
+XMT:  | X-- Request rebind in +5400
+XMT:  | X-- Request address 3ffe:501:ffff:100::6666.
+XMT:  | | X-- Request preferred in +7200
+XMT:  | | X-- Request valid in     +10800
+XMT:  | X-- Request address 3ffe:501:ffff:100::abcd.
+XMT:  | | X-- Request preferred in +7200
+XMT:  | | X-- Request valid in     +10800
+XMT: Solicit on eth0b, interval 2030ms.
+RCV: Advertise message on eth0b from fe80::200:ff:fe00:a1a1.
+RCV:  X-- IA_NA fa:05:74:d0
+RCV:  | X-- starts 1408400189
+RCV:  | X-- t1 - renew  +50
+RCV:  | X-- t2 - rebind +80
+RCV:  | X-- [Options]
+RCV:  | | X-- IAADDR 3ffe:501:ffff:100::abcd
+RCV:  | | | X-- Preferred lifetime 100.
+RCV:  | | | X-- Max lifetime 200.
+RCV:  X-- Server ID: 00:01:00:01:00:06:1a:80:00:00:00:00:a1:a1
+RCV:  Advertisement immediately selected.
+PRC: Selecting best advertised lease.
+PRC: Considering best lease.
+PRC:  X-- Initial candidate 00:01:00:01:00:06:1a:80:00:00:00:00:a1:a1 (s: 152, p: 0).
+XMT: Forming Request, 0 ms elapsed.
+XMT:  X-- IA_NA fa:05:74:d0
+XMT:  | X-- Requested renew  +3600
+XMT:  | X-- Requested rebind +5400
+XMT:  | | X-- IAADDR 3ffe:501:ffff:100::abcd
+XMT:  | | | X-- Preferred lifetime +7200
+XMT:  | | | X-- Max lifetime +7500
+XMT:  V IA_NA appended.
+XMT: Request on eth0b, interval 1010ms.
+RCV: Reply message on eth0b from fe80::200:ff:fe00:a1a1.
+RCV:  X-- IA_NA fa:05:74:d0
+RCV:  | X-- starts 1408400189
+RCV:  | X-- t1 - renew  +50
+RCV:  | X-- t2 - rebind +80
+RCV:  | X-- [Options]
+RCV:  | | X-- IAADDR 3ffe:501:ffff:100::abcd
+RCV:  | | | X-- Preferred lifetime 100.
+RCV:  | | | X-- Max lifetime 200.
+RCV:  X-- Server ID: 00:01:00:01:00:06:1a:80:00:00:00:00:a1:a1
+message status code Success.
+PRC: Bound to lease 00:01:00:01:00:06:1a:80:00:00:00:00:a1:a1.
+08/18 15:16:29.534 (tid 0x503d30): INFO:  destination filename /tmp/dhcpcd-eth0b.info
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+IPADDR=3ffe:501:ffff:100::6666
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+DHCPSID=0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+LEASETIME=200
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+RENEWALTIME=50
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+REBINDTIME=80
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+INTERFACE=eth0b
+08/18 15:16:29.534 (tid 0x503d30): INFO:
+CLIENTID=0:1:0:1:1b:81:2c:45:0:8c:fa:5:74:d0
+08/18 15:16:30.081 (tid 0x503d30): INFO:  destination filename /tmp/dhcpcd-eth0b.info
+08/18 15:16:30.094 (tid 0x503d30): INFO:
+IPADDR=3ffe:501:ffff:100::6666
+08/18 15:16:30.119 (tid 0x503d30): INFO:
+DHCPSID=0:1:0:1:0:6:1a:80:0:0:0:0:a1:a1
+08/18 15:16:30.144 (tid 0x503d30): INFO:
+LEASETIME=200
+08/18 15:16:30.172 (tid 0x503d30): INFO:
+RENEWALTIME=50
+08/18 15:16:30.205 (tid 0x503d30): INFO:
+REBINDTIME=80
+08/18 15:16:30.239 (tid 0x503d30): INFO:
+INTERFACE=eth0b
+08/18 15:16:30.272 (tid 0x503d30): INFO:
+CLIENTID=0:1:0:1:1b:81:2c:45:0:8c:fa:5:74:d0
+PRC: Renewal event scheduled in 49 seconds, to run for 30 seconds.
+PRC: Depreference scheduled in -98504 seconds.
+PRC: Expiration scheduled in -98404 seconds.
+PRC: Address 3ffe:501:ffff:100::6666 depreferred.
+PRC: Renewal event scheduled in 48 seconds, to run for 30 seconds.
+PRC: Depreference scheduled in 98 seconds.
+PRC: Expiration scheduled in -98405 seconds.
+PRC: Address 3ffe:501:ffff:100::6666 expired.
+PRC: Renewal event scheduled in 48 seconds, to run for 30 seconds.
+PRC: Depreference scheduled in 98 seconds.
+PRC: Expiration scheduled in 198 seconds.
+Received signal 2, initiating shutdown.
+

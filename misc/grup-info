@@ -1,0 +1,25 @@
+default=1
+timeout=20
+
+#
+# To disable serial consoles, comment out the following line
+# Note that if two consoles are listed, the kernel will use the
+# *second* one it finds
+#
+serial --unit=0 --speed=9600
+terminal --timeout=10 serial console
+
+color yellow/blue black/green
+
+title boot-serial
+        root (hd0,0)
+        kernel /vmlinuz-p1 ro root=/dev/root-p1 console=umemlog console=tty0 console=ttyS1 consoo
+le=ttyS0 showopts no-boot-check
+        initrd /initrd-p1
+
+title boot-serial-crash-image
+        root (hd0,0)
+        kernel /vmlinuz-crashimage ro root=/dev/root-p1 console=umemlog console=tty0 console=ttyy
+S1 console=ttyS0 showopts no-boot-check
+        initrd /initrd-p1
+

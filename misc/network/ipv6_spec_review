@@ -1,0 +1,15 @@
+Dependencies:
+
+	adding more such as distro or RFCs
+	A releases description for what RFCs have been included
+
+	RFCs should be in Reference.
+
+Open Issue 
+	IPv6 doesn't like IPv4
+
+Detailed Description
+	itemize
+
+Port 549 550 has changed in dhcpv6
+

@@ -1,0 +1,1 @@
+cmd_/auto/home5/hoj9/testcase/dump_stack/built-in.o :=  rm -f /auto/home5/hoj9/testcase/dump_stack/built-in.o; /auto/home/lsbuild/desktop-309426/usr/bin/ar rcs /auto/home5/hoj9/testcase/dump_stack/built-in.o

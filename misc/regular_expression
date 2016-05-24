@@ -1,0 +1,39 @@
+[]	Match anything inside the square brackets for ONE character position once and only once.
+-	The - (dash) inside square brackets is the 'range separator' and allows us to define a 
+	range, for example, [0123456789] can be rewrite to [0-9].  Can be defined more than one
+	range: [0-9A-C]
+^	The ^ (circumflex or caret) inside square brackets negates the expression.  For example,
+	[^Ff] means anything except upper and lower case F.
+^	The ^ (circumflex or caret) OUTSIDE square brackets means look only at the beginning of
+	the target string.
+$	The $ (dollar) means look only at the end of the target string.  For example, fox$ will
+	find a match in 'silver fox'
+.	The . (period) means any character(s) in the position.
+?	The ? (question mark) matches the preceding character 0 or 1 times only.  For example,
+	colou?r will find both color (0 times) and colour (1 time).
+*	The * (asterisk or star) matches the preceding character 0 or more times. For example, 
+	tre* will find tree (2 times) and tread (1 time).
++	The + (plus) matches the previous character 1 or more times.  For example, tre+ will 
+	find tree (2 times) and tread (1 time)
+{n}	Matches the preceding character, or character range, n times exactly.  For example, to
+	find a local phone number we could use [0-9]{3}-[0-9]{4} which would find any number
+	of the form 123-4567
+{n,m}	Matches the preceding character at least n times but not more than m times.  For
+		example, 'ba{2,3}b' will find 'baab' and 'baaab' but NOT 'bab' or 'baaaab'.
+()	Th ( (open parenthesis) and ) (close parenthesis) may be used to group (or bind) parts
+	of our search expression.
+|	the | (vertical bar or pipe) is called alternation in techspeak and means find the left
+	hand or right values.  For example, gr(a|e)y will find 'gray' or 'grey'
+
+[:digit:]	only the digits 0 to 9
+[:alnum:]	any alphanumeric character 0 to 9 OR A to Z or a to z.
+[:alpha:]	any alpha character A to Z or a to z.
+[:blank:]	space and TAB characters only
+[:xdigit:]	Hex notation 0-9, A-F, a-f.
+[:punct:]	punctuation symbols .,"'?!;:#$%&()*+-/<>=@[]\^_{}|~
+[:print:]	any printable character
+[:space:]	any whitespace characters (space, tab, NL, FF, VT, CR)
+[:graph:]	exclude whitespace (SPACE, TAB)
+[:upper:]	any alpha character A to Z
+[:lower:]	any alpha character a to z
+[:cntrl:]	control characters
