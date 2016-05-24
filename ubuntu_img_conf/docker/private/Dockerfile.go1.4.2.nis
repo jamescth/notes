@@ -5,6 +5,6 @@ FROM go-vim:1.4.2
 MAINTAINER James Ho
 
 # set the runtime env
-RUN groupadd -g 112747 hoj9
-RUN useradd -m -u 112747 -g 112747 hoj9
+RUN groupadd -g {ID} hoj9
+RUN useradd -m -u {ID} -g 112747 hoj9
 
