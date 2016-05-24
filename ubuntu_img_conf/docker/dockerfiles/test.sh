@@ -14,8 +14,8 @@ GROUP_ID=$(id -g)
 USER_ID=$(id -u)
 
 ### FUNCTIONS
-# groupadd -f -g 112747 hoj9
-# useradd -u 112747 -g hoj9 hoj9
+# groupadd -f -g {ID} hoj9
+# useradd -u {ID} -g hoj9 hoj9
 
 create_user_cmd()
 {
