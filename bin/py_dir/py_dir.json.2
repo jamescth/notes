@@ -1,0 +1,65 @@
+[
+    {
+        "tag": "KERN",
+        "list_pattern": "kern.info*",
+        "search_pattern": [
+            {
+                "panic": [
+                    "MSG-KERN",
+                    "segfault"
+                ]
+            },
+            {
+                "HW_ERROR": [
+                    "rail out of limit",
+                    "APIC error",
+                    " FATAL:",
+                    "Machine check events logged",
+                    "IPMI Watchdog: response",
+                    "IPMI message handler:",
+                    "MEDIUM ERR",
+                    "I/O error",
+                    "link is not ready",
+                    "Link is down",
+                    "Link is Down"
+                ]
+            }
+        ]
+    },
+    {
+        "tag": "MSG_ENG",
+        "list_pattern": "messages.engineering*"
+    },
+    {
+        "tag": "MSG_SUP",
+        "list_pattern": "messages.support*"
+    },
+    {
+        "tag": "BIOS",
+        "list_pattern": "bios.txt*"
+    },
+    {
+        "tag": "DDFS",
+        "list_pattern": "ddfs.info*"
+    },
+    {
+        "tag": "CRON",
+        "list_pattern": "cron*"
+    },
+    {
+        "tag": "ASUP",
+        "list_pattern": "autosupport*"
+    },
+    {
+        "tag": "TCP",
+        "list_pattern": "tcp.log*"
+    },
+    {
+        "tag": "MEM",
+        "list_pattern": "memory_usage.log*"
+    },
+    {
+        "tag": "ETH",
+        "list_pattern": "ethtool_stats.log*"
+    }
+]

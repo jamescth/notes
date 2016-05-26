@@ -1,0 +1,1 @@
+gunzip -dc $1 | cp --sparse=always /dev/stdin vmcore

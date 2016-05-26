@@ -1,0 +1,10 @@
+DDLogFile.py
+
+DDFileList.py
+
+py_dir.py
+	for main() for now
+py_dir.json
+	a file scaning list 
+py_dir_logging.conf
+	set up logging property
