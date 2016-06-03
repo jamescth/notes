@@ -1,0 +1,13 @@
+VM on Windows 10:
+	1. Install VIrtualBox
+	https://www.virtualbox.org/wiki/Downloads
+
+	2. Install VirtualBox Extension Pack
+	https://www.virtualbox.org/wiki/Downloads
+
+	3. Download Linux distro iso image
+	any distro: ubuntu, fedora ...
+
+	3. Install Guess Additions CD Image for the Linux VM
+	Linux VM menu => Device => Install Guess Additions CD Image
+
