@@ -1,0 +1,131 @@
+# https://try.github.io/levels/1/challenges/1
+
+Initialize a Git repository
+
+		git init
+
+Checking the status
+
+		git status
+
+Adding changes
+
+		git add octocat.txt
+
+checking for changes
+
+		git status
+
+Commiting
+
+		git commit -m "Add cute octocat story"
+
+Adding all changes
+
+		git add '*.txt'
+
+Commining all changes
+
+		git commit -m 'Add all the octocat files'
+
+History
+
+		git log
+
+Remote Repositories
+
+	git remote add origin https://github.com/try-git/gry_git.git
+
+Pushing Remotely
+	The -u tells Git to remember the parameters, so that 
+	next time we can simply run 'git push'
+
+		git push -u origin master
+
+Pulling Remotely
+	Check for changes on the repository and pull down any new changes 
+
+		git pull origin master
+
+Differences
+	Take a look of different from the last commit
+	THe most recent commit is refered to using the HEAD pointer
+
+		git diff HEAD
+
+Staged Differences
+	Another great use for diff is looking at changes within files that have
+	already been staged. Remember, staged files are files we have told git
+	that are ready to be commited.
+
+	Let's use 'git add' to stage 'octofamily/octodog.txt', which just added to
+	the family
+
+		git add octofamily/octodog.txt
+
+Staged Difference (cont'd)
+
+		git diff --staged
+
+
+Resetting the Stage
+	So now that octodog is part of the family, octocat is all depressed.
+	Since we love octocat more than octodog, we'll turn his frown acound 
+	by removing octodog.txt
+
+	unstage files by using the 'git reset' command.
+
+		git reset octofamily/octodog.txt
+
+Undo
+	'git reset' unstaged octodog.txt, but it's still there; just not staged anymore.
+
+	files can be changed back to how they were at the last commit by using
+	 'git checkout -- <target>'
+
+		git checkout -- octocat.txt
+
+Branching Out
+	When developers are working on a feather or bug they'll often create
+	a copy (aka. branch) of their code they can make separate commits to.
+	THen when they're done they can merge this branch back into their
+	main 'master' branch.
+
+	let's create a branch called 'clean_up'
+
+		git branch clean_up
+
+Switching Branches
+	if type 'git branch', will see two local branches: a main branch named master and 
+	a new branch named 'clean_up'
+
+	Switch branches using 'git checkout <branch>'
+
+		git checkout clean_up
+
+Removing All the Things
+	using 'git rm' will not only remove the actual files from disk, but will also stage
+	the removal of the files.
+
+		git rm '*.txt'
+
+Commiting Branch changes
+
+		git commit -m "Remove all the cats"
+
+Switching Back to master
+
+		git checkout master
+
+Preparing to Merge
+
+		git merge clean_up
+
+Keeping Things Clean
+	use 'git branch -d <branch name>' to delete a branch
+
+		git branch -d clean_up
+
+The Final Push
+		git push
+
