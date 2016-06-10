@@ -129,3 +129,107 @@ Keeping Things Clean
 The Final Push
 		git push
 
+Delete remote branch
+	git push origin --delete <branchName>
+
+*****************************************************************************************
+$ git branch first_branch
+$ git checkout first_branch
+$ git add *
+$ git commit -m "add go dev container img generation code"
+
+
+# http://scottbarnham.com/blog/2009/03/09/gvim-menu-bar-missing/
+# Git push branch
+$ git push -u origin <branch>
+
+# pull request from web
+
+$ git checkout master
+
+$ git merge first_branch
+fatal: Unable to read current working directory: No such file or directory
+
+$ git pull origin master
+From https://github.com/jamescth/MyGoExercise
+ * branch            master     -> FETCH_HEAD
+
+$ git branch --list
+  first_branch
+* master
+
+$ git merge first_branch
+Updating a70493d..0af398e
+Fast-forward
+ generate_base_img/generate_base_img.go | 53 ++++++++++++++++++++++++++++++++++++++++++++++
+ generate_base_img/templ.go             | 87 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 140 insertions(+)
+ create mode 100644 generate_base_img/generate_base_img.go
+ create mode 100644 generate_base_img/templ.go
+
+james@jho:~/jamescth/MyGoExercise$ git branch -d first_branch
+Deleted branch first_branch (was 0af398e).
+
+james@jho:~/jamescth/MyGoExercise$ git push
+
+*****************************************************************************************
+Branch from a branch
+
+$ git clone https://github.com/OmniTier/tools.git
+$ cd tools/
+$ git branch --list
+* master
+
+$ git checkout notificationIntegration
+Branch notificationIntegration set up to track remote branch notificationIntegration from origin.
+Switched to a new branch 'notificationIntegration'
+
+$ git pull origin notificationIntegration
+Username for 'https://github.com': 
+Password for '': 
+From https://github.com/OmniTier/tools
+ * branch            notificationIntegration -> FETCH_HEAD
+Already up-to-date.
+
+$ git checkout -b ni_sendmail
+Switched to a new branch 'ni_sendmail'
+
+$ git status
+On branch ni_sendmail
+nothing to commit, working directory clean
+
+$ git add *
+$ git commit -m ...
+
+$ git push origin  ni_sendmail
+
+pull new request
+
+$ git checkout notificationIntegration
+Switched to branch 'notificationIntegration'
+Your branch is up-to-date with 'origin/notificationIntegration'.
+
+$ git merge ni_sendmail
+Updating 9fc4325..709bb59
+Fast-forward
+ appsQATest/lib/util/sendmail.go      |  52 ++++++++++++++++
+ appsQATest/lib/util/sendmail.py      | 192 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ appsQATest/lib/util/sendmail_test.go |  36 +++++++++++
+ 3 files changed, 280 insertions(+)
+ create mode 100644 appsQATest/lib/util/sendmail.go
+ create mode 100755 appsQATest/lib/util/sendmail.py
+ create mode 100644 appsQATest/lib/util/sendmail_test.go
+
+$ git branch -d ni_sendmail
+
+$ git push origin notificationIntegrationUsername for 'https://github.com': 
+Password for '': 
+Total 0 (delta 0), reused 0 (delta 0)
+To https://github.com/OmniTier/tools.git
+   9fc4325..709bb59  notificationIntegration -> notificationIntegration
+
+
+
+*****************************************************************************************
+git fetch --all --prune
+
