@@ -144,6 +144,7 @@ $ git commit -m "add go dev container img generation code"
 $ git push -u origin <branch>
 
 # pull request from web
+add reviewers in a new comment @ameenaslam @jessekoh @lucindaong @thiagocroce
 
 $ git checkout master
 
@@ -167,10 +168,12 @@ Fast-forward
  create mode 100644 generate_base_img/generate_base_img.go
  create mode 100644 generate_base_img/templ.go
 
-james@jho:~/jamescth/MyGoExercise$ git branch -d first_branch
-Deleted branch first_branch (was 0af398e).
 
-james@jho:~/jamescth/MyGoExercise$ git push
+git push origin master
+
+cleanup:
+git push origin --delete <branch name>
+git branch -d <branch name>
 
 *****************************************************************************************
 Branch from a branch
