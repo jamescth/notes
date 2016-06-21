@@ -138,6 +138,12 @@ $ git checkout first_branch
 $ git add *
 $ git commit -m "add go dev container img generation code"
 
+uncommit
+	git reset --hard HEAD~1 <file> 	// probably throw away??
+
+	git reset --soft HEAD~1 <file> 	// become staged
+	git reset HEAD <file>		// to unstaged
+	git checkout -- <file>		// to discard changes
 
 # http://scottbarnham.com/blog/2009/03/09/gvim-menu-bar-missing/
 # Git push branch
