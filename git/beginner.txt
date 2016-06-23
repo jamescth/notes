@@ -238,7 +238,16 @@ To https://github.com/OmniTier/tools.git
    9fc4325..709bb59  notificationIntegration -> notificationIntegration
 
 
+*****************************************************************************************
+http://stackoverflow.com/questions/11403407/git-asks-for-username-everytime-i-push
+Store the passwd
+
+$ git config credential.helper store
+$ git push http://example.com/repo.git
+Username: <type your username>
+Password: <type your password>
 
 *****************************************************************************************
 git fetch --all --prune
+
 
