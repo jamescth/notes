@@ -132,6 +132,15 @@ The Final Push
 Delete remote branch
 	git push origin --delete <branchName>
 
+
+*****************************************************************************************
+two factor
+
+git clone https://github.com/xxxxx
+
+Username for 'https://github.com': Hello@test.com
+Password for 'https://Hello@test.com@github.com': <personeal token instead of passwd>
+
 *****************************************************************************************
 $ git branch first_branch
 $ git checkout first_branch
