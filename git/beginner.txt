@@ -67,6 +67,8 @@ Staged Difference (cont'd)
 
 		git diff --staged
 
+	git difftool -tool=kdiff3 sendmail.go
+
 
 Resetting the Stage
 	So now that octodog is part of the family, octocat is all depressed.
@@ -141,6 +143,70 @@ git clone https://github.com/xxxxx
 Username for 'https://github.com': Hello@test.com
 Password for 'https://Hello@test.com@github.com': <personeal token instead of passwd>
 
+curl -u <token>:x-oauth-basic https://github.com/<user>
+
+# https://gist.github.com/wikimatze/9790374
+git remote -v
+git push
+
+create ~/.netrc
+	machine github.com
+	login <user>
+	password <token>
+	protocol https
+
+
+sudo apt-get install libgnome-keyring-dev
+cd /usr/share/doc/git/contrib/credential/gnome-keyring/
+sudo make
+cd -
+git config --global credentail.helper /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+
+OR 
+git config --global credential.helper cache
+
+to remove 
+git config --global --edit
+  681  git config --local credential.helper
+  682  git config --global credential.helper
+  683  git config --system credential.helper
+  684  git config --local --edit
+  685  git push origin master
+  686  git config --local --unset credential.helper
+  687  git config --global --unset credential.helper
+
+********************************************************************************
+
+git push
+warning: push.default is unset; its implicit value has changed in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the traditional behavior, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+When push.default is set to 'matching', git will push local branches
+to the remote branches that already exist with the same name.
+
+Since Git 2.0, Git defaults to the more conservative 'simple'
+behavior, which only pushes the current branch to the corresponding
+remote branch that 'git pull' uses to update the current branch.
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+fatal: The current branch newfix has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin newfix
+
+git push --set-upstream origin <branch>
+
+
 *****************************************************************************************
 $ git branch first_branch
 $ git checkout first_branch
@@ -189,6 +255,16 @@ git push origin master
 cleanup:
 git push origin --delete <branch name>
 git branch -d <branch name>
+
+
+remote branch
+
+   29  git remote -v
+   30  git fetch origin
+   31  git checkout -b otappmon origin/otappmon
+   32  git status
+   33  git pull
+   34  git pull origin otappmon
 
 *****************************************************************************************
 Branch from a branch
@@ -256,6 +332,10 @@ $ git push http://example.com/repo.git
 Username: <type your username>
 Password: <type your password>
 
+*****************************************************************************************
+ignore file
+
+add *.swp to .gitignore
 *****************************************************************************************
 git fetch --all --prune
 
