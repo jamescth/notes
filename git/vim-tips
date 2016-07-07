@@ -1,0 +1,41 @@
+:hellp vim-go
+
+:GoDef
+	Ctrl-o
+	Ctrl-]
+
+	:GoDefStack [number]
+	:GoSefStackClear
+
+:GoCallstack
+:GoChannelPeers
+
+:GoDoc
+:GoImport
+:GoBuild
+:GoInstall
+:GoTest
+:GoTestFunc
+:GoRun
+:GoPath
+:GoCoverage
+:GoMetaLinter
+:GoLint
+:GoVet
+:GoImplements
+:GoCallers
+:GoCallees
+:GoReferrers
+:GoRename
+:GoErrCheck
+:GoDecls
+:GoDeclsDir
+:GoAlternate	Alternate between implementation and test code
+:GoDeps
+
+:GoInstallBinaries
+:GoUpdateBinaries
+
+gocode		Auto completion
+ultisnips
+gotags
