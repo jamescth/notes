@@ -1,0 +1,23 @@
+apt-get install unzip
+apt-get install autoconf
+apt-get install libtool   
+apt-get install sudo
+
+# use 'root'
+git clone https://github.com/google/protobuf
+cd protobuf/
+./autogen.sh 
+./configure --prefix=/usr
+make
+make check
+make install
+
+go get google.golang.org/grpc
+go get -a github.com/golang/protobuf/protoc-gen-go
+
+/usr/bin/protoc --go_out=. *.proto
+
+$ go get github.com/gogo/protobuf/proto
+$ go get github.com/gogo/protobuf/protoc-gen-gogo
+$ go get github.com/gogo/protobuf/gogoproto
+$ go get github.com/gogo/protobuf/protoc-gen-gofast

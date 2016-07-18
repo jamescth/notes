@@ -227,6 +227,8 @@ $ git push -u origin <branch>
 # pull request from web
 add reviewers in a new comment @ameenaslam @jessekoh @lucindaong @thiagocroce
 
+// rebase if the master has moved 
+$ git rebase master
 $ git checkout master
 
 $ git merge first_branch
