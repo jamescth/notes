@@ -1,0 +1,22 @@
+apt-get install linux-tools
+
+# perf stat -B dd if=/dev/zero of=/dev/null count=10000000
+10000000+0 records in
+10000000+0 records out
+5120000000 bytes (5.1 GB, 4.8 GiB) copied, 2.60485 s, 2.0 GB/s
+
+ Performance counter stats for 'dd if=/dev/zero of=/dev/null count=10000000':
+
+       2605.255162      task-clock (msec)         #    1.000 CPUs utilized          
+                 3      context-switches          #    0.001 K/sec                  
+                 0      cpu-migrations            #    0.000 K/sec                  
+                70      page-faults               #    0.027 K/sec                
+        7612021136      cycles                    #    2.922 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+       16533626067      instructions              #    2.17  insns per cycle        
+        3270650241      branches                  # 1255.405 M/sec                  
+           8857679      branch-misses             #    0.27% of all branches        
+
+       2.605922138 seconds time elapsed
+
