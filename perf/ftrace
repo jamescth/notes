@@ -1,0 +1,12 @@
+https://events.linuxfoundation.org/slides/2010/linuxcon_japan/linuxcon_jp2010_rostedt.pdf
+
+   19  mkdir debug
+   20  mount -t debugfs nodev /debug
+   21  cd debug
+   24  cd tracing/
+   27  cat current_tracer 
+   28  echo function > current_tracer 
+   29  cat trace | head -15
+   31  echo nop > current_tracer 
+   38  umount debug
+
