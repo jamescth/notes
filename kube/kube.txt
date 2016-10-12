@@ -1,0 +1,122 @@
+# create deployment by default
+kubectl run nginx --image=nginx:1.10.0 --port=80
+
+kubectl get pods
+kubectl delete pods <pod id>
+# kubeternetes creates another id
+
+kubectl get pods --show-labels
+kubectl expose deployment nginx --type LoadBalancer
+kubectl get services
+
+kubectl port-forward <pod-id> 8080:80
+
+kubectl logs <pod-id> -f
+kubectl delete services nginx
+kubectl delete deployment nginx
+
+# curl equivalent cmd
+kubectl --v 9 get pods
+
+kubectl create -f deployments/devnation.yaml
+kubectl get pods -o wide
+kubectl apply -f deployments/devnation.yaml
+kubectl get get services
+kubectl describe services devnation
+kubectl get pods --watch
+kubectl delete deployment devnation
+
+
+kubectl --cluster-info
+	http.Get("<kubernetes master>/api/v1/nodes")
+	http.Get("<kubernetes master>/api/v1/pods")
+
+	kubectl get pods -o json
+	kubectl get pods -o yaml
+
+cat ~/.kube/config
+kubectl proxy
+	a new terminal
+
+
+# http://kubernetes.io/docs/tutorials/
+# basic
+minikube version
+minikube start
+kubectl cluster-info
+kubectl get nodes
+# module 2
+kubectl get nodes --help
+kubectl get nodes
+kubectl run kubernetes-bootcamp --image=docker.io/jocatalin/kubernetes-bootcamp:v1 --port=8080
+kubectl get deployments
+
+# module 3
+kubectl describe pods
+kubectl proxy
+export POD_NAME=$(kubectl get pods -o go-template --temp {{.metadata.name}}{{"\n"}}{{end}}')
+echo Name of the Pod: $POD_NAME
+
+kubectl logs $POD_NAME
+
+# executing command on the container
+kubectl exec $POD_NAME env
+kubectl exec -ti $POD_NAME bash
+curl localhost:8080
+exit
+
+# module 4
+kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+kubectl get services
+kubectl describe services/kubernetes-bootcamp
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+# host01 is the public IP of host01
+curl host01:$NODE_PORT
+
+kubectl get services -l run=kubernetes-bootcamp
+
+export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{en d}}')
+echo Name of the Pod: $POD_NAME
+
+kubectl label pod $POD_NAME app=v1
+kubectl describe pods $POD_NAME
+kubectl get pods -l app=v1
+
+kubectl delete service -l run=kubernetes-bootcamp
+kubectl get services
+curl host01:$NODE_PORT
+kubectl exec -ti $POD_NAME curl localhost:8080
+
+# module 5
+kubectl scale deployment/kubernetes-bootcamp --replicas=4
+kubectl get deployments
+kubectl get pods -o wide
+kubectl describe deployments/kubernetes-bootcamp
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+
+# a few times to see load balance
+curl host01:$NODE_PORT
+
+kubectl scale deployment/kubernetes-bootcamp --replicas=2
+kubectl get deployments
+kubectl get pods -o wide
+
+# module 6
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+kubectl get pods
+kubectl describe services/kubernetes-bootcamp
+
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+
+curl host01:$NODE_PORT
+kubectl rollout status deployments/kubernetes-bootcamp
+
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v10
+kubectl get deployments
+kubectl get pods
+kubectl describe pods
+kubectl rollout undo deployments/kubernetes-bootcamp
+kubectl get pods
