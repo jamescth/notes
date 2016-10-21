@@ -1,0 +1,16 @@
+# https://docs.docker.com/swarm/configure-tls/
+
+in CA vm:
+# sudo su
+
+create a private key
+# openssl genrsa -out ca-priv-key.pem 2048
+
+create a public key
+# openssl req -config /usr/lib/ssl/openssl.cnf -new -key ca-priv-key.pem -x509 -days 1825 -out ca.pem
+
+inspect the private key
+# openssl -rsa -in ca-priv-key.pem -noout -text
+
+inspect the public key
+# openssl x509 -in ca.pem -noout -text
