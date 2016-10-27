@@ -61,6 +61,8 @@ curl http://localhost:10255/spec/
 
 kubectl taint node jsky dedicated=skyriver:NoSchedule
 
+# https://medium.com/@alejandro.ramirez.ch/reserving-a-kubernetes-node-for-specific-nodes-e75dc8297076#.zhxo6027m
+
 apiVersion: v1
 kind: Pod
 metadata:
