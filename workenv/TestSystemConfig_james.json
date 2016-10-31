@@ -1,0 +1,15 @@
+[
+        {
+                "OffServAddr": "10.0.0.10",
+                "ClientServerLink": "10.0.0.10:10.0.0.10",
+                "ProxyServerLink": "",
+                "LaunchServer": true,
+                "TerminateServer": true,
+                "LaunchExecutable": false,
+                "UseDocker": true,
+                "LaunchProxy": false,
+                "TerminateProxy": false,
+                "FormatDrives": false,
+                "DriveLogs": false
+        }
+]
