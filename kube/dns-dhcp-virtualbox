@@ -1,0 +1,188 @@
+# gateway / ip forwarding
+
+sudo vim /etc/sysctl.conf
+net.ipv4.ip_forward=1
+
+# https://linux.die.net/man/8/iptables
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo iptables -A FORWARD -i eth1 -o eht0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+
+
+
+# DNS server
+Name: inner.test.org
+Type: Authoritative
+Forward Lookup Zone:
+Reverse Lookup Zone:
+
+# Network:
+subnet: 10.0.1/24
+DHCP server: 10.0.1.2
+DHCP name: jt2
+gateway : 10.0.1.1
+broadcase: 10.0.1.255
+netmask: 255.255.255.0
+
+DHCP
+pool: 10.0.1.100 to 10.0.1.200
+
+
+# http://blogging.dragon.org.uk/dns-with-bind9-and-dhcp-on-ubuntu-14-04/
+#
+# DNS
+
+sudo /usr/sbin/rndc-confgen -a
+	=> recreate /etc/bind/rndc.key
+
+# /etc/bind/named.options
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0's placeholder.
+
+        forwarders {
+                // Omnitier DNS
+                192.168.110.11;
+        //      0.0.0.0;
+        };
+        allow-query {
+                10.0/16;
+        };
+        // restrict recursion
+        allow-recursion {
+                10.0/16;
+        };
+        allow-transfer {
+                10.0/16;
+        };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        // dnssec-validation auto;
+        // turn off zone encryption.
+        dnssec-enable no;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};
+
+# /etc/bind/named.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+include "/etc/bind/rndc.key";
+
+zone "test.org" {
+        type master;
+        file "/var/lib/bind/test.org.zone";
+        allow-update { key rndc-key; };
+};
+
+zone "1.0.10.in-addr.arpa" {
+        type master;
+        file "/var/lib/bind/test.org.rev.zone";
+        allow-update { key rndc-key; };
+};
+
+# /var/lib/bind/test.org.zone
+$ORIGIN .
+$TTL 907200     ; 1 week 3 days 12 hours
+test.org                IN SOA  jt2.test.org. admin.test.org. (
+                                2014071407 ; serial
+                                28800      ; refresh (8 hours)
+                                3600       ; retry (1 hour)
+                                604800     ; expire (1 week)
+                                38400      ; minimum (10 hours 40 minutes)
+                                )
+                        NS      jt2.test.org.
+$ORIGIN test.org.
+jns                     A       10.0.1.2
+jt1                     A       10.0.1.1
+jt2                     A       10.0.1.2
+$TTL 3600       ; 1 hour
+jt3                     A       10.0.1.101
+                        TXT     "00951d09c56911e6c9e34a6aee70d10219"
+$TTL 907200     ; 1 week 3 days 12 hours
+lab-dns-dhcp            CNAME   ns
+
+# /var/lib/bind/test.org.rev.zone
+$ORIGIN .
+$TTL 907200     ; 1 week 3 days 12 hours
+1.0.10.in-addr.arpa     IN SOA  jt2.test.org. admin.test.org. (
+                                2014071405 ; serial
+                                28800      ; refresh (8 hours)
+                                604800     ; retry (1 week)
+                                604800     ; expire (1 week)
+                                86400      ; minimum (1 day)
+                                )
+                        NS      jt2.test.org.
+$ORIGIN 1.0.10.in-addr.arpa.
+1                       PTR     jt1.test.org.
+$TTL 3600       ; 1 hour
+101.1.0.10              PTR     jt3.test.org.
+$TTL 907200     ; 1 week 3 days 12 hours
+2                       PTR     test.org.
+                        PTR     dns-server.test.org.
+
+#
+# DHCP
+# /etc/bind/named.options
+# /etc/dhcp/dhcpd.conf
+ddns-updates on;
+ddns-update-style interim;
+update-static-leases on;
+authoritative;
+
+include "/etc/bind/rndc.key";
+allow unknown-clients;
+use-host-decl-names on;
+
+# option definitions common to all supported networks...
+option domain-name "test.org";
+option domain-name-servers jt2.test.org;
+
+default-lease-time 86400; #24 hours
+max-lease-time 86400;
+
+log-facility local7;
+
+zone test.org. {
+  primary 10.0.1.2; # This server is the primary DNS
+  key rndc-key;
+}
+
+zone 1.0.10.in-addr.arpa. {
+  primary 10.0.1.2;
+  key rndc-key;
+}
+
+subnet 10.0.1.0 netmask 255.255.255.0 {
+  range 10.0.1.100 10.0.1.200;
+  option subnet-mask 255.255.255.0;
+  option routers 10.0.1.1;
+  option domain-name-servers 10.0.1.2;
+  option domain-name "test.org";
+  ddns-domainname "test.org";
+  ddns-rev-domainname "1.0.10.in-addr.arpa.";
+}
+
+
+# /etc/apparmor.d/usr.sbin.dhcpd
+
+# /etc/dhcp/ddns-keys/** r,
+/etc/bind/rndc.key r,
