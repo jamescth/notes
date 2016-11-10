@@ -5,10 +5,12 @@ net.ipv4.ip_forward=1
 
 # https://linux.die.net/man/8/iptables
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-sudo iptables -A FORWARD -i eth1 -o eht0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i eth1 -o eht0 -m state --state RELATED,ESTABLISHED,NEW -j ACCEPT
 sudo iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
 
-
+cd /etc/iptables
+sudo su
+iptables-save > rules.v4
 
 # DNS server
 Name: inner.test.org
@@ -31,9 +33,15 @@ pool: 10.0.1.100 to 10.0.1.200
 # http://blogging.dragon.org.uk/dns-with-bind9-and-dhcp-on-ubuntu-14-04/
 #
 # DNS
+sudo apt-get dist-upgrade
+sudo reboot
+sudo apt-get install isc-dhcp-server bind9
 
 sudo /usr/sbin/rndc-confgen -a
 	=> recreate /etc/bind/rndc.key
+
+sudo chown root:bind /etc/bind/rndc.key
+sudo chmod 640 /etc/bind/rndc.key
 
 # /etc/bind/named.options
 options {
