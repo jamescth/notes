@@ -29,6 +29,24 @@ netmask: 255.255.255.0
 DHCP
 pool: 10.0.1.100 to 10.0.1.200
 
+# /etc/network/interfaces
+auto enp0s8
+iface enp0s8 inet static
+address 10.0.1.11
+netmask 255.255.255.0
+gateway 10.0.1.1
+broadcast 10.0.1.255
+dns-search jtest.org
+dns-nameservers 10.0.1.2
+
+# nsupdate
+$ nsupdate
+> server 10.0.1.2
+> key rndc-key 8kScwMH0+VUD4BFihAv9xQ==
+> zone jtest.org
+> update add jetcd2.jtest.org  86400 IN A 10.0.1.12
+> update add jetcd3.jtest.org  86400 IN A 10.0.1.13
+> send
 
 # http://blogging.dragon.org.uk/dns-with-bind9-and-dhcp-on-ubuntu-14-04/
 #
