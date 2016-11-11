@@ -9,3 +9,47 @@ rm -rf jetcd1.etcd/
   --initial-cluster jetcd1=http://10.0.1.11:2380,jetcd2=http://10.0.1.12:2380,jetcd3=http://10.0.1.13:2380 \
   --initial-cluster-state new
 
+#!/bin/bash
+sudo rm -rf /var/lib/etcd/*
+sudo /usr/bin/etcd --name jetcd1 \
+  --cert-file=/etc/etcd/kubernetes.pem \
+  --key-file=/etc/etcd/kubernetes-key.pem \
+  --peer-cert-file=/etc/etcd/kubernetes.pem \
+  --peer-key-file=/etc/etcd/kubernetes-key.pem \
+  --trusted-ca-file=/etc/etcd/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/ca.pem \
+  --initial-advertise-peer-urls https://10.0.1.11:2380 \
+  --listen-peer-urls https://10.0.1.11:2380 \
+  --listen-client-urls https://10.0.1.11:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls https://10.0.1.11:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+  --initial-cluster jetcd1=https://10.0.1.11:2380,jetcd2=https://10.0.1.12:2380,jetcd3=https://10.0.1.13:2380 \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+
+# /etc/systemd/system/etcd.service
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos
+
+[Service]
+ExecStart=/usr/bin/etcd --name jetcd1 \
+  --cert-file=/etc/etcd/kubernetes.pem \
+  --key-file=/etc/etcd/kubernetes-key.pem \
+  --peer-cert-file=/etc/etcd/kubernetes.pem \
+  --peer-key-file=/etc/etcd/kubernetes-key.pem \
+  --trusted-ca-file=/etc/etcd/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/ca.pem \
+  --initial-advertise-peer-urls https://10.0.1.11:2380 \
+  --listen-peer-urls https://10.0.1.11:2380 \
+  --listen-client-urls https://10.0.1.11:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls https://10.0.1.11:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+  --initial-cluster jetcd1=https://10.0.1.11:2380,jetcd2=https://10.0.1.12:2380,jetcd3=https://10.0.1.13:2380 \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
