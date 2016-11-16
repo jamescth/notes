@@ -1,4 +1,6 @@
+################################################################
 # gateway / ip forwarding
+################################################################
 
 sudo vim /etc/sysctl.conf
 net.ipv4.ip_forward=1
@@ -11,6 +13,11 @@ sudo iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
 cd /etc/iptables
 sudo su
 iptables-save > rules.v4
+
+
+################################################################
+# Network stats
+################################################################
 
 # DNS server
 Name: inner.test.org
@@ -36,7 +43,7 @@ address 10.0.1.11
 netmask 255.255.255.0
 gateway 10.0.1.1
 broadcast 10.0.1.255
-dns-search jtest.org
+dns-search test.org
 dns-nameservers 10.0.1.2
 
 # nsupdate
@@ -48,15 +55,17 @@ $ nsupdate
 > update add jetcd3.jtest.org  86400 IN A 10.0.1.13
 > send
 
+################################################################
+# Network servers setup
 # http://blogging.dragon.org.uk/dns-with-bind9-and-dhcp-on-ubuntu-14-04/
-#
+################################################################
 # DNS
 sudo apt-get dist-upgrade
 sudo reboot
 sudo apt-get install isc-dhcp-server bind9
 
+# re-generate rndc key
 sudo /usr/sbin/rndc-confgen -a
-	=> recreate /etc/bind/rndc.key
 
 sudo chown root:bind /etc/bind/rndc.key
 sudo chmod 640 /etc/bind/rndc.key
@@ -165,6 +174,11 @@ $TTL 907200     ; 1 week 3 days 12 hours
 2                       PTR     test.org.
                         PTR     dns-server.test.org.
 
+
+# change ownership and file mode
+sudo chown bind:bind /var/lib/bind/*zone
+sudo chmod 664 /var/lib/bind/*zone
+
 #
 # DHCP
 # /etc/bind/named.options
@@ -185,6 +199,8 @@ option domain-name-servers jt2.test.org;
 default-lease-time 86400; #24 hours
 max-lease-time 86400;
 
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
 log-facility local7;
 
 zone test.org. {
@@ -203,8 +219,13 @@ subnet 10.0.1.0 netmask 255.255.255.0 {
   option routers 10.0.1.1;
   option domain-name-servers 10.0.1.2;
   option domain-name "test.org";
+  option domain-search "test.org";
   ddns-domainname "test.org";
   ddns-rev-domainname "1.0.10.in-addr.arpa.";
+  host jetcd1 {
+    hardware ethernet 08:00:27:33:0B:D5;
+    fixed-address 10.0.1.11;
+  }
 }
 
 
