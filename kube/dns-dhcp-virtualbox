@@ -137,43 +137,34 @@ zone "1.0.10.in-addr.arpa" {
 # /var/lib/bind/test.org.zone
 $ORIGIN .
 $TTL 907200     ; 1 week 3 days 12 hours
-test.org                IN SOA  jt2.test.org. admin.test.org. (
+test.org                IN SOA  jnetservers.test.org. admin.test.org. (
                                 2014071407 ; serial
                                 28800      ; refresh (8 hours)
                                 3600       ; retry (1 hour)
                                 604800     ; expire (1 week)
                                 38400      ; minimum (10 hours 40 minutes)
                                 )
-                        NS      jt2.test.org.
+                        NS      jnetservers.test.org.
 $ORIGIN test.org.
-jns                     A       10.0.1.2
-jt1                     A       10.0.1.1
-jt2                     A       10.0.1.2
-$TTL 3600       ; 1 hour
-jt3                     A       10.0.1.101
-                        TXT     "00951d09c56911e6c9e34a6aee70d10219"
-$TTL 907200     ; 1 week 3 days 12 hours
-lab-dns-dhcp            CNAME   ns
+jnetservers             A       10.0.1.2
+jgateway                A       10.0.1.1
+lab-dns-dhcp            CNAME   jnetservers
 
 # /var/lib/bind/test.org.rev.zone
 $ORIGIN .
 $TTL 907200     ; 1 week 3 days 12 hours
-1.0.10.in-addr.arpa     IN SOA  jt2.test.org. admin.test.org. (
+1.0.10.in-addr.arpa     IN SOA  jnetservers.test.org. admin.test.org. (
                                 2014071405 ; serial
                                 28800      ; refresh (8 hours)
                                 604800     ; retry (1 week)
                                 604800     ; expire (1 week)
                                 86400      ; minimum (1 day)
                                 )
-                        NS      jt2.test.org.
+                        NS      jnetservers.test.org.
 $ORIGIN 1.0.10.in-addr.arpa.
-1                       PTR     jt1.test.org.
-$TTL 3600       ; 1 hour
-101.1.0.10              PTR     jt3.test.org.
-$TTL 907200     ; 1 week 3 days 12 hours
-2                       PTR     test.org.
-                        PTR     dns-server.test.org.
-
+1                       PTR     jgateway.test.org.
+2                       PTR     jnetservers.test.org.
+                        PTR     test.org.
 
 # change ownership and file mode
 sudo chown bind:bind /var/lib/bind/*zone
