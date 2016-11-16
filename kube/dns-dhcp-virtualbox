@@ -212,3 +212,13 @@ subnet 10.0.1.0 netmask 255.255.255.0 {
 
 # /etc/dhcp/ddns-keys/** r,
 /etc/bind/rndc.key r,
+
+
+
+
+#
+# route for internel IP via public IP
+james@jgateway:~$ sudo route add -net 10.200.0.0 netmask 255.255.255.0 gw 10.0.1.21
+james@jgateway:~$ sudo route add -net 10.200.1.0 netmask 255.255.255.0 gw 10.0.1.22
+james@jgateway:~$ sudo route add -net 10.200.2.0 netmask 255.255.255.0 gw 10.0.1.23
+
