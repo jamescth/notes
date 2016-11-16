@@ -226,7 +226,14 @@ subnet 10.0.1.0 netmask 255.255.255.0 {
 /etc/bind/rndc.key r,
 
 
-
+################################################################
+# VirtualBox command
+################################################################
+# powershell
+cd c:\Program Files\Oracle\VirtualBox
+.\VBoxManage.exe clonevm jnew --name jetcd1 --register
+.\VBoxManage.exe modifyvm jetcd1 --macaddress2=080027330BD6
+.\VboxManage.exe showvminfo jetcd1
 
 #
 # route for internel IP via public IP
