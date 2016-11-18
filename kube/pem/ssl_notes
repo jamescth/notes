@@ -1,0 +1,8 @@
+# http://security.stackexchange.com/questions/40026/openssl-x509-whats-the-significance-of-cn-common-name
+# https://www.sslshopper.com/article-most-common-openssl-commands.html
+CN (common name)
+C  country
+ST State or Province
+L  Local city
+O  Organization
+OU Organization Unit

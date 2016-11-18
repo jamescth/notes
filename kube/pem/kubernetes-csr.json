@@ -1,0 +1,30 @@
+{
+  "CN": "kubernetes",
+  "hosts": [
+    "worker0",
+    "worker1",
+    "worker2",
+    "10.32.0.1",
+    "10.0.1.11",
+    "10.0.1.12",
+    "10.0.1.13",
+    "10.0.1.21",
+    "10.0.1.22",
+    "10.0.1.23",
+    "10.0.1.3",
+    "127.0.0.1"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Santa Clara",
+      "O": "Omnitier",
+      "OU": "Applications",
+      "ST": "California"
+    }
+  ]
+}
