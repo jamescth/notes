@@ -1,0 +1,34 @@
+1. Setting up a CA and TLS Cert Generation
+   get_cfssl.sh
+   run_cfssl.sh
+	=> need ca-config.json
+		ca-csr.json
+		kubernetes-csr.json
+
+2. Bootstrapping an H/A etcd cluster
+   get-etcd.sh
+   copy-pem.sh
+   run-etcd-service.sh
+	=> need etcd-internal.sh
+
+3. Bootstrapping an H/A Kubernetes Control Plane
+   get-kubernetes.sh
+   setup-kubernetes.sh
+	=> need kube-internal.sh
+
+	=> incase fail, reset-kube.sh
+
+4. Configuring the Kubernetes Workers
+   set-node.sh
+	=> need node-internal.sh
+
+	=> reset-node.sh
+5. Configuring the Kubernetes Client - Remote Access
+
+6. Managing the Container Network Routes
+
+7. Deploying the CLuster DNS Add-on
+
+8. Smoke Test
+
+9. Cleaning Up
