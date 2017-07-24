@@ -1,0 +1,54 @@
+// install brew and brew cask
+// https://fredrikaverpil.github.io/2016/07/31/docker-for-mac-and-gui-applications/
+xcode-select --install
+sudo xcodebuild -license
+
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew doctoa
+
+// brew-cask.rb doesn't existr
+//brew install caskroom/cask/brew-cask
+
+// Install XQuartz/X11
+brew cask install xquartz
+open -a XQuartz
+	Preference => Security => Allow connections from network clients
+
+xhost +
+
+docker run --rm --name firefox -e DISPLAY=10.195.6.250:0 -v /tmp.X11-unix jess/firefox
+
+docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.8.3 go build -v
+docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=darwin -e GOARCH=amd64 golang:1.8.3 go build -v
+
+# cscope & ctags
+	cscope -R
+	ctags -R *
+
+		Ctrl-j	Jump to the tag underneath the cursor
+		:ts <tag> <RET>		Search for a particular tag
+		:tn			Go to the next definition for the last tag
+		:tp			Go to the previous definition for the last tag
+		:ts			List all of the definitions of the last tag
+		:Ctrl-t			Jump back up in the tag stack
+
+# protobuf-c
+	sudo apt-get install protobuf-c-compiler
+	sudo apt-get install libprotobuf-dev
+	gcc pack.c amessage.pb-c.c -lprotobuf
+
+# docker ubuntu
+	docker run -ti -v $PWD:/src ubuntu:16.04 /bin/bash
+
+	apt-get update
+	apt-get install -y protobuf-compiler libprotobuf-dev
+	apt-get install gcc
+	apt-get install -y openssh-client build-essential git wget 
+	apt-get install protobuf-c-compiler
+
+	gcc pack.c amessage.pb-c.c -lprotobuf-c -o pack
+	gcc unpack.c amessage.pb-c.c -lprotobuf-c -o unpack
+
+	./pack 10 2 | ./unpack 
+
+
