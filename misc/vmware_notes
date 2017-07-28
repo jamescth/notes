@@ -1,0 +1,11 @@
+go get github.com/vmware/govmomi/govc
+ cd govmomi/govc
+go build
+
+export GOVC_INSECURE=1
+export GOVC_URL='https://root:sha1c0w@10.80.14.25/sdk'
+./govc about
+./govc -url="https://root:sha1c0w@10.80.14.25/sdk" -insecure=1 about
+
+ssh root@10.80.14.25 "esxcli hardware cpu list"
+
