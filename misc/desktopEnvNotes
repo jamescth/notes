@@ -32,11 +32,33 @@ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=darwin -e GOA
 		:ts			List all of the definitions of the last tag
 		:Ctrl-t			Jump back up in the tag stack
 
-# protobuf-c
-	sudo apt-get install protobuf-c-compiler
-	sudo apt-get install libprotobuf-dev
-	gcc pack.c amessage.pb-c.c -lprotobuf
+# protobuf
+	# c
+		sudo apt-get install protobuf-c-compiler
+		sudo apt-get install libprotobuf-dev
+		gcc pack.c amessage.pb-c.c -lprotobuf
 
+		docker run -v $(pwd):/protoc_c -it rlincoln/protoc-c --c_out=. *.proto
+	
+	# nanoservice
+		docker run -ti --rm -v $PWD:/src:rw nanoservice/protobuf --cpp_out=. *.proto
+		docker run -ti --rm -v $PWD:/user-src:rw -u $(id -u):$(id -g) -w /user-src nanoservice/protobuf --cpp_out=. *.proto
+
+	# go, python
+		// https://github.com/znly/docker-protobuf
+		docker run --rm -v $(pwd):$(pwd) -w $(pwd) znly/protoc --go_out=. -I. *.proto
+		docker run --rm -v $(pwd):$(pwd) -w $(pwd) znly/protoc --python_out=. -I. *.proto
+	
+	# python run env
+		sudo apt-get install pip
+		sudo apt-get install python-pip
+		sudo pip install --upgrade pip
+
+	# python run
+		pip -V
+		python2.7 ./add_person.py test.address
+		python2.7 ./list_people.py test.address 
+	
 # docker ubuntu
 	docker run -ti -v $PWD:/src ubuntu:16.04 /bin/bash
 
