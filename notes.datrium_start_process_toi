@@ -1,0 +1,56 @@
+UI
+	ps -cu | grep datrium | grep watch
+
+	# deploy a testbed
+	# confluence: DVAVC
+	cd /da/main/Prod/test/TestBeds
+		...
+		large_dittos.py
+
+	get vcenter from "vm list <name>"
+	https://ip
+
+	# new host
+	cd /opt
+	ps -cu | grep datrium | grep watch
+	localcli software vib list | grep datrium
+
+	cd /usr/lib/vmware/hostd/docroot/
+	cat datrium_hyperdriver_bootstrap.txt
+
+	cat ...
+	cd
+	da
+		# create alias, which is
+		da='source /opt/datrium/etc/profile.datrium'
+	procmgr_cli show
+
+	# list partitions; check dasys and da_core
+	localcli storage vmfs extent list
+
+	#check mount
+	esxcfg-nas -l
+
+CLI:
+	#cleanup
+	localcli datrium stop
+	cd /opt
+	ls	# check datrium_hyperdriver
+	localcli software vib list | grep datrium
+	ps -cu | grep datrium
+		#check config_agent.sh <= to download bundle
+
+	# after download
+	localcli datrium start -n <controller float ip>
+	cat /etc/vmware/esx.conf | grep DatriumNetshelf
+		# check float IP
+	ls -l
+	ls /da-sys/bundles
+	du -sh .	# check bundle size
+	# check procs again
+	procmgr_cli.py show
+
+	dacli ssd show
+	dacli ssd add all
+	dacli mount
+

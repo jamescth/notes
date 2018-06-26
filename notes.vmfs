@@ -1,0 +1,211 @@
+# cd /var/log/datrium
+/vmfs/volumes/57b39e7a-3e9b0548-20d2-0cc47a427a36/log # 
+
+# esxcli storage vmfs extent list
+Volume Name                                                 VMFS UUID                            Extent Number  Device Name                                                               Partition
+----------------------------------------------------------  -----------------------------------  -------------  ------------------------------------------------------------------------  ---------
+datrium-reserved-core-colo-esx14b_0c:c4:7a:42:7a:36-9SCAJE  57b39e8e-63a6da84-058d-0cc47a427a36              0  t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__          2
+datrium-reserved-sys-colo-esx14b_0c:c4:7a:42:7a:36-C5YK3C   57b39e91-4db67d58-a481-0cc47a427a36              0  t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447301674805GN__          1
+datrium-reserved-sys-colo-esx14b_0c:c4:7a:42:7a:36-1PECPV   57b39e7a-3e9b0548-20d2-0cc47a427a36              0  t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__          1
+
+# localcli storage filesystem list
+Mount Point                                        Volume Name                                                 UUID                                 Mounted  Type    Size             Free
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/vmfs/volumes/959931dd-cbfbf1bc                    b21-Datastore1                                              959931dd-cbfbf1bc                    true     NFS     121459580407808  90323227516928  
+/vmfs/volumes/fb910dc0-4f652df2                    esxtop                                                      fb910dc0-4f652df2                    true     NFS                   0               0  
+/vmfs/volumes/57b39e8e-63a6da84-058d-0cc47a427a36  datrium-reserved-core-colo-esx14b_0c:c4:7a:42:7a:36-9SCAJE  57b39e8e-63a6da84-058d-0cc47a427a36  true     VMFS-5     129922760704    119257694208  
+/vmfs/volumes/57b39e91-4db67d58-a481-0cc47a427a36  datrium-reserved-sys-colo-esx14b_0c:c4:7a:42:7a:36-C5YK3C   57b39e91-4db67d58-a481-0cc47a427a36  true     VMFS-5      15837691904     14440988672  
+/vmfs/volumes/57b39e7a-3e9b0548-20d2-0cc47a427a36  datrium-reserved-sys-colo-esx14b_0c:c4:7a:42:7a:36-1PECPV   57b39e7a-3e9b0548-20d2-0cc47a427a36  true     VMFS-5      15837691904      5836374016  
+/vmfs/volumes/54d241be-99412d06-9c74-0cc47a427a36                                                              54d241be-99412d06-9c74-0cc47a427a36  true     vfat         4293591040      4183293952  
+/vmfs/volumes/7baabc74-5f125960-4f0f-84f8d5fa96e0                                                              7baabc74-5f125960-4f0f-84f8d5fa96e0  true     vfat          261853184        45740032  
+/vmfs/volumes/0589d873-ae69e8fb-3060-f44c7cfa6bac                                                              0589d873-ae69e8fb-3060-f44c7cfa6bac  true     vfat          261853184        79568896  
+/vmfs/volumes/54d241b3-717d42d4-90e0-0cc47a427a36                                                              54d241b3-717d42d4-90e0-0cc47a427a36  true     vfat          299712512        96870400  
+
+# esxcli storage core device list
+...
+t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__
+   Display Name: Local ATA Disk (t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__)
+   Has Settable Display Name: true
+   Size: 457862
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__
+   Vendor: ATA     
+   Model: INTEL SSDSC2BW48
+   Revision: DC32
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.010000000043564441343437333030504c34383035474e2020494e54454c20
+   Is Local SAS Device: false
+   Is USB: false
+   Is Boot USB Device: false
+   No of outstanding IOs with competing worlds: 32
+
+# strace ls > /tmp/ls.out 2>&1
+
+
+# voma -m vmfs -d /vmfs/devices/disks/t10.ATA_____INTEL_SSDSC2BW480A4_____________________CVDA447300PL4805GN__ -s /tmp/analysis.txt
+
+
+
+/bin/vsish -e get hardware/bios/biosInfo
+/bin/vsish
+uname -a
+
+~ # localcli storage vmfs extent list
+Volume Name                                            VMFS UUID                            Extent Number  Device Name                                                               Partition
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+datrium-reserved-sys-n1164c_00:25:90:f9:73:ae-RV528K   5799c6a1-a2a7a708-a0d1-002590f973ae              0  t10.ATA_____INTEL_SSDSC2CW480A3_____________________CVCV239403LY480DGN__          1  
+datrium-reserved-sys-n1164c_00:25:90:f9:73:ae-XPWIW4   57fbcccf-62c1ae40-628d-002590f973ae              0  t10.ATA_____INTEL_SSDSC2BB480G4_____________________BTWL3362066Z480QGN__          1  
+datrium-reserved-core-n1164c_00:25:90:f9:73:ae-8AO70L  57fbcccd-6ae204d0-6894-002590f973ae              0  t10.ATA_____INTEL_SSDSC2CW480A3_____________________CVCV239403LY480DGN__          2  
+~ # localcli storage filesystem list
+Mount Point                                        Volume Name                                            UUID                                 Mounted  Type    Size            Free
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/vmfs/volumes/d59fb90d-39967d11                    Datastore1                                             d59fb90d-39967d11                    true     NFS     29044139745280  29013437460480  
+/vmfs/volumes/177c1f63-e6dc6253                    NFS-FS01-DAMON                                         177c1f63-e6dc6253                    true     NFS     33762131841024  33118690172928  
+/vmfs/volumes/7e2e251b-a389ab24                    nfs-fs01-qa-tmp                                        7e2e251b-a389ab24                    true     NFS     33120831090688  33118690172928  
+/vmfs/volumes/32b095ad-663636dc                    srcDvx0-Datastore1                                     32b095ad-663636dc                    true     NFS     29044139745280  29013437460480  
+/vmfs/volumes/5799c6a1-a2a7a708-a0d1-002590f973ae  datrium-reserved-sys-n1164c_00:25:90:f9:73:ae-RV528K   5799c6a1-a2a7a708-a0d1-002590f973ae  true     VMFS-5     15837691904      6239027200  
+/vmfs/volumes/57fbcccf-62c1ae40-628d-002590f973ae  datrium-reserved-sys-n1164c_00:25:90:f9:73:ae-XPWIW4   57fbcccf-62c1ae40-628d-002590f973ae  true     VMFS-5     15837691904     12925796352  
+/vmfs/volumes/57fbcccd-6ae204d0-6894-002590f973ae  datrium-reserved-core-n1164c_00:25:90:f9:73:ae-8AO70L  57fbcccd-6ae204d0-6894-002590f973ae  true     VMFS-5    129922760704    119121379328  
+/vmfs/volumes/565318ed-6fdd4020-3919-002590f973ae                                                         565318ed-6fdd4020-3919-002590f973ae  true     vfat        4293591040      4206755840  
+/vmfs/volumes/35aec27b-88379a8f-0adb-28e2f3f407d5                                                         35aec27b-88379a8f-0adb-28e2f3f407d5  true     vfat         261853184        24915968  
+/vmfs/volumes/9df71878-b504b409-829e-233d18f4597d                                                         9df71878-b504b409-829e-233d18f4597d  true     vfat         261853184        24870912  
+/vmfs/volumes/565318e7-b7eb0538-3c85-002590f973ae                                                         565318e7-b7eb0538-3c85-002590f973ae  true     vfat         299712512        86228992  
+~ # vmkfstools -P -v 10 /vmfs/volumes/35aec27b-88379a8f-0adb-28e2f3f407d5
+Could not retrieve max file size: Inappropriate ioctl for device
+vfat-0.04 file system spanning 1 partitions.
+File system label (if any): 
+Mode: private
+Capacity 261853184 (63929 file blocks * 4096), 24915968 (6083 blocks) avail, max file size 0
+UUID: 35aec27b-88379a8f-0adb-28e2f3f407d5
+Logical device: t10.ATA_____ST91000640NS________________________________________9XG80Q3J:5
+Partitions spanned (on "disks"):
+	t10.ATA_____ST91000640NS________________________________________9XG80Q3J:5
+datriumVAAIPlugin: VAAI not supported on non-NFS 
+Is Native Snapshot Capable: NO
+OBJLIB-LIB: ObjLib cleanup done.
+~ # vmkfstools -P -v 10 /vmfs/volumes/5799c6a1-a2a7a708-a0d1-002590f973ae
+VMFS-5.60 file system spanning 1 partitions.
+File system label (if any): datrium-reserved-sys-n1164c_00:25:90:f9:73:ae-RV528K
+Mode: public
+Capacity 15837691904 (15104 file blocks * 1048576), 6237978624 (5949 blocks) avail, max file size 69201586814976
+Volume Creation Time: Thu Jul 28 08:47:29 2016
+Files (max/free): 93708/52834
+Ptr Blocks (max/free): 64512/64496
+Sub Blocks (max/free): 32000/30800
+Secondary Ptr Blocks (max/free): 256/256
+File Blocks (overcommit/used/overcommit %): 0/9155/0
+Ptr Blocks  (overcommit/used/overcommit %): 0/16/0
+Sub Blocks  (overcommit/used/overcommit %): 0/1200/0
+Volume Metadata size: 729243648
+UUID: 5799c6a1-a2a7a708-a0d1-002590f973ae
+Logical device: 5799c69e-0f0e8424-51db-002590f973ae
+Partitions spanned (on "lvm"):
+	t10.ATA_____INTEL_SSDSC2CW480A3_____________________CVCV239403LY480DGN__:1
+datriumVAAIPlugin: VAAI not supported on non-NFS 
+Is Native Snapshot Capable: YES
+OBJLIB-LIB: ObjLib cleanup done.
+
+
+~ # localcli system visorfs ramdisk list
+Ramdisk Name    System  Include in Coredumps  Reserved    Maximum      Used        Peak Used   Free  Reserved Free  Maximum Inodes  Allocated Inodes  Used Inodes  Mount Point
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+root            true    true                   32768 KiB    32768 KiB   16488 KiB   17344 KiB  49 %           49 %            8192              8192         8192  /
+etc             true    true                   28672 KiB    28672 KiB     292 KiB     332 KiB  98 %           98 %            4096              1024          508  /etc
+tmp             false   false                   2048 KiB   196608 KiB      12 KiB    1972 KiB  99 %           99 %            8192               256            4  /tmp
+hostdstats      false   false                      0 KiB  1078272 KiB    1932 KiB    1932 KiB  99 %            0 %            8192                32            5  /var/lib/vmware/hostd/stats
+datrium-L9UZ4G  false   false                   1024 KiB     1024 KiB       8 KiB       8 KiB  99 %           99 %            8192                32            4  /dakv
+datrium-L91OM3  false   false                 819200 KiB   819200 KiB  720904 KiB  720904 KiB  11 %           11 %            8192              3840         3818  /da-sys-4.0.101.0-31653_143c735
+~ # vsish -e get /system/visorfs/ramdisks/{Ramdisk Name}/stats
+~ # vsish -e get /system/visorfs/ramdisks/root/stats
+VisorFS ramdisk {
+   Min:32 MB
+   Max:32 MB
+   Number of pages used:4123
+   Max number of pages used:4336
+   Mem group ID:157
+   Root inode:0
+   Dump on coredump:1
+   System:1
+   Mount point inode:-6
+   Root path:/
+   First inode of ramdisk:0
+   Max number of inodes:8192
+   Number of allocated/initialized inodes:8192
+   Number of used inodes:8192
+   Max number of used inodes:8192
+}
+
+
+~ # for d in `find -maxdepth 1 -type d |cut -d\/ -f2 |grep -xv . |sort`; do c=$(find $d |wc -l) ; printf "$c\t\t- $d\n" ; done ; printf "Total: \t\t$(find $(pwd) | wc -l)\n"
+300		- bin
+3818		- da-sys-4.0.101.0-31653_143c735
+4		- dakv
+175		- dev
+508		- etc
+1513		- lib
+86		- lib64
+7		- mbr
+1084		- opt
+93		- proc
+79		- tardisks
+1		- tardisks.noauto
+2		- tmp
+4708		- usr
+392		- var
+46097		- vmfs
+3		- vmimages
+Total: 		58882
+
+
+# sort based on last modified date
+/lib # find . -type f -print0 | xargs -0 ls -nl | sort -k 8,8n -k 6,6M
+-r--r--r--    1 0        0          1549854 May 31 08:14 ./python2.7/vmkctl.pyc
+-r--r--r--    1 0        0            12594 May 30 18:14 ./python2.7/esxclipy.pyc
+-r--r--r--    1 0        0            37737 May 30 18:14 ./python2.7/site-packages/cmpi_pywbem_bindings.pyc
+-r--r--r--    1 0        0            64459 May 30 18:14 ./python2.7/site-packages/cmpi.pyc
+-r--r--r--    1 0        0               30 Jul 27  2016 ./python2.7/site-packages/setuptools.pth
+-r--r--r--    1 0        0              193 Jul 27  2016 ./python2.7/site-packages/__init__.pyc
+-r--r--r--    1 0        0              193 Jul 27  2016 ./python2.7/site-packages/__init__.pyo
+-r--r--r--    1 0        0              194 Jul 27  2016 ./python2.7/xml/etree/__init__.pyc
+-r--r--r--    1 0        0              194 Jul 27  2016 ./python2.7/xml/etree/__init__.pyo
+-r--r--r--    1 0        0              195 Jul 27  2016 ./python2.7/email/mime/__init__.pyc
+-r--r--r--    1 0        0              195 Jul 27  2016 ./python2.7/email/mime/__init__.pyo
+-r--r--r--    1 0        0              198 Jul 27  2016 ./python2.7/xml/parsers/__init__.pyo
+-r--r--r--    1 0        0              199 Jul 27  2016 ./python2.7/site-packages/pyVim/__init__.pyc
+-r--r--r--    1 0        0              199 Jul 27  2016 ./python2.7/site-packages/pyVim/__init__.pyo
+-r--r--r--    1 0        0              201 Jul 27  2016 ./python2.7/site-packages/contrib/__init__.pyc
+-r--r--r--    1 0        0              201 Jul 27  2016 ./python2.7/site-packages/contrib/__init__.pyo
+-r--r--r--    1 0        0              203 Jul 27  2016 ./python2.7/site-packages/vmsupport/__init__.pyc
+-r--r--r--    1 0        0              203 Jul 27  2016 ./python2.7/site-packages/vmsupport/__init__.pyo
+-r--r--r--    1 0        0              205 Jul 27  2016 ./python2.7/site-packages/vmware/vsan/__init__.pyc
+
+~ # find /usr -type f -print0 | xargs -0 ls -nl | sort -k 8,8n -k 6,6M | more
+-rw-r--r--    1 0        0              100 Jun  2 03:36 /usr/lib/vmware/hostd/docroot/datrium_hyperdriver.txt
+-r--r--r--    1 0        0              121 May 31 08:14 /usr/lib/vmware/weasel/__init__.pyc
+-r--r--r--    1 0        0              295 May 31 08:14 /usr/lib/hostprofiles/plugins/loginBanner/__init__.pyc
+-r--r--r--    1 0        0              302 May 31 08:14 /usr/lib/hostprofiles/plugins/hostsFile/__init__.pyc
+-r--r--r--    1 0        0              303 May 31 08:14 /usr/lib/hostprofiles/plugins/authKeys/__init__.pyc
+-r--r--r--    1 0        0              303 May 31 08:14 /usr/lib/hostprofiles/plugins/netdumpConfig/__init__.pyc
+-r--r--r--    1 0        0              309 May 31 08:14 /usr/lib/hostprofiles/plugins/deviceAlias/__init__.pyc
+
+~ # find /usr -type d | wc -l
+324
+~ # find /usr -type l | wc -l
+2370
+~ # find /usr -type f | wc -l
+2014
+

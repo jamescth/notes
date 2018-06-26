@@ -1,0 +1,124 @@
+/Prod/FE/VAAI/upgrade_bundle_data/opt/datrium_initial_bundle/bin/da_head
+
+vib
+/etc/init.d/datrium-hyperdriver
+    |
+datrium_config_agent
+    |
+bootstrap
+/opt/datrium/sys_etc/init.d/da_head_init
+          \
+     ->    \-> /opt/da_head0 (copied from /opt/datrium/bin,
+    |       \             do not change across symlink change,
+    |        \            unless upgrade/da_setup script changes it.)
+    |         \
+ restart       \-> /opt/datrium/bin/da_head
+   for          \
+ upgrade         \-> /opt/datrium/bin/da_setup --syssetup
+    |            \-> /opt/datrium/bin/esx_platmgr --prepare da_sys da_core
+    --------     \-> /opt/datrium/bin/procmgr
+
+bug 30719
+Prod/FE/VAAI/upgrade_bundle_data/opt/datrium_initial_bundle/bin/esx_groups.py
+Prod/FE/VAAI/upgrade_bundle_data_esx/opt/datrium_initial_bundle/vm-support/datrium-all.mfx
+Prod/FE/VAAI/upgrade_bundle_data_esx/opt/datrium_initial_bundle/vm-support/datrium-base.mfx
+
+syslog:
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: creating host/vim/vimuser dainit
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser dainit
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: creating host/vim/vimuser datrium
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser datrium
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser datrium
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: creating host/vim/vimuser/datrium procmgr
+    syslog.log/non-cee: 2017-11-21T08:57:13Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser/datrium procmgr
+    syslog.log/non-cee: 2017-11-21T08:57:13Z watchdog-datrium_head: [51187] Begin '/opt/da_head0 start', min-uptime = 60, max-quick-failures = 1, max-total-failures = 1000000, bg_pid_file = ''
+    syslog.log/non-cee: 2017-11-21T08:57:13Z watchdog-datrium_head: [51187] Begin '/opt/da_head0 start', min-uptime = 60, max-quick-failures = 1, max-total-failures = 1000000, bg_pid_file = ''
+    syslog.log/non-cee: 2017-11-21T08:57:13Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+
+************************************************************
+bug 34940 bad: from syslog
+************************************************************
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: creating host/vim/vimuser dainit
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser dainit
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: creating host/vim/vimuser datrium
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser datrium
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser datrium
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: creating host/vim/vimuser/datrium procmgr
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser/datrium procmgr
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser datrium
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: creating host/vim/vimuser/datrium utility
+2018-02-23T06:28:10Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser/datrium utility
+2018-02-23T06:28:10Z 2018-02-23T06: 28:10 da_head_init: ======== Starting /opt/datrium/sys_etc/init.d/da_head_init start (pid: 45345) ============
+2018-02-23T06:28:10Z watchdog-datrium_head: [45377] Begin '/opt/da_head0 start', min-uptime = 60, max-quick-failures = 1, max-total-failures = 1000000, bg_pid_file = ''
+2018-02-23T06:28:10Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+2018-02-23T06:28:10Z 2018-02-23T06: 28:10 da_head0: ======== Starting /opt/da_head0 start (pid: 45387) ============
+2018-02-23T06:28:10Z 2018-02-23T06: 28:10 da_head: ======== Starting /opt/datrium/bin/da_head start (pid: 45390) ============
+2018-02-23T06:28:10Z 2018-02-23T06: 28:10 da_head: No left over /opt/datrium/bin/procmgr.py found
+2018-02-23T06:28:10Z 2018-02-23T06: 28:10 da_head: /opt/datrium/bin/esx_platmgr.py is not running
+2018-02-23T06:28:11Z 2018-02-23T06: 28:11 da_head_init: /opt/da_head0 started, watchdog-datrium_head pid: 45377
+2018-02-23T06:28:11Z 2018-02-23T06: 28:11 datrium_hyperdriver_bootstrap: bootstrap done rc= 0
+2018-02-23T06:28:11Z 2018-02-23T06: 28:11 datrium_hyperdriver_bootstrap: wrote the state file rc= 0 with 10.80.148.138 0
+2018-02-23T06:28:11Z 2018-02-23T06: 28:11 datrium_hyperdriver_config_agent: bootstrapped to 10.80.148.138 rc= 0
+2018-02-23T06:28:11Z 2018-02-23T06: 28:11 datrium_hyperdriver_config_agent: state changed to 10.80.148.138
+...
+2018-02-23T06:28:46Z 2018-02-23T06: 28:46 da_head: Generating da_sec_dom.out
+...
+2018-02-23T06:45:01Z syslog[62201]: hostd probing is done.
+2018-02-23T06:48:57Z watchdog-datrium_head: Restart file detected, removing it.
+2018-02-23T06:48:57Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: ======== Starting /opt/da_head0 start (pid: 65493) ============
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: Old bundle at /da-sys/bundles/4.0.101.0-30450_3818748_g
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: New bundle at /da-sys-upgrade/bundles/4.0.101.0-30461_911aa4a_g
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: Set /da-sys to new ramdisk
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head: ======== Starting /opt/datrium/bin/da_head start (pid: 65518) ============
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head: No left over /opt/datrium/bin/procmgr.py found
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head: /opt/datrium/bin/esx_platmgr.py is not running
+2018-02-23T06:48:58Z 2018-02-23T06: 48:58 da_head: Bundle syssetup failed: 1
+2018-02-23T06:48:58Z watchdog-datrium_head: '/opt/da_head0 start' exited after 1 seconds (quick failure 1) 1
+2018-02-23T06:48:58Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+2018-02-23T06:48:58Z 2018-02-23T06: 48:58 da_head: ======== Starting /opt/datrium/bin/da_head start (pid: 65712) ============
+2018-02-23T06:48:58Z 2018-02-23T06: 48:58 da_head: No left over /opt/datrium/bin/procmgr.py found
+2018-02-23T06:48:58Z 2018-02-23T06: 48:58 da_head: /opt/datrium/bin/esx_platmgr.py is not running
+2018-02-23T06:48:59Z 2018-02-23T06: 48:59 da_head: Bundle syssetup failed: 1
+2018-02-23T06:48:59Z watchdog-datrium_head: '/opt/da_head0 start' exited after 1 seconds (quick failure 2) 1
+2018-02-23T06:48:59Z watchdog-datrium_head: End '/opt/da_head0 start', failure limit reached
+
+************************************************************
+bug 34940 good from syslog
+************************************************************
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: creating host/vim/vimuser dainit
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser dainit
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: creating host/vim/vimuser datrium
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser datrium
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser datrium
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: creating host/vim/vimuser/datrium procmgr
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser/datrium procmgr
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: getting ID of resource group host vim vimuser datrium
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: creating host/vim/vimuser/datrium utility
+2018-02-23T06:25:38Z da_head_rp: createResourceGroup: setting minLimit to host/vim/vimuser/datrium utility
+2018-02-23T06:25:38Z 2018-02-23T06: 25:38 da_head_init: ======== Starting /opt/datrium/sys_etc/init.d/da_head_init start (pid: 43713) ============
+2018-02-23T06:25:38Z watchdog-datrium_head: [43745] Begin '/opt/da_head0 start', min-uptime = 60, max-quick-failures = 1, max-total-failures = 1000000, bg_pid_file = ''
+2018-02-23T06:25:38Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+2018-02-23T06:25:38Z 2018-02-23T06: 25:38 da_head0: ======== Starting /opt/da_head0 start (pid: 43755) ============
+2018-02-23T06:25:39Z 2018-02-23T06: 25:39 da_head: ======== Starting /opt/datrium/bin/da_head start (pid: 43758) ============
+2018-02-23T06:25:39Z 2018-02-23T06: 25:39 da_head: No left over /opt/datrium/bin/procmgr.py found
+2018-02-23T06:25:39Z 2018-02-23T06: 25:39 da_head: /opt/datrium/bin/esx_platmgr.py is not running
+2018-02-23T06:25:39Z 2018-02-23T06: 25:39 da_head_init: /opt/da_head0 started, watchdog-datrium_head pid: 43745
+...
+2018-02-23T06:26:15Z 2018-02-23T06: 26:15 da_head: Generating da_sec_dom.out
+...
+2018-02-23T06:48:57Z watchdog-datrium_head: Restart file detected, removing it.
+2018-02-23T06:48:57Z watchdog-datrium_head: Executing '/opt/da_head0 start'
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: ======== Starting /opt/da_head0 start (pid: 66102) ============
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: Old bundle at /da-sys/bundles/4.0.101.0-30450_3818748_g
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: New bundle at /da-sys-upgrade/bundles/4.0.101.0-30461_911aa4a_g
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head0: Set /da-sys to new ramdisk
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head: ======== Starting /opt/datrium/bin/da_head start (pid: 66136) ============
+2018-02-23T06:48:57Z 2018-02-23T06: 48:57 da_head: No left over /opt/datrium/bin/procmgr.py found
+

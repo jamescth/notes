@@ -1,0 +1,123 @@
+OS/Scripts/host_preinstall_hook.py
+
+        chk_funcs_all = [
+            partial(check_process_state),
+            partial(check_var_log_datrium_space),
+            partial(check_var_tmp_space),
+        ]
+        chk_funcs_host = []
+
+        if host_type == 'ESX':
+            esx_plat_cli = _get_esx_plat_mgr_cli()
+            if esx_plat_cli is not None:
+                chk_funcs_host = [
+                    partial(check_esx_boot_disk, esx_plat_cli),
+                    partial(check_esx_ramdisks_space, esx_plat_cli),
+                    partial(check_esx_vmkernel_log, esx_plat_cli),
+                    partial(check_esx_stale_ramdisk, esx_plat_cli),
+                    partial(check_esx_vib_version),
+                    partial(check_esx_lockdown_mode, esx_plat_cli),
+                    partial(check_esx_scratch_is_writable),
+                    partial(check_esx_memory_usage, esx_plat_cli),
+                    # Keep this at the end.
+                    partial(_close_esx_plat_mgr_cli, esx_plat_cli),
+                ]
+
+
+OS/Scripts/dvx_preinstall_hook.py
+    elif args.deploy_only:
+        # We support upgrade on both MASTER and STEM node.
+        if node_role in ('MASTER', 'STEM'):
+            logger.info('--- deploy_software_only ---')
+            deploy_preinstall_scripts()
+            deploy_head_bundle()
+            deploy_daos_image()
+        else:
+            logger.error('Deploy software on %s node is not supported', node_role)
+    else:
+        chk_funcs_all = [
+            partial(check_version_compatibility),
+            partial(check_process_state),
+            # TODO: Check both controllers space
+            partial(check_controller_space),  # Passive controller only
+            partial(check_controller_hardware, True),  # Active controller
+            partial(check_controller_hardware, False),  # Passive controller
+            partial(check_ha_state),
+            # Need more testing before I enable this. There are issues when
+            # the incumbent release does not have LS tools available
+            partial(check_firmware_version),
+        ]
+
+        chk_funcs_master = [
+            partial(check_pool_state),
+            partial(check_sr_state),
+            partial(check_hosts_health),
+            partial(check_network_commit_pending),
+            partial(check_network_config),
+            partial(check_network_health, DVAID().controller_name()),  # Active controller
+            partial(check_network_health, DVAID().peer_controller_name()),  # Passive controller
+            partial(check_cluster_changing),
+        ]
+
+        deploy_funcs = [
+            partial(deploy_head_bundle),
+            partial(deploy_daos_image),
+        ]
+
+
+*******************************************************************************
+2.0 -> 3.0 unable to remove vmfs dir
+bug 31415
+kb article: http://confluence.datrium.com/pages/viewpage.action?pageId=41135726
+*******************************************************************************
+/da/bin//upgrade_util.py state-dump
+
+========== targetStates =============
+
+runningVersion {
+
+  version {
+
+    major: 3
+
+    minor: 1
+
+    maint: 1
+
+    seqNum: 27737
+
+    sha1: "576932f"
+
+    patch: 2
+
+    private: false
+
+    dirty: false
+
+    debug: false
+
+  }
+
+  urlHost: ":80/static/Head.Bundle"
+
+  urlCtrl: ":80/static/DaOS.bin"
+
+}
+
+downloadedVersions {
+
+  urlHost: ""
+
+  urlCtrl: ""
+
+}
+
+preparedVersions {
+
+  urlHost: ""
+
+  urlCtrl: ""
+
+}
+
+./upgrade_util.py state-fix --field downloadedVersions --version ""

@@ -1,0 +1,11 @@
+bug 30732
+/cores/bug_30732/a/testbed/testbed_1$ll
+total 157031
+-rw-rw-rw- 1 daautomation daautomation 531554304 Sep 28 14:44 core.5.python.1840
+-rw-rw-rw- 1 daautomation daautomation  46079016 Aug 17 06:29 core.5.python.1840.gz
+-rw-rw-rw- 1 daautomation daautomation     25451 Aug 17 06:36 dva.py.conf
+lrwxrwxrwx 1 daautomation daautomation        53 Oct  6 11:56 PyBridge.so -> /cores/bug_30732/a/testbed/testbed_1/PyBridge.so.1840
+-rwxrwxrwx 1 daautomation daautomation 102254269 Aug 17 06:29 PyBridge.so.1840
+-rwxrwxrwx 1 daautomation daautomation   3951439 Aug 17 06:29 python
+drwxrwxrwx 3 daautomation daautomation         5 Aug 17 15:54 Tester0
+

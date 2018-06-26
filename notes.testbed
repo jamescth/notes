@@ -1,0 +1,223 @@
+http://confluence.datrium.com/display/TES/Writing+a+Basic+Automated+System+Test+on+Dittos
+
+# /da/main/Prod/Test/dva.py -v create --testbed full_dittos /var/tmp/full_dittos
+	clean up => # /da/main/Prod/Test/dva.py destroy /var/tmp/full_dittos/
+# /da/main/Prod/Test/dva.py create --testbed HA_dittos --buildtop /da/main/Prod/Build /var/tmp/testbed1
+
+jho@jho-colo-01:$/da/main/Prod/Test/dva.py -v attach /var/tmp/testbed1
+	# for manually test, check
+	# cd  /da/main/Prod/Build/TestResults/Debug/
+	# ll
+	# drwxr-xr-x 3 jho users 4096 Jun  6 12:32 UpgradeCheckTestPlan.UpgradeCheckTest.test_upgrade_check_main____HA_dittos.20180606120317.242146
+	# drwxr-xr-x 3 jho users 4096 Jun  6 13:59 UpgradeCheckTestPlan.UpgradeCheckTest.test_upgrade_check_main____HA_dittos.20180606131827.710663
+	# cd UpgradeCheckTestPlan.UpgradeCheckTest.test_upgrade_check_main____HA_dittos.20180606131827.710663/testbed
+	# $ll
+	# drwxrwxrwx 6 jho users 4096 Jun  6 13:55 testbed_0
+	# /da/main/Prod/Test/dva.py -v attach testbed_0/
+In [1]: dva.start()
+....
+2018-05-16 10:38:33,656 89-FrontEnd0 standalone.py:2298  DEBUG  start root@10.80.12.59: stdout: 
+Mode/Changing: 1/False
+
+Name                   Stat  PID      Auto  Enable Modes        Vmsize    RSS  Uptime
+---------------------------------------------------------------------------------
+DaggerWorker           S              1     1      3                                 
+ESXPlatMgr             S              1     1      3                                 
+FE                     S              1     1      3                                 
+GFR                    S              1     1      3                                 
+eventproducer          S              1     1      3                                 
+NetworkHeartbeat       S              1     1      2,3                               
+UpgradeMgr             S              1     1      2,3                               
+FEMountd               R     59167    1     1      1,2,3             0      0     36s
+esx_platmgr            R     59166    1     1      1,2,3             0      0     36s
+---------------------------------------------------------------------------------
+Total                                                                0      0        
+
+2018-05-16 10:38:34,079 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.12.59 wanted
+2018-05-16 10:38:34,459 90-FrontEnd0 standalone.py:199  DEBUG  set_devmode root@10.80.12.59: executing "/opt/datrium/bin/procmgr_cli.py devmode-set 2"
+2018-05-16 10:38:34,944 90-FrontEnd0 standalone.py:199  DEBUG  set_devmode root@10.80.12.59: "/opt/datrium/bin/procmgr_cli.py devmode-set 2" returned 0
+2018-05-16 10:38:35,415 90-FrontEnd0 standalone.py:199  DEBUG  set_devmode root@10.80.12.59: stdout: command devmode-set succeeded
+
+2018-05-16 10:38:35,846 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.12.59 wanted
+2018-05-16 10:38:36,223 91-FrontEnd0 standalone.py:204  DEBUG  get_devmode root@10.80.12.59: executing "/opt/datrium/bin/procmgr_cli.py devmode-show"
+2018-05-16 10:38:36,810 91-FrontEnd0 standalone.py:204  DEBUG  get_devmode root@10.80.12.59: "/opt/datrium/bin/procmgr_cli.py devmode-show" returned 0
+2018-05-16 10:38:37,028 91-FrontEnd0 standalone.py:204  DEBUG  get_devmode root@10.80.12.59: stdout: devmode is on, mode = 2
+
+2018-05-16 10:38:37,614 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.12.59 wanted
+2018-05-16 10:38:38,042 92-FrontEnd0 standalone.py:1988  DEBUG  version root@10.80.12.59: executing "/bin/esxcli software vib list | grep Datrium | awk '{print $2}'"
+2018-05-16 10:38:39,534 92-FrontEnd0 standalone.py:1988  DEBUG  version root@10.80.12.59: "/bin/esxcli software vib list | grep Datrium | awk '{print $2}'" returned 0
+2018-05-16 10:38:39,997 92-FrontEnd0 standalone.py:1988  DEBUG  version root@10.80.12.59: stdout: 4.0.101.0-31349
+
+2018-05-16 10:38:40,359 92-FrontEnd0 standalone.py:1988  DEBUG  version root@10.80.12.59: stderr: 4.0.101.0-31349
+
+2018-05-16 10:38:40,743 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.12.59 wanted
+2018-05-16 10:38:41,130 93-FrontEnd0 standalone.py:3044  DEBUG  set_entry_in_dvaconf root@10.80.12.59: executing "PYTHONPATH="/opt/datrium/PythonRoot:/opt/datrium/PythonGenRoot" /opt/datrium/python2/bin/python -m datrium.platform.common.frontend_conf --set FE~NfsProxyServer.nfsLoopbackOnly=False"
+2018-05-16 10:38:41,595 93-FrontEnd0 standalone.py:3044  DEBUG  set_entry_in_dvaconf root@10.80.12.59: "PYTHONPATH="/opt/datrium/PythonRoot:/opt/datrium/PythonGenRoot" /opt/datrium/python2/bin/python -m datrium.platform.common.frontend_conf --set FE~NfsProxyServer.nfsLoopbackOnly=False" returned 0
+
+In [2]: dva.started
+Out[2]: True
+
+In [3]: dva.controllers[0].ipaddr
+Out[3]: '10.80.76.50'
+
+In [4]: dva.controllers[0].name
+Out[4]: 'jho-testbed1..180516095609_controller-01'
+
+In [5]: dva.frontends[0]
+Out[5]: <TestBeds.hosttypes.virtual.VirtualFrontEnd60 at 0x7f9f9c554c10>
+
+In [6]: fe = dva.frontends[0]
+
+In [7]: fe.ipaddr
+2018-05-16 11:23:45,322 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.12.59 wanted
+Out[7]: '10.80.12.59'
+
+
+ssh root@10.80.76.50
+ssh root@10.80.12.59
+
+In [2]: dva.frontends
+Out[2]: 
+[<TestBeds.hosttypes.virtual.VirtualFrontEnd60 at 0x7fc330ee6610>,
+ <TestBeds.hosttypes.virtual.VirtualFrontEnd60 at 0x7fc330e93f10>]
+
+In [3]: dva.frontends[0].started
+Out[3]: True
+
+
+# release builds
+$ls /colo/build/workloads/fixed_builds/
+1.0.4.0-15904_56f7d34  1.1.0.1-19389_1480fd3  2.0.2.0-25010_bc6d6a7  3.0.0.2-27529_7e2e1ff  4.0.0.0-29151_14ccf81
+1.0.4.1-15916_0efcc88  1.1.0.3-19409_981635c  2.0.2.1-25022_9ad6152  3.0.0.2-27532_93d635d  4.0.1.0-30058_81d6b08
+1.0.4.2-15924_e73ad58  1.1.0.4-19414_0d20592  2.0.2.2-25033_2ea45d4  3.1.1.0-27717_bf0506c  4.0.1.0-30307_cd13893
+1.0.6.0-16488_fb3a4d2  1.1.0.5-19420_1e82053  2.0.2.2-25036_696a71b  3.1.1.1-27733_9f5b41c
+1.0.6.1-16514_2f9202c  2.0.1.0-24606_50cc466  3.0.0.0-27286_026b65c  3.1.1.2-27737_576932f
+1.0.6.2-16522_2a27772  2.0.1.0-24835_b4f9b0f  3.0.0.1-27518_a168240  3.1.1.3-27747_ae3c31f
+1.1.0.0-19367_648ca88  2.0.1.0-24836_2862cae  3.0.0.2-27527_b914a12  3.1.1.3-27748_fcc1c5c
+
+# stable builds
+$dabuild stable
+>http://jenkins.datrium.com/job/build-main-master/15927/ e21139a00d9e337f18689cc450bd1e1366dc36ff
+http://jenkins.datrium.com/job/build-main-master/15717/ a54b038cbdf8de788ac26de319247c3d44bec85f
+http://jenkins.datrium.com/job/build-main-master/15663/ 65d29a1b2e556875824fbece4f04e36acfc7a080
+http://jenkins.datrium.com/job/build-main-master/15659/ 57c81b581fd9c5a3f2a36241062ee4a7c99197b2
+http://jenkins.datrium.com/job/build-main-master/15642/ dc7b014241418906fc6ca93976eb2b1413ee1dd8
+There is no stable build between 2018-05-08 17:24:35 and 2018-05-24 01:28:49
+
+	# dabuild stable -b master -v
+	# dabuild stable -b <branch>
+
+# stable builds in colo
+/colo/build/jobs/build-main-master/builds/15927/archive$find | grep da-os
+./OS/Build/x86_64/da-os-Debug.bin
+./OS/Build/x86_64/da-os-Release.bin
+
+$Prod/Test/dva.py create -h
+optional arguments:
+  -h, --help            show this help message and exit
+  --buildtop BUILDTOP   The top build directory. (default:
+                        /d0/da/main/Prod/Build)
+  --buildtype BUILDTYPE
+                        The build type. (default: Debug)
+  --jenkins JENKINS     URL to a Jenkins build job. See upgrade -h for more
+                        details. (default: None)
+  --no-fork             Do not fork the create (applies if buildtop is not the
+                        same as the current path) (default: False)
+  --testbed TESTBED     The testbed spec file. Optionally, a string with the
+                        format "{hosttype: x, hosttype: y, ...}" to pass to
+                        the "configurable.py" testbed. (default: full_desktop)
+  --options DVA_OPTIONS
+                        Specify deployment options. The syntax is "{Target:
+                        {opt1: val2, opt2: val2, ..}}", for example --options
+                        "{FrontEnd0:{template: esx60u2, vmfs_on_root: True}}".
+                        check http://opengrok.datrium.com/source/search?q=init
+                        ial_dva_options&project=Prod for currently recognized
+                        options. (default: {})
+  --options-random      Whether or not a random selection takes place from
+                        various dva_options. (default: False)
+  --uuid UUID           a uuid [mostly for upgrade tests] (default: None)
+
+/da/main/Prod/Test/TestBeds$ls
+anupam.py                 dvx50.py  dvx84.py                        HA_4node_dittos.py          ls_eval2.py
+b15.py                    dvx51.py  dvx99.py                        HA_desktop.py               medium_dittos.py
+b36.py                    dvx56.py  dvxhw1.py                       HA_dittos.py                n1634.py
+b3.py                     dvx57.py  full_desktop_10MB_container.py  HA_dittos.pyc               pool_rebuild_desktop.py
+cluster_desktop_large.py  dvx58.py  full_desktop.py                 hcl_dvx59_n1634.py          pre_cluster_desktop.py
+cluster_desktop.py        dvx59.py  full_desktop.pyc                hosttypes                   RpcLA_dittos.py
+configurable.py           dvx70.py  full_desktop_scale.py           huge_dittos.py              scanner_dittos.py
+configurable.pyc          dvx71.py  full_dittos.py                  huge_fe_dittos.py           single_desktop_aws.py
+dvx01.py                  dvx72.py  full_dittos.pyc                 hybrid2.py                  single_desktop_irr.py
+dvx02.py                  dvx73.py  generic.py                      __init__.py                 single_desktop_vmc.py
+dvx04.py                  dvx74.py  gui_HA_dittos.py                __init__.pyc                single_dittos_aws.py
+dvx06.py                  dvx75.py  HA_2FE_dittos.py                IRR_medium.py               syspath.py
+dvx14.py                  dvx76.py  HA_2FE_dittos.pyc               kvm_dittos.py               testbeds.rst
+dvx28.py                  dvx77.py  HA_2node_2FE_dittos.py          large_dittos.py             unittest_desktop.py
+dvx30.py                  dvx78.py  HA_2node_2FE_dittos.pyc         large_HA_2FE_dittos.py      unittest_esx55.py
+dvx35.py                  dvx80.py  HA_2node_dittos.py              large_HA_dittos.py          unittest_linux.py
+dvx37.py                  dvx81.py  ha2_testonly.py                 large_HA_upgrade_dittos.py
+dvx44.py                  dvx83.py  HA_3Fe_Dittos.py                ls_eval1.py
+
+# create a release testbed
+/da/main/Prod/Test/dva.py -v create --buildtop /colo/build/workloads/fixed_builds/4.0.1.0-30307_cd13893/Prod/Build --testbed HA_2FE_dittos /var/tmp/scratch
+
+# create a stable testbed
+/da/main/Prod/Test/dva.py -v create --jenkins http://jenkins.datrium.com/job/build-main-master/15927 --testbed HA_2FE_dittos /var/tmp/scratch
+
+# interactive start 
+/da/main/Prod/Test/dva.py -v attach /var/tmp/scratch/
+
+# start 
+/da/main/Prod/Test/dva.py start /var/tmp/scratch/
+
+
+
+
+
+
+
+
+In [1]: host = dva.frontends[0]
+In [2]: host
+Out[2]: <TestBeds.hosttypes.virtual.VirtualFrontEnd65 at 0x7f71b56551d0>
+In [3]: host.[tab] <- auto-complete
+
+In [8]: mnt = '/da-sys-old'
+   ...: file_name = 'testfile.py'
+   ...: 
+In [9]: host.check_call('nohup python %s/%s > /dev/null 2>&1 &' % (mnt, file_name))
+In [10]: pid = host.check_output("ps -c | grep %s/%s | grep -v grep | awk '{print $1}'" % (mnt, file_name))
+In [11]: host.check_call('kill -SIGINT %s' % pid.strip())
+2018-06-06 15:40:44,293 MainThread backend.py:121  DEBUG  _getipaddr ipaddr 10.80.4.185 wanted
+2018-06-06 15:40:44,747 332-FrontEnd0 interactiveshell.py:2881  DEBUG  run_code root@10.80.4.185: executing "kill -SIGINT "
+2018-06-06 15:40:45,301 332-FrontEnd0 interactiveshell.py:2881  DEBUG  run_code root@10.80.4.185: "kill -SIGINT " returned 1
+sh: you need to specify whom to kill
+---------------------------------------------------------------------------
+CalledProcessError                        Traceback (most recent call last)
+<ipython-input-11-4c417497e1d5> in <module>()
+----> 1 host.check_call('kill -SIGINT %s' % pid.strip())
+
+/da/ToolsAndLibs/NoArch/PyTools/dalibs/ssh.pyc in _ignore_during_ssh_stack_logging(*args, **kwargs)
+     65     '''
+     66     def _ignore_during_ssh_stack_logging(*args, **kwargs):
+---> 67         return f(*args, **kwargs)
+     68     return _ignore_during_ssh_stack_logging
+     69 
+
+/d0/da/main/Prod/Test/TestBeds/hosttypes/standalone.pyc in check_call(self, *args, **kwargs)
+    276     @ssh.ignore_during_ssh_stack_logging
+    277     def check_call(self, *args, **kwargs):
+--> 278         return ssh.check_call(self.ipaddr, *args, name=self.rolename, **kwargs)
+    279 
+    280     @ssh.ignore_during_ssh_stack_logging
+
+/da/ToolsAndLibs/NoArch/PyTools/dalibs/ssh.pyc in check_call(hostname, *args, **kwargs)
+    249     s = shell_cmd(hostname, *args, **kwargs)
+    250     if s.exit_code != 0:
+--> 251         raise subprocess.CalledProcessError(s.exit_code, s.cmd)
+    252     return s.exit_code
+    253 
+
+CalledProcessError: Command 'kill -SIGINT ' returned non-zero exit status 1
+
+In [3]: exit
+

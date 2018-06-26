@@ -1,0 +1,159 @@
+# govc
+# https://velenux.wordpress.com/2016/09/19/automate-your-vcenter-interactions-from-the-linux-commandline-with-govmomi-and-govc/
+# esxcli
+# https://pubs.vmware.com/vsphere-50/index.jsp#com.vmware.vcli.ref.doc_50/esxcli_storage.html
+
+$ export GOVC_HOST='10.80.9.63'
+$ export GOVC_INSECURE=1
+$ export GOVC_USERNAME='root'
+$ export GOVC_PASSWORD='sha1c0w'
+$ export GOVC_URL='10.80.9.63/sdk'
+$ ./govc about
+Name:         VMware ESXi
+Vendor:       VMware, Inc.
+Version:      5.5.0
+Build:        2068190
+OS type:      vmnix-x86
+API type:     HostAgent
+API version:  5.5
+Product ID:   embeddedEsx
+UUID:         
+
+$ ./govc ls
+/ha-datacenter/vm
+/ha-datacenter/network
+/ha-datacenter/host
+/ha-datacenter/datastore
+
+$ ./govc ls /ha-datacenter/host
+/ha-datacenter/host/vesx00.datrium.com
+$ ./govc ls /ha-datacenter/network
+/ha-datacenter/network/VM Network
+$ ./govc ls /ha-datacenter/datastore
+/ha-datacenter/datastore/jho-testbed1..171011234630-Datastore1
+
+$ ./govc logs
+2017-10-31T00:05:01.388Z [FFC21920 verbose 'SoapAdapter'] Responded to service state request
+2017-10-31T00:05:39.860Z [27240B70 info 'Solo.Vmomi' opID=hostd-c872 user=root] Activation [N5Vmomi10ActivationE:0x28806850] : Invoke done [waitForUpdatesEx] on [vmodl.query.PropertyCollector:ha-property-collector]
+2017-10-31T00:05:39.860Z [27240B70 verbose 'Solo.Vmomi' opID=hostd-c872 user=root] Arg version:
+--> "3"
+2017-10-31T00:05:39.860Z [27240B70 verbose 'Solo.Vmomi' opID=hostd-c872 user=root] Arg options:
+--> (vmodl.query.PropertyCollector.WaitOptions) {
+-->    dynamicType = <unset>,
+-->    maxWaitSeconds = 600,
+-->    maxObjectUpdates = 100,
+--> }
+2017-10-31T00:05:39.860Z [27240B70 info 'Solo.Vmomi' opID=hostd-c872 user=root] Throw vmodl.fault.RequestCanceled
+2017-10-31T00:05:39.860Z [27240B70 info 'Solo.Vmomi' opID=hostd-c872 user=root] Result:
+--> (vmodl.fault.RequestCanceled) {
+-->    dynamicType = <unset>,
+-->    faultCause = (vmodl.MethodFault) null,
+-->    msg = "",
+--> }
+2017-10-31T00:05:39.861Z [27240B70 error 'SoapAdapter.HTTPService.HttpConnection'] Failed to read header on stream <io_obj p:0x28417a48, h:44, <TCP '0.0.0.0:0'>, <TCP '0.0.0.0:0'>>: N7Vmacore15SystemExceptionE(Connection reset by peer)
+2017-10-31T00:05:44.648Z [27281B70 verbose 'Hostsvc.ResourcePool ha-root-pool'] Root pool capacity changed from 2277MHz/8451MB to 2277MHz/8454MB
+2017-10-31T00:06:14.494Z [FFC21920 verbose 'Cimsvc'] Ticket issued for CIMOM version 1.0, user root
+2017-10-31T00:06:44.649Z [26C40B70 verbose 'Hostsvc.ResourcePool ha-root-pool'] Root pool capacity changed from 2277MHz/8454MB to 2277MHz/8448MB
+2017-10-31T00:07:44.651Z [26C40B70 verbose 'Hostsvc.ResourcePool ha-root-pool'] Root pool capacity changed from 2277MHz/8448MB to 2277MHz/8451MB
+2017-10-31T00:07:45.746Z [27240B70 verbose 'Cimsvc'] Ticket issued for CIMOM version 1.0, user root
+2017-10-31T00:08:12.547Z [27240B70 verbose 'Hostsvc.DvsManager'] PersistAllDvsInfo called
+2017-10-31T00:08:13.201Z [26C40B70 verbose 'SoapAdapter'] Unrecognized version URI "urn:vim25/6.5"; using default handler for "urn:vim25/5.5"
+2017-10-31T00:08:13.346Z [FFCC5B70 verbose 'SoapAdapter'] Unrecognized version URI "urn:vim25/6.5"; using default handler for "urn:vim25/5.5"
+2017-10-31T00:08:13.529Z [27240B70 verbose 'SoapAdapter'] Unrecognized version URI "urn:vim25/6.5"; using default handler for "urn:vim25/5.5"
+
+$ ./govc env
+GOVC_USERNAME=root
+GOVC_PASSWORD=sha1c0w
+GOVC_URL=10.80.9.63
+GOVC_INSECURE=1
+
+$ ./govc session.ls
+Key                                   Name  Time              Idle   Host          Agent                    
+000afcbe-674c-2e01-3b73-35525da04c53  dcui  2017-10-12 06:50  2m43s  127.0.0.1     VMware-client/5.1.0  
+0305bb41-e76a-3c91-d154-6d15ec6a41b8  root  2017-10-12 07:05  57s    127.0.0.1                          
+83f6362d-1ede-47f3-06cd-bff32f845761  root  2017-10-31 00:00    .    10.195.6.250  govc/0.15.0          
+c5cd82e6-23a8-d6fb-6307-42c949ac20a6  root  2017-10-12 06:48  2m4s   127.0.0.1               
+
+$ ./govc datacenter.info
+Name:                ha-datacenter
+  Path:              /ha-datacenter
+  Hosts:             1
+  Clusters:          0
+  Virtual Machines:  0
+  Networks:          1
+  Datastores:        0
+
+$ ./govc events
+[Wed Oct 25 00:03:36 2017] [info] User root@127.0.0.1 logged in as
+[Wed Oct 25 00:03:36 2017] [info] User root@127.0.0.1 logged out (login time: Wednesday, 25 October, 2017 07:03:36, number of API invocations: 0, user agent: )
+[Wed Oct 25 00:03:39 2017] [info] User root@127.0.0.1 logged in as
+[Wed Oct 25 00:03:39 2017] [info] User root@127.0.0.1 logged out (login time: Wednesday, 25 October, 2017 07:03:39, number of API invocations: 0, user agent: )
+[Thu Oct 26 00:03:38 2017] [info] User root@127.0.0.1 logged in as
+
+
+$ da
+$ dacli mount
+$ ./govc datastore.info
+Name:        jho-testbed1..171011234630-Datastore1
+  Path:      /ha-datacenter/datastore/jho-testbed1..171011234630-Datastore1
+  Type:      NFS
+  URL:       /vmfs/volumes/b49fc646-a77cf796
+  Capacity:  718.3 GB
+  Free:      716.4 GB
+  Remote:    localhost:/10.80.71.8/Datastore1
+
+$ ./govc host.info -host.ip=10.80.9.63
+Name:              vesx00.datrium.com
+  Path:            /ha-datacenter/host/vesx00.datrium.com/vesx00.datrium.com
+  Manufacturer:    VMware, Inc.
+  Logical CPUs:    4 CPUs @ 2299MHz
+  Processor type:  Intel(R) Xeon(R) CPU E5-2650 v3 @ 2.30GHz
+  CPU usage:       396 MHz (4.3%)
+  Memory:          16383MB
+  Memory usage:    2236 MB (-11.4%)
+  Boot time:       2017-10-12 06:47:04.703637 +0000 UTC
+
+$ ./govc vm.info -vm.ip=xx.xx.xx.xx
+
+# govc host.esxcli --host.ip=192.168.100.1 vm process list | grep DisplayName | awk {'print $2'} | sort
+TOMCAT01
+TOMCAT-TEST
+WS01
+WS01-TEST
+WS02
+WS-TEST
+
+$ ./govc host.esxcli --host.ip=10.80.9.63 vm process list
+$ ./govc host.esxcli --host.ip=10.80.9.63 hardware cpu list
+APICID:                0
+Brand:                 GenuineIntel
+BusSpeed:              66000000
+CoreSpeed:             2299998000
+Family:                6
+Id:                    0
+L2CacheAssociativity:  8
+L2CacheCPUCount:       4
+L2CacheLineSize:       64
+L2CacheSize:           262144
+L3CacheAssociativity:  20
+...
+
+
+$ ./govc host.esxcli --host.ip=10.80.9.63 storage filesystem list
+Mount Point                                        Volume Name                                            UUID                                 Mounted  Type   Size         Free
+-----------                                        -----------                                            ----                                 -------  ----   ----         ----
+/vmfs/volumes/59df12b7-dfcd56fb-765f-da804c72fbc9  datrium-reserved-sys-vesx00_da:80:4c:72:fb:c9-4004P0   59df12b7-dfcd56fb-765f-da804c72fbc9  true     VFFS   7784628224   6894387200
+/vmfs/volumes/59df13f9-23e093ba-3255-da804c72fbc9  datrium-reserved-sys-vesx00_da:80:4c:72:fb:c9-BZUEKC   59df13f9-23e093ba-3255-da804c72fbc9  true     VFFS   7784628224   6204424192
+/vmfs/volumes/59df140a-4ef5b548-f680-da804c72fbc9  datrium-reserved-core-vesx00_da:80:4c:72:fb:c9-J2AI5Q  59df140a-4ef5b548-f680-da804c72fbc9  true     VFFS   24964497408  23984078848
+/vmfs/volumes/56029b6a-e09c86fb-2c0d-0050569f7bd4                                                         56029b6a-e09c86fb-2c0d-0050569f7bd4  true     vfat   4293591040   4222156800
+/vmfs/volumes/ec0b1f78-a638af1a-8054-c8cf1e5185a6                                                         ec0b1f78-a638af1a-8054-c8cf1e5185a6  true     vfat   261853184    94982144
+/vmfs/volumes/e22e1571-dbe30ce5-9700-c224509c05c9                                                         e22e1571-dbe30ce5-9700-c224509c05c9  true     vfat   261853184    95035392
+/vmfs/volumes/56029b63-88786006-1a62-0050569f7bd4                                                         56029b63-88786006-1a62-0050569f7bd4  true     vfat   299712512    96935936
+
+$ ./govc host.esxcli --host.ip=10.80.9.63 storage vmfs extent list
+Volume Name                                            VMFS UUID                            Extent Number  Device Name          Partition
+-----------                                            ---------                            -------------  -----------          ---------
+datrium-reserved-sys-vesx00_da:80:4c:72:fb:c9-4004P0   59df12b7-dfcd56fb-765f-da804c72fbc9  0              mpx.vmhba1:C0:T1:L0  1
+datrium-reserved-sys-vesx00_da:80:4c:72:fb:c9-BZUEKC   59df13f9-23e093ba-3255-da804c72fbc9  0              mpx.vmhba1:C0:T0:L0  3
+datrium-reserved-core-vesx00_da:80:4c:72:fb:c9-J2AI5Q  59df140a-4ef5b548-f680-da804c72fbc9  0              mpx.vmhba1:C0:T0:L0  4
+

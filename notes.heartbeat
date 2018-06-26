@@ -1,0 +1,51 @@
+Prod/SysMgmt/Autosupport/Scripts/cli_output_collector.py
+
+        if IS_HOST:                    
+            if IS_ESX:                         
+                cmd_list = [               
+                    "memstats -r vm-stats",  
+                    "memstats -r swap-stats",     
+                    "memstats -r heap-stats",
+                    "uptime",             
+                    "sched-stats -t worldlet-state-times",
+                    "localcli system maintenanceMode get"
+                ]               
+            else:                        
+                cmd_list = [      
+                    "ps -aux",      
+                    "vmstat -a",    
+                    "vmstat -d",
+                    "vmstat -m",
+                ]
+            else:                                                                                                
+               cmd_list = [                                                                                      
+                  "da alarms show",                                                                              
+                  "da config dvx show",                                                                          
+                  "da config mail-server show",                                                                  
+                  "da config vcenter show",                                                                      
+                  "da config web-proxy show",
+                  "da datastores encryption show",
+                  "da datastores show",
+                  "da datastores sr show",
+                  "da dev hosts show",
+                  "da dvx perf-history --count 288",
+                  "da dvx show",
+                  "da dvx software show",
+                  "da hosts show",
+                  "da network show",
+                  "da network test",
+                  "da nodes show",
+                  "da pool show",
+                  "da protection groups show",
+                  "da protection replica-sites encryption show",
+                  "da protection replica-sites show",
+                  "da protection show",
+                  "da protection tasks show",
+                  "da support remote-access show",
+                  "da vms show",
+                  "da vms show --dvx-incompatible-only",
+                  "hamgr_cli.py --timeout 10 show",
+                  "procmgr_cli.py show",
+                  "netmon_tool.py --controller %s --dump_paths_json" % get_controller_id()
+               ]
+

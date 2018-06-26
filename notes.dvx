@@ -1,0 +1,22 @@
+hosts show
+
+dvx software show
+
+nodes show
+
+network show
+
+support show
+
+events show
+	events show --end-time --from-time --show-all --component-name --event-type {tab tab}
+	-- check dvx_cli manual
+	http://confluence.datrium.com/display/PD/DVX+Documentation+-+v3.1.1.0?preview=/41129807/41129960/dvx_cli_3-1-1-0.pdf
+
+# events show --show-all --event-type UpgradeCheckStartEvent UpgradeCheckErrorDetailEvent UpgradeCheckInternalErrorEvent UpgradeCheckFailEvent
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+             Time stamp  Details                                                                                                     Severity    Component name      Type
+------------------------ ----------------------------------------------------------------------------------------------------------- ----------- ------------------- ------------------------------
+2018-01-16T22:24:11 UTC  Upgrade check: Host 10.64.16.215 log message into vmkernel log file failed. Restart syslog service          ERROR       n1197a.vdi.local    UpgradeCheckErrorDetailEvent
+2018-01-16T22:03:47 UTC  Upgrade check of 3.1.1.3-27743_1cf6303 failed                                                               ERROR       node1.controller2   UpgradeCheckFailEvent
+2018-01-16T22:01:51 UTC  Upgrade check of 3.1.1.3-27743_1cf6303 started                                                              INFO        node1.controller2   UpgradeCheckStartEvent

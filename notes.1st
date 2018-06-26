@@ -1,0 +1,87 @@
+src
+	Prod/Platform/UpgradeMgr
+	Prod/Platform/client/common
+
+Build
+	/main
+		make dva.py
+	/main/Prod
+		make -j 8
+
+Test
+	/main
+		make boothalt-test
+	/main/Prod
+		make baseline-test
+
+// First time.  Setup Env
+sudo mkdir /build
+sudo chown jho:jho /build
+sudo ln -sf /da/ToolsAndLibs/LinuxX64ToEsxX64/ /build/toolchain
+sudo yum install glibc.i686 zlib.i686
+
+
+Total translation table size: 6047
+Total rockridge attributes bytes: 2620
+Total directory bytes: 6144
+Path table size(bytes): 52
+Done with: The File(s)                             Block(s)    422638
+Writing:   Ending Padblock                         Start Block 422676
+Done with: Ending Padblock                         Block(s)    150
+Max brk space used 0
+422826 extents written (825 MB)
+syslinux-4.06/utils/isohybrid.pl
+INFO: iso generation: 3.50021505356 secs
+Creating OVF in directory /d0/da/main/OS/Build/x86_64
+INFO: ovf generation: 2.1755759716 secs
+INFO: Successfully built images
+  /d0/da/main/OS/Build/x86_64/da-os-Debug.bin
+  /d0/da/main/OS/Build/x86_64/da-vm-ai-3.0.100.0-Debug.iso
+  /d0/da/main/OS/Build/x86_64/da-vm-ai-3.0.100.0-Debug.ovf
+build.py 322s  cd OS && ./build.py -a
+INFO:__main__:Packaging cloud DR software at /d0/da/main/OS/Build/x86_64/_dr_ec2_install
+INFO:__main__:Creating cloud DR software tarball at /d0/da/main/OS/Build/x86_64/da-dr-ec2-3.0.100.0-27440_3e7d3ae_g-Debug.tar.gz
+INFO:__main__:Created cloud DR software tarball at /d0/da/main/OS/Build/x86_64/da-dr-ec2-3.0.100.0-27440_3e7d3ae_g-Debug.tar.gz
+INFO:__main__:Packaged cloud DR software at /d0/da/main/OS/Build/x86_64/_dr_ec2_install
+INFO:__main__:Skipping AMI packing: AWS_ACCOUNT_INFO_FILE_PATH environment variable not set
+build.py 10s   cd CloudDR/EC2 && ./build.py
+Total Make Time: 5193s
+
+# /da/main/Prod/Test/dva.py create --testbed HA_dittos --buildtop /da/main/Prod/Build /var/tmp/testbed1
+# /da/main/Prod/Test/dva.py -v create --testbed full_dittos /var/tmp/full_dittos
+	clean up => # /da/main/Prod/Test/dva.py destroy /var/tmp/full_dittos/
+	
+  ...
+
+# ipython like 
+# /da/main/Prod/Test/dva.py -v attach /var/tmp/full_dittos
+
+$ /da/main/Prod/Test/dva.py start /var/tmp/testbed1
+  ....
+
+# vm list jho
+           None  off  2017-07-19  core-esx19       jho-testbed1..170719143442_chassis-0
+   10.80.70.149  on   2017-07-19  n1379-mgmt       jho-testbed1..170719143442_controller-01
+   10.80.70.154  on   2017-07-19  n1379-mgmt       jho-testbed1..170719143442_controller-02
+    10.80.14.25  on   2017-07-19  colo-esx16a      jho-testbed1..170719143442_esx55-0
+[jho@jho-colo-00 main]$ ssh root@10.80.70.149
+passwd: sha1c0w
+	ca$hc0w
+~ # da
+~ # procmgr_cli.py show
+# ssh .peer
+# ssh .n2c1
+
+$vm delete jho-test_fail_backup_dasys_and_fstore____HA_d.41f4.0*
+
+g$vm
+usage: vm [-h]
+          {list,poweron,poweroff,touch,attach,migrate,delete,deploy,export}
+          ...
+vm: error: too few arguments
+
+
+Tests
+        /main/Test/Scripts/Upgrade/*
+        /Prod
+                make bct # include upgrade tests

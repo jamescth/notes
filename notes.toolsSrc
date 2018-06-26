@@ -1,0 +1,11 @@
+cd /da
+git clone `whomai`@git:/da/ToolsSrc
+
+cd /da/main
+make dva.py -j 4
+
+cd /da/ToolsSrc
+make LinuxX64ToEsxX64-help
+CMD_PROMPT=true make LinuxX64ToEsxX64-help
+	# home dir is same as host
+	# /tmp is same as host

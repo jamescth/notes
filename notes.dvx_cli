@@ -1,0 +1,157 @@
+[node1.controller2-RMS1008977G0DDA: /da/bin]# ll
+total 2569308
+drwxr-xr-x    5 root     root            52 Feb 15 14:34 AutosupportService
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 CertTool -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root      70903306 Feb 15 15:19 ChunkIndexScrollTool
+-rwxr-xr-x    1 root     root      79068344 Feb 15 15:19 ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer01 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer02 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer03 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer04 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer05 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer06 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer07 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer08 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer09 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer10 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer11 -> ChunkStoreServer
+lrwxrwxrwx    1 root     root            16 Feb 15 14:49 ChunkStoreServer12 -> ChunkStoreServer
+-rwxr-xr-x    1 root     root      76952887 Feb 15 15:19 ChunkStoreTool
+-rwxr-xr-x    1 root     root     105596996 Feb 15 15:20 ClumpStoreServer
+-rwxr-xr-x    1 root     root      96898531 Feb 15 15:19 ClumpStoreUtils
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 CollectionUtils -> /da/bin/DaControllerTool
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 DLATool -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root        510104 Feb 15 15:19 DOut
+-rwxr-xr-x    1 root     root     158535866 Feb 15 15:20 DVFSServer
+-rwxr-xr-x    1 root     root      70735704 Feb 15 15:19 DaControllerTool
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 DaTail -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root     109956590 Feb 15 15:20 DaggerServer
+-rwxr-xr-x    1 root     root      57764946 Feb 15 15:19 DaggerTool
+-rwxr-xr-x    1 root     root     134820329 Feb 15 15:20 DaggerWorker
+-rwxr-xr-x    1 root     root      62176738 Feb 15 15:19 DatastoreTool
+-rwxr-xr-x    1 root     root      62652847 Feb 15 15:19 DatastoreUtils
+-rwxr-xr-x    1 root     root      58821064 Feb 15 15:20 EncryptorAgent
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 FETool -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root      68397149 Feb 15 15:20 GFPIndexSlave
+-rwxr-xr-x    1 root     root      61431515 Feb 15 15:19 HARepl.so
+-rwxr-xr-x    1 root     root          8209 Feb 15 15:20 LayoutManager
+-rwxr-xr-x    1 root     root      57025817 Feb 15 15:19 LicenseGenerator
+-rwxr-xr-x    1 root     root      58349666 Feb 15 15:20 NTBEmu
+-rwxr-xr-x    1 root     root      58347975 Feb 15 15:20 NTBEmuCompat
+-rwxr-xr-x    1 root     root       5873068 Feb 15 15:20 NVDevUtil
+-rwxr-xr-x    1 root     root     104404988 Feb 15 15:20 NVLogTool
+-rwxr-xr-x    1 root     root      66591622 Feb 15 15:20 NVScrollSlave
+-rwxr-xr-x    1 root     root     117469864 Feb 15 15:20 NamespaceTool
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 NetDirList -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root      59930016 Feb 15 15:20 NetworkMonitor
+-rwxr-xr-x    1 root     root      79009394 Feb 15 15:20 PoolManagerServer
+-rwxr-xr-x    1 root     root     109339640 Feb 15 15:20 PurgeTimeSeriesStore
+drwxr-xr-x    1 root     root            60 Feb 15 15:20 PythonGenRoot
+drwxr-xr-x    1 root     root           140 Feb 15 19:09 PythonRoot
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 RegistryTool -> /da/bin/DaControllerTool
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 RpcNetworkHealthTool -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root     102406382 Feb 15 15:20 ScrollFsTool
+-rwxr-xr-x    1 root     root         11633 Feb 15 15:20 SmMalloc.so
+-rwxr-xr-x    1 root     root     161567277 Feb 15 15:20 SnappleServer
+-rwxr-xr-x    1 root     root      67436714 Feb 15 15:20 StripeManager
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 SvcList -> /da/bin/DaControllerTool
+drwxr-xr-x    6 root     root            71 Feb 15 14:35 SysMgmt
+-rwxr-xr-x    1 root     root     116675247 Feb 15 15:20 TimeSeriesStoreServer
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 TraceParser -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root      65889430 Feb 15 15:20 UpgradeMgr
+-rwxr-xr-x    1 root     root     118570897 Feb 15 15:20 VDiskDumpTool
+lrwxrwxrwx    1 root     root            24 Feb 15 15:20 VmMgmtTool -> /da/bin/DaControllerTool
+-rwxr-xr-x    1 root     root       1214649 Feb 15 15:19 Yafuflash
+-rwxr-xr-x    1 root     root          5457 Feb 15 15:20 active_canceller.py
+-rwxr-xr-x    1 root     root         12472 Feb 15 15:20 active_launcher.py
+drwxr-xr-x    2 root     root           299 Feb 15 15:20 activeasupscripts
+lrwxrwxrwx    1 root     root            29 Feb 15 15:20 alarms -> PythonRoot/datrium/cli/alarms
+lrwxrwxrwx    1 root     root            49 Feb 15 15:20 battery_cli.py -> PythonRoot/datrium/platform/client/battery_cli.py
+-rwxr-xr-x    1 root     root          2433 Feb 15 15:19 bmc232.py
+-rwxr-xr-x    1 root     root           303 Feb 15 15:19 cgroup_wrapper.sh
+-rwxr-xr-x    1 root     root         13095 Feb 15 15:19 check_seeprom
+-rwxr-xr-x    1 root     root          7948 Feb 15 15:19 client.py
+lrwxrwxrwx    1 root     root            41 Feb 15 15:20 cluster-cli -> PythonRoot/datrium/cluster/cluster_cli.py
+drwxr-xr-x    4 root     root            37 Feb 15 14:34 clusterServiceProj
+lrwxrwxrwx    1 root     root            41 Feb 15 15:20 cluster_cli.py -> PythonRoot/datrium/cluster/cluster_cli.py
+drwxr-xr-x    4 root     root            37 Feb 15 14:34 clusterclient
+-rwxr-xr-x    1 root     root         18143 Feb 15 15:20 collect_support.py
+lrwxrwxrwx    1 root     root            29 Feb 15 15:20 config -> PythonRoot/datrium/cli/config
+drwxr-xr-x    4 root     root            49 Feb 15 14:34 configClient
+-rwxr-xr-x    1 root     root         29659 Feb 15 15:20 config_vcenter.py
+lrwxrwxrwx    1 root     root            53 Feb 15 15:20 controller_init.py -> PythonRoot/datrium/platform/client/controller_init.py
+lrwxrwxrwx    1 root     root            25 Feb 15 15:20 da -> PythonRoot/datrium/cli/da
+lrwxrwxrwx    1 root     root            44 Feb 15 15:20 da_ifstat.py -> PythonRoot/datrium/platform/net/da_ifstat.py
+lrwxrwxrwx    1 root     root            34 Feb 15 15:20 da_shell -> PythonRoot/datrium/cli/da_shell.py
+lrwxrwxrwx    1 root     root            33 Feb 15 15:20 datastores -> PythonRoot/datrium/cli/datastores
+lrwxrwxrwx    1 root     root            26 Feb 15 15:20 dev -> PythonRoot/datrium/cli/dev
+-rwxr-xr-x    1 root     root          1590 Feb 15 15:20 dev_perf_dumper.py
+-rwxr-xr-x    1 root     root         28103 Feb 15 15:19 dlog
+-rwxr-xr-x    1 root     root        512984 Feb 15 15:19 dloglite
+-rwxr-xr-x    1 root     root          6285 Feb 15 15:19 dmij
+-rwxr-xr-x    1 root     root           697 Feb 15 15:19 dvanet
+lrwxrwxrwx    1 root     root            26 Feb 15 15:20 dvx -> PythonRoot/datrium/cli/dvx
+-rwxr-xr-x    1 root     root          2212 Feb 15 15:19 elog
+-rwxr-xr-x    1 root     root          2957 Feb 15 15:20 enable-halfcapacity-dvx
+-rwxr-xr-x    1 root     root         21756 Feb 15 15:20 event_producer.py
+lrwxrwxrwx    1 root     root            29 Feb 15 15:20 events -> PythonRoot/datrium/cli/events
+lrwxrwxrwx    1 root     root            50 Feb 15 15:20 failover_time.py -> PythonRoot/datrium/platform/hamgr/failover_time.py
+lrwxrwxrwx    1 root     root            28 Feb 15 15:20 files -> PythonRoot/datrium/cli/files
+lrwxrwxrwx    1 root     root            17 Feb 15 15:20 fw-cli -> /da/bin/fw_cli.py
+-rwxr-xr-x    1 root     root         14746 Feb 15 15:19 fw_cli.py
+-rwxr-xr-x    1 root     root        857975 Feb 15 15:19 fwdownloader
+drwxr-xr-x    3 root     root            65 Feb 15 15:19 gdb
+-rwxr-xr-x    1 root     root          3847 Feb 15 15:20 gem_log_collector.py
+lrwxrwxrwx    1 root     root            31 Feb 15 15:20 gem_utils.py -> PythonRoot/xyratex/gem_utils.py
+-rwxr-xr-x    1 root     root          2317 Feb 15 15:20 generate_sm_jvm_opts.py
+lrwxrwxrwx    1 root     root            46 Feb 15 15:20 hamgr-cli -> PythonRoot/datrium/platform/hamgr/hamgr_cli.py
+lrwxrwxrwx    1 root     root            42 Feb 15 15:20 hamgr.py -> PythonRoot/datrium/platform/hamgr/hamgr.py
+lrwxrwxrwx    1 root     root            46 Feb 15 15:20 hamgr_cli.py -> PythonRoot/datrium/platform/hamgr/hamgr_cli.py
+lrwxrwxrwx    1 root     root            31 Feb 15 15:20 hardware -> PythonRoot/datrium/cli/hardware
+lrwxrwxrwx    1 root     root            52 Feb 15 15:20 health_monitor.py -> PythonRoot/datrium/platform/client/health_monitor.py
+lrwxrwxrwx    1 root     root            10 Feb 15 15:20 histo-dump -> trace-dump
+-rwxr-xr-x    1 root     root          2543 Feb 15 15:19 hlog
+lrwxrwxrwx    1 root     root            28 Feb 15 15:20 hosts -> PythonRoot/datrium/cli/hosts
+-rwxr-xr-x    1 root     root           275 Feb 15 15:20 jstack.sh
+-rwxr-xr-x    1 root     root         21801 Feb 15 15:20 log_cleaner.py
+-rwxr-xr-x    1 root     root          8691 Feb 15 15:20 netmon_tool.py
+lrwxrwxrwx    1 root     root            30 Feb 15 15:20 network -> PythonRoot/datrium/cli/network
+lrwxrwxrwx    1 root     root            26 Feb 15 15:20 nfs -> PythonRoot/datrium/cli/nfs
+lrwxrwxrwx    1 root     root            28 Feb 15 15:20 nodes -> PythonRoot/datrium/cli/nodes
+-rwxr-xr-x    1 root     root         27046 Feb 15 15:20 ping_tool.py
+lrwxrwxrwx    1 root     root            49 Feb 15 15:20 plat_client.py -> PythonRoot/datrium/platform/client/plat_client.py
+lrwxrwxrwx    1 root     root            47 Feb 15 15:20 plat_tool.py -> PythonRoot/datrium/platform/client/plat_tool.py
+lrwxrwxrwx    1 root     root            46 Feb 15 15:20 platmgr.py -> PythonRoot/datrium/platform/platmgr/platmgr.py
+lrwxrwxrwx    1 root     root            27 Feb 15 15:20 pool -> PythonRoot/datrium/cli/pool
+lrwxrwxrwx    1 root     root            48 Feb 15 15:20 powermgr.py -> PythonRoot/datrium/platform/powermgr/powermgr.py
+-rwxr-xr-x    1 root     root          5190 Feb 15 15:19 print_seeprom
+lrwxrwxrwx    1 root     root            41 Feb 15 15:20 procmgr-cli -> PythonRoot/datrium/procmgr/procmgr_cli.py
+lrwxrwxrwx    1 root     root            37 Feb 15 15:20 procmgr.py -> PythonRoot/datrium/procmgr/procmgr.py
+lrwxrwxrwx    1 root     root            41 Feb 15 15:20 procmgr_cli.py -> PythonRoot/datrium/procmgr/procmgr_cli.py
+lrwxrwxrwx    1 root     root            33 Feb 15 15:20 protection -> PythonRoot/datrium/cli/protection
+-rwxr-xr-x    1 root     root         14214 Feb 15 15:20 remote_access.py
+drwxr-xr-x   10 root     root           303 Feb 15 15:20 resources
+-rwxr-xr-x    1 root     root           686 Feb 15 15:20 rpc-network-test
+-rwxr-xr-x    1 root     root          8700 Feb 15 15:19 rpc_stats.py
+-rwxr-xr-x    1 root     root        551240 Feb 15 15:19 sas2flash
+-rwxr-xr-x    1 root     root        660328 Feb 15 15:19 sas3flash
+-rwxr-xr-x    1 root     root       1329382 Feb 15 15:19 sbu
+-rwxr-xr-x    1 root     root         12252 Feb 15 15:19 slog
+-rwxr-xr-x    1 root     root         11403 Feb 15 15:19 slog_common.py
+-rwxr-xr-x    1 root     root           985 Feb 15 15:20 sm_auth.py
+-rwxr-xr-x    1 root     root          1159 Feb 15 15:20 sm_remote_debug.py
+drwxr-xr-x    5 root     root            64 Feb 15 14:35 standaloneGUI
+lrwxrwxrwx    1 root     root            36 Feb 15 15:20 standard_utils.py -> PythonRoot/xyratex/standard_utils.py
+lrwxrwxrwx    1 root     root            30 Feb 15 15:20 support -> PythonRoot/datrium/cli/support
+-rwxr-xr-x    1 root     root       1346719 Feb 15 15:19 suu
+lrwxrwxrwx    1 root     root            50 Feb 15 15:20 sys_shutdown.py -> PythonRoot/datrium/platform/client/sys_shutdown.py
+-rwxr-xr-x    1 root     root         14645 Feb 15 15:19 trace
+-rwxr-xr-x    1 root     root          4846 Feb 15 15:19 trace-dump
+-rwxr-xr-x    1 root     root          4672 Feb 15 15:19 trace_util.py
+-rwxr-xr-x    1 root     root          7121 Feb 15 15:19 update_seeprom
+lrwxrwxrwx    1 root     root            50 Feb 15 15:20 upgrade_util.py -> PythonRoot/datrium/platform/client/upgrade_util.py
+-rwxr-xr-x    1 root     root          4782 Feb 15 15:20 vcenter_findvm.py
+-rwxr-xr-x    1 root     root         10566 Feb 15 15:19 vmcmp.py
+lrwxrwxrwx    1 root     root            26 Feb 15 15:20 vms -> PythonRoot/datrium/cli/vms
+-rwxr-xr-x    1 root     root         13314 Feb 15 15:19 xyafu
+

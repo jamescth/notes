@@ -1,0 +1,5 @@
+speed test
+
+Unusable SSD detected, IOPS: 113
+
+/opt/datrium/bin/FETool --FETool.speedTestDevPath /vmfs/devices/disks/t10.ATA_____HGST_HUS724020ALA640__________________________PN2134P6HJPGTX --DaLog.enableStderr

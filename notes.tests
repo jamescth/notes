@@ -1,0 +1,37 @@
+git pull first
+make -j4 dva.py
+
+run test:
+Prod/Test/testrunner.py -v -s --buildtop /da/main/Prod/Build --buildtype Debug --runtimedir /da/main/Prod/Build/TestResults/Debug --testbed HA_dittos /da/main/Prod/Platform/tests/SSDResiliencyTestPlan.py:SSDResiliencyTest.test_fail_backup_dasys --no-stop --rmOnPass
+
+From the output:
+Data Node 10.80.78.206 mounted.
+/d0/da/main/Prod/Build/TestResults/Debug/SSDResiliencyTestPlan.SSDResiliencyTest.test_fail_backup_dasys____HA_dittos.1502141778.6 ... FAILED (1659 secs)
+
+vi /d0/da/main/Prod/Build/TestResults/Debug/SSDResiliencyTestPlan.SSDResiliencyTest.test_fail_backup_dasys____HA_dittos.1502141778.6/test.log 
+	search for "==== FAILED
+
+	2017-08-07T22:03:57.742284+0000     DEBUG  23614:133-FrontEnd0 server_plat_test_lib.py:1370  dacli_get_disk_output  --  root@10.80.10.78: stdout: dacli failed: 'NoneType' object has no attribute 'keys'
+
+
+# bug 31030
+Prod/Test/testrunner.py -v -s --buildtop /da/main/Prod/Build\
+        --testbed HA_dittos --no-stop --rmOnPass\
+        /da/main/Prod/Platform/tests/SSDResiliencyTestPlan.py:DaCliTest.test_remove_add_virtual_nonbootable_ssd
+
+
+
+import Prod.Platform.tests.example_test_lib as testlib
+
+dva.frontends
+
+dva.frontends[0].ipaddr
+
+dva.controllers[0].ipaddr
+
+fe = dva.frontends[0]
+fe.check_call('echo Hello world')
+
+dva.cli()
+dva.events(eventtype='HostConnectedEvent')
+

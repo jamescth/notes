@@ -1,0 +1,318 @@
+[node1.controller2-RMS1013354G04GC: ~/var/log]# events show
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+             Time stamp  Details                                                                                                          Severity    Component name          Type                        
+------------------------ ---------------------------------------------------------------------------------------------------------------- ----------- ----------------------- ----------------------------
+2018-03-21T19:40:48 UTC  Upgrade check of 4.0.1.0-30307_cd13893 passed                                                                    INFO        node1.controller1       UpgradeCheckSuccessEvent    
+2018-03-21T19:40:23 UTC  Firmware upgrade is needed during upgrade to 4.0.1.0-30307_cd13893. The upgrade process may take up to 2 hours.  INFO        node1.controller1       FWUpgradeNeededEvent        
+2018-03-21T19:39:30 UTC  Upgrade check of 4.0.1.0-30307_cd13893 started                                                                   INFO        node1.controller1       UpgradeCheckStartEvent      
+2018-03-21T19:06:40 UTC  Upgrade from 3.1.1.2-27737_576932f to 4.0.1.0-30307_cd13893 failed and rolled back                               ERROR       node1.controller1       UpgradeFailAndRollbackEvent 
+2018-03-21T19:06:29 UTC  All network endpoints are reachable by interface floating.data                                                   INFO        floating.data           DataNodeNetworkUpEvent      
+2018-03-21T19:06:29 UTC  All network endpoints are reachable by interface node1.controller1.eth8                                          INFO        node1.controller1.eth8  DataNodeNetworkUpEvent      
+2018-03-21T19:06:29 UTC  All network endpoints are reachable by interface node1.controller1.eth7                                          INFO        node1.controller1.eth7  DataNodeNetworkUpEvent      
+2018-03-21T19:06:29 UTC  All network endpoints are reachable by interface node1.controller1.eth6                                          INFO        node1.controller1.eth6  DataNodeNetworkUpEvent      
+2018-03-21T19:06:29 UTC  All network endpoints are reachable by interface node1.controller1.eth5                                          INFO        node1.controller1.eth5  DataNodeNetworkUpEvent      
+2018-03-21T19:06:21 UTC  Data Node has received DVX software 3.1.1.2-27737_576932f                                                        INFO        node1.controller1       NodeUpgradeReceivedEvent    
+2018-03-21T19:06:20 UTC  Upgrade has been cancelled on all components                                                                     INFO        node1.controller1       UpgradeProgressEvent        
+2018-03-21T19:06:18 UTC  Data Node upgrade was cancelled                                                                                  INFO        node1.controller1       NodeUpgradeCancelledEvent   
+2018-03-21T19:06:16 UTC  High availability status is redundant                                                                            INFO        node1.controller2       HARedundantEvent            
+2018-03-21T19:06:03 UTC  All network endpoints are reachable by interface node1.controller2.eth8                                          INFO        node1.controller2.eth8  DataNodeNetworkUpEvent      
+2018-03-21T19:06:03 UTC  All network endpoints are reachable by interface node1.controller2.eth7                                          INFO        node1.controller2.eth7  DataNodeNetworkUpEvent      
+2018-03-21T19:06:03 UTC  All network endpoints are reachable by interface node1.controller2.eth6                                          INFO        node1.controller2.eth6  DataNodeNetworkUpEvent      
+2018-03-21T19:06:03 UTC  All network endpoints are reachable by interface node1.controller2.eth5                                          INFO        node1.controller2.eth5  DataNodeNetworkUpEvent      
+2018-03-21T19:05:59 UTC  Controller node1.controller2 is now Passive                                                                      INFO        node1.controller2       ControllerRoleChangedEvent  
+2018-03-21T19:04:53 UTC  Controller node1.controller2 rebooted                                                                            INFO        node1.controller2       ControllerRebootedEvent     
+2018-03-21T18:56:56 UTC  Controller node1.controller2 rebooted                                                                            INFO        node1.controller2       ControllerRebootedEvent     
+>2018-03-21T18:54:57 UTC  DVX node1.chassis firmware upgrade to v1.29c completed                                                           INFO        node1.chassis           FWUpgradeCompletedEvent     
+2018-03-21T18:52:04 UTC  Power/cooling module is OK after firmware upgrade                                                                INFO        node1.pcm2              PCMOKEventFWUpgrade         
+2018-03-21T18:51:57 UTC  Fan speed is normal after firmware upgrade                                                                       INFO        node1.pcm2.fan2         FanSpeedNormalEventFWUpgrade
+2018-03-21T18:51:57 UTC  Fan speed is normal after firmware upgrade                                                                       INFO        node1.pcm2.fan1         FanSpeedNormalEventFWUpgrade
+2018-03-21T18:50:31 UTC  Space reclamation completed successfully                                                                         INFO        Datastore1              SRRunSuccessEvent           
+2018-03-21T18:50:25 UTC  Cancelling upgrade on all components                                                                             INFO        node1.controller1       UpgradeProgressEvent        
+>2018-03-21T18:50:25 UTC  node1.controller1 failed to converge to target version. (3.1.1.2-27737_576932f to 4.0.1.0-30307_cd13893)         ERROR       node1.controller1       UpgradeFailureDetailEvent   
+2018-03-21T18:48:39 UTC  Failed to read sensor data during firmware upgrade                                                               INFO        node1.pcm2              SensorFailedEventFWUpgrade  
+2018-03-21T18:48:29 UTC  Power/cooling module is OK after firmware upgrade                                                                INFO        node1.pcm1              PCMOKEventFWUpgrade         
+2018-03-21T18:48:23 UTC  Failed to read sensor data during firmware upgrade                                                               INFO        node1.pcm2.fan2         SensorFailedEventFWUpgrade  
+------------------------ ---------------------------------------------------------------------------------------------------------------- ----------- ----------------------- ----------------------------
+Press ENTER to show more events. Type 'q' or CTRL-C to stop:  
+------------------------------------------------------------------------------------------------------------------------------------------
+             Time stamp  Details                                               Severity    Component name     Type                        
+------------------------ ----------------------------------------------------- ----------- ------------------ ----------------------------
+2018-03-21T18:48:23 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm2.fan2    SensorFailedEventFWUpgrade  
+2018-03-21T18:48:23 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm2.fan1    SensorFailedEventFWUpgrade  
+2018-03-21T18:48:22 UTC  Fan speed is high during firmware upgrade             INFO        node1.pcm1.fan2    FanSpeedHighEventFWUpgrade  
+2018-03-21T18:48:21 UTC  Fan speed is high during firmware upgrade             INFO        node1.pcm1.fan1    FanSpeedHighEventFWUpgrade  
+2018-03-21T18:44:50 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1         SensorFailedEventFWUpgrade  
+2018-03-21T18:44:42 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1.fan2    SensorFailedEventFWUpgrade  
+2018-03-21T18:44:42 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1.fan1    SensorFailedEventFWUpgrade  
+2018-03-21T18:44:03 UTC  Power/cooling module is OK after firmware upgrade     INFO        node1.pcm2         PCMOKEventFWUpgrade         
+2018-03-21T18:43:56 UTC  Fan speed is normal after firmware upgrade            INFO        node1.pcm2.fan2    FanSpeedNormalEventFWUpgrade
+2018-03-21T18:43:56 UTC  Fan speed is normal after firmware upgrade            INFO        node1.pcm2.fan1    FanSpeedNormalEventFWUpgrade
+2018-03-21T18:37:44 UTC  Space reclamation started                             INFO        Datastore1         SRRunStartEvent             
+2018-03-21T18:36:28 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm2         SensorFailedEventFWUpgrade  
+2018-03-21T18:36:20 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm2.fan2    SensorFailedEventFWUpgrade  
+2018-03-21T18:36:19 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm2.fan1    SensorFailedEventFWUpgrade  
+2018-03-21T18:36:06 UTC  Power/cooling module is OK after firmware upgrade     INFO        node1.pcm1         PCMOKEventFWUpgrade         
+2018-03-21T18:35:59 UTC  Fan speed is high during firmware upgrade             INFO        node1.pcm1.fan2    FanSpeedHighEventFWUpgrade  
+2018-03-21T18:35:58 UTC  Fan speed is high during firmware upgrade             INFO        node1.pcm1.fan1    FanSpeedHighEventFWUpgrade  
+2018-03-21T18:26:20 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1.fan2    SensorFailedEventFWUpgrade  
+2018-03-21T18:26:20 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1.fan1    SensorFailedEventFWUpgrade  
+2018-03-21T18:25:45 UTC  Failed to read sensor data during firmware upgrade    INFO        node1.pcm1         SensorFailedEventFWUpgrade  
+2018-03-21T18:24:25 UTC  Firmware upgrade of pcm2 to v1.29c started            INFO        node1.pcm2         FWUpgradeFRUStartedEvent    
+2018-03-21T18:24:25 UTC  Firmware upgrade of pcm1 to v1.29c started            INFO        node1.pcm1         FWUpgradeFRUStartedEvent    
+2018-03-21T18:24:25 UTC  Firmware upgrade of pcm2 to v1.29c completed          INFO        node1.pcm2         FWUpgradeFRUCompletedEvent  
+2018-03-21T18:24:25 UTC  Firmware upgrade of pcm1 to v1.29c completed          INFO        node1.pcm1         FWUpgradeFRUCompletedEvent  
+2018-03-21T18:19:28 UTC  Firmware upgrade of pcm2 to v1.29c started            INFO        node1.pcm2         FWUpgradeFRUStartedEvent    
+2018-03-21T18:19:28 UTC  Firmware upgrade of pcm1 to v1.29c started            INFO        node1.pcm1         FWUpgradeFRUStartedEvent    
+2018-03-21T18:19:28 UTC  Firmware upgrade of controller to v1.29c completed    INFO        node1.controller2  FWUpgradeFRUCompletedEvent  
+2018-03-21T18:17:45 UTC  Firmware upgrade of controller to v1.29c started      INFO        node1.controller2  FWUpgradeFRUStartedEvent    
+2018-03-21T18:17:45 UTC  DVX node1.chassis firmware upgrade to v1.29c started  INFO        node1.chassis      FWUpgradeStartedEvent       
+2018-03-21T18:09:55 UTC  Firmware upgrade rebooting node1.controller2          INFO        node1.controller2  FWUpgradeRebootEvent        
+------------------------ ----------------------------------------------------- ----------- ------------------ ----------------------------
+Press ENTER to show more events. Type 'q' or CTRL-C to stop: 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+             Time stamp  Details                                                                                                          Severity    Component name          Type                      
+------------------------ ---------------------------------------------------------------------------------------------------------------- ----------- ----------------------- --------------------------
+2018-03-21T18:09:55 UTC  Firmware upgrade rebooting node1.controller2                                                                     INFO        node1.controller2       FWUpgradeRebootEvent      
+2018-03-21T18:09:23 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T18:09:23 UTC  Firmware upgrade of controller to v1.29c completed                                                               INFO        node1.controller2       FWUpgradeFRUCompletedEvent
+2018-03-21T18:07:11 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T18:07:11 UTC  Firmware upgrade of controller to v1.29c completed                                                               INFO        node1.controller2       FWUpgradeFRUCompletedEvent
+2018-03-21T17:57:24 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T17:57:10 UTC  DVX node1.chassis firmware upgrade to v1.29c started                                                             INFO        node1.chassis           FWUpgradeStartedEvent     
+2018-03-21T17:52:26 UTC  High availability has been degraded for 20 minutes                                                               ERROR       node1.controller1       HADegradedLongEvent       
+2018-03-21T17:50:28 UTC  Firmware upgrade rebooting node1.controller2                                                                     INFO        node1.controller2       FWUpgradeRebootEvent      
+2018-03-21T17:49:56 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T17:49:55 UTC  Firmware upgrade of controller to v1.29c completed                                                               INFO        node1.controller2       FWUpgradeFRUCompletedEvent
+2018-03-21T17:47:40 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T17:47:40 UTC  Firmware upgrade of controller to v1.29c completed                                                               INFO        node1.controller2       FWUpgradeFRUCompletedEvent
+2018-03-21T17:36:38 UTC  Firmware upgrade of controller to v1.29c started                                                                 INFO        node1.controller2       FWUpgradeFRUStartedEvent  
+2018-03-21T17:36:37 UTC  DVX node1.chassis firmware upgrade to v1.29c started                                                             INFO        node1.chassis           FWUpgradeStartedEvent     
+2018-03-21T17:32:42 UTC  None of the network endpoints are reachable from interface floating.data                                         ERROR       floating.data           DataNodeNetworkDownEvent  
+2018-03-21T17:32:42 UTC  None of the network endpoints are reachable from interface node1.controller1.eth8                                ERROR       node1.controller1.eth8  DataNodeNetworkDownEvent  
+2018-03-21T17:32:42 UTC  None of the network endpoints are reachable from interface node1.controller1.eth7                                ERROR       node1.controller1.eth7  DataNodeNetworkDownEvent  
+2018-03-21T17:32:42 UTC  None of the network endpoints are reachable from interface node1.controller1.eth6                                ERROR       node1.controller1.eth6  DataNodeNetworkDownEvent  
+2018-03-21T17:32:42 UTC  None of the network endpoints are reachable from interface node1.controller1.eth5                                ERROR       node1.controller1.eth5  DataNodeNetworkDownEvent  
+2018-03-21T17:32:24 UTC  High availability status is degraded                                                                             WARNING     node1.controller1       HADegradedEvent           
+2018-03-21T17:30:13 UTC  High availability status is redundant                                                                            INFO        node1.controller2       HARedundantEvent          
+2018-03-21T17:29:54 UTC  All components have received new DVX software                                                                    INFO        node1.controller1       UpgradeProgressEvent      
+2018-03-21T17:29:48 UTC  Data Node has received DVX software 4.0.1.0-30307_cd13893                                                        INFO        node1.controller1       NodeUpgradeReceivedEvent  
+2018-03-21T17:29:48 UTC  DVX-level preinstall finished                                                                                    INFO        node1.controller1       UpgradeProgressEvent      
+2018-03-21T17:29:39 UTC  Firmware upgrade is needed during upgrade to 4.0.1.0-30307_cd13893. The upgrade process may take up to 2 hours.  INFO        node1.controller1       FWUpgradeNeededEvent      
+2018-03-21T17:29:22 UTC  DVX-level preinstall finished                                                                                    INFO        node1.controller1       UpgradeProgressEvent      
+>2018-03-21T17:28:46 UTC  Upgrade from 3.1.1.2-27737_576932f to 4.0.1.0-30307_cd13893 started                                              INFO        node1.controller1       UpgradeStartEvent         
+2018-03-21T17:25:52 UTC  Download of 4.0.1.0-30307_cd13893 completed successfully                                                         INFO        node1.controller1       DownloadSuccessEvent      
+2018-03-21T17:25:11 UTC  Download of 4.0.1.0-30307_cd13893 started                                                                        INFO        node1.controller1       DownloadStartEvent        
+------------------------ ---------------------------------------------------------------------------------------------------------------- ----------- ----------------------- --------------------------
+Press ENTER to show more events. Type 'q' or CTRL-C to stop: q
+
+1.
+$ dvx software upgrade-check 9.0.8.0-999999_abcdef
+=> Prod/SysMgmt/Cli/Commands/Main/cli_dvx_software_impl.py@def handle_dvx_software_upgrade_check(self, softwareVersion)
+        from SysMgmt.Cli.IDL.Main.UpgradeCliRpcMsgs_pb2 import UpgradeCheckRequest
+        request = UpgradeCheckRequest()
+        request.softwareVersion = softwareVersion
+        return self._create_stub('dvx').upgrade_check(request)
+
+2.
+$ dvx software upgrade 9.0.8.0-999999_abcdef
+=> Prod/SysMgmt/Cli/Commands/Main/cli_dvx_software_impl.py@def handle_dvx_software_upgrade(self, softwareVersion, noConfirm)
+        prompt = 'IMPORTANT! This may trigger a non-disruptive firmware upgrade, which can take up to 3 hours and require multiple controller reboots. While upgrading, the hardware must not be disturbed.\nRun the \'dvx software upgrade-check\' command for more specific information about this upgrade, including firmware details.\n\nDo you want to continue? [y/N] '
+        if not noConfirm and not confirm(prompt):
+            return
+
+        request = UpgradeByVerRequest()
+        request.softwareVersion = softwareVersion
+        request.disruptive = False
+        request.force = False
+        return self._create_stub('dvx').upgrade(request)
+
+3. Prod/SysMgmt/SysMgmtServer/src/main/java/com/datrium/sysmgmt/api/DvxSoftwareCommand.java
+
+public class DvxSoftwareCommand extends AbstractCommandService implements
+        CliDvxSoftware.DvxSoftwareService {
+    private RpcUpgradeMaster.UpgradeMaster upgradeSvr;
+
+    ...
+
+    @Override
+    public UpgradeCliRpcMsgs.SoftwareShowResponse show(
+            UpgradeCliRpcMsgs.SoftwareShowRequest request) {
+        return upgradeSvr.show(request);
+    }
+
+    @Override
+    public UpgradeCliRpcMsgs.AsyncTaskResponse download(
+            UpgradeCliRpcMsgs.DownloadByVerRequest request) {
+        return upgradeSvr.downloadByVer(request);
+    }
+
+    @Override
+    public UpgradeCliRpcMsgs.AsyncTaskResponse upgrade(
+            UpgradeCliRpcMsgs.UpgradeByVerRequest request) {
+        return upgradeSvr.upgradeByVer(request);
+    }
+
+    @Override
+    public UpgradeCliRpcMsgs.AsyncTaskResponse upgrade_check(
+            UpgradeCliRpcMsgs.UpgradeCheckRequest request) {
+        return upgradeSvr.upgradeCheck(request);
+    }
+}
+
+Prod/Platform/UpgradeMgr/IDL/RpcUpgradeMaster.proto 
+message IsUpgradingRequest {
+}
+
+message IsUpgradingResponse {
+     required bool isUpgrading = 1;
+}
+
+/**
+ * Upgrade Master API.
+ */
+service UpgradeMaster {
+    rpc show(SoftwareShowRequest) returns(SoftwareShowResponse) {
+             option (da.methodOpt).runtime.slowTimeoutSecs = 30;
+    };
+    rpc downloadByVer(DownloadByVerRequest) returns(AsyncTaskResponse);
+    rpc downloadByUrl(DownloadByUrlRequest) returns(AsyncTaskResponse);
+    rpc upgradeByVer(UpgradeByVerRequest) returns(AsyncTaskResponse);
+    rpc upgradeByUrl(UpgradeByUrlRequest) returns(AsyncTaskResponse);
+    rpc upgradeCheck(UpgradeCheckRequest) returns(AsyncTaskResponse);
+    rpc isUpgrading(IsUpgradingRequest) returns(IsUpgradingResponse);
+}
+
+3. OS/Scripts/dvx_preinstall_hook.py
+    ErrorCodes.FW_MISMATCH: ErrorDesc(
+        'Firmware upgrade needed: ',
+        internal=True,
+        disruptive_okay=True, disruptive_force=True,
+        nondisrupt_okay=True, nondisrupt_force=True),
+
+def check_firmware_version():
+    """
+    1. Check if there is an active firmware upgrade or the upgrade is bypassed
+    2. Check if firmware would change with upgrade for both controllers, collect the following:
+    - version (new)
+    - duration (convert from seconds to minutes - round up)
+    - reboot (number of reboots required)
+    - components (list of FRUs needing upgrade)
+    3. Check if the batteries are about to go into maintenance mode in the next 5 hours.
+    Side effect: none
+    Clean up: N/A
+    """
+
+4. Controller Reboot/HA fail on passive
+   a. HAMgr prepares new bundle on the passive controller
+
+   b. HAMgr triggers reboot
+
+   c. during bootup
+   Prod/Platform/platmgr/sysinit.py
+    def _firmware_upgrade(self):
+    def boot(self):
+        try:
+            # write out /etc/model file.
+            model.record_hardware()
+            bootdev = BootDev()
+            self.logger.info('boot type: %s', bootdev.boot_type)
+            # Enable da_io_time stats on boot drive.
+            self._enable_boot_disk_da_io_time_stats()
+            # Missing dev causing model detection failed
+            self._check_and_disable_ipmi_watchdog_timer(new_install)
+            self._power_on_drives()
+            pick_and_init_config(new_install)
+            if not new_install:
+                ReinitPlatform().check_for_reinit()
+                bootdev.create_dev_links()
+                self._allocate_hugetlb_pages()
+                self._hardware_init()
+		...
+                self._firmware_upgrade()
+		...
+            # Handle the new_install and admin not mounted case, it will return immediately when syslog has already been started
+            self._start_syslog()
+            self._reset_ssh_known_hosts()
+            self._boot_network()
+            # In a eng install PXE enviroment, the initial config happens over DHCP config.
+            # Once the network config is enabled during initial config, disable the eng.install
+            # flag.
+            self._check_and_disable_eng_install()
+            # Set PS1 as nodeX-controllerY:serial to reflect as bash prompt.
+            self._set_ps1()
+
+5. For new Fru
+   Boot from 1.06 or 3.1 (depends on the model)
+   HAMgr will verify the Datrium software version and prepare bundle and reoobt, which is same as step 4
+
+
+ Prod/SysMgmt/Cli/IDL/Main/CliDvxSoftware.proto
+
+ /**
+ * 'dvx software' level CLI commands.
+ */
+service DvxSoftware {
+    option (da.serviceOpt).rest.path = "/dvx/software";
+    option (da.serviceOpt).cli.helpMsg = "Datrium cluster software";
+
+    rpc show(da.upgrade.SoftwareShowRequest)
+        returns (da.upgrade.SoftwareShowResponse) {
+        option (da.methodOpt).rest.path = "/show";
+        option (da.methodOpt).rest.requestType = POST;
+        option (da.methodOpt).cli.mutatorMethod = false;
+        option (da.methodOpt).cli.helpMsg = "Show the version numbers for the running software and any available software";
+    }
+
+    rpc download(da.upgrade.DownloadByVerRequest)
+        returns (da.upgrade.AsyncTaskResponse) {
+        option (da.methodOpt).rest.path = "/download";
+        option (da.methodOpt).rest.requestType = POST;
+        option (da.methodOpt).cli.mutatorMethod = true;
+        option (da.methodOpt).cli.helpMsg = "Download remote software";
+    }
+
+    rpc upgrade(da.upgrade.UpgradeByVerRequest)
+        returns (da.upgrade.AsyncTaskResponse) {
+        option (da.methodOpt).rest.path = "/upgrade";
+        option (da.methodOpt).rest.requestType = POST;
+        option (da.methodOpt).cli.mutatorMethod = true;
+        option (da.methodOpt).cli.helpMsg = "Install downloaded or remote software";
+    }
+
+    rpc upgrade_check(da.upgrade.UpgradeCheckRequest)
+        returns (da.upgrade.AsyncTaskResponse) {
+        option (da.methodOpt).rest.path = "/upgrade-check";
+        option (da.methodOpt).rest.requestType = POST;
+        option (da.methodOpt).cli.mutatorMethod = false;
+        option (da.methodOpt).cli.helpMsg = "Perform pre-upgrade check on downloaded software";
+    }
+}
+
+
+Prod/SysMgmt/SysMgmtServer/src/main/java/com/datrium/sysmgmt/api/DvxSoftwareCommand.java
+
+
+./Prod/SysMgmt/Cli/IDL/Main/UpgradeCliRpcMsgs.proto
+./OS/Build_999999/x86_64/_rd_install/da/bin/PythonGenRoot/SysMgmt/Cli/IDL/Main/UpgradeCliRpcMsgs_pb2.py
+./OS/Build_999999/x86_64/_rd_install/da/bin/PythonGenRoot/SysMgmt/Cli/IDL/Main/UpgradeCliRpcMsgs_pb2.pyc
+message UpgradeByVerRequest {
+    required string softwareVersion = 1 [
+        (da.fieldOpt).cli.operand = true,
+        (da.fieldOpt).helpMsg = "Software version"
+    ];
+    optional bool disruptive = 2 [
+        (da.fieldOpt).cli.storeBoolean = true,
+        (da.fieldOpt).cli.internal = true,
+        (da.fieldOpt).helpMsg = "Disruptive upgrade mode"
+    ];
+    optional bool force = 3 [
+        (da.fieldOpt).cli.storeBoolean = true,
+        (da.fieldOpt).cli.internal = true,
+        (da.fieldOpt).helpMsg = "Force upgrade"
+    ];
+    optional bool noConfirm = 4 [
+        (da.fieldOpt).cli.storeBoolean = true,
+        (da.fieldOpt).helpMsg = "Do not prompt for confirmation"
+    ];
+}
+

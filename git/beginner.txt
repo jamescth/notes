@@ -352,3 +352,27 @@ git checkout <branch>
 git merge master
 git log
 git show <commit id>
+
+
+******************* check in from branch **************
+git checkout master
+git pull
+git cherry-pick f77b145e8008af507c75c831a03bf70391840077
+git push origin master
+git commit --amend
+git push origin master
+
+******************* check in from master **************
+git remote update
+git rebase origin/master
+	First, rewinding head to replay your work on top of it...
+	Applying: Fix 'NoneType' and 'Hyperdriver' exception.
+git log
+	commit 400262fd53010bdb1c71428159a57ce7dff7ebf4
+
+git push origin master
+
+git status
+	# On branch master
+	nothing to commit, working directory clean
+

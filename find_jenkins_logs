@@ -1,0 +1,42 @@
+#!/bin/bash
+jjj() {
+   local url=$1;
+   local path=$(echo $url | sed 's,.*/job/,/colo/build/jobs/,');
+   path=$(echo $path | sed 's,/\([0-9]*\)/.*$,/builds/\1/,g');
+   echo $path
+   [ -e "$path" ] && cd $path && return
+}
+
+jho@jho-colo-00:~$jjj http://jenkins.datrium.com/view/P0%204.0.x/job/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8
+/colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8
+
+jho@jho-colo-00:~$cd /colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8
+-bash: cd: /colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8: No such file or directory
+
+jho@jho-colo-00:~$cd /colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x
+jho@jho-colo-00:/colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x$ll
+/colo/build/jobs/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/builds/8/archive/Prod/Build/TestResults$./mount_artifacts.sh 
+Please wait while artifacts are being mounted.
+Using artifact server pez-artifacts-5
+http://pez-artifacts-5/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8 exported on /net/pez-artifacts-5/pez/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8
+
+jho@jho-colo-00:~$cd /net/pez-artifacts-5/pez/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8
+jho@jho-colo-00:/net/pez-artifacts-5/pez/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8$
+jho@jho-colo-00:/net/pez-artifacts-5/pez/test-upgrade-ctr-c2f-nondisrupt-remount-4.0.x/8$cd main/Prod/Build/TestResults/Debug/CtrUpgradeCurrentToFutureTestPlan.CtrUpgradeCurrentToFutureTest.test_nondisrupt_remount____HA_dittos.1509090582.65/
+
+From: https://groups.google.com/a/datrium.com/forum/#!category-topic/kb/all-questions/RioRmkYucTI
+
+Go to /colo/build/jobs/JENKINS_JOB_NAME/builds/JENKINS_BUILD_NUMBER/archive/
+
+Then in Prod/Build/TestResults/ you will find a script "mount_artifacts.sh" which will mount the artifacts on your machine (and tell you where):
+
+EG
+$ ./mount_artifacts.sh 
+
+Please wait while artifacts are being mounted.
+
+Using artifact server pez-artifacts-2
+
+http://pez-artifacts-2/test-suite-boothalt-loop-esxfe-release-4.0.x/5 exported on /net/pez-artifacts-2/pez/test-suite-boothalt-loop-esxfe-release-4.0.x/5
+
+cd /net/pez-artifacts-5/pez/test-upgrade-ctr-c2f-scale-out-nondisrupt-mounted-4.0.x/54/main/Prod/Build/TestResults/Debug/CtrUpgradeCurrentToFutureTestPlan.CtrUpgradeCurrentToFutureTest.test_scale_out_nondisrupt_mounted____HA_dittos.1509008334.45/testbed/testbed_0

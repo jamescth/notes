@@ -1,0 +1,41 @@
+server:
+	/home$sudo userdel git
+	/home$sudo passwd git
+	/home$su - git
+	$ pwd
+	/home/git
+	$ git init --bare abc.git
+	Initialized empty Git repository in /home/git/abc.git/
+	$ ll
+	total 4
+	drwxrwxr-x 7 git git 4096 Nov 29 09:52 abc.git
+local:
+	/tmp/tt$git init
+	Initialized empty Git repository in /tmp/tt/.git/
+	/tmp/tt$git add abc
+	/tmp/tt$git commit -m "test"
+	$git remote add origin ssh://git@jho-colo-01/~/abc.git
+	  or
+	$git remote set-url origin ssh://git@jho-colo-01/~/abc.git
+	$git push origin master
+	git@jho-colo-01's password: 
+	Counting objects: 3, done.
+	Writing objects: 100% (3/3), 201 bytes | 0 bytes/s, done.
+	Total 3 (delta 0), reused 0 (delta 0)
+	To ssh://git@jho-colo-01/~/abc.git
+	 * [new branch]      master -> master
+	jho@jho-colo-00:/tmp/tt$git log
+	commit cace59b711682d20198cbb1711aba9dfcd49d115
+	Author: James Ho <jho.datrium.com>
+	Date:   Wed Nov 29 09:47:37 2017 -0800
+
+	    test
+
+another client:
+	jho@jho-colo-02:/tmp/tt$git clone ssh://git@jho-colo-01/~/abc.git
+	Cloning into 'abc'...
+	git@jho-colo-01's password: 
+	remote: Counting objects: 3, done.
+	remote: Total 3 (delta 0), reused 0 (delta 0)
+	Receiving objects: 100% (3/3), done.
+

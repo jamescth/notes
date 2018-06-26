@@ -1,0 +1,1401 @@
+[root@n1395:/opt/smartstorageadmin/ssacli/bin] ./ssacli ctrl all show config detail
+
+Smart Array P440ar in Slot 0 (Embedded) (HBA Mode)
+   Bus Interface: PCI
+   Slot: 0
+   Serial Number: PDNLH0BRH164L7
+   Cache Serial Number: PDNLH0BRH164L7
+   Controller Status: OK
+   Hardware Revision: B
+   Firmware Version: 6.06-0
+   Cache Board Present: False
+   Cache Backup Power Source: Batteries
+   Battery/Capacitor Count: 1
+   Controller Temperature (C): 48
+   Cache Module Temperature (C): 42
+   Number of Ports: 2 Internal only
+   Driver Name: nhpsa
+   Driver Version: 2.0.24-1OEM
+   HBA Mode Enabled: True
+   PCI Address (Domain:Bus:Device.Function): 0000:03:00.0
+   Negotiated PCIe Data Rate: PCIe 3.0 x8 (7880 MB/s)
+   Controller Mode: HBA
+   Pending Controller Mode: HBA
+   Controller Mode Reboot: Not Required
+   Port Max Phy Rate Limiting Supported: False
+   Current Power Mode: MaxPerformance
+   Survival Mode: Enabled
+   Host Serial Number: MXQ613045Y
+   Primary Boot Volume: None
+   Secondary Boot Volume: None
+
+
+   Port Name: 1I
+         Port ID: 0
+         Port Connection Number: 0
+         SAS Address: 50014380383DFF80
+         Port Location: Internal
+         Managed Cable Connected: False
+
+   Port Name: 2I
+         Port ID: 1
+         Port Connection Number: 1
+         SAS Address: 50014380383DFF84
+         Port Location: Internal
+         Managed Cable Connected: False
+
+
+   Internal Drive Cage at Port 1I, Box 1, OK
+
+      Power Supply Status: Not Redundant
+      Drive Bays: 4
+      Port: 1I
+      Box: 1
+      Location: Internal
+
+   Physical Drives
+      physicaldrive 1I:1:2 (port 1I:box 1:bay 2, SAS SSD, 1.9 TB, OK)
+
+
+
+   Internal Drive Cage at Port 2I, Box 0, OK
+
+      Power Supply Status: Not Redundant
+      Drive Bays: 4
+      Port: 2I
+      Box: 0
+      Location: Internal
+
+   Physical Drives
+      None attached
+
+
+
+   HBA Drives
+
+      physicaldrive 1I:1:2
+         Port: 1I
+         Box: 1
+         Bay: 2
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SAS
+         Size: 1.9 TB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/4096
+         Firmware Revision: C006
+         Serial Number: Z881153H0000822150Z3
+         WWID: 5000C5003015E6A5
+         Model: SEAGATE ST1920FM0003
+         Current Temperature (C): 41
+         Maximum Temperature (C): 48
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 2
+         PHY Transfer Rate: 12.0Gbps, Unknown
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+
+   SEP (Vendor ID HP, Model P440ar) 379 
+      Device Number: 379
+      Firmware Version: 6.06
+      WWID: 50014380383DFF80
+      Vendor ID: HP
+      Model: P440ar
+
+[root@n1395:/opt/smartstorageadmin/ssacli/bin] localcli storage core device list
+
+t10.ATA_____INTEL_SSDSC2BB016T6_____________________BTWA517507MA1P6KGN__:
+   Display Name: Local ATA Disk (t10.ATA_____INTEL_SSDSC2BB016T6_____________________BTWA517507MA1P6KGN__)
+   Has Settable Display Name: true
+   Size: 1526185
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/t10.ATA_____INTEL_SSDSC2BB016T6_____________________BTWA517507MA1P6KGN__
+   Vendor: ATA     
+   Model: INTEL SSDSC2BB01
+   Revision: 0130
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.0100000000425457413531373530374d413150364b474e2020494e54454c20
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 31
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+naa.5000c5003015e6a7:
+   Display Name: Local SEAGATE Disk (naa.5000c5003015e6a7)
+   Has Settable Display Name: true
+   Size: 1831420
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/naa.5000c5003015e6a7
+   Vendor: SEAGATE 
+   Model: ST1920FM0003    
+   Revision: C006
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: true
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.02000000005000c5003015e6a7535431393230
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 58
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: physical
+   RAID Level: NA
+   Number of Physical Drives: 1
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________:
+   Display Name: Local ATA Disk (t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________)
+   Has Settable Display Name: true
+   Size: 953869
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________
+   Vendor: ATA     
+   Model: MM1000GBKAL     
+   Revision: HPGC
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0100000000395847394e5352342020202020202020202020204d4d31303030
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: true
+   Device Max Queue Depth: 31
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+[root@n1395:/opt/smartstorageadmin/ssacli/bin] localcli storage core device list -d t10.ATA_____MM1000GBKAL_____
+________________________9XG9NSR4____________
+
+t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________:
+   Display Name: Local ATA Disk (t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________)
+   Has Settable Display Name: true
+   Size: 953869
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________
+   Vendor: ATA     
+   Model: MM1000GBKAL     
+   Revision: HPGC
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0100000000395847394e5352342020202020202020202020204d4d31303030
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: true
+   Device Max Queue Depth: 31
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+[root@n1395:/opt/smartstorageadmin/ssacli/bin] localcli storage core device list -d naa.5000c5003015e6a7
+
+naa.5000c5003015e6a7:
+   Display Name: Local SEAGATE Disk (naa.5000c5003015e6a7)
+   Has Settable Display Name: true
+   Size: 1831420
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/naa.5000c5003015e6a7
+   Vendor: SEAGATE 
+   Model: ST1920FM0003    
+   Revision: C006
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: true
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.02000000005000c5003015e6a7535431393230
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 58
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: physical
+   RAID Level: NA
+   Number of Physical Drives: 1
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+[root@n1395:/var/run] cat da_hostinfo.txt 
+{
+    "driveLayouts": [
+        {
+            "capacityMiB": 1526185, 
+            "daCoreMiB": 0, 
+            "daSysMiB": 15258, 
+            "devFsPath": "/vmfs/devices/disks/t10.ATA_____INTEL_SSDSC2BB016T6_____________________BTWA517507MA1P6KGN__", 
+            "fStoreMiB": 1510925, 
+            "unusedMiB": 0
+        }, 
+        {
+            "capacityMiB": 1831420, 
+            "daCoreMiB": 123977, 
+            "daSysMiB": 15258, 
+            "devFsPath": "/vmfs/devices/disks/naa.5000c5003015e6a7", 
+            "fStoreMiB": 1692183, 
+            "unusedMiB": 0
+        }, 
+        {
+            "capacityMiB": 953869, 
+            "daCoreMiB": 0, 
+            "daSysMiB": 0, 
+            "devFsPath": "/vmfs/devices/disks/t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________", 
+            "fStoreMiB": 0, 
+            "unusedMiB": 0
+        }
+    ], 
+    "hostCheck": {}, 
+    "storageControllers": [
+        {
+            "controllerId": "0", 
+            "currentMode": "Unknown", 
+            "deviceId": 0, 
+            "driver": "vmw_ahci", 
+            "driverVersion": "1.0.0-39vmw.650.1.26.5969303", 
+            "firmware": "Unknown", 
+            "firmwarePackage": "Unknown", 
+            "hbaName": "vmhba0", 
+            "jbodEnabled": "None", 
+            "model": "Intel Corporation Wellsburg AHCI Controller", 
+            "subDeviceId": 0, 
+            "subVendorId": 0, 
+            "supportJbod": false, 
+            "supportedMode": [
+                "Unknown"
+            ], 
+            "unconfiguredDrives": [], 
+            "vendorId": 0, 
+            "virtualDrives": [
+                {
+                    "devFsPath": "/vmfs/devices/disks/t10.ATA_____INTEL_SSDSC2BB016T6_____________________BTWA517507MA1P6KGN__", 
+                    "driveId": 5, 
+                    "driveType": "Unknown", 
+                    "isNvme": false, 
+                    "physicalDrives": [
+                        {
+                            "driveId": 5, 
+                            "driveIdent": "5", 
+                            "firmwareRev": "0130", 
+                            "locationDesc": "vmhba0:C0:T5:L0", 
+                            "medium": "SSD", 
+                            "serialNumber": "BTWA517507MA1P6KGN", 
+                            "sizeMiB": 1526185, 
+                            "state": "on", 
+                            "vendorModel": "ATA INTEL SSDSC2BB01"
+                        }
+                    ], 
+                    "sizeMiB": 1526185, 
+                    "state": "on"
+                }, 
+                {
+                    "devFsPath": "/vmfs/devices/disks/t10.ATA_____MM1000GBKAL_____________________________9XG9NSR4____________", 
+                    "driveId": 4, 
+                    "driveType": "Unknown", 
+                    "isNvme": false, 
+                    "physicalDrives": [
+                        {
+                            "driveId": 4, 
+                            "driveIdent": "4", 
+                            "firmwareRev": "HPGC", 
+                            "locationDesc": "vmhba0:C0:T4:L0", 
+                            "medium": "HDD", 
+                            "serialNumber": "9XG9NSR4", 
+                            "sizeMiB": 953869, 
+                            "state": "on", 
+                            "vendorModel": "ATA MM1000GBKAL"
+                        }
+                    ], 
+                    "sizeMiB": 953869, 
+                    "state": "on"
+                }
+            ]
+        }, 
+        {
+            "controllerId": "0", 
+            "currentMode": "HBA", 
+            "deviceId": 0, 
+            "driver": "nhpsa", 
+            "driverVersion": "2.0.24-1OEM", 
+            "firmware": "6.06-0", 
+            "firmwarePackage": "Unknown", 
+            "hbaName": "vmhba1", 
+            "jbodEnabled": "None", 
+            "model": "Smart Array P440ar", 
+            "subDeviceId": 0, 
+            "subVendorId": 0, 
+            "supportJbod": false, 
+            "supportedMode": [
+                "RAID", 
+                "HBA"
+            ], 
+            "unconfiguredDrives": [], 
+            "vendorId": 0, 
+            "virtualDrives": [
+                {
+                    "devFsPath": "/vmfs/devices/disks/naa.5000c5003015e6a7", 
+                    "driveId": 0, 
+                    "driveType": "JBOD", 
+                    "isNvme": false, 
+                    "physicalDrives": [
+                        {
+                            "driveId": 0, 
+                            "driveIdent": "0", 
+                            "firmwareRev": "C006", 
+                            "locationDesc": "vmhba1:C2:T0:L0", 
+                            "medium": "SSD", 
+                            "serialNumber": "Unknown", 
+                            "sizeMiB": 1831420, 
+                            "state": "on", 
+                            "vendorModel": "ST1920FM0003"
+                        }
+                    ], 
+                    "sizeMiB": 1831420, 
+                    "state": "on"
+                }
+            ]
+        }
+    ], 
+    "timeStamp": "2018-01-31T01:04:25.847369", 
+    "version": 2
+}
+
+
+***************************************************************************************
+bug 26188
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] ls -alh /vmfs/devices/disks/
+total 9427306121
+drwxr-xr-x    2 root     root         512 Feb  9 21:47 .
+drwxr-xr-x   15 root     root         512 Feb  9 21:47 ..
+-rw-------    1 root     root      894.3G Feb  9 21:47 mpx.vmhba0:C2:T1:L0
+-rw-------    1 root     root      447.1G Feb  9 21:47 mpx.vmhba0:C2:T2:L0
+-rw-------    1 root     root      111.8G Feb  9 21:47 mpx.vmhba0:C2:T3:L0
+-rw-------    1 root     root        1.5T Feb  9 21:47 mpx.vmhba0:C2:T4:L0
+-rw-------    1 root     root       14.9G Feb  9 21:47 mpx.vmhba0:C2:T4:L0:1
+-rw-------    1 root     root      121.1G Feb  9 21:47 mpx.vmhba0:C2:T4:L0:2
+-rw-------    1 root     root        1.3T Feb  9 21:47 mpx.vmhba0:C2:T4:L0:3
+-rw-------    1 root     root      894.3G Feb  9 21:47 mpx.vmhba0:C2:T5:L0
+-rw-------    1 root     root        7.4G Feb  9 21:47 mpx.vmhba32:C0:T0:L0
+-rw-------    1 root     root        4.0M Feb  9 21:47 mpx.vmhba32:C0:T0:L0:1
+-rw-------    1 root     root      250.0M Feb  9 21:47 mpx.vmhba32:C0:T0:L0:5
+-rw-------    1 root     root      250.0M Feb  9 21:47 mpx.vmhba32:C0:T0:L0:6
+-rw-------    1 root     root      110.0M Feb  9 21:47 mpx.vmhba32:C0:T0:L0:7
+-rw-------    1 root     root      286.0M Feb  9 21:47 mpx.vmhba32:C0:T0:L0:8
+-rw-------    1 root     root        2.5G Feb  9 21:47 mpx.vmhba32:C0:T0:L0:9
+-rw-------    1 root     root       64.0K Feb  9 21:47 mpx.vmhba32:C0:T0:L1
+-rw-------    1 root     root      320.0K Feb  9 21:47 mpx.vmhba32:C0:T0:L2
+-rw-------    1 root     root        1.7T Feb  9 21:47 naa.5000c500301502a7
+-rw-------    1 root     root      931.5G Feb  9 21:47 naa.5000c50085a62f67
+-rw-------    1 root     root      931.5G Feb  9 21:47 naa.5000c50085a62f67:1
+lrwxrwxrwx    1 root     root          20 Feb  9 21:47 vml.0000000000766d68626133323a303a30 -> mpx.vmhba32:C0:T0:L0
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:1 -> mpx.vmhba32:C0:T0:L0:1
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:5 -> mpx.vmhba32:C0:T0:L0:5
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:6 -> mpx.vmhba32:C0:T0:L0:6
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:7 -> mpx.vmhba32:C0:T0:L0:7
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:8 -> mpx.vmhba32:C0:T0:L0:8
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.0000000000766d68626133323a303a30:9 -> mpx.vmhba32:C0:T0:L0:9
+lrwxrwxrwx    1 root     root          20 Feb  9 21:47 vml.0000010000766d68626133323a303a31 -> mpx.vmhba32:C0:T0:L1
+lrwxrwxrwx    1 root     root          20 Feb  9 21:47 vml.0000020000766d68626133323a303a32 -> mpx.vmhba32:C0:T0:L2
+lrwxrwxrwx    1 root     root          19 Feb  9 21:47 vml.0200000000300143804087516153414d53554e -> mpx.vmhba0:C2:T1:L0
+lrwxrwxrwx    1 root     root          19 Feb  9 21:47 vml.02000000003001438040875162494e54454c20 -> mpx.vmhba0:C2:T2:L0
+lrwxrwxrwx    1 root     root          19 Feb  9 21:47 vml.0200000000300143804087516353616d73756e -> mpx.vmhba0:C2:T3:L0
+lrwxrwxrwx    1 root     root          19 Feb  9 21:47 vml.02000000003001438040875169494e54454c20 -> mpx.vmhba0:C2:T4:L0
+lrwxrwxrwx    1 root     root          21 Feb  9 21:47 vml.02000000003001438040875169494e54454c20:1 -> mpx.vmhba0:C2:T4:L0:1
+lrwxrwxrwx    1 root     root          21 Feb  9 21:47 vml.02000000003001438040875169494e54454c20:2 -> mpx.vmhba0:C2:T4:L0:2
+lrwxrwxrwx    1 root     root          21 Feb  9 21:47 vml.02000000003001438040875169494e54454c20:3 -> mpx.vmhba0:C2:T4:L0:3
+lrwxrwxrwx    1 root     root          19 Feb  9 21:47 vml.0200000000300143804087516a4d4b30393630 -> mpx.vmhba0:C2:T5:L0
+lrwxrwxrwx    1 root     root          20 Feb  9 21:47 vml.02000000005000c500301502a7535431393230 -> naa.5000c500301502a7
+lrwxrwxrwx    1 root     root          20 Feb  9 21:47 vml.02000000005000c50085a62f674d4d31303030 -> naa.5000c50085a62f67
+lrwxrwxrwx    1 root     root          22 Feb  9 21:47 vml.02000000005000c50085a62f674d4d31303030:1 -> naa.5000c50085a62f67:1
+
+[root@n1493:~] localcli storage core device list
+
+mpx.vmhba0:C2:T3:L0:
+   Display Name: Local ATA Disk (mpx.vmhba0:C2:T3:L0)
+   Has Settable Display Name: false
+   Size: 114473
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba0:C2:T3:L0
+   Vendor: ATA     
+   Model: Samsung SSD 850 
+   Revision: 1B6Q
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0200000000300143804087516353616d73756e
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 25
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba0:C2:T2:L0:
+   Display Name: Local ATA Disk (mpx.vmhba0:C2:T2:L0)
+   Has Settable Display Name: false
+   Size: 457862
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba0:C2:T2:L0
+   Vendor: ATA     
+   Model: INTEL SSDSC2BW48
+   Revision: RG20
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.02000000003001438040875162494e54454c20
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 25
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba0:C2:T1:L0:
+   Display Name: Local ATA Disk (mpx.vmhba0:C2:T1:L0)
+   Has Settable Display Name: false
+   Size: 915715
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba0:C2:T1:L0
+   Vendor: ATA     
+   Model: SAMSUNG MZ7LM960
+   Revision: 003Q
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0200000000300143804087516153414d53554e
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 25
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba32:C0:T0:L0:
+   Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L0)
+   Has Settable Display Name: false
+   Size: 7599
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba32:C0:T0:L0
+   Vendor: HP
+   Model: USB RAID LUN
+   Revision: 0015
+   SCSI Level: 2
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: true
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0000000000766d68626133323a303a30
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: true
+   Is Boot USB Device: true
+   Is Boot Device: true
+   Device Max Queue Depth: 1
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba32:C0:T0:L1:
+   Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L1)
+   Has Settable Display Name: false
+   Size: 0
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba32:C0:T0:L1
+   Vendor: HP
+   Model: Log File LUN
+   Revision: 0015
+   SCSI Level: 2
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: true
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0000010000766d68626133323a303a31
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: true
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 1
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba32:C0:T0:L2:
+   Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L2)
+   Has Settable Display Name: false
+   Size: 0
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba32:C0:T0:L2
+   Vendor: HP
+   Model: SPI Flash LUN
+   Revision: 0015
+   SCSI Level: 2
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: true
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0000020000766d68626133323a303a32
+   Is Shared Clusterwide: false
+   Is Local SAS Device: false
+   Is SAS: false
+   Is USB: true
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 1
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba0:C2:T5:L0:
+   Display Name: Local ATA Disk (mpx.vmhba0:C2:T5:L0)
+   Has Settable Display Name: false
+   Size: 915715
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba0:C2:T5:L0
+   Vendor: ATA     
+   Model: MK0960GFDKT     
+   Revision: HPG0
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.0200000000300143804087516a4d4b30393630
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 25
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+naa.5000c500301502a7:
+   Display Name: SEAGATE Serial Attached SCSI Disk (naa.5000c500301502a7)
+   Has Settable Display Name: true
+   Size: 1831420
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/naa.5000c500301502a7
+   Vendor: SEAGATE 
+   Model: ST1920FM0003    
+   Revision: B003
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: degraded
+   Is RDM Capable: true
+   Is Local: false
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.02000000005000c500301502a7535431393230
+   Is Shared Clusterwide: true
+   Is Local SAS Device: false
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 58
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+mpx.vmhba0:C2:T4:L0:
+   Display Name: Local ATA Disk (mpx.vmhba0:C2:T4:L0)
+   Has Settable Display Name: false
+   Size: 1526185
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/mpx.vmhba0:C2:T4:L0
+   Vendor: ATA     
+   Model: INTEL SSDSC2BB01
+   Revision: 0130
+   SCSI Level: 6
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unsupported
+   Other UIDs: vml.02000000003001438040875169494e54454c20
+   Is Shared Clusterwide: false
+   Is Local SAS Device: true
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 25
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+naa.5000c50085a62f67:
+   Display Name: HP Serial Attached SCSI Disk (naa.5000c50085a62f67)
+   Has Settable Display Name: true
+   Size: 953869
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/naa.5000c50085a62f67
+   Vendor: HP      
+   Model: MM1000FBFVR     
+   Revision: HPD9
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: degraded
+   Is RDM Capable: true
+   Is Local: false
+   Is Removable: false
+   Is SSD: false
+   Is VVOL PE: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: unknown
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.02000000005000c50085a62f674d4d31303030
+   Is Shared Clusterwide: true
+   Is Local SAS Device: false
+   Is SAS: true
+   Is USB: false
+   Is Boot USB Device: false
+   Is Boot Device: false
+   Device Max Queue Depth: 58
+   No of outstanding IOs with competing worlds: 32
+   Drive Type: unknown
+   RAID Level: unknown
+   Number of Physical Drives: unknown
+   Protection Enabled: false
+   PI Activated: false
+   PI Type: 0
+   PI Protection Mask: NO PROTECTION
+   Supported Guard Types: NO GUARD SUPPORT
+   DIX Enabled: false
+   DIX Guard Type: NO GUARD SUPPORT
+   Emulated DIX/DIF Enabled: false
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] esxcli storage nmp device list
+mpx.vmhba0:C2:T3:L0
+   Device Display Name: Local ATA Disk (mpx.vmhba0:C2:T3:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T3:L0;current=vmhba0:C2:T3:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T3:L0
+   Is USB: false
+
+mpx.vmhba0:C2:T2:L0
+   Device Display Name: Local ATA Disk (mpx.vmhba0:C2:T2:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T2:L0;current=vmhba0:C2:T2:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T2:L0
+   Is USB: false
+
+mpx.vmhba0:C2:T1:L0
+   Device Display Name: Local ATA Disk (mpx.vmhba0:C2:T1:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T1:L0;current=vmhba0:C2:T1:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T1:L0
+   Is USB: false
+
+mpx.vmhba32:C0:T0:L0
+   Device Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba32:C0:T0:L0;current=vmhba32:C0:T0:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba32:C0:T0:L0
+   Is USB: true
+
+mpx.vmhba32:C0:T0:L1
+   Device Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L1)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba32:C0:T0:L1;current=vmhba32:C0:T0:L1}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba32:C0:T0:L1
+   Is USB: true
+
+mpx.vmhba32:C0:T0:L2
+   Device Display Name: Local USB Direct-Access (mpx.vmhba32:C0:T0:L2)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba32:C0:T0:L2;current=vmhba32:C0:T0:L2}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba32:C0:T0:L2
+   Is USB: true
+
+mpx.vmhba0:C2:T5:L0
+   Device Display Name: Local ATA Disk (mpx.vmhba0:C2:T5:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T5:L0;current=vmhba0:C2:T5:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T5:L0
+   Is USB: false
+
+naa.5000c500301502a7
+   Device Display Name: SEAGATE Serial Attached SCSI Disk (naa.5000c500301502a7)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T0:L0;current=vmhba0:C2:T0:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T0:L0
+   Is USB: false
+
+mpx.vmhba0:C2:T4:L0
+   Device Display Name: Local ATA Disk (mpx.vmhba0:C2:T4:L0)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T4:L0;current=vmhba0:C2:T4:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T4:L0
+   Is USB: false
+
+naa.5000c50085a62f67
+   Device Display Name: HP Serial Attached SCSI Disk (naa.5000c50085a62f67)
+   Storage Array Type: VMW_SATP_LOCAL
+   Storage Array Type Device Config: SATP VMW_SATP_LOCAL does not support device configuration.
+   Path Selection Policy: VMW_PSP_FIXED
+   Path Selection Policy Device Config: {preferred=vmhba0:C2:T6:L0;current=vmhba0:C2:T6:L0}
+   Path Selection Policy Device Custom Config: 
+   Working Paths: vmhba0:C2:T6:L0
+   Is USB: false
+
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] ./ssacli controller all show
+
+Smart Array P840ar in Slot 0 (Embedded) (HBA Mode)  (sn: PVYKH0BRH570GD)
+
+
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] ./ssacli controller slot=0 ssdphysicaldrive all show
+
+Smart Array P840ar in Slot 0 (Embedded)
+
+   HBA Drives
+
+      physicaldrive 1I:3:2 (port 1I:box 3:bay 2, SATA SSD, 960 GB, OK)
+      physicaldrive 1I:3:3 (port 1I:box 3:bay 3, SATA SSD, 1.6 TB, OK)
+      physicaldrive 1I:3:5 (port 1I:box 3:bay 5, SAS SSD, 1.9 TB, OK)
+      physicaldrive 1I:3:6 (port 1I:box 3:bay 6, SATA SSD, 960 GB, OK)
+      physicaldrive 1I:3:7 (port 1I:box 3:bay 7, SATA SSD, 480 GB, OK)
+      physicaldrive 1I:3:8 (port 1I:box 3:bay 8, SATA SSD, 120 GB, OK)
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] ./ssacli controller slot=0 ssdphysicaldrive allunassigned show
+
+Error: The specified controller does not have any SSD physical drives
+       identified by 'allunassigned' 
+
+[root@n1493:/opt/smartstorageadmin/ssacli/bin] ./ssacli ctrl all show config detail
+
+Smart Array P840ar in Slot 0 (Embedded) (HBA Mode)
+   Bus Interface: PCI
+   Slot: 0
+   Serial Number: PVYKH0BRH570GD
+   Cache Serial Number: PVYKH0BRH570GD
+   Controller Status: OK
+   Hardware Revision: B
+   Firmware Version: 6.06-0
+   Cache Board Present: False
+   Cache Backup Power Source: Batteries
+   Battery/Capacitor Count: 1
+   Controller Temperature (C): 57
+   Cache Module Temperature (C): 43
+   Number of Ports: 2 Internal only
+   Driver Name: HPE HPSA
+   Driver Version: 6.0.0.128-1OEM
+   HBA Mode Enabled: True
+   PCI Address (Domain:Bus:Device.Function): 0000:03:00.0
+   Negotiated PCIe Data Rate: PCIe 3.0 x8 (7880 MB/s)
+   Controller Mode: HBA
+   Pending Controller Mode: HBA
+   Controller Mode Reboot: Not Required
+   Current Power Mode: MaxPerformance
+   Survival Mode: Enabled
+   Host Serial Number: MXQ63407GX
+   Primary Boot Volume: None
+   Secondary Boot Volume: None
+
+
+   Port Name: 1I
+         Port ID: 0
+         Port Connection Number: 0
+         SAS Address: 5001438040875160
+         Port Location: Internal
+         Managed Cable Connected: False
+
+   Port Name: 2I
+         Port ID: 1
+         Port Connection Number: 1
+         SAS Address: 5001438040875168
+         Port Location: Internal
+         Managed Cable Connected: False
+
+
+   Internal Drive Cage at Port 1I, Box 3, OK
+
+      Power Supply Status: Not Redundant
+      Drive Bays: 4
+      Port: 1I
+      Box: 3
+      Location: Internal
+
+   Physical Drives
+      physicaldrive 1I:3:5 (port 1I:box 3:bay 5, SAS SSD, 1.9 TB, OK)
+      physicaldrive 1I:3:6 (port 1I:box 3:bay 6, SATA SSD, 960 GB, OK)
+      physicaldrive 1I:3:7 (port 1I:box 3:bay 7, SATA SSD, 480 GB, OK)
+      physicaldrive 1I:3:8 (port 1I:box 3:bay 8, SATA SSD, 120 GB, OK)
+
+
+
+   Internal Drive Cage at Port 1I, Box 3, OK
+
+      Power Supply Status: Not Redundant
+      Drive Bays: 4
+      Port: 1I
+      Box: 3
+      Location: Internal
+
+   Physical Drives
+      physicaldrive 1I:3:5 (port 1I:box 3:bay 5, SAS SSD, 1.9 TB, OK)
+      physicaldrive 1I:3:6 (port 1I:box 3:bay 6, SATA SSD, 960 GB, OK)
+      physicaldrive 1I:3:7 (port 1I:box 3:bay 7, SATA SSD, 480 GB, OK)
+      physicaldrive 1I:3:8 (port 1I:box 3:bay 8, SATA SSD, 120 GB, OK)
+
+
+
+   HBA Drives
+
+      physicaldrive 1I:3:1
+         Port: 1I
+         Box: 3
+         Bay: 1
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: SAS
+         Size: 1 TB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/512
+         Rotational Speed: 7200
+         Firmware Revision: HPD9
+         Serial Number: 9XGA3GNJ0000C6484KWH
+         WWID: 5000C50085A62F65
+         Model: HP      MM1000FBFVR
+         Current Temperature (C): 37
+         Maximum Temperature (C): 59
+         PHY Count: 2
+         PHY Transfer Rate: 6.0Gbps, Unknown
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:2
+         Port: 1I
+         Box: 3
+         Bay: 2
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SATA
+         Size: 960 GB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/4096
+         Firmware Revision: HPG0
+         Serial Number: S2DENX0H605090
+         WWID: 300143804087516A
+         Model: ATA     MK0960GFDKT
+         SATA NCQ Capable: True
+         SATA NCQ Enabled: True
+         Current Temperature (C): 37
+         Maximum Temperature (C): 40
+         Usage remaining: 99.54%
+         Power On Hours: 11258
+         Estimated Life Remaining based on workload to date: 101505 days
+         SSD Smart Trip Wearout: False
+         PHY Count: 1
+         PHY Transfer Rate: 6.0Gbps
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:3
+         Port: 1I
+         Box: 3
+         Bay: 3
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SATA
+         Size: 1.6 TB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/4096
+         Firmware Revision: G2010130
+         Serial Number: BTWA514404XJ1P6KGN
+         WWID: 3001438040875169
+         Model: ATA     INTEL SSDSC2BB01
+         SATA NCQ Capable: True
+         SATA NCQ Enabled: True
+         Current Temperature (C): 27
+         Maximum Temperature (C): 52
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 1
+         PHY Transfer Rate: 6.0Gbps
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:5
+         Port: 1I
+         Box: 3
+         Bay: 5
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SAS
+         Size: 1.9 TB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/4096
+         Firmware Revision: B003
+         Serial Number: Z880905R0000822150Z3
+         WWID: 5000C500301502A5
+         Model: SEAGATE ST1920FM0003
+         Current Temperature (C): 37
+         Maximum Temperature (C): 60
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 2
+         PHY Transfer Rate: 12.0Gbps, Unknown
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:6
+         Port: 1I
+         Box: 3
+         Bay: 6
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SATA
+         Size: 960 GB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/512
+         Firmware Revision: GXT3003Q
+         Serial Number: S2NLNXAG907547L
+         WWID: 3001438040875161
+         Model: ATA     SAMSUNG MZ7LM960
+         SATA NCQ Capable: True
+         SATA NCQ Enabled: True
+         Current Temperature (C): 35
+         Maximum Temperature (C): 70
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 1
+         PHY Transfer Rate: 6.0Gbps
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:7
+         Port: 1I
+         Box: 3
+         Bay: 7
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SATA
+         Size: 480 GB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/512
+         Firmware Revision: RG20
+         Serial Number: CVTR525201LL480EGN
+         WWID: 3001438040875162
+         Model: ATA     INTEL SSDSC2BW48
+         SATA NCQ Capable: True
+         SATA NCQ Enabled: True
+         Current Temperature (C): 27
+         Maximum Temperature (C): 65
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 1
+         PHY Transfer Rate: 6.0Gbps
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+      physicaldrive 1I:3:8
+         Port: 1I
+         Box: 3
+         Bay: 8
+         Status: OK
+         Drive Type: HBA Mode Drive
+         Interface Type: Solid State SATA
+         Size: 120 GB
+         Drive exposed to OS: True
+         Logical/Physical Block Size: 512/512
+         Firmware Revision: EMT01B6Q
+         Serial Number: S21TNSAG106838X
+         WWID: 3001438040875163
+         Model: ATA     Samsung SSD 850
+         SATA NCQ Capable: True
+         SATA NCQ Enabled: True
+         Current Temperature (C): 26
+         Maximum Temperature (C): 70
+         SSD Smart Trip Wearout: Not Supported
+         PHY Count: 1
+         PHY Transfer Rate: 6.0Gbps
+         Drive Authentication Status: OK
+         Carrier Application Version: 11
+         Carrier Bootloader Version: 6
+         Sanitize Erase Supported: False
+         Shingled Magnetic Recording Support: None
+
+
+   SEP (Vendor ID HP, Model P840ar) 379 
+      Device Number: 379
+      Firmware Version: 6.06
+      WWID: 5001438040875160
+      Vendor ID: HP
+      Model: P840ar
+

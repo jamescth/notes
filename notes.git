@@ -1,0 +1,379 @@
+jho@jho-colo-00:/da/main$git checkout -b jho-26375
+
+M	Prod/Platform/ESX/py_modules/esx_plat_mgr_cli.py
+Switched to a new branch 'jho-26375'
+
+jho@jho-colo-00:/da/main$git status
+jho@jho-colo-00:/da/main$git add Prod/Platform/ESX/py_modules/esx_plat_mgr_cli.py
+jho@jho-colo-00:/da/main$git status
+# On branch jho-26375
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   Prod/Platform/ESX/py_modules/esx_plat_mgr_cli.py
+
+jho@jho-colo-00:/da/main$git commit
+	 Committer: James Ho <jho@jho-colo-00.datrium.com>
+	Your name and email address were configured automatically based
+	on your username and hostname. Please check that they are accurate.
+	You can suppress this message by setting them explicitly:
+
+	    git config --global user.name "Your Name"
+	    git config --global user.email you@example.com
+
+	After doing this, you may fix the identity used for this commit with:
+
+	    git commit --amend --reset-author
+
+	 1 file changed, 1 insertion(+), 1 deletion(-)
+
+jho@jho-colo-00:/da/main$git push origin jho-26375
+
+******************* Run pre-commit tests ***************************
+# http://confluence.datrium.com/pages/viewpage.action?spaceKey=KeyHOME&title=CheckInProcess
+
+jho@jho-colo-00:/da/main$git pre-commit jho-26375
+	Your build has been submitted, and is queued, because:
+	None
+	Check http://jenkins.datrium.com/queue/item/142//api/json for updates.
+
+	reviewers: server_plat, ckap, yang
+	bug: 26375
+	testing: manually verify the CLI output.  precommit.
+
+// modify commit msg
+git commit --amend
+// modify commit identity
+git commit --amend --reset-author
+
+// register review board (once in life time.  May need to change the default passwd)
+/da/ToolsAndLibs/NoArch/PyTools/RBTools-0.5.2/bin/post-review --server=https://reviewboard.datrium.com
+
+git_post_review.py HEAD
+"git_post_review.py -r 12736 HEAD"
+
+******************* check in from branch **************
+git checkout master
+git pull
+git cherry-pick f77b145e8008af507c75c831a03bf70391840077
+git push origin master
+git commit --amend
+git push origin master
+
+******************* check in from master **************
+git remote update
+git rebase origin/master
+	First, rewinding head to replay your work on top of it...
+	Applying: Fix 'NoneType' and 'Hyperdriver' exception.
+git log
+	commit 400262fd53010bdb1c71428159a57ce7dff7ebf4
+	Author: James Ho <jho@datrium.com>
+
+git push origin master
+
+git status
+	# On branch master
+	nothing to commit, working directory clean
+
+******************* conflict **************
+$git rebase origin/master
+First, rewinding head to replay your work on top of it...
+Applying: Utilizes esx_platmgr RPC  to run 'system' calls instead of
+Using index info to reconstruct a base tree...
+M	Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+Falling back to patching base and 3-way merge...
+Auto-merging Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+CONFLICT (content): Merge conflict in Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+Failed to merge in the changes.
+Patch failed at 0001 Utilizes esx_platmgr RPC  to run 'system' calls instead of
+The copy of the patch that failed is found in:
+   /d0/da/main/.git/rebase-apply/patch
+
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".
+
+$git status
+# HEAD detached at ac2bf3b
+# You are currently rebasing branch 'master' on 'ac2bf3b'.
+#   (fix conflicts and then run "git rebase --continue")
+#   (use "git rebase --skip" to skip this patch)
+#   (use "git rebase --abort" to check out the original branch)
+#
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   Prod/Platform/UpgradeMgr/AgentSvr/AgentSvr.c
+#	modified:   Prod/Platform/UpgradeMgr/AgentSvr/CtrlAgent.c
+#	modified:   Prod/Platform/UpgradeMgr/AgentSvr/LinuxHostAgent.c
+#	modified:   Prod/Platform/UpgradeMgr/Include/AgentImplIf.h
+#
+# Unmerged paths:
+#   (use "git reset HEAD <file>..." to unstage)
+#   (use "git add <file>..." to mark resolution)
+#
+#	both modified:      Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+
+$git diff Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+diff --cc Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+index 5bb29fb,6a748c2..0000000
+--- a/Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
++++ b/Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c
+@@@ -244,18 -755,26 +755,35 @@@ HostAgent_PostRunningVersionMatch(void
+        DaLog_Info("Switching to the next mode");
+  
+        /* Put the script execution in datrium RP to avoid it running into ENOSPC. */
+++<<<<<<< HEAD
+ +      if (0 != (retVal = DaEsxUtils_RunCmdWithTimeout(30,
+ +            "/opt/datrium/python2/bin/python ++group=host/vim/vimuser/datrium/utility "
+ +            "%sprocmgr_cli.py --client UpgradeMgr.%d switchmode 3",
+ +            HOST_DA_BIN_PATH, OS_Getpid()))) {
+ +         DaLog_Error("Procmgr switchmode failed with exit code %d", retVal);
+ +         return false;
+++=======
++       Da_Snprintf(cmd, sizeof(cmd),
++                   "/opt/datrium/python2/bin/python ++group=host/vim/vimuser/datrium "
++                   "%sprocmgr_cli.py --client UpgradeMgr.%d switchmode 3",
++                   HOST_DA_BIN_PATH, OS_Getpid());
++       err = CallCommand(30, "run_cmd", NULL, cmd, out, sizeof(out));
++       if (!DaErr_IsOk(err)) {
++           DaLog_Error("Procmgr switchmode failed with exit code %s", out);
++           return false;
+++>>>>>>> Utilizes esx_platmgr RPC  to run 'system' calls instead of
+        }
+-       if (0 != (retVal = DaEsxUtils_RunCmdWithTimeout(900,
+-             "%sda_setup --persist_selected_version", HOST_DA_BIN_PATH))) {
+-          DaLog_Error("Persist-version failed with exit code %d", retVal);
+-          return false;
++ 
++       Da_Memset(cmd, 0, sizeof(cmd));
++       Da_Memset(out, 0, sizeof(out));
++ 
++       Da_Snprintf(cmd, sizeof(cmd), "%sda_setup --persist_selected_version", HOST_DA_BIN_PATH);
++       err = CallCommand(900, "run_cmd", NULL, cmd, out, sizeof(out));
++       if (!DaErr_IsOk(err)) {
++           DaLog_Error("Persist-version failed with exit code %s", out);
++           return false;
+        }
++ 
+        modeThreeSwitched = true;
+     }
+     return true;
+
+use gvim to resolve merge. use mergetool (over sshfs) to confirm.
+
+$git rebase --continue
+Applying: Utilizes esx_platmgr RPC  to run 'system' calls instead of
+jho@jho-colo-01:/da/main$git status
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	Prod/Platform/UpgradeMgr/AgentSvr/HostAgent.c.orig
+nothing added to commit but untracked files present (use "git add" to track)
+
+******************* cleanup ***************************
+git pull
+git push origin --delete jho-26375
+git branch -D jho-26375
+
+
+******************* additions ***************************
+see change follow a file:
+	git log --follow -p -- <file>
+
+
+******************* revert ***************************
+$git revert e2373cc085b723275b9eb153bcd3ff332afd9e07
+[master ae57574] Revert "Avoid stressing protobuf protocol in Msg_Send"
+ 1 file changed, 17 insertions(+), 28 deletions(-)
+
+$git commit --amend
+[master d19cbaa] Revert "Avoid stressing protobuf protocol in Msg_Send"
+ 1 file changed, 17 insertions(+), 28 deletions(-)
+
+$git log
+commit 52b95afe2456ecf8275c6a58befdbc410f65b479
+Author: James Ho <jho.datrium.com>
+Date:   Thu Dec 7 14:00:31 2017 -0800
+
+    Revert "Avoid stressing protobuf protocol in Msg_Send"
+    
+    This reverts commit e2373cc085b723275b9eb153bcd3ff332afd9e07.
+    Wrong branch.
+    
+    bug: 33300
+    reviewers: jho
+    review id: 0
+    testing: N/A
+
+$git push origin master
+To jho@git:/da/main
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'jho@git:/da/main'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first merge the remote changes (e.g.,
+hint: 'git pull') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+jho@jho-colo-01:/da/main/Prod/Platform/UpgradeMgr/AgentSvr$git remote update
+Fetching origin
+remote: Counting objects: 6, done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 6 (delta 5), reused 0 (delta 0)
+Unpacking objects: 100% (6/6), done.
+From git:/da/main
+   f726541..2bb6f87  master     -> origin/master
+
+jho@jho-colo-01:/da/main/Prod/Platform/UpgradeMgr/AgentSvr$git rebase origin/master
+First, rewinding head to replay your work on top of it...
+Applying: Revert "Avoid stressing protobuf protocol in Msg_Send"
+
+$git push origin master
+Counting objects: 13, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 901 bytes | 0 bytes/s, done.
+Total 7 (delta 6), reused 0 (delta 0)
+To jho@git:/da/main
+   2bb6f87..52b95af  master -> master
+
+****************************************
+other branch/non-master
+***************************************
+git remote show origin
+git checkout -b 4.0.x origin/prod/4.0.x
+git status
+git branch
+
+# This create a new remote branch. DO NOT do it.
+jho@jho-colo-00:/da/main$git push origin 4.0.x
+	Counting objects: 37, done.
+	Delta compression using up to 4 threads.
+	Compressing objects: 100% (19/19), done.
+	Writing objects: 100% (26/26), 14.24 KiB | 0 bytes/s, done.
+	Total 26 (delta 21), reused 8 (delta 7)
+	To jho@git:/da/main
+	   c93a0de..8df26f4  4.0.x -> 4.0.x
+
+jho@jho-colo-00:/da/main$git status
+	# On branch 4.0.x
+	# Your branch is ahead of 'origin/prod/4.0.x' by 3 commits.
+	#   (use "git push" to publish your local commits)
+	#
+	nothing to commit, working directory clean
+
+# remove the remote branch
+$git push origin :4.0.x
+To jho@git:/da/main
+ - [deleted]         4.0.x
+
+$git remote update
+Fetching origin
+remote: Counting objects: 8, done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 8 (delta 3), reused 0 (delta 0)
+Unpacking objects: 100% (8/8), done.
+From git:/da/main
+   f0c9f97..6b1c733  master     -> origin/master
+
+$git rebase origin/prod/4.0.x
+First, rewinding head to replay your work on top of it...
+Applying: Add to-be-signed 2.0 VAAI vib to controller resource
+
+$git push origin 4.0.x:prod/4.0.x
+Counting objects: 37, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (19/19), done.
+Writing objects: 100% (26/26), 14.24 KiB | 0 bytes/s, done.
+Total 26 (delta 21), reused 8 (delta 7)
+remote: 
+remote: !!!!!!!!!!!!!!!!!!! POST-RECEIVE ERROR  !!!!!!!!!!!!!!!!!!
+remote: 
+remote: 1420396  could not close reviewboard review 33751; try executing `scp ~/.post-review-cookies.txt jho.datrium.com@git:`
+remote: 34118df  could not close reviewboard review 33996; try executing `scp ~/.post-review-cookies.txt jho.datrium.com@git:`
+remote: 4b9c70c  could not close reviewboard review 34051; try executing `scp ~/.post-review-cookies.txt jho.datrium.com@git:`
+remote: 
+remote: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+remote: !!   NON-FATAL ERRORS! YOUR CHANGES HAVE BEEN PUSHED!   !!
+remote: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+To jho@git:/da/main
+   4243abc..4b9c70c  4.0.x -> prod/4.0.x
+
+
+
+**************************************************************************
+private branch
+
+# create a new private branch and push it to remote
+$git checkout -b jho-dalog
+Switched to a new branch 'jho-dalog'
+$git status
+$git add Prod/Platform/ESX/py_modules/esx_plat_mgr_cli.py
+$git status
+$git commit
+$git push origin jho-dalog
+
+# create a new local private branch from remote
+$git checkout -b jho-dalog origin/jho-dalog
+
+# delete remote branch
+$git push -d origin jho-dalog
+# delete local branch
+$git branch -d jho-dalog
+
+# show remote branches
+$git remote show origin | grep jho
+  Fetch URL: jho@git:/da/main
+  Push  URL: jho@git:/da/main
+    refs/remotes/origin/jho-26375                                                        stale (use 'git remote prune' to remove)
+
+$git remote update
+$git rebase origin jho-dalog
+$git push origin jho-dalog
+
+
+$git pull
+remote: Counting objects: 752, done.
+remote: Compressing objects: 100% (363/363), done.
+remote: Total 752 (delta 547), reused 542 (delta 341)
+Receiving objects: 100% (752/752), 109.43 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (547/547), completed with 203 local objects.
+From git:/da/main
+ * [new branch]      aehusain/pr_36803 -> origin/aehusain/pr_36803
+   4c140ca..3ef110e  anupam/head -> origin/anupam/head
+   7ebde4e..532ba44  iakgun/filename_elasticsearch -> origin/iakgun/filename_elasticsearch
+ * [new branch]      kyle/solutionsteam -> origin/kyle/solutionsteam
+   14a3c59..c8c4860  master     -> origin/master
+ * [new branch]      moussa/srm-vm-placeholder -> origin/moussa/srm-vm-placeholder
+   6a1235f..c75452a  praveen/srm-ui-changes -> origin/praveen/srm-ui-changes
+ * [new branch]      praveen/srmapimousa -> origin/praveen/srmapimousa
+   d514ca0..44b8a9c  prod/4.0.x -> origin/prod/4.0.x
+ + 077907f...37a4860 ryan/ui    -> origin/ryan/ui  (forced update)
+   8eb156b..4d4db69  ryan/uitarbuild -> origin/ryan/uitarbuild
+ * [new branch]      shachi/irr-debug-logs -> origin/shachi/irr-debug-logs
+ * [new branch]      shachi/user-confirm-workflow -> origin/shachi/user-confirm-workflow
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details
+
+    git pull <remote> <branch>
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> jho-dalog
+
+jho@jho-colo-02:/da/main$git pull origin jho-dalog
+From git:/da/main
+ * branch            jho-dalog  -> FETCH_HEAD
+Already up-to-date.
+
+$git branch --set-upstream-to=origin/jho-dalog jho-dalog
+Branch jho-dalog set up to track remote branch jho-dalog from origin.
+jho@jho-colo-02:/da/main$git pull
+Already up-to-date.
+

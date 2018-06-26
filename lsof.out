@@ -1,0 +1,17 @@
+Open files
+Processes with open files are the usual culprits. Display them:
+
+lsof +f -- <mountpoint or device>
+
+fuser can also be used, but to my mind lsof has a more useful output. However fuser is useful when it comes to killing the processes causing your dramas so you can get on with your life.
+
+List files on <mountpoint> (see caveat above):
+
+fuser -vmM <mountpoint>
+Interactively kill only processes with files open for writing:
+
+fuser -vmMkiw <mountpoint>
+After remounting read-only (mount -o remount,ro <mountpoint>), it is safe(r) to kill all remaining processes:
+
+fuser -vmMk <mountpoint>
+

@@ -1,0 +1,16 @@
+Server/esx_platmgr_cli.py
+dacli main()
+
+    ||
+    \/
+
+parsing arg. prepare for sending req
+
+./py_modules/esx_plat_mgr_cli.py
+
+    ||
+    \/
+
+Server/esx_platmgr.py
+
+RPC Server/handling rpc requests

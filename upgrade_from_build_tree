@@ -1,0 +1,59 @@
+This is the process I've been using to upgrade an existing dittos with my build tree. "dvx software upgrade" can be used pointing to a URL of your colo or dev machine.
+
+On your colo or dev machine, start the http server:
+sudo yum -y install httpd
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+Create 'junk' folder in your webserver folder and symlink to build directory: 
+cd /var/www/html/junk
+sudo ln -s /da/main/OS/Build/ build_output
+
+Then run the upgrade command on the dittos instance which you want to upgrade.
+dev software upgrade http://10.2.30.238/junk/build_output/x86_64/da-os-Debug.bin  --disruptive --force
+
+================================================================================================
+The private build (daos-××-Debug/Release.bin) from the workspace can be copied (scp) to the dittos instance to some path (say /da/data/) and upgraded from that path as well.
+"dev software upgrade /da/data/<New image>".
+================================================================================================
+I use this too, and it works very smoothly. Only thing to keep in mind is that the pre-install check will fail if you have two consecutive builds with the same sha1,
+so it is better to check-in any small incremental changes before building the next image.
+
+
+colo
+# cd /da/main
+# FAKE_VERSION=Y make -j 4 dva.py DA_BUILD_LEVEL=Debug
+# mv OS/Build/ OS/Build_99999
+# scp OS/Build_99999/x86_64/da-os-Debug.bin root@10.80.79.130:/da/data
+ 
+DVX
+
+# dvx software upgrade /da/data/da-os-Debug.bin                                   
+IMPORTANT! This may trigger a non-disruptive firmware upgrade, which can take up to 3 hours and require multiple controller reboots. While upgrading, the hardware must not be disturbed.
+Run the 'dvx software upgrade-check' command for more specific information about this upgrade, including firmware details.
+
+Do you want to continue? [y/N] y
+Invalid software version string /da/data/da-os-Debug.bin
+
+
+[node1.controller1-VMware-421fec7013563706-48fa3a1a55d77680: ~/var/log]# dev software upgrade /da/data/da-os-Debug.bin                                   
+IMPORTANT! This may trigger a non-disruptive firmware upgrade, which can take up to 3 hours and require multiple controller reboots. While upgrading, the hardware must not be disturbed.
+Run the 'dvx software upgrade-check' command for more specific information about this upgrade, including firmware details.
+
+Do you want to continue? [y/N] y
+Upgrade of 9.0.8.0-999999_abcdef started. Run "dvx software show" to check progress
+
+# dvx software show
+------------------------ Software ------------------------
+Status      Version                    Build Date         
+----------- -------------------------- -------------------
+Running     4.0.101.0-31508_4f6232a_g  2018-05-23 09:41:57
+----------- -------------------------- -------------------
+Remote software list updated on 2018-05-25 18:50:17
+
+----------------------------------------------- Task History -----------------------------------------------
+Status      Task        Version                Start                 End/Progress          Description      
+----------- ----------- ---------------------- --------------------- --------------------- -----------------
+Running     Upgrade     9.0.8.0-999999_abcdef  2018-05-25 20:53:44   10%                   Downloading image
+----------- ----------- ---------------------- --------------------- --------------------- -----------------
+

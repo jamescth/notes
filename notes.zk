@@ -1,0 +1,208 @@
+[mirg@mirg-colo a]$ mkdir -p /tmp/zookeeper/version-2
+
+[mirg@mirg-colo a]$ cp testbed/testbed_0/ControllerNode0.controller1/support-2018-01-04T05_26_05/d1060dc0-f152-11e7-aeaa-da005b1f599a/dva-controller-da001dcc5d1e_debug_support_id_d199b854f15211e7afc402da58f28bd0_2018-01-04T13_26_06/da/data/clustersvc/version-2/datrium_zk_snap /tmp/zookeeper/version-2/snapshot.0
+
+[mirg@mirg-colo a]$ ps x | grep java
+23901 pts/0    S+     0:00 grep --color=auto java
+
+[mirg@mirg-colo a]$ /da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/zkServer.sh start /da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/conf/zoo_sample.cfg
+JMX enabled by default
+Using config: /da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/conf/zoo_sample.cfg
+Starting zookeeper ... STARTED
+
+[mirg@mirg-colo a]$ /da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/zkCli.sh
+Connecting to localhost:2181
+2018-01-09 15:03:00,943 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT
+2018-01-09 15:03:00,947 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=mirg-colo.datrium.com
+2018-01-09 15:03:00,947 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.7.0_25
+2018-01-09 15:03:00,948 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Oracle Corporation
+2018-01-09 15:03:00,948 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.25.x86_64/jre
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../build/classes:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../build/lib/*.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../lib/slf4j-log4j12-1.6.1.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../lib/slf4j-api-1.6.1.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../lib/netty-3.7.0.Final.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../lib/log4j-1.2.16.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../lib/jline-0.9.94.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../zookeeper-3.4.6.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../src/java/lib/*.jar:/da/ToolsAndLibs/LinuxX64ToLinuxX64/zookeeper-3.4.6/bin/../conf:
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:java.io.tmpdir=/tmp
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:java.compiler=<NA>
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:os.name=Linux
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:os.arch=amd64
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:os.version=3.9.10-100.fc17.x86_64
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:user.name=mirg
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:user.home=/auto/home/mirg
+2018-01-09 15:03:00,949 [myid:] - INFO  [main:Environment@100] - Client environment:user.dir=/cores/bug_34067/a
+2018-01-09 15:03:00,950 [myid:] - INFO  [main:ZooKeeper@438] - Initiating client connection, connectString=localhost:2181 sessionTimeout=30000 watcher=org.apache.zookeeper.ZooKeeperMain$MyWatcher@3a028fb7
+Welcome to ZooKeeper!
+2018-01-09 15:03:00,984 [myid:] - INFO  [main-SendThread(localhost:2181):ClientCnxn$SendThread@975] - Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (unknown error)
+2018-01-09 15:03:00,988 [myid:] - INFO  [main-SendThread(localhost:2181):ClientCnxn$SendThread@852] - Socket connection established to localhost/127.0.0.1:2181, initiating session
+JLine support is enabled
+[zk: localhost:2181(CONNECTING) 0] 2018-01-09 15:03:01,016 [myid:] - INFO  [main-SendThread(localhost:2181):ClientCnxn$SendThread@1235] - Session establishment complete on server localhost/127.0.0.1:2181, sessionid = 0x160dd2981f30000, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null
+
+[zk: localhost:2181(CONNECTED) 0] ls /
+[client, events, LeaseMgr, netdir, pool, alerts, Repack, config, ClumpStoreV1, platform, markers, networksetup, health, TsStore, ratelimit, SR, alarms, DatastoreNextId, misc, upgrade, Datastores_V1, Collection_V1, inventory, zookeeper, service, Snapple, ContMgrV1]
+[zk: localhost:2181(CONNECTED) 1] ls /upgrade
+[currentStates, targetStates, taskHistory]
+[zk: localhost:2181(CONNECTED) 2] ls /upgrade/currentStates
+[]
+[zk: localhost:2181(CONNECTED) 3] ls /upgrade/targetStates
+[host]
+[zk: localhost:2181(CONNECTED) 4] ls /upgrade/taskHistory
+[1515066004262525938]
+[zk: localhost:2181(CONNECTED) 5] ls /upgrade/taskHistory/1515066004262525938
+[]
+[zk: localhost:2181(CONNECTED) 6] get /upgrade/taskHistory/1515066004262525938
+�ښ����UpgradeMgr-151506600426252593Download"Success(d8ý������B5.0.8.0-999999_abcdefJSoftware image downloaded
+cZxid = 0xe66
+ctime = Thu Jan 04 03:40:51 PST 2018
+mZxid = 0xe66
+mtime = Thu Jan 04 03:40:51 PST 2018
+pZxid = 0xe66
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 123
+numChildren = 0
+
+
+**************************************************
+
+**************************************************
+
+[zk: localhost:2181(CONNECTED) 4] help
+ZooKeeper -server host:port cmd args
+	stat path [watch]
+	set path data [version]
+	ls path [watch]
+	delquota [-n|-b] path
+	ls2 path [watch]
+	setAcl path acl
+	setquota -n|-b val path
+	history 
+	redo cmdno
+	printwatches on|off
+	delete path [version]
+	sync path
+	listquota path
+	rmr path
+	get path [watch]
+	create [-s] [-e] path data acl
+	addauth scheme auth
+	quit 
+	getAcl path
+	close 
+	connect host:port
+
+[zk: localhost:2181(CONNECTED) 2] ls /upgrade
+[targetStates, currentStates, taskHistory]
+
+[zk: localhost:2181(CONNECTED) 3] get /upgrade
+
+cZxid = 0x1b4
+ctime = Thu Jan 04 03:20:40 PST 2018
+mZxid = 0x1b4
+mtime = Thu Jan 04 03:20:40 PST 2018
+pZxid = 0xe91
+cversion = 19
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 3
+
+[zk: localhost:2181(CONNECTED) 5] ls /upgrade/targetStates
+[host]
+[zk: localhost:2181(CONNECTED) 6] ls /upgrade/targetStates/host
+[]
+[zk: localhost:2181(CONNECTED) 7] ls /upgrade/currentStates    
+[]
+[zk: localhost:2181(CONNECTED) 8] ls /upgrade/taskHistory
+[1515066004262525938]
+[zk: localhost:2181(CONNECTED) 9] ls /upgrade/taskHistory/1515066004262525938
+[]
+
+[zk: localhost:2181(CONNECTED) 10] get /upgrade/targetStates
+
+cZxid = 0x1b5
+ctime = Thu Jan 04 03:20:40 PST 2018
+mZxid = 0x1b5
+mtime = Thu Jan 04 03:20:40 PST 2018
+pZxid = 0x1b6
+cversion = 1
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 1
+[zk: localhost:2181(CONNECTED) 11] get /upgrade/targetStates/host
+
+Ѐ�
+��e(��28a1f03f:g@HPX:80/static/Head.Bundle:80/static/DaOS.bin���"���
+cZxid = 0x1b6
+ctime = Thu Jan 04 03:20:40 PST 2018
+mZxid = 0x16e2
+mtime = Thu Jan 04 05:03:58 PST 2018
+pZxid = 0x1b6
+cversion = 0
+dataVersion = 3
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 103
+numChildren = 0
+
+[zk: localhost:2181(CONNECTED) 12] get  /upgrade/currentStates 
+
+cZxid = 0x1b9
+ctime = Thu Jan 04 03:20:40 PST 2018
+mZxid = 0x1b9
+mtime = Thu Jan 04 03:20:40 PST 2018
+pZxid = 0x2c
+cversion = 20
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 0
+
+[zk: localhost:2181(CONNECTED) 13] get /upgrade/taskHistory
+
+cZxid = 0xe65
+ctime = Thu Jan 04 03:40:51 PST 2018
+mZxid = 0xe65
+mtime = Thu Jan 04 03:40:51 PST 2018
+pZxid = 0xe66
+cversion = 1
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 1
+[zk: localhost:2181(CONNECTED) 14] get  /upgrade/taskHistory/1515066004262525938
+�ښ����UpgradeMgr-1515066004262525938Download"Success(d8ý������B5.0.8.0-999999_abcdefJSoftware image downloaded
+cZxid = 0xe66
+ctime = Thu Jan 04 03:40:51 PST 2018
+mZxid = 0xe66
+mtime = Thu Jan 04 03:40:51 PST 2018
+pZxid = 0xe66
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 123
+numChildren = 0
+
+
+**************************************************
+upgrade zk commands
+**************************************************
+ACRTask_SaveOngoingTaskZK
+ACRTask_RestoreOngoingTaskZK
+
+      /* Read from registry. */
+      err = Registry_GetPB(regHandle, UPGRADE_REG_PATH_ONGOING_TASK, Registry_NoRetry, &taskZK,
+                           UpgradeOngoingTask_fields, _memCtxt);
+      if (THROWABLE_IS_REGISTRY_NO_NODE(err)) {
+         DaLog_Info("No ongoing task to resume");
+         return true;
+      }
+

@@ -1,0 +1,3 @@
+hexdump -c {output file}
+
+cat {output file} | protoc --decode_raw

@@ -1,0 +1,58 @@
+autosupport dir: /asupdata/{date}/{DvaId}/{controller id} or {host id}/
+	example/35489:
+	jho@jho-colo-00:/asupdata/2018_03_28/37463943-1612-1301-adb2-4885291d6287$ll
+	total 152
+	drwxr-xr-x 5 30 48 5 Mar 28 16:09 abq-ucs-00-esxi-2_00_25_b5_00_00_04
+	drwxr-xr-x 6 30 48 6 Mar 28 16:00 abq-ucs-00-esxi-3_00_25_b5_00_00_08
+	drwxr-xr-x 5 30 48 5 Mar 28 16:06 abq-ucs-00-esxi-4_00_25_b5_00_00_18
+	drwxr-xr-x 5 30 48 5 Mar 28 16:04 ABQ-UCS-10-ESXi-2_00_25_b5_00_00_0c
+	drwxr-xr-x 5 30 48 5 Mar 28 16:01 ABQ-UCS-10-ESXi-3_00_25_b5_00_00_14
+	drwxr-xr-x 5 30 48 5 Mar 28 16:11 abq-ucs-10-esxi-4_00_25_b5_00_00_1e
+	drwxr-xr-x 6 30 48 6 Mar 28 16:03 dva-controller-0050cc7a70a1
+	drwxr-xr-x 5 30 48 5 Mar 28 16:01 dva-controller-0050cc7a70c5
+
+
+http://confluence.datrium.com/display/KNOW/Creating+a+Datrium+Support+Bundle+on+ESXi+host
+	vm-support --manifests=Custom:DatriumAll
+	To see the files collected, check '/vmfs/volumes/datastore_on_root/esx-vesx00.datrium.com-2018-04-03--22.37-108856.tgz'
+
+
+http://confluence.datrium.com/pages/viewpage.action?spaceKey=QA&title=Bug+Filing+Guidelines
+on controller
+# dev conf set ConfAutosupport.enabled=true ConfAutosupport.insaneMode=true
+# support submit
+Support request has been submitted with ID: c7fb6c8f4a4711e8ad8202da32cfd080.
+Use 'support show c7fb6c8f4a4711e8ad8202da32cfd080' to get updates on the status of the request.
+Use 'support show --wait c7fb6c8f4a4711e8ad8202da32cfd080' to wait for the request to complete.
+# support show c7fb6c8f4a4711e8ad8202da32cfd080
+Support number: c7fb6c8f4a4711e8ad8202da32cfd080
+Progress %: 0
+Start Time: 2018-04-27T18:21:20 UTC
+
+---------------------------------------------------------------------------------------------------------------
+Status      Component          Ip Address    Name         Total files   Uploaded files   Progress %  Details   
+----------- ------------------ ------------- ----------- ------------- ---------------- ------------ ----------
+INPROGRESS  da:80:15:ff:cb:b1  10.80.16.171  --                    --               --            0            
+INPROGRESS  node1.controller2  10.80.68.219  .n1c2                 --               --            0            
+INPROGRESS  node1.controller1  10.80.68.214  .n1c1                 --               --            0            
+----------- ------------------ ------------- ----------- ------------- ---------------- ------------ ----------
+
+# support show c7fb6c8f4a4711e8ad8202da32cfd080
+Support number: c7fb6c8f4a4711e8ad8202da32cfd080
+Progress %: 100
+Start Time: 2018-04-27T18:21:20 UTC
+
+---------------------------------------------------------------------------------------------------------------
+Status      Component          Ip Address    Name         Total files   Uploaded files   Progress %  Details   
+----------- ------------------ ------------- ----------- ------------- ---------------- ------------ ----------
+SUCCESS     da:80:15:ff:cb:b1  10.80.16.171  --                   547              547          100            
+SUCCESS     node1.controller2  10.80.68.219  .n1c2                864              864          100            
+SUCCESS     node1.controller1  10.80.68.214  .n1c1               1475             1475          100            
+----------- ------------------ ------------- ----------- ------------- ---------------- ------------ ----------
+
+$/da/main/Support/asup/scripts/bundle.py -v extract --symlink --db --asupid c7fb6c8f4a4711e8ad8202da32cfd080 /tmp/test-bundle/
+bundle.py:239 _extract -- bundle.py._extract: Extract ASUP bundles {'dvxid': None, 'force': False, 'hostid': None, 'start_at': None, 'verbose': True, 'skipstats': False, 'lookback': 2, 'subcommand': 'extract', 'db': True, 'localpath': '/tmp/test-bundle/', 'symlink': True, 'asuptype': None, 'internal': True, 'external': True, 'func': <function _extract at 0x7fe62fcf46e0>, 'path': None, 'end_at': None, 'skiptraces': False, 'asupid': 'c7fb6c8f4a4711e8ad8202da32cfd080'}
+...
+
+
+Prod/FE/VAAI/upgrade_bundle_data_esx/opt/datrium_initial_bundle/vm-support/datrium-all.mfx

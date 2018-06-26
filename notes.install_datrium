@@ -1,0 +1,95 @@
+[root@n1444:/opt] localcli software vib install -d http://10.80.71.60/static/ESXVIBHyperDriver
+Installation Result:
+   Message: Operation finished successfully.
+   Reboot Required: false
+   VIBs Installed: Datrium_bootbank_datrium-hyperdriver-esx_2.0.1.0-24008
+   VIBs Removed: 
+   VIBs Skipped: 
+
+[root@n1444:/opt] localcli datrium start -n 10.80.71.60
+
+Value of DatriumNetshelfIp is 10.80.71.60
+Starting Datrium service
+Done.
+
+[root@n1444:/opt] procmgr_cli.py show
+
+Mode/Changing: 1/False
+Name                   Stat  PID      Auto  Enable Modes        Vmsize    RSS  Uptime
+---------------------------------------------------------------------------------
+DaggerWorker           S              1     1      3                                 
+ESXPlatMgr             S              1     1      3                                 
+FE                     S              1     1      3                                 
+eventproducer          S              1     1      3                                 
+NetworkHeartbeat       S              1     1      2,3                               
+UpgradeMgr             S              1     1      2,3                               
+FEMountd               S              1     0      1,2,3                             
+esx_platmgr            R     227015   1     1      1,2,3             0      0     12s
+---------------------------------------------------------------------------------
+Total   
+
+[root@n1444:/opt] dacli ssd show
+
+No drives configured for DVX use
+
+Available drives
+     naa.50025388a0a69580 / Empty
+         Samsung SSD 850 PRO 512GB         511 GB   Enclosure 32:Slot 1
+     naa.50025388a0a481e7 / Empty
+         Samsung SSD 850 PRO 512GB         511 GB   Enclosure 32:Slot 2
+     naa.50025388a09757f0 / Empty
+         Samsung SSD 850 PRO 512GB         511 GB   Enclosure 32:Slot 3
+
+Unusable drives
+     naa.61418770707584001e8614850d8ec7d3 / Not an SSD (boot)
+         ST91000640NS                      999 GB   Enclosure 32:Slot 0
+
+~ # localcli system visorfs ramdisk list
+Ramdisk Name    System  Include in Coredumps  Reserved    Maximum     Used        Peak Used   Free   Reserved Free  Maximum Inodes  Allocated Inodes  Used Inodes  Mount Point
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+root            true    true                   32768 KiB   32768 KiB    5840 KiB    6612 KiB   82 %           82 %            8192              4096         3646  /
+etc             true    true                   28672 KiB   28672 KiB     204 KiB     236 KiB   99 %           99 %            4096              1024          488  /etc
+tmp             false   false                   2048 KiB  196608 KiB      56 KiB     780 KiB   99 %           97 %            8192               256           12  /tmp
+hostdstats      false   false                      0 KiB  228352 KiB    1536 KiB    1536 KiB   99 %            0 %            8192                32            4  /var/lib/vmware/hostd/stats
+snmptraps       false   false                      0 KiB    1024 KiB       0 KiB       0 KiB  100 %            0 %            8192                32            1  /var/spool/snmp
+datrium-BSBSBS  false   false                 819200 KiB  819200 KiB  724864 KiB  724864 KiB   11 %           11 %            8192              4096         4082  /da-sys
+datrium-GDHYH0  false   false                   1024 KiB    1024 KiB       4 KiB       8 KiB   99 %           99 %            8192                32            4  /dakv
+
+
+~ # da
+-sh: source: can't open '/opt/datrium/etc/profile.datrium'
+~ # esxcli software vib list |grep -i da
+Name                           Version                                Vendor    Acceptance Level  Install Date
+~ #
+
+Manually installed hyperdriver on those 2 hosts, mounted datastore ok.
+
+There's error in da check for mr3 version:
+
+
+~ # localcli datrium check
+Test                             Value                                              Result
+------------------------------------------------------------------------------------------
+CPU                              64 cores                                           OK
+Memory                           895.90 GiB                                         OK
+NIC speed                        vSwitch0 has at least one 10+ Gbps NIC             OK
+ESXi version                     5.5.0 (3568722)                                    OK
+ESXi boot type                   visor-thin                                         OK
+Lockdown mode                    Not enabled                                        OK
+RAM disk                         Can create 800 MiB RAM disk                        OK
+Root partition                   31460 KiB free                                     OK
+Scratch location                 /vmfs/volumes/588b808a-f22e6a9b-d6bd-44a8423c760c  OK
+Persistent logging               Yes                                                OK
+Encryption AES-NI                Compatible                                         OK
+vSphere Flash Read Cache (vFRC)  Not enabled                                        OK
+Content-Based Read Cache (CBRC)  Enabled                                            FAIL. Disable Content-Based Read Cache
+vSAN                             Not enabled                                        OK
+Incompatible VIBs                Not found                                          OK
+RAID controller CLI              Dell perccli not installed                         FAIL. Dell perccli not installed
+Incompatible storage drivers     lsi_mr3                                            FAIL. Install compatible driver and disable lsi_mr3
+
+
+~ # esxcli software vib list |egrep 'lsi'
+lsi-mr3                        0.255.03.01-2vmw.550.3.68.3029944      VMware    VMwareCertified   2017-01-27
+lsi-msgpt3                     00.255.03.03-2vmw.550.3.78.3248547     VMware    VMwareCertified   2017-01-27
+

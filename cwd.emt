@@ -1,0 +1,113 @@
+/**************************************************************
+ * Copyright (c) 2017 Datrium, Inc. All rights reserved.      *
+ *                -- Datrium Confidential --                  *
+ **************************************************************/
+
+/*
+ * cwd.emt --
+ *
+ *    vprobes script to print the CWD of all userworlds.  Currently only prints
+ *    path names for VisorFS objects.
+ */
+
+/* These may change between ESX versions. */
+#define __OFF_WORLD_ID        0x1180
+#define __OFF_WORLD_NAME      0x1190
+#define __OFF_WORLD_UCI       0x17f8
+
+#define __OFF_UCI_FSS         0x0070
+
+#define __OFF_UFSS_CWD        0x0290
+
+#define __OFF_UCWD_OBJ        0x0078
+
+#define __OFF_ODI_OID         0x0050
+
+#define __OFF_VFSOBJ_SELF     0x0048
+#define __OFF_VFSOBJ_PARENT   0x0050
+#define __OFF_VFSOBJ_NAME     0x0068
+#define __OFF_VFSOBJ_PAD      0x0070
+
+typedef struct FS_ObjectID {
+   uint16      length;
+   char        data[64];
+} FS_ObjectID;
+
+typedef struct FSS_ObjectID {
+   uint16         fsTypeNum;
+   FS_ObjectID    oid;
+} FSS_ObjectID;
+
+typedef struct ObjDescriptorInt {
+   @__OFF_ODI_OID    FSS_ObjectID      oid;
+} ObjDescriptorInt;
+
+typedef struct User_Cwd {
+   @__OFF_UCWD_OBJ   ObjDescriptorInt  **objDesc;
+} User_Cwd;
+
+typedef struct User_FSS {
+   @__OFF_UFSS_CWD   User_Cwd          *cwd;
+} User_FSS;
+
+typedef struct User_CartelInfo {
+   @__OFF_UCI_FSS    User_FSS          fss;
+} User_CartelInfo;
+
+typedef struct World_Handle {
+   @__OFF_WORLD_ID   int               worldID;
+   @__OFF_WORLD_NAME char              worldName[128];
+   @__OFF_WORLD_UCI  User_CartelInfo   *userCartelInfo;
+} World_Handle;
+
+typedef struct WorldSlot {
+   World_Handle   *worldHandle;
+   char           _pad[0x10];
+} WorldSlot;
+
+typedef struct VisorFSObj {
+   @__OFF_VFSOBJ_SELF      uint64   self;
+   @__OFF_VFSOBJ_PARENT    uint64   parent;
+   @__OFF_VFSOBJ_NAME      char     *name;
+   @__OFF_VFSOBJ_PAD       char     pad[0x10];
+} VisorFSObj;
+
+perhost WorldSlot    *worldTable;
+perhost int          worldTableIndex;
+perhost VisorFSObj   *VisorFSObjs;
+
+VMK:VMKLoad
+{
+   worldTable = *((WorldSlot **)sym2addr("worldTable"));
+   worldTableIndex = 0;
+   VisorFSObjs = *((VisorFSObj **)sym2addr("VisorFSObjs"));
+}
+
+void
+PrintObjDesc(ObjDescriptorInt *objDesc)
+{
+   printf("%d:%d ", objDesc->oid.fsTypeNum, objDesc->oid.oid.length);
+   if (objDesc->oid.fsTypeNum == 1) {
+      inodeNum = *((uint64 *)objDesc->oid.oid.data) & 0xffffffff;
+      while (inodeNum > 0 && inodeNum < 0xfffffffd) {
+         printf("%s/", (string)VisorFSObjs[inodeNum].name);
+         inodeNum = VisorFSObjs[inodeNum].parent & 0xffffffff;
+      }
+      printf("\n");
+   }
+}
+
+/* It takes too long to do this in one probe so we break it up and do a portion every 1ms */
+VMK:PROFILE:1msec
+{
+   for (i = 0; i < 0x100 && worldTableIndex < 0x8000; i += 1, worldTableIndex += 1) {
+      world = worldTable[worldTableIndex].worldHandle;
+      if (world != 0 && world != 0xfffffffffffffffe) {
+         if (world->userCartelInfo != 0) {
+            oid = *world->userCartelInfo->fss.cwd->objDesc;
+            printf("%10d %20s ", world->worldID, (string)world->worldName);
+            PrintObjDesc(oid);
+         }
+      }
+   }
+}

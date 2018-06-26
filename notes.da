@@ -1,0 +1,48 @@
+"localcli datrium start" <=> da
+How to mount DVX Datastore without vCenter
+http://confluence.datrium.com/pages/viewpage.action?pageId=37949918
+
+# localcli cmd
+localcli system visorfs ramdisk list
+
+localcli --formatter=json vsan storage list
+
+ps -csuv | grep esx_platmgr 
+
+hodes show
+hosts show
+
+
+da
+uptime
+procmgr_cli.py show
+ps -cusv | grep explat | grep -v grep | wc -l
+
+procmgr_cli.py restart esx_platmgr
+
+procmgr_cli.py restart platmgr ROLE=Active
+
+[root@vesx00:~] dacli ssd show < /dev/null
+
+[root@n1509:~] cat /opt/datrium/etc/dva.conf | grep nfh
+FE~FEMain.nfhMode = False
+
+[root@n1509:~] cat /etc/vmware/esx.conf | grep Datrium
+/advUserOptions/options[0037]/name = "DatriumSelectedFlashMode"
+/advUserOptions/options[0037]/description = "Datrium-Specific"
+/advUserOptions/options[0038]/name = "DatriumSelectedPortgroup"
+/advUserOptions/options[0038]/description = "Datrium-Specific"
+/advUserOptions/options[0039]/name = "DatriumAvailableSSDs"
+/advUserOptions/options[0039]/description = "Datrium-Specific"
+/advUserOptions/options[0036]/description = "Datrium Netshelf's data floating IP"
+/advUserOptions/options[0036]/name = "DatriumNetshelfIp"
+/advUserOptions/options[0040]/name = "DatriumSelectedSSDs"
+/advUserOptions/options[0040]/description = "Datrium-Specific"
+/advUserOptions/options[0041]/name = "DatriumBundleVersion"
+/advUserOptions/options[0041]/description = "Datrium-Specific"
+/adv/UserVars/DatriumBundleVersion = "{'bundle_version': '3.0.100.0-28171_1d61af5_p', 'version': 1}"
+/adv/UserVars/DatriumSelectedSSDs = "{'selectedModel': 'E', 'ip': 'unset', 'apiVersion': '7', 'version': '3', 'markBootDiskGood': 'unset', 'policy': 'custom', 'ssds': {'/vmfs/devices/disks/naa.55cd2e404c213ac6': 'Using', '/vmfs/devices/disks/t10.NVMe____Dell_Express_Flash_NVMe_PM1725_1.6TB_AIC650E007194382500': 'Using', '/vmfs/devices/disks/naa.5002538a07219ce0': 'Using', '/vmfs/devices/disks/naa.5002538a07219cc0': 'Using'}, 'operation': 'ssdConfig', 'selectedModelVmfs': 'unset'}"
+/adv/UserVars/DatriumAvailableSSDs = "{'bootDisk': 'naa.61866da09c99b30020af7cbd2c25ae53;rs=471630610432', 'Default_DatriumCPUResvInPct': '20.0', 'numCpuCores': 28, 'minCumulativeSSDSize': '634000000000', 'cpu_insane_mode': 'False', 'Max_FE_Dispatchers': '16', 'version': '3', 'policy': 'custom', 'Min_FE_Dispatchers': '2', 'maxUsableSize': '16TB', 'numCpuThreads': 56, 'ui_operation_result': '0, PASS', 'maxUsableDeviceSize': '4TB', 'models': 'A, E', 'Insane_DatriumCPUResvInPct': '40.0', 'configuredModel': 'E', 'minDaDiskSize': '390000000000', 'Max_Allowed_Cpu_Resv_Pct': '70.0', 'daSysPartSize': '16000000000', 'daCorePartSize': '130000000000', 'FE_FStoreTrimPct': '15', 'apiVersion': '8', 'minNumCpuCores': '8', 'ssds': {'/vmfs/devices/disks/naa.55cd2e404c213ac6': 'Using,datrium', '/vmfs/devices/disks/t10.NVMe____Dell_Express_Flash_NVMe_PM1725_1.6TB_AIC650E007194382500': 'Using,datrium', '/vmfs/devices/disks/naa.5002538a07219ce0': 'Using,datrium', '/vmfs/devices/disks/naa.5002538a07219cc0': 'Using,datrium', '/vmfs/devices/disks/naa.61866da09c99b30020af7cbd2c25ae53': 'Not-Using,efi,basic,basic,vmkDiag,basic,vmkDiag,basic,vmfs,vmfs'}, 'FE_Dispatcher_CPU_Util_Pct': '150.0', 'maxSSDs': '10'}"
+/adv/UserVars/DatriumSelectedPortgroup = ""
+/adv/UserVars/DatriumSelectedFlashMode = "SharedFlash"
+/adv/UserVars/DatriumNetshelfIp = "10.80.72.244"
