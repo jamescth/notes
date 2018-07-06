@@ -377,3 +377,15 @@ Branch jho-dalog set up to track remote branch jho-dalog from origin.
 jho@jho-colo-02:/da/main$git pull
 Already up-to-date.
 
+
+*****************************************
+$ git config --global --edit
+
+  1 # This is Git's per-user configuration file.
+  2 [user]
+  3 # Please adapt and uncomment the following lines:
+  4         name = xxx
+  5         email = xxx@gmail.com
+
+git commit --amend --reset-author
+
