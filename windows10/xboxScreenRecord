@@ -1,0 +1,5 @@
+Win+G on VirtualBox
+enable micphore for recording
+click on a different app (such as Chrome) to bring xbox to the inactive mode. 
+  (Otherwise, the keyboard input will have conflict w/ linux guest)
+click 'Stop' when finish
